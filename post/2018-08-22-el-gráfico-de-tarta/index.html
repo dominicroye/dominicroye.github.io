@@ -412,7 +412,7 @@ knitr::kable(measles,booktabs = TRUE)</code></pre>
             labs(x=&quot;&quot;,y=&quot;&quot;)+
             theme_minimal()</code></pre>
 <p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
-<pre class="r"><code>#theme parametros
+<pre class="r"><code>#definiciones sobre el theme que usamos
 theme_singlebar &lt;- theme_bw()+
   theme(
     legend.position = &quot;bottom&quot;,
@@ -425,9 +425,9 @@ theme_singlebar &lt;- theme_bw()+
   )
 
 mutate(measles,
-       vacc_status=factor(vacc_status,
+       vacc_status=factor(vacc_status,               #cambiamos el orden de las categorías
                           rev(levels(vacc_status))))%&gt;%
-ggplot(aes(1,prop,fill=vacc_status))+
+ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra única
          geom_bar(stat=&quot;identity&quot;)+
           scale_y_continuous(breaks=seq(0,1,.1),
                              labels=percent,
@@ -438,7 +438,8 @@ ggplot(aes(1,prop,fill=vacc_status))+
                 coord_flip()+
                   theme_singlebar</code></pre>
 <p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<pre class="r"><code>measles2 &lt;- mutate(measles,
+<pre class="r"><code>#ampliamos los datos con las cifras de Italia
+measles2 &lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
                   vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&gt;%
                 rename(europe=&quot;prop&quot;)%&gt;%
@@ -446,7 +447,7 @@ ggplot(aes(1,prop,fill=vacc_status))+
 
 
 ggplot(measles2,aes(region,prop,fill=vacc_status))+
-            geom_bar(stat=&quot;identity&quot;,position=&quot;stack&quot;)+
+            geom_bar(stat=&quot;identity&quot;,position=&quot;stack&quot;)+ #stack: columna 100%
              scale_y_continuous(breaks=seq(0,1,.1),
                                 labels=percent,    #convertimos en %
                                 limits=c(0,1),
@@ -461,13 +462,13 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
 <pre class="r"><code>#libería
 library(waffle)
 
-#La función de waffle usa un vector con nombres
+#la función de waffle usa un vector con nombres
 val_measles &lt;- round(measles$prop*100)
 names(val_measles) &lt;- measles$vacc_status
 
-waffle(val_measles,
-        colors=brewer.pal(5,&quot;Set1&quot;),
-       rows=5)</code></pre>
+waffle(val_measles, #datos
+        colors=brewer.pal(5,&quot;Set1&quot;), #colores
+        rows=5) #número de filas </code></pre>
 <p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <p>El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.</p>
 <pre class="r"><code>medida &lt;- c(41,59) #datos de la OCDE 2015
@@ -484,11 +485,11 @@ waffle(medida,
 library(treemap)
 
 treemap(measles,
-index=&quot;vacc_status&quot;,
-vSize=&quot;prop&quot;,
-type=&quot;index&quot;,
-title=&quot;&quot;,
-palette = brewer.pal(5,&quot;Set1&quot;)
+index=&quot;vacc_status&quot;, #variable de categrías
+vSize=&quot;prop&quot;,        #valores
+type=&quot;index&quot;,        #estilo más en ?treemap
+title=&quot;&quot;,            
+palette = brewer.pal(5,&quot;Set1&quot;) #colores
 )</code></pre>
 <p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 <p>Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien <a href="https://twitter.com/lisacrost">Lisa Charlotte Rost</a> en un reciente <a href="https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart">post</a>. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un <a href="https://policyviz.com/2018/08/07/dataviz-cheatsheet/"><em>cheatsheet</em></a> de <em>policyviz</em> sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos usando diferentes programas desde Excel hasta R podéis encontrar en <em>Creating more effective graphs</em> <span class="citation">(Robbins 2013)</span>.</p>
@@ -554,7 +555,7 @@ palette = brewer.pal(5,&quot;Set1&quot;)
             return;
         }
         var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.src = '//' + "dominicroye-github-io" + '.disqus.com/embed.js';
         s.setAttribute('data-timestamp', +new Date());
         (d.head || d.body).appendChild(s);
     })();
@@ -650,7 +651,7 @@ palette = brewer.pal(5,&quot;Set1&quot;)
     
     
     
-    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    <script id="dsq-count-scr" src="//dominicroye-github-io.disqus.com/count.js" async></script>
     
 
     
