@@ -1,0 +1,730 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.46" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="var disqus_config = function () { this.language = &#34;en&#34;; };Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/en/2018/08/the-pie-chart/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair&#43;Display:400,700%7cFauna&#43;One">
+  
+
+  <link rel="stylesheet" href="/en/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/en/2018/08/the-pie-chart/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@dr_xeo">
+  <meta property="twitter:creator" content="@dr_xeo">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/en/2018/08/the-pie-chart/">
+  <meta property="og:title" content="the pie chart | Dominic Royé">
+  <meta property="og:description" content="var disqus_config = function () { this.language = &#34;en&#34;; };Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world."><meta property="og:image" content="/img/vaccination_pie.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-08-22T11:23:32&#43;01:00">
+  
+  <meta property="article:modified_time" content="2018-08-22T11:23:32&#43;01:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#0095eb",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#0095eb"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "This website uses cookies to ensure you get the best experience on our website.",
+        "dismiss": "Got it!",
+        "link": "Learn more",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>the pie chart | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/en"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/en/#">
+            
+            <span>home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/en/#post">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/en/#publications_selected">
+            
+            <span>publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/en/#about">
+            
+            <span>me</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+<div class="article-header">
+  
+  
+    <img src="/img/vaccination_pie.png" class="article-banner" itemprop="image">
+  
+
+  
+</div>
+
+
+
+  <div class="article-container">
+    <h1 itemprop="name">the pie chart</h1>
+
+    
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-08-22 11:23:32 &#43;0100 BST" itemprop="datePublished">
+    <time datetime="2018-08-22 11:23:32 &#43;0100 BST" itemprop="dateModified">
+      2018-08-22
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/en/2018/08/the-pie-chart/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fa fa-folder"></i>
+    
+    <a href="/en/categories/datavis/">datavis</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=the%20pie%20chart&amp;url=%2fen%2f2018%2f08%2fthe-pie-chart%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fen%2f2018%2f08%2fthe-pie-chart%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fen%2f2018%2f08%2fthe-pie-chart%2f&amp;title=the%20pie%20chart"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fen%2f2018%2f08%2fthe-pie-chart%2f&amp;title=the%20pie%20chart"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=the%20pie%20chart&amp;body=%2fen%2f2018%2f08%2fthe-pie-chart%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <script type="text/javascript"> var disqus_config = function () { this.language = "en"; };</script>
+
+
+<p>Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and exlanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas, will be welcomed.</p>
+<hr />
+<div id="background" class="section level2">
+<h2>Background</h2>
+<p>I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it’s due to Excel, but even worse than the pie chart itself is its 3D version (the same for the bar chart). About the 3D versions, I want only say that it is not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not clearly advised. But why?</p>
+<p>Already in a study conducted by <span class="citation">Simkin and Hastie (1987)</span> they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have: 1) too many categories 2) few differences between categories 3) misuse of colors as legend or 4) comparisons between various pie charts.</p>
+<p>To decide what possible graphic representations exist for our data, I recommend using the website<a href="www.data-to-viz.com" class="uri">www.data-to-viz.com</a> or the <em>Financial Times Visual Vocabulary</em>.</p>
+<p><a href="https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary"><img src="/img/poster_piepost.png" /></a></p>
+<p>Well, now what alternative ways can we use in R?</p>
+</div>
+<div id="alternatives-to-the-pie-chart" class="section level2">
+<h2>Alternatives to the pie chart</h2>
+<p>The data about the vaccination status of <strong>measles</strong> correspond to June 2018 in Europe and come from <a href="https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases">ECDC</a>.</p>
+<pre class="r"><code>#packages
+library(tidyverse)
+library(scales)
+library(RColorBrewer)
+
+#data
+measles &lt;- data.frame(
+          vacc_status=c(&quot;Unvaccinated&quot;,&quot;1 Dose&quot;,
+                        &quot;&gt;= 2 Dose&quot;,&quot;Unkown Dose&quot;,&quot;Unkown&quot;),
+          prop=c(0.75,0.091,0.05,0.012,0.096)
+          )
+
+#we order from the highest to the lowest and fix it with a factor
+
+measles &lt;- arrange(measles,
+                   desc(prop))%&gt;%
+              mutate(vacc_status=factor(vacc_status,vacc_status))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">vacc_status</th>
+<th align="right">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Unvaccinated</td>
+<td align="right">0.750</td>
+</tr>
+<tr class="even">
+<td align="left">Unkown</td>
+<td align="right">0.096</td>
+</tr>
+<tr class="odd">
+<td align="left">1 Dose</td>
+<td align="right">0.091</td>
+</tr>
+<tr class="even">
+<td align="left">&gt;= 2 Dose</td>
+<td align="right">0.050</td>
+</tr>
+<tr class="odd">
+<td align="left">Unkown Dose</td>
+<td align="right">0.012</td>
+</tr>
+</tbody>
+</table>
+<div id="bar-plot-or-similar" class="section level4">
+<h4>Bar plot or similar</h4>
+<pre class="r"><code>ggplot(measles,aes(vacc_status,prop))+
+            geom_bar(stat=&quot;identity&quot;)+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convert to %
+                                limits=c(0,1))+
+            labs(x=&quot;&quot;,y=&quot;&quot;)+
+            theme_minimal()</code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
+            geom_pointrange()+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convert to %
+                                limits=c(0,1))+
+            labs(x=&quot;&quot;,y=&quot;&quot;)+
+            theme_minimal()</code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<pre class="r"><code>#custom themes definitions
+theme_singlebar &lt;- theme_bw()+
+  theme(
+    legend.position = &quot;bottom&quot;,
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    plot.title=element_text(size=14, face=&quot;bold&quot;)
+  )
+
+#plot
+mutate(measles,
+       vacc_status=factor(vacc_status,               #we change the order of the categories
+                          rev(levels(vacc_status))))%&gt;%
+ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
+         geom_bar(stat=&quot;identity&quot;)+
+          scale_y_continuous(breaks=seq(0,1,.1),
+                             labels=percent,
+                             limits=c(0,1),
+                             expand=c(.01,.01))+
+          scale_x_continuous(expand=c(0,0))+
+              scale_fill_brewer(&quot;&quot;,palette=&quot;Set1&quot;)+
+                coord_flip()+
+                  theme_singlebar</code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<pre class="r"><code>#we expand our data with numbers from Italy
+measles2 &lt;- mutate(measles,
+                  italy=c(0.826,0.081,0.053,0.013,0.027),
+                  vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&gt;%
+                rename(europe=&quot;prop&quot;)%&gt;%
+                gather(region,prop,europe:italy)
+
+#plot
+ggplot(measles2,aes(region,prop,fill=vacc_status))+
+            geom_bar(stat=&quot;identity&quot;,position=&quot;stack&quot;)+ #stack bar
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convert to %
+                                limits=c(0,1),
+                                expand=c(0,0))+
+            scale_fill_brewer(palette = &quot;Set1&quot;)+
+            labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;Vaccination Status&quot;)+
+            theme_minimal()</code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+<div id="grafico-de-waffle" class="section level3">
+<h3>Gráfico de Waffle</h3>
+<pre class="r"><code>#package
+library(waffle)
+
+#the waffle function uses a vector with names
+val_measles &lt;- round(measles$prop*100)
+names(val_measles) &lt;- measles$vacc_status
+
+#plot
+waffle(val_measles, #data
+        colors=brewer.pal(5,&quot;Set1&quot;), #colors
+        rows=5) #row number </code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.</p>
+<pre class="r"><code>#data
+medida &lt;- c(41,59) #data from the OECD 2015
+names(medida) &lt;- c(&quot;Estudios Superiores&quot;,&quot;Otros estudios&quot;)
+
+#plot
+waffle(medida,
+       colors=c(&quot;#377eb8&quot;,&quot;#bdbdbd&quot;),
+       rows=5)</code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+</div>
+<div id="mapa-de-arbol-treemap" class="section level3">
+<h3>Mapa de arbol (<em>treemap</em>)</h3>
+<pre class="r"><code>#package
+library(treemap)
+
+#plot
+treemap(measles,
+index=&quot;vacc_status&quot;, #variable with categories
+vSize=&quot;prop&quot;,        #values
+type=&quot;index&quot;,        #style more in ?treemap
+title=&quot;&quot;,            
+palette = brewer.pal(5,&quot;Set1&quot;) #colors
+)</code></pre>
+<p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules which you can find very well summarized in a recent <a href="https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart">post</a> by <a href="https://twitter.com/lisacrost">Lisa Charlotte Rost</a>. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a <a href="https://policyviz.com/2018/08/07/dataviz-cheatsheet/">cheat sheet</a> from <em>policyviz</em> with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book <em>Creating More Effective Graphs</em> <span class="citation">(Robbins 2013)</span>.</p>
+</div>
+<div id="references" class="section level3 unnumbered">
+<h3>References</h3>
+<div id="refs" class="references">
+<div id="ref-Robbins2013">
+<p>Robbins, Naomi B. 2013. <em>Creating More Effective Graphs. a Succinct and Highly Readable Guide to Creating Effective Graph.</em> Chart House.</p>
+</div>
+<div id="ref-Simkin1987">
+<p>Simkin, D, and R Hastie. 1987. “An Information-Processing Analysis of Graph Perception.” <em>Journal of the American Statistical Association</em> 82 (398): 454–65.</p>
+</div>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="label label-default" href="/en/tags/pie-chart/">pie chart</a>
+  
+  <a class="label label-default" href="/en/tags/data/">data</a>
+  
+  <a class="label label-default" href="/en/tags/circular/">circular</a>
+  
+  <a class="label label-default" href="/en/tags/proportions/">proportions</a>
+  
+  <a class="label label-default" href="/en/tags/first-post/">first post</a>
+  
+  <a class="label label-default" href="/en/tags/treemap/">treemap</a>
+  
+  <a class="label label-default" href="/en/tags/waffle/">waffle</a>
+  
+  <a class="label label-default" href="/en/tags/bar/">bar</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+
+    
+
+    <p class="powered-by">
+
+      &copy; 2018 Dominic Royé. All rights reserved. &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Cite</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+      
+
+      
+      
+    
+
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/search.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Projects",
+        'publication' : "Publications",
+        'talk' : "Talks"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    <script src="/js/search.js"></script>
+    
+
+    
+    
+
+  </body>
+</html>
+
