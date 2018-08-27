@@ -18,8 +18,6 @@
   <meta name="description" content="Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and exlanation on data visualization, management and manipulation in R.">
 
   
-  <link rel="alternate" hreflang="es" href="/post/2018-08-22-el-gr%C3%A1fico-de-tarta/">
-  
   <link rel="alternate" hreflang="en-us" href="/en/post/2018-08-22-el-gr%C3%A1fico-de-tarta/">
 
   
@@ -226,23 +224,6 @@
       
 
       
-      
-        <li class="dropdown">
-          <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
-            <i class="fa fa-globe" aria-hidden="true"></i>
-            <span>English</span>
-          </a>
-          <ul class="dropdown-menu">
-            
-            <li class="nav-item">
-              <a href="/post/2018-08-22-el-gr%C3%A1fico-de-tarta/">
-                <span>Español</span>
-              </a>
-            </li>
-            
-          </ul>
-        </li>
-        
       </ul>
 
     </div>
@@ -455,7 +436,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
                 coord_flip()+
                   theme_singlebar</code></pre>
 <p><img src="/post/2018-08-22-el-gráfico-de-tarta.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
-<pre class="r"><code>#we expand our data with the numbers from Italy
+<pre class="r"><code>#we expand our data with numbers from Italy
 measles2 &lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
                   vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&gt;%
@@ -557,6 +538,16 @@ palette = brewer.pal(5,&quot;Set1&quot;) #colors
 
 
     
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/en/post/2018-08-22-the-pie-chart/">the pie chart</a></li>
+        
+      </ul>
+    </div>
     
 
     

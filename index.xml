@@ -11,10 +11,10 @@
     
     <item>
       <title>El gráfico de tarta</title>
-      <link>/post/2018-08-22-el-gr%C3%A1fico-de-tarta/</link>
+      <link>/post/2018-08-22-el-grafico-de-tarta/</link>
       <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
       
-      <guid>/post/2018-08-22-el-gr%C3%A1fico-de-tarta/</guid>
+      <guid>/post/2018-08-22-el-grafico-de-tarta/</guid>
       <description>&lt;p&gt;Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R. Espero que os guste. Cualquier sugerencia o idea, será bienvenida.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;preambulo&#34; class=&#34;section level2&#34;&gt;
@@ -84,7 +84,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -92,7 +92,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definiciones sobre el theme que usamos
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -118,7 +118,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra úni
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#ampliamos los datos con las cifras de Italia
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -136,7 +136,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;grafico-de-waffle&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
@@ -150,7 +150,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #datos
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colores
         rows=5) #número de filas &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;medida &amp;lt;- c(41,59) #datos de la OECD 2015
 names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
@@ -158,7 +158,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
@@ -172,14 +172,14 @@ type=&amp;quot;index&amp;quot;,        #estilo más en ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;referencias&#34; class=&#34;section level3 unnumbered&#34;&gt;
 &lt;h3&gt;Referencias&lt;/h3&gt;
 &lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
 &lt;div id=&#34;ref-Robbins2013&#34;&gt;
-&lt;p&gt;Robbins, Naomi B. 2013. &lt;em&gt;Creating more effective ggraph. A succinct and highly readable guide to creating effective ggraph.&lt;/em&gt; Chart House.&lt;/p&gt;
+&lt;p&gt;Robbins, Naomi B. 2013. &lt;em&gt;Creating more effective graphs. A succinct and highly readable guide to creating effective graph.&lt;/em&gt; Chart House.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;ref-Simkin1987&#34;&gt;
 &lt;p&gt;Simkin, D, y R Hastie. 1987. «An Information-Processing Analysis of Graph Perception». &lt;em&gt;Journal of the American Statistical Association&lt;/em&gt; 82 (398): 454-65.&lt;/p&gt;
