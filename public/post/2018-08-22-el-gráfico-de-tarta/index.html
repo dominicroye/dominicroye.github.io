@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.46" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/post/2018-08-22-el-gr%C3%A1fico-de-tarta/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair&#43;Display:400,700%7cFauna&#43;One">
+  
+
+  <link rel="stylesheet" href="/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/post/2018-08-22-el-gr%C3%A1fico-de-tarta/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@dr_xeo">
+  <meta property="twitter:creator" content="@dr_xeo">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/post/2018-08-22-el-gr%C3%A1fico-de-tarta/">
+  <meta property="og:title" content="El gráfico de tarta | Dominic Royé">
+  <meta property="og:description" content="Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R."><meta property="og:image" content="/img/vaccination_pie.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-08-22T11:23:32&#43;01:00">
+  
+  <meta property="article:modified_time" content="2018-08-22T11:23:32&#43;01:00">
+  
+
+  
+
+  
+
+  <title>El gráfico de tarta | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Barra de navegación</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/#">
+            
+            <span>inicio</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#publications_selected">
+            
+            <span>publicaciones</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/#about">
+            
+            <span>mí</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+<div class="article-header">
+  
+  
+    <img src="/img/vaccination_pie.png" class="article-banner" itemprop="image">
+  
+
+  
+</div>
+
+
+
+  <div class="article-container">
+    <h1 itemprop="name">El gráfico de tarta</h1>
+
+    
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-08-22 11:23:32 &#43;0100 BST" itemprop="datePublished">
+    <time datetime="2018-08-22 11:23:32 &#43;0100 BST" itemprop="dateModified">
+      2018-08-22
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/post/2018-08-22-el-gr%C3%A1fico-de-tarta/#disqus_thread"></a>
+  
+
+  
+  
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=El%20gr%c3%a1fico%20de%20tarta&amp;url=%2fpost%2f2018-08-22-el-gr%25C3%25A1fico-de-tarta%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fpost%2f2018-08-22-el-gr%25C3%25A1fico-de-tarta%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fpost%2f2018-08-22-el-gr%25C3%25A1fico-de-tarta%2f&amp;title=El%20gr%c3%a1fico%20de%20tarta"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fpost%2f2018-08-22-el-gr%25C3%25A1fico-de-tarta%2f&amp;title=El%20gr%c3%a1fico%20de%20tarta"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=El%20gr%c3%a1fico%20de%20tarta&amp;body=%2fpost%2f2018-08-22-el-gr%25C3%25A1fico-de-tarta%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+    <div class="article-style" itemprop="articleBody">
+      <p>Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R. Espero que os guste. Cualquier sugerencia o idea, será bienvenida.</p>
+<hr />
+<div id="preambulo" class="section level2">
+<h2>Preámbulo</h2>
+<p>Siempre he querido escribir sobre el uso del gráfico de tarta. El gráfico circular es ampliamente usado en investigación, docencia, periodismo o en informes técnicos. Es más, no sé si es debido a Excel, pero todavía peor que el mismo gráfico de tarta es su versión en 3D (también para el gráfico de barras). Sobre las versiones 3D unicamente debo decir que no es recomendable, ya que en estos casos la tercera dimension no contiene ninguna información y por tanto no ayuda en leer correctamente la información del gráfico. Respecto al gráfico de tarta, entre muchos expertos no se aconseja claramente su uso. Pero, ¿Por qué?</p>
+<p>Ya en un estudio hecho por <span class="citation">Simkin y Hastie (1987)</span> encontraron que la interpretación y el procesamiento de ángulos es más díficil que el de formas lineales. Mayormente es más fácil leer un gráfico de barras que uno de tarta. Un problema que se hace muy visible cuando nos encontramos con; 1) demasiadas categorias 2) pocas diferencias entre las categorías 3) un mal uso de colores como leyenda ó 4) comparaciones entre varios gráficos de tarta.</p>
+<p>Para decidir qué posibles representaciones gráficas existen para nuestros datos, recomiendo ir a la página web <a href="www.data-to-viz.com" class="uri">www.data-to-viz.com</a> o usar <em>Financial Times Visual Vocabulary</em>.</p>
+<p><a href="https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary"><img src="/img/poster_piepost.png" /></a></p>
+<p>Ahora bien, ¿Qué alternativas podemos usar en R?</p>
+</div>
+<div id="alternativas-al-grafico-de-tarta" class="section level2">
+<h2>Alternativas al gráfico de tarta</h2>
+<p>Los datos sobre el estado de la enfermedad <strong>sarampión</strong> corresponden a junio de 2018 en Europa y vienen del <a href="https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases">ECDC</a>.</p>
+<pre class="r"><code>#librerías
+library(tidyverse)
+library(scales)
+library(RColorBrewer)
+
+#datos
+measles &lt;- data.frame(
+          vacc_status=c(&quot;Unvaccinated&quot;,&quot;1 Dose&quot;,
+                        &quot;&gt;= 2 Dose&quot;,&quot;Unkown Dose&quot;,&quot;Unkown&quot;),
+          prop=c(0.75,0.091,0.05,0.012,0.096)
+          )
+
+#ordenamos de mayor a menor y lo fijamos con un factor 
+
+measles &lt;- arrange(measles,
+                   desc(prop))%&gt;%
+              mutate(vacc_status=factor(vacc_status,vacc_status))
+
+#tabla de nuestros datos
+knitr::kable(measles,booktabs = TRUE)</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="left">vacc_status</th>
+<th align="right">prop</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">Unvaccinated</td>
+<td align="right">0.750</td>
+</tr>
+<tr class="even">
+<td align="left">Unkown</td>
+<td align="right">0.096</td>
+</tr>
+<tr class="odd">
+<td align="left">1 Dose</td>
+<td align="right">0.091</td>
+</tr>
+<tr class="even">
+<td align="left">&gt;= 2 Dose</td>
+<td align="right">0.050</td>
+</tr>
+<tr class="odd">
+<td align="left">Unkown Dose</td>
+<td align="right">0.012</td>
+</tr>
+</tbody>
+</table>
+<div id="grafico-de-barra-o-similar" class="section level4">
+<h4>Gráfico de barra o similar</h4>
+<pre class="r"><code>ggplot(measles,aes(vacc_status,prop))+
+            geom_bar(stat=&quot;identity&quot;)+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1))+
+            labs(x=&quot;&quot;,y=&quot;&quot;)+
+            theme_minimal()</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-2-1.png" width="672" /></p>
+<pre class="r"><code>ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
+            geom_pointrange()+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1))+
+            labs(x=&quot;&quot;,y=&quot;&quot;)+
+            theme_minimal()</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-2-2.png" width="672" /></p>
+<pre class="r"><code>#theme parametros
+theme_singlebar &lt;- theme_bw()+
+  theme(
+    legend.position = &quot;bottom&quot;,
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    plot.title=element_text(size=14, face=&quot;bold&quot;)
+  )
+
+mutate(measles,
+       vacc_status=factor(vacc_status,
+                          rev(levels(vacc_status))))%&gt;%
+ggplot(aes(1,prop,fill=vacc_status))+
+         geom_bar(stat=&quot;identity&quot;)+
+          scale_y_continuous(breaks=seq(0,1,.1),
+                             labels=percent,
+                             limits=c(0,1),
+                             expand=c(.01,.01))+
+          scale_x_continuous(expand=c(0,0))+
+              scale_fill_brewer(&quot;&quot;,palette=&quot;Set1&quot;)+
+                coord_flip()+
+                  theme_singlebar</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>measles2 &lt;- mutate(measles,
+                  italy=c(0.826,0.081,0.053,0.013,0.027),
+                  vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&gt;%
+                rename(europe=&quot;prop&quot;)%&gt;%
+                gather(region,prop,europe:italy)
+
+
+ggplot(measles2,aes(region,prop,fill=vacc_status))+
+            geom_bar(stat=&quot;identity&quot;,position=&quot;stack&quot;)+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1),
+                                expand=c(0,0))+
+            scale_fill_brewer(palette = &quot;Set1&quot;)+
+            labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;Vaccination Status&quot;)+
+            theme_minimal()</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="grafico-de-waffle" class="section level3">
+<h3>Gráfico de Waffle</h3>
+<pre class="r"><code>#libería
+library(waffle)
+
+#La función de waffle usa un vector con nombres
+val_measles &lt;- round(measles$prop*100)
+names(val_measles) &lt;- measles$vacc_status
+
+waffle(val_measles,
+        colors=brewer.pal(5,&quot;Set1&quot;),
+       rows=5)</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.</p>
+<pre class="r"><code>medida &lt;- c(41,59) #datos de la OCDE 2015
+names(medida) &lt;- c(&quot;Estudios Superiores&quot;,&quot;Otros estudios&quot;)
+
+waffle(medida,
+       colors=c(&quot;#377eb8&quot;,&quot;#bdbdbd&quot;),
+       rows=5)</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="mapa-de-arbol-treemap" class="section level3">
+<h3>Mapa de arbol (<em>treemap</em>)</h3>
+<pre class="r"><code>#librería
+library(treemap)
+
+treemap(measles,
+index=&quot;vacc_status&quot;,
+vSize=&quot;prop&quot;,
+type=&quot;index&quot;,
+title=&quot;&quot;,
+palette = brewer.pal(5,&quot;Set1&quot;)
+)</code></pre>
+<p><img src="/post/2018-08-22-el-gráfico-de-tarta.es_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien <a href="https://twitter.com/lisacrost">Lisa Charlotte Rost</a> en un reciente <a href="https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart">post</a>. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un <a href="https://policyviz.com/2018/08/07/dataviz-cheatsheet/"><em>cheatsheet</em></a> de <em>policyviz</em> sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos usando diferentes programas desde Excel hasta R podéis encontrar en <em>Creating more effective graphs</em> <span class="citation">(Robbins 2013)</span>.</p>
+</div>
+</div>
+<div id="referencias" class="section level2 unnumbered">
+<h2>Referencias</h2>
+<div id="refs" class="references">
+<div id="ref-Robbins2013">
+<p>Robbins, Naomi B. 2013. <em>Creating more effective ggraph. A succinct and highly readable guide to creating effective ggraph.</em> Chart House.</p>
+</div>
+<div id="ref-Simkin1987">
+<p>Simkin, D, y R Hastie. 1987. «An Information-Processing Analysis of Graph Perception». <em>Journal of the American Statistical Association</em> 82 (398): 454-65.</p>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="label label-default" href="/tags/gr%C3%A1fico-de-tarta/">gráfico de tarta</a>
+  
+  <a class="label label-default" href="/tags/datos/">datos</a>
+  
+  <a class="label label-default" href="/tags/circular/">circular</a>
+  
+  <a class="label label-default" href="/tags/proporciones/">proporciones</a>
+  
+  <a class="label label-default" href="/tags/primera-entrada/">primera entrada</a>
+  
+  <a class="label label-default" href="/tags/treemap/">treemap</a>
+  
+  <a class="label label-default" href="/tags/waffle/">waffle</a>
+  
+  <a class="label label-default" href="/tags/barra/">barra</a>
+  
+</div>
+
+
+
+
+    
+    
+
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script>
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "@dr_xeo" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<footer class="site-footer">
+  <div class="container">
+
+    
+
+    <p class="powered-by">
+
+      &copy; 2018 Dominic Royé. All rights reserved. &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Citar</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+      
+
+      
+      
+    
+
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//@dr_xeo.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/search.json";
+      const i18n = {
+        'placeholder': "",
+        'no_results': ""
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Proyectos",
+        'publication' : "Publicaciones",
+        'talk' : "Conferencias"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    <script src="/js/search.js"></script>
+    
+
+    
+    
+
+  </body>
+</html>
+
