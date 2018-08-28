@@ -15,22 +15,19 @@
       <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
       
       <guid>/en/2018/the-pie-chart/</guid>
-      <description>&lt;script type=&#34;text/javascript&#34;&gt; var disqus_config = function () { this.language = &#34;en&#34;; };&lt;/script&gt;
-
-
-&lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and exlanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas, will be welcomed.&lt;/p&gt;
+      <description>&lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Background&lt;/h2&gt;
-&lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it’s due to Excel, but even worse than the pie chart itself is its 3D version (the same for the bar chart). About the 3D versions, I want only say that it is not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not clearly advised. But why?&lt;/p&gt;
-&lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;Simkin and Hastie (1987)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have: 1) too many categories 2) few differences between categories 3) misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
+&lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I want only say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
+&lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;Simkin and Hastie (1987)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
 &lt;p&gt;To decide what possible graphic representations exist for our data, I recommend using the website&lt;a href=&#34;www.data-to-viz.com&#34; class=&#34;uri&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;alternatives-to-the-pie-chart&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Alternatives to the pie chart&lt;/h2&gt;
-&lt;p&gt;The data about the vaccination status of &lt;strong&gt;measles&lt;/strong&gt; correspond to June 2018 in Europe and come from &lt;a href=&#34;https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases&#34;&gt;ECDC&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The data about the vaccination status of &lt;strong&gt;measles&lt;/strong&gt; correspond to June 2018 in Europe and come from the &lt;a href=&#34;https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases&#34;&gt;ECDC&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#packages
 library(tidyverse)
 library(scales)
@@ -142,8 +139,8 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;grafico-de-waffle&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
+&lt;div id=&#34;waffle-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Waffle plot&lt;/h3&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#package
 library(waffle)
 
@@ -167,8 +164,8 @@ waffle(medida,
        rows=5)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
+&lt;div id=&#34;treemap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Treemap&lt;/h3&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#package
 library(treemap)
 
@@ -231,6 +228,24 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/en/publication/lightning_galicia_2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
+      <link>/en/publication/appliedgeophysics_2017_en/</link>
+      <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/en/publication/appliedgeophysics_2017_en/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
+      <link>/en/publication/appliedgeophysics_2017_es/</link>
+      <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
+      
+      <guid>/en/publication/appliedgeophysics_2017_es/</guid>
       <description></description>
     </item>
     

@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="theme" content="hugo-academic">
+  <meta name="generator" content="Hugo 0.47.1" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="La información espacio-temporal es en la actualidad un elemento clave en disciplinas como la Climatología y la Meteorología. Un formato de uso muy extendido es el de las bases de datos netCDF, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. En este artículo se introduce el uso de estas bases de datos con el entorno de software libre R. Para ello se utiliza una cuadrícula de la temperatura máxima de la Península Ibérica para el período 1971-2007. El objetivo es poder leer y visualizar el formato netCDF realizando ejemplos de cálculos globales y otros más específicos. Finalmente se muestra la aplicabilidad en un caso de estudio: la amplitud diurna en la Península Ibérica para los meses de enero y agosto 2006.">
+
+  
+  <link rel="alternate" hreflang="en" href="/en/publication/ncdf_2015/">
+  
+  <link rel="alternate" hreflang="en-us" href="/es/publication/ncdf_2015/">
+
+  
+
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#0095eb">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair&#43;Display:400,700%7cFauna&#43;One">
+  
+
+  <link rel="stylesheet" href="/es/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/es/publication/ncdf_2015/">
+
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="twitter:site" content="@dr_xeo">
+  <meta property="twitter:creator" content="@dr_xeo">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/es/publication/ncdf_2015/">
+  <meta property="og:title" content="El uso de bases de datos climáticos netCDF con estructura matricial en el entorno de R | Dominic Royé">
+  <meta property="og:description" content="La información espacio-temporal es en la actualidad un elemento clave en disciplinas como la Climatología y la Meteorología. Un formato de uso muy extendido es el de las bases de datos netCDF, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. En este artículo se introduce el uso de estas bases de datos con el entorno de software libre R. Para ello se utiliza una cuadrícula de la temperatura máxima de la Península Ibérica para el período 1971-2007. El objetivo es poder leer y visualizar el formato netCDF realizando ejemplos de cálculos globales y otros más específicos. Finalmente se muestra la aplicabilidad en un caso de estudio: la amplitud diurna en la Península Ibérica para los meses de enero y agosto 2006."><meta property="og:image" content="/img/3d_ncdf.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2015-12-01T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2015-12-01T00:00:00&#43;00:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#0095eb",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#0095eb"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "Este sitio web utiliza cookies para garantizarle una mejor experiencia.",
+        "dismiss": "Entendido!",
+        "link": "Más información",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>El uso de bases de datos climáticos netCDF con estructura matricial en el entorno de R | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+
+<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+  <div class="container">
+
+    
+    <div class="navbar-header">
+      
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
+              data-target=".navbar-collapse" aria-expanded="false">
+        <span class="sr-only">Barra de navegación</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      
+      <a class="navbar-brand" href="/es"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+    </div>
+
+    
+    <div class="collapse navbar-collapse">
+
+      
+      
+      <ul class="nav navbar-nav navbar-right">
+        
+
+        
+        
+        
+        
+        
+
+        <li class="nav-item">
+          <a href="/es/#">
+            
+            <span>inicio</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/es/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/es/#publications_selected">
+            
+            <span>publicaciones</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+        
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a href="/es/#about">
+            
+            <span>mí</span>
+            
+          </a>
+        </li>
+
+        
+        
+      
+
+      
+      
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+            <i class="fa fa-globe" aria-hidden="true"></i>
+            <span>Español</span>
+          </a>
+          <ul class="dropdown-menu">
+            
+            <li class="nav-item">
+              <a href="/en/publication/ncdf_2015/">
+                <span>English</span>
+              </a>
+            </li>
+            
+          </ul>
+        </li>
+        
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+<div class="pub" itemscope itemtype="http://schema.org/CreativeWork">
+
+  
+<div class="article-header">
+  
+  
+    <img src="/img/3d_ncdf.png" class="article-banner" itemprop="image">
+  
+
+  
+</div>
+
+
+
+  <div class="article-container">
+    <h1 itemprop="name">El uso de bases de datos climáticos netCDF con estructura matricial en el entorno de R</h1>
+    <span class="pub-authors" itemprop="author">
+      
+      D Royé
+      
+    </span>
+    <span class="pull-right">
+      
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=El%20uso%20de%20bases%20de%20datos%20clim%c3%a1ticos%20netCDF%20con%20estructura%20matricial%20en%20el%20entorno%20de%20R&amp;url=%2fes%2fpublication%2fncdf_2015%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fes%2fpublication%2fncdf_2015%2f"
+         target="_blank" rel="noopener">
+        <i class="fa fa-facebook"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fes%2fpublication%2fncdf_2015%2f&amp;title=El%20uso%20de%20bases%20de%20datos%20clim%c3%a1ticos%20netCDF%20con%20estructura%20matricial%20en%20el%20entorno%20de%20R"
+         target="_blank" rel="noopener">
+        <i class="fa fa-linkedin"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fes%2fpublication%2fncdf_2015%2f&amp;title=El%20uso%20de%20bases%20de%20datos%20clim%c3%a1ticos%20netCDF%20con%20estructura%20matricial%20en%20el%20entorno%20de%20R"
+         target="_blank" rel="noopener">
+        <i class="fa fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=El%20uso%20de%20bases%20de%20datos%20clim%c3%a1ticos%20netCDF%20con%20estructura%20matricial%20en%20el%20entorno%20de%20R&amp;body=%2fes%2fpublication%2fncdf_2015%2f">
+        <i class="fa fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+    </span>
+
+    
+
+    
+    <h3>Resumen</h3>
+    <p class="pub-abstract" itemprop="text">La información espacio-temporal es en la actualidad un elemento clave en disciplinas como la Climatología y la Meteorología. Un formato de uso muy extendido es el de las bases de datos netCDF, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. En este artículo se introduce el uso de estas bases de datos con el entorno de software libre R. Para ello se utiliza una cuadrícula de la temperatura máxima de la Península Ibérica para el período 1971-2007. El objetivo es poder leer y visualizar el formato netCDF realizando ejemplos de cálculos globales y otros más específicos. Finalmente se muestra la aplicabilidad en un caso de estudio: la amplitud diurna en la Península Ibérica para los meses de enero y agosto 2006.</p>
+    
+
+    
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading">Tipo</div>
+          <div class="col-xs-12 col-sm-9">
+            
+            <a href="/es/publication/#2">
+              Journal article
+            </a>
+            
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+    
+
+    
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading">Publicación</div>
+          <div class="col-xs-12 col-sm-9">In <em>Sémata: Ciencias Sociais e Humanidades, 27:11-37</em></div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+    
+
+    <div class="row">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading">Fecha</div>
+          <div class="col-xs-12 col-sm-9" itemprop="datePublished">
+            2015-12
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+
+    <div class="row" style="padding-top: 10px">
+      <div class="col-sm-1"></div>
+      <div class="col-sm-10">
+        <div class="row">
+          <div class="col-xs-12 col-sm-3 pub-row-heading" style="line-height:34px;">Links</div>
+          <div class="col-xs-12 col-sm-9">
+
+            
+
+
+
+
+<a class="btn btn-primary btn-outline" href="http://www.usc.es/revistas/index.php/semata/article/download/2690/3280" target="_blank" rel="noopener">
+  PDF
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+          </div>
+        </div>
+      </div>
+      <div class="col-sm-1"></div>
+    </div>
+    <div class="visible-xs space-below"></div>
+
+    <div class="space-below"></div>
+
+    <div class="article-style"><p>Los datos usados están disponibles <a href="https://drive.google.com/open?id=1LYOm80dxQW_xMFUZ6kJ4qCKvwOXTWSIg" target="_blank">aquí</a>.
+Otras bases de datos para España en formato ncdf pueden ser descargadas:</p>
+
+<p><strong>AEMET</strong></p>
+
+<ul>
+<li><p><a href="http://www.aemet.es/es/serviciosclimaticos/cambio_climat/datos_diarios?w=2&amp;w2=1" target="_blank">Rejilla 20km y 50km (precipitación y temperatura)</a></p></li>
+
+<li><p><a href="http://www.aemet.es/es/serviciosclimaticos/cambio_climat/datos_diarios?w=2&amp;w2=0" target="_blank">Rejilla 5km (precipitación)</a></p></li>
+</ul>
+
+<p><strong>CSIC</strong></p>
+
+<ul>
+<li><a href="https://doi.org/10.20350/digitalCSIC/7393" target="_blank">Rejilla 5km (precipitación)</a></li>
+</ul>
+</div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="label label-default" href="/es/tags/netcdf/">netCDF</a>
+  
+  <a class="label label-default" href="/es/tags/r/">R</a>
+  
+  <a class="label label-default" href="/es/tags/climatolog%C3%ADa/">climatología</a>
+  
+  <a class="label label-default" href="/es/tags/temperatura/">temperatura</a>
+  
+  <a class="label label-default" href="/es/tags/matriz/">matriz</a>
+  
+  <a class="label label-default" href="/es/tags/base-de-datos/">base de datos</a>
+  
+</div>
+
+
+
+
+  </div>
+</div>
+
+
+<div class="article-container article-widget">
+  <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Siguiente</div>
+    <a href="/es/publication/hotnights_age_2015/" rel="next">Análisis de las noches tropicales en la fachada atlántica de la Península Ibérica. Una propuesta metodológica</a>
+  </div>
+  
+  
+</div>
+
+</div>
+
+
+<footer class="site-footer">
+  <div class="container">
+
+    
+
+    <p class="powered-by">
+
+      &copy; 2018 Dominic Royé. All rights reserved. &middot; 
+
+      Powered by the
+      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+      <span class="pull-right" aria-hidden="true">
+        <a href="#" id="back_to_top">
+          <span class="button_icon">
+            <i class="fa fa-chevron-up fa-2x"></i>
+          </span>
+        </a>
+      </span>
+
+    </p>
+  </div>
+</footer>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">Citar</h4>
+      </div>
+      <div>
+        <pre><code class="modal-body tex"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
+          <i class="fa fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
+          <i class="fa fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+
+      
+      
+    
+
+    <script src="/js/hugo-academic.js"></script>
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+
+    
+    
+    <script>
+      const search_index_filename = "/search.json";
+      const i18n = {
+        'placeholder': "Search...",
+        'no_results': "No results found"
+      };
+      const content_type = {
+        'post': "Posts",
+        'project': "Proyectos",
+        'publication' : "Publicaciones",
+        'talk' : "Conferencias"
+        };
+    </script>
+    
+
+    
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
+    <script src="/js/search.js"></script>
+    
+
+    
+    
+
+  </body>
+</html>
+

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="theme" content="hugo-academic">
-  <meta name="generator" content="Hugo 0.46" />
+  <meta name="generator" content="Hugo 0.47.1" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -15,7 +15,7 @@
   
     
   
-  <meta name="description" content="var disqus_config = function () { this.language = &#34;en&#34;; };Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world.">
+  <meta name="description" content="Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R.">
 
   
   <link rel="alternate" hreflang="en-us" href="/en/2018/the-pie-chart/">
@@ -106,7 +106,7 @@
   <meta property="og:site_name" content="Dominic Royé">
   <meta property="og:url" content="/en/2018/the-pie-chart/">
   <meta property="og:title" content="the pie chart | Dominic Royé">
-  <meta property="og:description" content="var disqus_config = function () { this.language = &#34;en&#34;; };Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world."><meta property="og:image" content="/img/vaccination_pie.png">
+  <meta property="og:description" content="Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R."><meta property="og:image" content="/img/vaccination_pie.png">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2018-08-22T11:23:32&#43;01:00">
@@ -365,22 +365,19 @@
 
 
     <div class="article-style" itemprop="articleBody">
-      <script type="text/javascript"> var disqus_config = function () { this.language = "en"; };</script>
-
-
-<p>Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and exlanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas, will be welcomed.</p>
+      <p>Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.</p>
 <hr />
 <div id="background" class="section level2">
 <h2>Background</h2>
-<p>I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it’s due to Excel, but even worse than the pie chart itself is its 3D version (the same for the bar chart). About the 3D versions, I want only say that it is not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not clearly advised. But why?</p>
-<p>Already in a study conducted by <span class="citation">Simkin and Hastie (1987)</span> they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have: 1) too many categories 2) few differences between categories 3) misuse of colors as legend or 4) comparisons between various pie charts.</p>
+<p>I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I want only say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?</p>
+<p>Already in a study conducted by <span class="citation">Simkin and Hastie (1987)</span> they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) misuse of colors as legend or 4) comparisons between various pie charts.</p>
 <p>To decide what possible graphic representations exist for our data, I recommend using the website<a href="www.data-to-viz.com" class="uri">www.data-to-viz.com</a> or the <em>Financial Times Visual Vocabulary</em>.</p>
 <p><a href="https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary"><img src="/img/poster_piepost.png" /></a></p>
 <p>Well, now what alternative ways can we use in R?</p>
 </div>
 <div id="alternatives-to-the-pie-chart" class="section level2">
 <h2>Alternatives to the pie chart</h2>
-<p>The data about the vaccination status of <strong>measles</strong> correspond to June 2018 in Europe and come from <a href="https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases">ECDC</a>.</p>
+<p>The data about the vaccination status of <strong>measles</strong> correspond to June 2018 in Europe and come from the <a href="https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases">ECDC</a>.</p>
 <pre class="r"><code>#packages
 library(tidyverse)
 library(scales)
@@ -492,8 +489,8 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             theme_minimal()</code></pre>
 <p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
-<div id="grafico-de-waffle" class="section level3">
-<h3>Gráfico de Waffle</h3>
+<div id="waffle-plot" class="section level3">
+<h3>Waffle plot</h3>
 <pre class="r"><code>#package
 library(waffle)
 
@@ -517,8 +514,8 @@ waffle(medida,
        rows=5)</code></pre>
 <p><img src="/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
-<div id="mapa-de-arbol-treemap" class="section level3">
-<h3>Mapa de arbol (<em>treemap</em>)</h3>
+<div id="treemap" class="section level3">
+<h3>Treemap</h3>
 <pre class="r"><code>#package
 library(treemap)
 
@@ -578,11 +575,19 @@ palette = brewer.pal(5,&quot;Set1&quot;) #colors
     
 
     
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+</div>
+
+    </div>
+    
 
     
 <section id="comments">
   <div id="disqus_thread"></div>
-<script>
+<script type="application/javascript">
     var disqus_config = function () {
     
     
