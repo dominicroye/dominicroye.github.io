@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dominic Royé on Dominic Royé</title>
-    <link>/en/</link>
+    <link>https://dominicroye.github.io/en/</link>
     <description>Recent content in Dominic Royé on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018 Dominic Royé. All rights reserved.</copyright>
@@ -11,10 +11,10 @@
     
     <item>
       <title>the pie chart</title>
-      <link>/en/2018/the-pie-chart/</link>
+      <link>https://dominicroye.github.io/en/2018/the-pie-chart/</link>
       <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
       
-      <guid>/en/2018/the-pie-chart/</guid>
+      <guid>https://dominicroye.github.io/en/2018/the-pie-chart/</guid>
       <description>&lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
@@ -22,7 +22,7 @@
 &lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
 &lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;Simkin and Hastie (1987)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
 &lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;www.data-to-viz.com&#34; class=&#34;uri&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;alternatives-to-the-pie-chart&#34; class=&#34;section level2&#34;&gt;
@@ -84,7 +84,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -92,7 +92,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#custom themes definitions
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -119,7 +119,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we expand our data with numbers from Italy
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -137,7 +137,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;waffle-plot&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Waffle plot&lt;/h3&gt;
@@ -152,7 +152,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #data
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colors
         rows=5) #row number &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#data
 medida &amp;lt;- c(41,59) #data from the OECD 2015
@@ -162,7 +162,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Treemap&lt;/h3&gt;
@@ -177,7 +177,7 @@ type=&amp;quot;index&amp;quot;,        #style more in ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;references&#34; class=&#34;section level3 unnumbered&#34;&gt;
@@ -197,109 +197,109 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     <item>
       <title>Spatial Analysis of Daily Precipitation Concentration in Puerto Rico</title>
-      <link>/en/publication/ci_pr_2018/</link>
+      <link>https://dominicroye.github.io/en/publication/ci_pr_2018/</link>
       <pubDate>Sun, 01 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/ci_pr_2018/</guid>
+      <guid>https://dominicroye.github.io/en/publication/ci_pr_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Role of Apparent Temperature and Air Pollutants in Hospital Admissions for Acute Myocardial Infarction in the North of Spain</title>
-      <link>/en/publication/iam_cantabria_2018/</link>
+      <link>https://dominicroye.github.io/en/publication/iam_cantabria_2018/</link>
       <pubDate>Tue, 01 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/iam_cantabria_2018/</guid>
+      <guid>https://dominicroye.github.io/en/publication/iam_cantabria_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Short-term effects of heat and cold on respiratory drug use. A time-series epidemiological study in A Coruña, Spain</title>
-      <link>/en/publication/pharma_coru%C3%B1a_2018/</link>
+      <link>https://dominicroye.github.io/en/publication/pharma_coru%C3%B1a_2018/</link>
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/pharma_coru%C3%B1a_2018/</guid>
+      <guid>https://dominicroye.github.io/en/publication/pharma_coru%C3%B1a_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spatial–temporal patterns of cloud-to-ground lightning over the northwest Iberian Peninsula during the period 2010–2015</title>
-      <link>/en/publication/lightning_galicia_2018/</link>
+      <link>https://dominicroye.github.io/en/publication/lightning_galicia_2018/</link>
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/lightning_galicia_2018/</guid>
+      <guid>https://dominicroye.github.io/en/publication/lightning_galicia_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
-      <link>/en/publication/appliedgeophysics_2017_en/</link>
+      <link>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_en/</link>
       <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/appliedgeophysics_2017_en/</guid>
+      <guid>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_en/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
-      <link>/en/publication/appliedgeophysics_2017_es/</link>
+      <link>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_es/</link>
       <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/appliedgeophysics_2017_es/</guid>
+      <guid>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_es/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The effects of hot nights on mortality in Barcelona, Spain</title>
-      <link>/en/publication/hotnights_bcn_2017/</link>
+      <link>https://dominicroye.github.io/en/publication/hotnights_bcn_2017/</link>
       <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/hotnights_bcn_2017/</guid>
+      <guid>https://dominicroye.github.io/en/publication/hotnights_bcn_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Concentration of Daily Precipitation in the Contiguous United States</title>
-      <link>/en/publication/usa_ci_2017/</link>
+      <link>https://dominicroye.github.io/en/publication/usa_ci_2017/</link>
       <pubDate>Thu, 01 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/usa_ci_2017/</guid>
+      <guid>https://dominicroye.github.io/en/publication/usa_ci_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Co-creation and Participatory Design of Big Data Infrastructures on the Field of Human Health Related Climate Services</title>
-      <link>/en/publication/chapter_springer_2017/</link>
+      <link>https://dominicroye.github.io/en/publication/chapter_springer_2017/</link>
       <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/chapter_springer_2017/</guid>
+      <guid>https://dominicroye.github.io/en/publication/chapter_springer_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Winter circulation weather types and hospital admissions for respiratory diseases in Galicia, Spain</title>
-      <link>/en/publication/cwt_galicia_resp_2016/</link>
+      <link>https://dominicroye.github.io/en/publication/cwt_galicia_resp_2016/</link>
       <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/cwt_galicia_resp_2016/</guid>
+      <guid>https://dominicroye.github.io/en/publication/cwt_galicia_resp_2016/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Analysis of tropical nights on the atlantic coast of the Iberian Peninsula. A proposed methodology</title>
-      <link>/en/publication/hotnights_age_2015/</link>
+      <link>https://dominicroye.github.io/en/publication/hotnights_age_2015/</link>
       <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/hotnights_age_2015/</guid>
+      <guid>https://dominicroye.github.io/en/publication/hotnights_age_2015/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The use of climate databases netCDF with array structure in the environment of R</title>
-      <link>/en/publication/ncdf_2015/</link>
+      <link>https://dominicroye.github.io/en/publication/ncdf_2015/</link>
       <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>/en/publication/ncdf_2015/</guid>
+      <guid>https://dominicroye.github.io/en/publication/ncdf_2015/</guid>
       <description>&lt;p&gt;Used datasets are available for download &lt;a href=&#34;https://drive.google.com/open?id=1LYOm80dxQW_xMFUZ6kJ4qCKvwOXTWSIg&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.
 Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
 
