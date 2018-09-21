@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dominic Royé on Dominic Royé</title>
-    <link>https://dominicroye.github.io/en/</link>
+    <link>/en/</link>
     <description>Recent content in Dominic Royé on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018 Dominic Royé. All rights reserved.</copyright>
@@ -10,19 +10,322 @@
     <atom:link href="/en/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Access to climate reanalysis data from R</title>
+      <link>/en/2018/access-to-climate-reanalysis-data-from-r/</link>
+      <pubDate>Sat, 15 Sep 2018 10:59:44 +0100</pubDate>
+      
+      <guid>/en/2018/access-to-climate-reanalysis-data-from-r/</guid>
+      <description>&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#packages&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-download&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#monthly-average&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualization&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#era-interim&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#installation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#connection-and-download-with-the-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#processing-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;A friend advised me to introduce R levels as categories. An idea that I now add to each blog post. There are three levels: elementary, intermediate, and advanced. I hope it will help to the reader and the R user.&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/h1&gt;
+&lt;p&gt;In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans. The two most used reanalyses are &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) from the &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, an improved version of &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), and &lt;em&gt;ERA-Interim&lt;/em&gt; from the &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;. Since &lt;em&gt;NCEP-DO&lt;/em&gt; is the first generation, it is recommended to use third-generation climate reanalysis, especially &lt;em&gt;ERA-Interim&lt;/em&gt;. An overview of the current atmospheric reanalysis can be found &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;here&lt;/a&gt;. First, let’s see how to access the &lt;em&gt;NCEP&lt;/em&gt; data through an R library on &lt;em&gt;CRAN&lt;/em&gt; that facilitates the download and handling of the data. Then we will do the same with the &lt;em&gt;ERA-Interim&lt;/em&gt;, however, to access this last reanalysis dataset it is necessary to use &lt;em&gt;python&lt;/em&gt; and the corresponding API of the &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
+&lt;p&gt;To access the &lt;em&gt;NCEP&lt;/em&gt; reanalysis it is required to install the corresponding package &lt;em&gt;RNCEP&lt;/em&gt;. The main function is &lt;code&gt;NCEP.gather ()&lt;/code&gt;. The resolution of the &lt;em&gt;NCEP&lt;/em&gt; reanalysis is 2.5º X 2.5º.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the RNCEP, lubridate and tidyverse packages
+if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+
+#we load the packages
+library(RNCEP)
+library(lubridate) #date and time manipulation
+library(tidyverse) #data manipulation and visualization
+library(RColorBrewer) #color schemes
+library(sf) #to import a spatial object and to work with geom_sf in ggplot2&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-download&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/h2&gt;
+&lt;p&gt;We will download the air temperature of the 850haPa pressure level for the year 2016. The variables and pressure levels can be found in the details of the function &lt;code&gt;?NCEP.gather&lt;/code&gt;. The &lt;em&gt;reanalysis2&lt;/em&gt; argument allows us to download both version I and version II, being by default &lt;em&gt;FALSE&lt;/em&gt;, that is, we access reanalysis I. In all the requests we will obtain hourly data of every 6 hours (00:00 , 06:00, 12:00 and 18:00). This supposes a total of 1464 values for the year 2016.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we define the necessary arguments
+month_range &amp;lt;- c(1,12)     #period of months
+year_range &amp;lt;- c(2016,2016) #period of years
+
+lat_range &amp;lt;- c(30,60)      #latitude range
+lon_range &amp;lt;- c(-30,50)     #longitude range
+ 
+
+data &amp;lt;- NCEP.gather(&amp;quot;air&amp;quot;,    #name of the variable
+                    850, #pressure level 850hPa
+                    month_range,year_range,
+                    lat_range,lon_range,
+                    return.units = TRUE,
+                    reanalysis2=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] Units of variable &amp;#39;air&amp;#39; are degK
+## [1] Units of variable &amp;#39;air&amp;#39; are degK&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#dimensions                    
+dim(data) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   13   33 1464&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we find in dimnames() lon, lat and time
+#date and time
+date_time &amp;lt;- dimnames(data)[[3]]
+date_time &amp;lt;- ymd_h(date_time)
+head(date_time)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2016-01-01 00:00:00 UTC&amp;quot; &amp;quot;2016-01-01 06:00:00 UTC&amp;quot;
+## [3] &amp;quot;2016-01-01 12:00:00 UTC&amp;quot; &amp;quot;2016-01-01 18:00:00 UTC&amp;quot;
+## [5] &amp;quot;2016-01-02 00:00:00 UTC&amp;quot; &amp;quot;2016-01-02 06:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#longitude and latitude
+lat &amp;lt;- dimnames(data)[[1]]
+lon &amp;lt;- dimnames(data)[[2]]
+head(lon);head(lat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;-30&amp;quot;   &amp;quot;-27.5&amp;quot; &amp;quot;-25&amp;quot;   &amp;quot;-22.5&amp;quot; &amp;quot;-20&amp;quot;   &amp;quot;-17.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;60&amp;quot;   &amp;quot;57.5&amp;quot; &amp;quot;55&amp;quot;   &amp;quot;52.5&amp;quot; &amp;quot;50&amp;quot;   &amp;quot;47.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;monthly-average&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/h2&gt;
+&lt;p&gt;We see that the downloaded data is an &lt;em&gt;array&lt;/em&gt; of three dimensions with [lat, lon, time]. We extracted latitude, longitude and time. The temperature is given in Kelvin. The objective in the next sectin will be to show two maps comparing January and July.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create our grouping variable
+group &amp;lt;- month(date_time) 
+
+#we estimate the average temperature by month 
+data_month &amp;lt;- aperm(
+  apply(
+    data, #our data
+    c(1,2), #we apply to each time series 1:row, 2:column
+    by, #group by
+    group, #months
+    function(x)ifelse(all(is.na(x)),NA,mean(x))),
+  c(2,3,1)) #reorder to get an array like the original
+
+dim(data_month) #850haPa temperature per month January to December&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 13 33 12&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/h2&gt;
+&lt;p&gt;Once we got here, we can visualize the temperature of January and July with &lt;em&gt;ggplot2&lt;/em&gt;. In this example, I use &lt;code&gt;geom_sf ()&lt;/code&gt; from the library &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, which makes the work easier to visualize spatial objects in &lt;em&gt;ggplot&lt;/em&gt; (in the near future I will make a post about &lt;em&gt;sf&lt;/em&gt; and &lt;em&gt;ggplot&lt;/em&gt;). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the &lt;code&gt;expand.grid ()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#first we create all the combinations of lon-lat
+lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
+
+#as lonlat was a row/column name, it is character, that&amp;#39;s why we convert it into numeric
+lonlat &amp;lt;- apply(lonlat,2,as.numeric)
+
+#lon and lat are not in the order as we expect
+#row=lon; column=lat
+data_month &amp;lt;- aperm(data_month,c(2,1,3))
+
+#we subtract 273.15K to convert K to ºC.
+df &amp;lt;- data.frame(lonlat,
+                 Ta01=as.vector(data_month[,,1])-273.15,
+                 Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before we can make the map with &lt;em&gt;ggplot2&lt;/em&gt;, we have to adapt the table. The shapefile with the countries limits can be downloaded &lt;a href=&#34;/files/CNTR_RG_03M_2014.zip&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we convert the wide table into a long one
+df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
+             mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
+
+#we import the countries limits
+limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR\content\post\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 256 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.66068
+## epsg (SRID):    NA
+## proj4string:    +proj=longlat +ellps=GRS80 +no_defs&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#color scheme
+colbr &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+
+ggplot(df)+
+      geom_tile(aes(lon,lat,fill=Ta))+ #temperature data
+      geom_sf(data=limit,fill=NA,size=.5)+ #limits 
+        scale_fill_gradientn(colours=rev(colbr))+
+          coord_sf(ylim=c(30,60),xlim=c(-30,50))+
+          scale_x_continuous(breaks=seq(-30,50,10),expand=c(0,0))+
+          scale_y_continuous(breaks=seq(30,60,5),expand=c(0,0))+
+          labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
+           facet_grid(month~.)+ #plot panels by month
+             theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
+&lt;p&gt;The &lt;em&gt;ECMWF&lt;/em&gt; offers access to its public databases from a &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. It is required to be registered on the &lt;em&gt;ECMWF&lt;/em&gt; website. You can register &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;here&lt;/a&gt;. When dealing with another language, in R we have to use an interface between both which allows the library &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;installation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
+if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quot;) #to manage netCDF format
+
+#load packages
+library(reticulate)
+library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install ()&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the python ECMWF API
+py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Installation complete.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;connection-and-download-with-the-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/h2&gt;
+&lt;p&gt;In order to access the API, it is required to create a file with the user’s information.&lt;/p&gt;
+&lt;p&gt;The “.ecmwfapirc” file must contain the following information:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;url&amp;quot;   : &amp;quot;https://api.ecmwf.int/v1&amp;quot;,
+    &amp;quot;key&amp;quot;   : &amp;quot;XXXXXXXXXXXXXXXXXXXXXX&amp;quot;,
+    &amp;quot;email&amp;quot; : &amp;quot;john.smith@example.com&amp;quot;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The key can be obtained with the user account &lt;a href=&#34;https://api.ecmwf.int/v1/key/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The file can be created with the Windows notebook.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;We create a document “ecmwfapirc.txt”.&lt;/li&gt;
+&lt;li&gt;Rename this file to “.ecmwfapirc.”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The last point disappears automatically. Then we save this file in “C:/USERNAME/.ecmwfapirc” or “C:/USERNAME/Documents/.ecmwfapirc”.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we import the python library ecmwfapi
+ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
+
+#in this step there must exist the file .ecmwfapirc
+server = ecmwf$ECMWFDataServer() #we start the connection&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One we get here, how do we create a query? The easiest thing is to go to the website of &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;, where we choose the database, in this case &lt;em&gt;ERA-Interim&lt;/em&gt; surface, to create a script with all the necessary data. More details about the syntax can be found &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;here&lt;/a&gt;. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;With the syntax of the script from the &lt;em&gt;MARS Request&lt;/em&gt;, we can create the query in R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create the query
+query &amp;lt;-r_to_py(list(
+  class=&amp;#39;ei&amp;#39;,
+  dataset= &amp;quot;interim&amp;quot;, #dataset
+  date= &amp;quot;2017-01-01/to/2017-12-31&amp;quot;, #time period
+  expver= &amp;quot;1&amp;quot;,
+  grid= &amp;quot;0.125/0.125&amp;quot;, #resolution
+  levtype=&amp;quot;sfc&amp;quot;,
+  param= &amp;quot;167.128&amp;quot;, # air temperature (2m)
+  area=&amp;quot;45/-10/30/5&amp;quot;, #N/W/S/E
+  step= &amp;quot;0&amp;quot;,
+  stream=&amp;quot;oper&amp;quot;,
+  time=&amp;quot;00:00:00/06:00:00/12:00:00/18:00:00&amp;quot;, #hours
+  type=&amp;quot;an&amp;quot;,
+  format= &amp;quot;netcdf&amp;quot;, #format
+  target=&amp;#39;ta2017.nc&amp;#39; #file name
+))
+
+#query to get the ncdf
+server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The result is a netCDF file that we can process with the library &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;processing-ncdf&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/h2&gt;
+&lt;p&gt;In the next section, the objective will be the extraction of a time serie from a closest coordinate to a given one. We will use the coordinates of Madrid (40.418889, -3.691944).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load packages
+library(sf)
+library(ncdf4)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we open the connection with the ncdf file
+nc &amp;lt;- nc_open(&amp;quot;ta2017.nc&amp;quot;)
+
+#we extract lon and lat
+lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
+lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
+dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we extract the time
+t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
+
+#time unit: hours since 1900-01-01
+ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $units
+## [1] &amp;quot;hours since 1900-01-01 00:00:0.0&amp;quot;
+## 
+## $long_name
+## [1] &amp;quot;time&amp;quot;
+## 
+## $calendar
+## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we convert the hours into date + hour
+#as_datetime() function of the lubridate package needs seconds
+timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
+
+#we import the data
+data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
+
+#we close the conection with the ncdf file
+nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this next section we use the &lt;em&gt;sf&lt;/em&gt; package, which is replacing the well known &lt;em&gt;sp&lt;/em&gt; and &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create all the combinations of lon-lat
+lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
+
+#we must convert the coordinates in a spatial object sf
+#we also indicate the coordinate system in EPSG code
+coord &amp;lt;- st_as_sf(lonlat,coords=c(&amp;quot;lon&amp;quot;,&amp;quot;lat&amp;quot;))%&amp;gt;%
+                    st_set_crs(4326)
+
+#we do the same with our coordinate of Madrid
+psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
+                   st_sfc()%&amp;gt;%
+                     st_set_crs(4326)
+
+#plot all points
+plot(st_geometry(coord))
+plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the next steps we calculate the distance of our reference point to all the grid points. Then we look for the one with less distance.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we add the distance to the points
+coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
+
+#we create a distance matrix with the same dimensions as our data
+dist_mat &amp;lt;- matrix(coord$dist,dim(data)[-3])
+
+#the arrayInd function is useful to obtain the row and column indexes
+mat_index &amp;lt;- as.vector(arrayInd(which.min(dist_mat), dim(dist_mat)))
+
+#we extract the time serie and change the unit from K to ºC
+#we convert the time in date + hour
+df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp;gt;%
+        mutate(ta=ta-273.15,time=ymd_hms(time))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we visualize our time series.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(df,
+       aes(time,ta))+
+    geom_line()+
+    labs(y=&amp;quot;Temperature (ºC)&amp;quot;,
+             x=&amp;quot;&amp;quot;)+
+    theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>the pie chart</title>
-      <link>https://dominicroye.github.io/en/2018/the-pie-chart/</link>
+      <link>/en/2018/the-pie-chart/</link>
       <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
       
-      <guid>https://dominicroye.github.io/en/2018/the-pie-chart/</guid>
+      <guid>/en/2018/the-pie-chart/</guid>
       <description>&lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Background&lt;/h2&gt;
 &lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
 &lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;Simkin and Hastie (1987)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
-&lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;www.data-to-viz.com&#34; class=&#34;uri&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;alternatives-to-the-pie-chart&#34; class=&#34;section level2&#34;&gt;
@@ -84,7 +387,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -92,7 +395,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#custom themes definitions
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -119,7 +422,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we expand our data with numbers from Italy
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -137,7 +440,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;waffle-plot&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Waffle plot&lt;/h3&gt;
@@ -152,7 +455,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #data
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colors
         rows=5) #row number &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#data
 medida &amp;lt;- c(41,59) #data from the OECD 2015
@@ -162,7 +465,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Treemap&lt;/h3&gt;
@@ -177,7 +480,7 @@ type=&amp;quot;index&amp;quot;,        #style more in ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;references&#34; class=&#34;section level3 unnumbered&#34;&gt;
@@ -197,109 +500,109 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     <item>
       <title>Spatial Analysis of Daily Precipitation Concentration in Puerto Rico</title>
-      <link>https://dominicroye.github.io/en/publication/ci_pr_2018/</link>
+      <link>/en/publication/ci_pr_2018/</link>
       <pubDate>Sun, 01 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/ci_pr_2018/</guid>
+      <guid>/en/publication/ci_pr_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Role of Apparent Temperature and Air Pollutants in Hospital Admissions for Acute Myocardial Infarction in the North of Spain</title>
-      <link>https://dominicroye.github.io/en/publication/iam_cantabria_2018/</link>
+      <link>/en/publication/iam_cantabria_2018/</link>
       <pubDate>Tue, 01 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/iam_cantabria_2018/</guid>
+      <guid>/en/publication/iam_cantabria_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Short-term effects of heat and cold on respiratory drug use. A time-series epidemiological study in A Coruña, Spain</title>
-      <link>https://dominicroye.github.io/en/publication/pharma_coru%C3%B1a_2018/</link>
+      <link>/en/publication/pharma_coru%C3%B1a_2018/</link>
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/pharma_coru%C3%B1a_2018/</guid>
+      <guid>/en/publication/pharma_coru%C3%B1a_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spatial–temporal patterns of cloud-to-ground lightning over the northwest Iberian Peninsula during the period 2010–2015</title>
-      <link>https://dominicroye.github.io/en/publication/lightning_galicia_2018/</link>
+      <link>/en/publication/lightning_galicia_2018/</link>
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/lightning_galicia_2018/</guid>
+      <guid>/en/publication/lightning_galicia_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
-      <link>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_en/</link>
+      <link>/en/publication/appliedgeophysics_2017_en/</link>
       <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_en/</guid>
+      <guid>/en/publication/appliedgeophysics_2017_en/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
-      <link>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_es/</link>
+      <link>/en/publication/appliedgeophysics_2017_es/</link>
       <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_es/</guid>
+      <guid>/en/publication/appliedgeophysics_2017_es/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The effects of hot nights on mortality in Barcelona, Spain</title>
-      <link>https://dominicroye.github.io/en/publication/hotnights_bcn_2017/</link>
+      <link>/en/publication/hotnights_bcn_2017/</link>
       <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/hotnights_bcn_2017/</guid>
+      <guid>/en/publication/hotnights_bcn_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Concentration of Daily Precipitation in the Contiguous United States</title>
-      <link>https://dominicroye.github.io/en/publication/usa_ci_2017/</link>
+      <link>/en/publication/usa_ci_2017/</link>
       <pubDate>Thu, 01 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/usa_ci_2017/</guid>
+      <guid>/en/publication/usa_ci_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Co-creation and Participatory Design of Big Data Infrastructures on the Field of Human Health Related Climate Services</title>
-      <link>https://dominicroye.github.io/en/publication/chapter_springer_2017/</link>
+      <link>/en/publication/chapter_springer_2017/</link>
       <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/chapter_springer_2017/</guid>
+      <guid>/en/publication/chapter_springer_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Winter circulation weather types and hospital admissions for respiratory diseases in Galicia, Spain</title>
-      <link>https://dominicroye.github.io/en/publication/cwt_galicia_resp_2016/</link>
+      <link>/en/publication/cwt_galicia_resp_2016/</link>
       <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/cwt_galicia_resp_2016/</guid>
+      <guid>/en/publication/cwt_galicia_resp_2016/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Analysis of tropical nights on the atlantic coast of the Iberian Peninsula. A proposed methodology</title>
-      <link>https://dominicroye.github.io/en/publication/hotnights_age_2015/</link>
+      <link>/en/publication/hotnights_age_2015/</link>
       <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/hotnights_age_2015/</guid>
+      <guid>/en/publication/hotnights_age_2015/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The use of climate databases netCDF with array structure in the environment of R</title>
-      <link>https://dominicroye.github.io/en/publication/ncdf_2015/</link>
+      <link>/en/publication/ncdf_2015/</link>
       <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/ncdf_2015/</guid>
+      <guid>/en/publication/ncdf_2015/</guid>
       <description>&lt;p&gt;Used datasets are available for download &lt;a href=&#34;https://drive.google.com/open?id=1LYOm80dxQW_xMFUZ6kJ4qCKvwOXTWSIg&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.
 Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
 
