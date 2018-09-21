@@ -58,7 +58,7 @@ library(sf) #para importar un shapefile y trabajar con geom_sf&lt;/code&gt;&lt;/
 &lt;/div&gt;
 &lt;div id=&#34;descarga-de-datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/h2&gt;
-&lt;p&gt;Descargaremos la temperatura de aire del aire a la altura de 850haPa para el año 2016. Las variables y niveles de presión pueden ser consultados en los detalles de la función &lt;code&gt;?NCEP.gather&lt;/code&gt;. El argumento &lt;em&gt;reanalysis2&lt;/em&gt; nos permite descargar tanto la versión I como la versión II, siendo en ambas por defecto &lt;em&gt;FALSE&lt;/em&gt;, o sea, se accede al reanálisis I. En todas las consultas obtendremos datos horarios de cada 6 horas (00:00, 06:00, 12:00 y 18:00). Esto supone un total de 1464 valores para el año 2016.&lt;/p&gt;
+&lt;p&gt;Descargaremos la temperatura del aire a la altura de 850haPa para el año 2016. Las variables y niveles de presión pueden ser consultados en los detalles de la función &lt;code&gt;?NCEP.gather&lt;/code&gt;. El argumento &lt;em&gt;reanalysis2&lt;/em&gt; nos permite descargar tanto la versión I como la versión II, siendo por defecto &lt;em&gt;FALSE&lt;/em&gt;, o sea, se accede al reanálisis I. En todas las consultas obtendremos datos horarios de cada 6 horas (00:00, 06:00, 12:00 y 18:00). Esto supone un total de 1464 valores para el año 2016.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definimos los argumentos necesarios
 month_range &amp;lt;- c(1,12)     #período de meses
 year_range &amp;lt;- c(2016,2016) #período de años
@@ -103,7 +103,7 @@ group &amp;lt;- month(date_time)
 data_month &amp;lt;- aperm(
   apply(
     data, #nuestros datos
-    c(1,2), #aplicamos a cada serie temporal 1:fila, 2:columna
+    c(1,2), #aplicamos a cada serie temporal 1:fila, 2:columna la función mean( )
     by, #agrupar por 
     group, #meses como agrupación
     function(x)ifelse(all(is.na(x)),NA,mean(x))),
@@ -114,7 +114,7 @@ dim(data_month) #temperatura 850haP por mes enero a diciembre&lt;/code&gt;&lt;/p
 &lt;/div&gt;
 &lt;div id=&#34;visualizacion&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/h2&gt;
-&lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; de la librería &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales. En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; de la librería &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#primero creamos todas las combinaciones de lonlat
 lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
 
@@ -161,7 +161,7 @@ ggplot(df)+
 &lt;/div&gt;
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
-&lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje, en R debemos usar un interfaz entre ambos lo que nos permite la librería &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite la librería &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;instalacion&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
@@ -266,7 +266,7 @@ data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
 
 #cerramos la conexión
 nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Se pueden consultar en este breve manual para obtener más detalles sobre cómo trabajar con netCDF &lt;a href=&#34;https://dominicroye.github.io/en/publication/ncdf_2015/&#34;&gt;aqui&lt;/a&gt;. En esta próxima sección hacemos uso de la librería &lt;em&gt;sf&lt;/em&gt; la cuál está sustituyendo las conocidas &lt;em&gt;sp&lt;/em&gt; y &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF &lt;a href=&#34;https://dominicroye.github.io/en/publication/ncdf_2015/&#34;&gt;aqui&lt;/a&gt;. En esta próxima sección hacemos uso de la librería &lt;em&gt;sf&lt;/em&gt; la cuál está sustituyendo las más conocidas &lt;em&gt;sp&lt;/em&gt; y &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos todas las combinaciones
 lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
 

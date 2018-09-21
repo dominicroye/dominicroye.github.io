@@ -424,7 +424,7 @@ library(sf) #para importar un shapefile y trabajar con geom_sf</code></pre>
 </div>
 <div id="descarga-de-datos" class="section level2">
 <h2><span class="header-section-number">2.2</span> Descarga de datos</h2>
-<p>Descargaremos la temperatura de aire del aire a la altura de 850haPa para el año 2016. Las variables y niveles de presión pueden ser consultados en los detalles de la función <code>?NCEP.gather</code>. El argumento <em>reanalysis2</em> nos permite descargar tanto la versión I como la versión II, siendo en ambas por defecto <em>FALSE</em>, o sea, se accede al reanálisis I. En todas las consultas obtendremos datos horarios de cada 6 horas (00:00, 06:00, 12:00 y 18:00). Esto supone un total de 1464 valores para el año 2016.</p>
+<p>Descargaremos la temperatura del aire a la altura de 850haPa para el año 2016. Las variables y niveles de presión pueden ser consultados en los detalles de la función <code>?NCEP.gather</code>. El argumento <em>reanalysis2</em> nos permite descargar tanto la versión I como la versión II, siendo por defecto <em>FALSE</em>, o sea, se accede al reanálisis I. En todas las consultas obtendremos datos horarios de cada 6 horas (00:00, 06:00, 12:00 y 18:00). Esto supone un total de 1464 valores para el año 2016.</p>
 <pre class="r"><code>#definimos los argumentos necesarios
 month_range &lt;- c(1,12)     #período de meses
 year_range &lt;- c(2016,2016) #período de años
@@ -469,7 +469,7 @@ group &lt;- month(date_time)
 data_month &lt;- aperm(
   apply(
     data, #nuestros datos
-    c(1,2), #aplicamos a cada serie temporal 1:fila, 2:columna
+    c(1,2), #aplicamos a cada serie temporal 1:fila, 2:columna la función mean( )
     by, #agrupar por 
     group, #meses como agrupación
     function(x)ifelse(all(is.na(x)),NA,mean(x))),
@@ -480,7 +480,7 @@ dim(data_month) #temperatura 850haP por mes enero a diciembre</code></pre>
 </div>
 <div id="visualizacion" class="section level2">
 <h2><span class="header-section-number">2.4</span> Visualización</h2>
-<p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> de la librería <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales. En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
+<p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> de la librería <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
 <pre class="r"><code>#primero creamos todas las combinaciones de lonlat
 lonlat &lt;- expand.grid(lon=lon,lat=lat)
 
@@ -527,7 +527,7 @@ ggplot(df)+
 </div>
 <div id="era-interim" class="section level1">
 <h1><span class="header-section-number">3</span> ERA-Interim</h1>
-<p>El <em>ECMWF</em> ofrece acceso a sus bases de datos públicos a partir de una <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. Es necesario estar registrado en la web del <em>ECMWF</em>. Se puede darse de alta <a href="https://apps.ecmwf.int/registration/">aquí</a>. Al tratarse de otro lenguaje, en R debemos usar un interfaz entre ambos lo que nos permite la librería <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
+<p>El <em>ECMWF</em> ofrece acceso a sus bases de datos públicos a partir de una <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. Es necesario estar registrado en la web del <em>ECMWF</em>. Se puede darse de alta <a href="https://apps.ecmwf.int/registration/">aquí</a>. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite la librería <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
 <div id="instalacion" class="section level2">
 <h2><span class="header-section-number">3.1</span> Instalación</h2>
 <pre class="r"><code>if(!require(&quot;reticulate&quot;)) install.packages(&quot;reticulate&quot;)
@@ -632,7 +632,7 @@ data &lt;- ncvar_get(nc,&quot;t2m&quot;)
 
 #cerramos la conexión
 nc_close(nc)</code></pre>
-<p>Se pueden consultar en este breve manual para obtener más detalles sobre cómo trabajar con netCDF <a href="https://dominicroye.github.io/en/publication/ncdf_2015/">aqui</a>. En esta próxima sección hacemos uso de la librería <em>sf</em> la cuál está sustituyendo las conocidas <em>sp</em> y <em>rgdal</em>.</p>
+<p>Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF <a href="https://dominicroye.github.io/en/publication/ncdf_2015/">aqui</a>. En esta próxima sección hacemos uso de la librería <em>sf</em> la cuál está sustituyendo las más conocidas <em>sp</em> y <em>rgdal</em>.</p>
 <pre class="r"><code>#creamos todas las combinaciones
 lonlat &lt;- expand.grid(lon=lon,lat=lat)
 

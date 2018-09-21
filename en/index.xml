@@ -32,24 +32,24 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;p&gt;&lt;em&gt;A friend advised me to introduce R levels as categories. An idea that I now add to each blog post. There are three levels: elementary, intermediate, and advanced. I hope it will help to the reader and the R user.&lt;/em&gt;&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;A friend advised me to introduce R levels as categories. An idea that I now add to each blog post. There are three levels: elementary, intermediate, and advanced. I hope it will help the reader and the R user.&lt;/em&gt;&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/h1&gt;
-&lt;p&gt;In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans. The two most used reanalyses are &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) from the &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, an improved version of &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), and &lt;em&gt;ERA-Interim&lt;/em&gt; from the &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;. Since &lt;em&gt;NCEP-DO&lt;/em&gt; is the first generation, it is recommended to use third-generation climate reanalysis, especially &lt;em&gt;ERA-Interim&lt;/em&gt;. An overview of the current atmospheric reanalysis can be found &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;here&lt;/a&gt;. First, let’s see how to access the &lt;em&gt;NCEP&lt;/em&gt; data through an R library on &lt;em&gt;CRAN&lt;/em&gt; that facilitates the download and handling of the data. Then we will do the same with the &lt;em&gt;ERA-Interim&lt;/em&gt;, however, to access this last reanalysis dataset it is necessary to use &lt;em&gt;python&lt;/em&gt; and the corresponding API of the &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are a combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans. The two most used reanalyses are &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) from the &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, an improved version of &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), and &lt;em&gt;ERA-Interim&lt;/em&gt; from the &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;. Since &lt;em&gt;NCEP-DO&lt;/em&gt; is the first generation, it is recommended to use third-generation climate reanalysis, especially &lt;em&gt;ERA-Interim&lt;/em&gt;. An overview of the current atmospheric reanalysis can be found &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;here&lt;/a&gt;. First, let’s see how to access the &lt;em&gt;NCEP&lt;/em&gt; data through an R library on &lt;em&gt;CRAN&lt;/em&gt; that facilitates the download and handling of the data. Then we will do the same with the &lt;em&gt;ERA-Interim&lt;/em&gt;, however, to access this last reanalysis dataset it is necessary to use &lt;em&gt;python&lt;/em&gt; and the corresponding API of the &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
-&lt;p&gt;To access the &lt;em&gt;NCEP&lt;/em&gt; reanalysis it is required to install the corresponding package &lt;em&gt;RNCEP&lt;/em&gt;. The main function is &lt;code&gt;NCEP.gather ()&lt;/code&gt;. The resolution of the &lt;em&gt;NCEP&lt;/em&gt; reanalysis is 2.5º X 2.5º.&lt;/p&gt;
+&lt;p&gt;To access the &lt;em&gt;NCEP&lt;/em&gt; reanalysis it is required to install the corresponding package &lt;em&gt;RNCEP&lt;/em&gt;. The main function is &lt;code&gt;NCEP.gather( )&lt;/code&gt;. The resolution of the &lt;em&gt;NCEP&lt;/em&gt; reanalysis is 2.5º X 2.5º.&lt;/p&gt;
 &lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the RNCEP, lubridate and tidyverse packages
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the RNCEP, lubridate and tidyverse packages
 if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
 
-#we load the packages
+#load the packages
 library(RNCEP)
 library(lubridate) #date and time manipulation
 library(tidyverse) #data manipulation and visualization
@@ -58,8 +58,8 @@ library(sf) #to import a spatial object and to work with geom_sf in ggplot2&lt;/
 &lt;/div&gt;
 &lt;div id=&#34;data-download&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/h2&gt;
-&lt;p&gt;We will download the air temperature of the 850haPa pressure level for the year 2016. The variables and pressure levels can be found in the details of the function &lt;code&gt;?NCEP.gather&lt;/code&gt;. The &lt;em&gt;reanalysis2&lt;/em&gt; argument allows us to download both version I and version II, being by default &lt;em&gt;FALSE&lt;/em&gt;, that is, we access reanalysis I. In all the requests we will obtain hourly data of every 6 hours (00:00 , 06:00, 12:00 and 18:00). This supposes a total of 1464 values for the year 2016.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we define the necessary arguments
+&lt;p&gt;We will download the air temperature of the 850haPa pressure level for the year 2016. The variables and pressure levels can be found in the details of the function &lt;code&gt;?NCEP.gather&lt;/code&gt;. The &lt;em&gt;reanalysis2&lt;/em&gt; argument allows us to download both version I and version II, being by default &lt;em&gt;FALSE&lt;/em&gt;, that is, we access reanalysis I. In all the requests we will obtain data of every 6 hours (00:00, 06:00, 12:00 and 18:00). This supposes a total of 1464 values for the year 2016.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#define the necessary arguments
 month_range &amp;lt;- c(1,12)     #period of months
 year_range &amp;lt;- c(2016,2016) #period of years
 
@@ -95,15 +95,15 @@ head(lon);head(lat)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;monthly-average&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/h2&gt;
-&lt;p&gt;We see that the downloaded data is an &lt;em&gt;array&lt;/em&gt; of three dimensions with [lat, lon, time]. We extracted latitude, longitude and time. The temperature is given in Kelvin. The objective in the next sectin will be to show two maps comparing January and July.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create our grouping variable
+&lt;p&gt;We see that the downloaded data is an &lt;em&gt;array&lt;/em&gt; of three dimensions with [lat, lon, time]. As above mentioned, we extracted latitude, longitude and time. The temperature is given in Kelvin. The objective in the next section will be to show two maps comparing January and July.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create our grouping variable
 group &amp;lt;- month(date_time) 
 
-#we estimate the average temperature by month 
+#estimate the average temperature by month 
 data_month &amp;lt;- aperm(
   apply(
     data, #our data
-    c(1,2), #we apply to each time series 1:row, 2:column
+    c(1,2), #apply to each time series 1:row, 2:column a the mean( ) function
     by, #group by
     group, #months
     function(x)ifelse(all(is.na(x)),NA,mean(x))),
@@ -125,16 +125,16 @@ lonlat &amp;lt;- apply(lonlat,2,as.numeric)
 #row=lon; column=lat
 data_month &amp;lt;- aperm(data_month,c(2,1,3))
 
-#we subtract 273.15K to convert K to ºC.
+#subtract 273.15K to convert K to ºC.
 df &amp;lt;- data.frame(lonlat,
                  Ta01=as.vector(data_month[,,1])-273.15,
                  Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Before we can make the map with &lt;em&gt;ggplot2&lt;/em&gt;, we have to adapt the table. The shapefile with the countries limits can be downloaded &lt;a href=&#34;/files/CNTR_RG_03M_2014.zip&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we convert the wide table into a long one
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the wide table into a long one
 df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
              mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
 
-#we import the countries limits
+#import the countries limits
 limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR\content\post\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
 ## Simple feature collection with 256 features and 3 fields
@@ -161,7 +161,7 @@ ggplot(df)+
 &lt;/div&gt;
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
-&lt;p&gt;The &lt;em&gt;ECMWF&lt;/em&gt; offers access to its public databases from a &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. It is required to be registered on the &lt;em&gt;ECMWF&lt;/em&gt; website. You can register &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;here&lt;/a&gt;. When dealing with another language, in R we have to use an interface between both which allows the library &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The &lt;em&gt;ECMWF&lt;/em&gt; offers access to its public databases from a &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. It is required to be registered on the &lt;em&gt;ECMWF&lt;/em&gt; website. You can register &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;here&lt;/a&gt;. When dealing with another programming language, in R we have to use an interface between both which allows the library &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;installation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
@@ -171,7 +171,7 @@ if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quo
 library(reticulate)
 library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install( )&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the python ECMWF API
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the python ECMWF API
 py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
 ## Installation complete.&lt;/code&gt;&lt;/pre&gt;
@@ -192,11 +192,11 @@ py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;li&gt;Rename this file to “.ecmwfapirc.”&lt;/li&gt;
 &lt;/ol&gt;
 &lt;p&gt;The last point disappears automatically. Then we save this file in “C:/USERNAME/.ecmwfapirc” or “C:/USERNAME/Documents/.ecmwfapirc”.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we import the python library ecmwfapi
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the python library ecmwfapi
 ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
 
 #in this step there must exist the file .ecmwfapirc
-server = ecmwf$ECMWFDataServer() #we start the connection&lt;/code&gt;&lt;/pre&gt;
+server = ecmwf$ECMWFDataServer() #start the connection&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;One we get here, how do we create a query? The easiest thing is to go to the website of &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;, where we choose the database, in this case &lt;em&gt;ERA-Interim&lt;/em&gt; surface, to create a script with all the necessary data. More details about the syntax can be found &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;here&lt;/a&gt;. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
 &lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
@@ -231,21 +231,21 @@ server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;processing-ncdf&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/h2&gt;
-&lt;p&gt;In the next section, the objective will be the extraction of a time serie from a closest coordinate to a given one. We will use the coordinates of Madrid (40.418889, -3.691944).&lt;/p&gt;
+&lt;p&gt;In the next section, the objective will be the extraction of a time serie from the closest coordinate to a given one. We will use the coordinates of Madrid (40.418889, -3.691944).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load packages
 library(sf)
 library(ncdf4)
 library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we open the connection with the ncdf file
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#open the connection with the ncdf file
 nc &amp;lt;- nc_open(&amp;quot;ta2017.nc&amp;quot;)
 
-#we extract lon and lat
+#extract lon and lat
 lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
 lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
 dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we extract the time
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extract the time
 t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
 
 #time unit: hours since 1900-01-01
@@ -258,17 +258,17 @@ ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 ## 
 ## $calendar
 ## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we convert the hours into date + hour
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the hours into date + hour
 #as_datetime() function of the lubridate package needs seconds
 timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
 
-#we import the data
+#import the data
 data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
 
-#we close the conection with the ncdf file
+#close the conection with the ncdf file
 nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In this next section we use the &lt;em&gt;sf&lt;/em&gt; package, which is replacing the well known &lt;em&gt;sp&lt;/em&gt; and &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create all the combinations of lon-lat
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create all the combinations of lon-lat
 lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
 
 #we must convert the coordinates in a spatial object sf
@@ -286,10 +286,10 @@ plot(st_geometry(coord))
 plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In the next steps we calculate the distance of our reference point to all the grid points. Then we look for the one with less distance.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we add the distance to the points
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#add the distance to the points
 coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
 
-#we create a distance matrix with the same dimensions as our data
+#create a distance matrix with the same dimensions as our data
 dist_mat &amp;lt;- matrix(coord$dist,dim(data)[-3])
 
 #the arrayInd function is useful to obtain the row and column indexes
