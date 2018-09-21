@@ -114,7 +114,7 @@ dim(data_month) #850haPa temperature per month January to December&lt;/code&gt;&
 &lt;/div&gt;
 &lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/h2&gt;
-&lt;p&gt;Once we got here, we can visualize the temperature of January and July with &lt;em&gt;ggplot2&lt;/em&gt;. In this example, I use &lt;code&gt;geom_sf ()&lt;/code&gt; from the library &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, which makes the work easier to visualize spatial objects in &lt;em&gt;ggplot&lt;/em&gt; (in the near future I will make a post about &lt;em&gt;sf&lt;/em&gt; and &lt;em&gt;ggplot&lt;/em&gt;). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the &lt;code&gt;expand.grid ()&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;Once we got here, we can visualize the temperature of January and July with &lt;em&gt;ggplot2&lt;/em&gt;. In this example, I use &lt;code&gt;geom_sf( )&lt;/code&gt; from the library &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, which makes the work easier to visualize spatial objects in &lt;em&gt;ggplot&lt;/em&gt; (in the near future I will make a post about &lt;em&gt;sf&lt;/em&gt; and &lt;em&gt;ggplot&lt;/em&gt;). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the &lt;code&gt;expand.grid( )&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#first we create all the combinations of lon-lat
 lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
 
@@ -170,7 +170,7 @@ if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quo
 #load packages
 library(reticulate)
 library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install ()&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
+&lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install( )&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the python ECMWF API
 py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 

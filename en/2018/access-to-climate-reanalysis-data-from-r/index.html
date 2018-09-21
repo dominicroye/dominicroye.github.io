@@ -480,7 +480,7 @@ dim(data_month) #850haPa temperature per month January to December</code></pre>
 </div>
 <div id="visualization" class="section level2">
 <h2><span class="header-section-number">2.4</span> Visualization</h2>
-<p>Once we got here, we can visualize the temperature of January and July with <em>ggplot2</em>. In this example, I use <code>geom_sf ()</code> from the library <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, which makes the work easier to visualize spatial objects in <em>ggplot</em> (in the near future I will make a post about <em>sf</em> and <em>ggplot</em>). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the <code>expand.grid ()</code> function.</p>
+<p>Once we got here, we can visualize the temperature of January and July with <em>ggplot2</em>. In this example, I use <code>geom_sf( )</code> from the library <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, which makes the work easier to visualize spatial objects in <em>ggplot</em> (in the near future I will make a post about <em>sf</em> and <em>ggplot</em>). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the <code>expand.grid( )</code> function.</p>
 <pre class="r"><code>#first we create all the combinations of lon-lat
 lonlat &lt;- expand.grid(lon=lon,lat=lat)
 
@@ -536,7 +536,7 @@ if(!require(&quot;ncdf4&quot;)) install.packages(&quot;ncdf4&quot;) #to manage n
 #load packages
 library(reticulate)
 library(ncdf4)</code></pre>
-<p>Once we have installed <em>anaconda</em> and the package <em>reticulate</em>, we can install the library <em>python ecmwfapi</em>. We can carry out the installation, or through the Windows CMD using the command <em>conda install -c conda-forge ecmwf-api-client</em>, or with the R function <code>py_install ()</code> from the <em>reticulate</em> package. The same function allows us to install any <em>python</em> library from R.</p>
+<p>Once we have installed <em>anaconda</em> and the package <em>reticulate</em>, we can install the library <em>python ecmwfapi</em>. We can carry out the installation, or through the Windows CMD using the command <em>conda install -c conda-forge ecmwf-api-client</em>, or with the R function <code>py_install( )</code> from the <em>reticulate</em> package. The same function allows us to install any <em>python</em> library from R.</p>
 <pre class="r"><code>#we install the python ECMWF API
 py_install(&quot;ecmwf-api-client&quot;)</code></pre>
 <pre><code>## 
