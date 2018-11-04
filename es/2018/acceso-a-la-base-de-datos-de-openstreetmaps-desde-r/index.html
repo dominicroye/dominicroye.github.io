@@ -426,7 +426,7 @@ head(available_tags(&quot;shop&quot;))</code></pre>
 <div id="la-primera-consulta-donde-podemos-encontrar-cines-en-madrid" class="section level3">
 <h3>La primera consulta: ¿Dónde podemos encontrar cines en Madrid?</h3>
 <p>Para construir la consulta se hace uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
-<p>En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función <code>getbb( )</code> crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es <code>opq( )</code> que construye la consulta final. Añadimos con la función <code>add_osm_feature( )</code> nuestros criterios de filtro. En esta primara consulta buscaremos cines en Madrid. Por eso, usamos como clave <em>amenity</em> y como categoría <em>cinema</em>. Existen varios formatos para obtener el resultado de la consulta. La función <code>osmdata_*( )</code> envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato <em>simple feature</em>, <em>spatial</em> o <em>XML</em>.</p>
+<p>En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función <code>getbb( )</code> crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es <code>opq( )</code> que construye la consulta final. Añadimos con la función <code>add_osm_feature( )</code> nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave <em>amenity</em> y como categoría <em>cinema</em>. Existen varios formatos para obtener el resultado de la consulta. La función <code>osmdata_*( )</code> envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato <em>simple feature</em>, <em>spatial</em> o <em>XML</em>.</p>
 <pre class="r"><code>#construcción de la consulta
 q &lt;- getbb(&quot;Madrid&quot;)%&gt;%
       opq()%&gt;%
@@ -444,7 +444,7 @@ cinema</code></pre>
 <pre><code>## Object of class &#39;osmdata&#39; with:
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
-##             $timestamp : [ do\. 1 nov\. 2018 12:40:43 ]
+##             $timestamp : [ do\. 1 nov\. 2018 14:19:35 ]
 ##            $osm_points : &#39;sf&#39; Simple Features Collection with 222 points
 ##             $osm_lines : &#39;sf&#39; Simple Features Collection with 0 linestrings
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 14 polygons

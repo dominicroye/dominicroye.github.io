@@ -56,7 +56,7 @@ head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;la-primera-consulta-donde-podemos-encontrar-cines-en-madrid&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;La primera consulta: ¿Dónde podemos encontrar cines en Madrid?&lt;/h3&gt;
 &lt;p&gt;Para construir la consulta se hace uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
-&lt;p&gt;En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función &lt;code&gt;getbb( )&lt;/code&gt; crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es &lt;code&gt;opq( )&lt;/code&gt; que construye la consulta final. Añadimos con la función &lt;code&gt;add_osm_feature( )&lt;/code&gt; nuestros criterios de filtro. En esta primara consulta buscaremos cines en Madrid. Por eso, usamos como clave &lt;em&gt;amenity&lt;/em&gt; y como categoría &lt;em&gt;cinema&lt;/em&gt;. Existen varios formatos para obtener el resultado de la consulta. La función &lt;code&gt;osmdata_*( )&lt;/code&gt; envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; o &lt;em&gt;XML&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función &lt;code&gt;getbb( )&lt;/code&gt; crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es &lt;code&gt;opq( )&lt;/code&gt; que construye la consulta final. Añadimos con la función &lt;code&gt;add_osm_feature( )&lt;/code&gt; nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave &lt;em&gt;amenity&lt;/em&gt; y como categoría &lt;em&gt;cinema&lt;/em&gt;. Existen varios formatos para obtener el resultado de la consulta. La función &lt;code&gt;osmdata_*( )&lt;/code&gt; envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; o &lt;em&gt;XML&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#construcción de la consulta
 q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;)%&amp;gt;%
       opq()%&amp;gt;%
@@ -74,7 +74,7 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
-##             $timestamp : [ do\. 1 nov\. 2018 12:40:43 ]
+##             $timestamp : [ do\. 1 nov\. 2018 14:19:35 ]
 ##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 222 points
 ##             $osm_lines : &amp;#39;sf&amp;#39; Simple Features Collection with 0 linestrings
 ##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 14 polygons
