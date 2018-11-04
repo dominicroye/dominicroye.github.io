@@ -2,7 +2,7 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>Dominic Royé on Dominic Royé</title>
-    <link>https://dominicroye.github.io/en/</link>
+    <link>/en/</link>
     <description>Recent content in Dominic Royé on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018 Dominic Royé. All rights reserved.</copyright>
@@ -10,11 +10,143 @@
     <atom:link href="/en/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Accessing OpenStreetMap data with R</title>
+      <link>/en/2018/accessing-openstreetmap-data-with-r/</link>
+      <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2018/accessing-openstreetmap-data-with-r/</guid>
+      <description>&lt;div id=&#34;the-database-of-open-street-maps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The database of Open Street Maps&lt;/h2&gt;
+&lt;p&gt;Recently I created a map of the distribution of gas stations and electric charging stations in Europe.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;How can you obtain this data?&lt;/p&gt;
+&lt;p&gt;Well, in this case I used points of interest (POIs) from the database of &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviously OSM not only contains streets and highways, but also information that can be useful, when we use a map such as locations of hospitals or gas stations. To avoid downloading the entire OSM and extracting the required information, you can use an &lt;em&gt;overpass API&lt;/em&gt;, which allows us to query the OSM database with our own criteria.&lt;/p&gt;
+&lt;p&gt;An easy way to access an &lt;em&gt;overpass API&lt;/em&gt; is through &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous page can be found &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;here&lt;/a&gt;. However, we have at our disposal a package &lt;em&gt;osmdata&lt;/em&gt; that allows us to create and make queries directly from the R environment. Nevertheless, the use of the &lt;em&gt;overpass-turbo.eu&lt;/em&gt; can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;accessing-the-overpass-api-from-r&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Accessing the overpass API from R&lt;/h2&gt;
+&lt;p&gt;The first step is to install several packages, in case they are not installed. In almost all my scripts I use &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;em&gt;tidyverse&lt;/em&gt;&lt;/a&gt; which is a fundamental collection of different packages, including &lt;em&gt;dplyr&lt;/em&gt; (data manipulation), &lt;em&gt;ggplot2&lt;/em&gt; (visualization), etc. The &lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt; package is the new standard for working with spatial data and is compatible with &lt;em&gt;ggplot2&lt;/em&gt; and &lt;em&gt;dplyr&lt;/em&gt;. Finally, &lt;a href=&#34;http://stat405.had.co.nz/ggmap.pdf&#34;&gt;&lt;em&gt;ggmap&lt;/em&gt;&lt;/a&gt; makes it easier for us to create maps.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the osmdata, sf, tidyverse and ggmap package
+if(!require(&amp;quot;osmdata&amp;quot;)) install.packages(&amp;quot;osmdata&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggmap&amp;quot;)) install.packages(&amp;quot;ggmap&amp;quot;)
+
+#load packages
+library(tidyverse)
+library(osmdata)
+library(sf)
+library(ggmap)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;build-a-query&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Build a query&lt;/h2&gt;
+&lt;p&gt;Before creating a query, we need to know what we can filter. The &lt;code&gt;available_features( )&lt;/code&gt; function returns a list of available OSM features that have different tags. More details are available in the OSM &lt;em&gt;wiki&lt;/em&gt; &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/Map_Features&#34;&gt;here&lt;/a&gt;. For example, the feature &lt;em&gt;shop&lt;/em&gt; contains several tags among others &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#the first five features
+head(available_features())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#amenities
+head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal boarding&amp;quot; &amp;quot;animal shelter&amp;quot;  &amp;quot;archive&amp;quot;         &amp;quot;arts centre&amp;quot;    
+## [5] &amp;quot;atm&amp;quot;             &amp;quot;baby hatch&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#shops
+head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;the-first-query-where-are-cinemas-in-madrid&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The first query: Where are cinemas in Madrid?&lt;/h3&gt;
+&lt;p&gt;To build the query, we use the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt;, which helps to chain several functions without assigning the result to a new object. Its use is very extended especially with the &lt;em&gt;tidyverse&lt;/em&gt; package collection. If you want to know more about its use, you can find &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; a tutorial.&lt;/p&gt;
+&lt;p&gt;In the first part of the query we need to indicate the place where we want to extract the information. The &lt;code&gt;getbb( )&lt;/code&gt; function creates a boundering box for a given place, looking for the name. The main function is &lt;code&gt;opq( )&lt;/code&gt; which build the final query. We add our filter criteria with the &lt;code&gt;add_osm_feature( )&lt;/code&gt; function. In this first query we will look for cinemas in Madrid. That’s why we use as key &lt;em&gt;amenity&lt;/em&gt; and &lt;em&gt;cinema&lt;/em&gt; as tag. There are several formats to obtain the resulting spatial data of the query. The &lt;code&gt;osmdata_*( )&lt;/code&gt; function sends the query to the server and, depending on the suffix * sf/sp/xml, returns a &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; or &lt;em&gt;XML&lt;/em&gt; format.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#building the query
+q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;)%&amp;gt;%
+      opq()%&amp;gt;%
+       add_osm_feature(&amp;quot;amenity&amp;quot;, &amp;quot;cinema&amp;quot;)
+
+str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
+##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
+##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
+##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
+cinema&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##         $overpass_call : The call submitted to the overpass API
+##             $timestamp : [ do\. 1 nov\. 2018 13:35:15 ]
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 222 points
+##             $osm_lines : &amp;#39;sf&amp;#39; Simple Features Collection with 0 linestrings
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 14 polygons
+##        $osm_multilines : &amp;#39;sf&amp;#39; Simple Features Collection with 0 multilinestrings
+##     $osm_multipolygons : &amp;#39;sf&amp;#39; Simple Features Collection with 0 multipolygons&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see that the result is a list of different spatial objects. In our case, we are only interested in &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;How can we visulise these points?&lt;/p&gt;
+&lt;p&gt;The advantage of &lt;em&gt;sf&lt;/em&gt; objects is that for &lt;em&gt;ggplot2&lt;/em&gt; already exists a geometry function &lt;code&gt;geom_sf( )&lt;/code&gt;. Furthermore, we can include a background map using &lt;em&gt;ggmap&lt;/em&gt;. The &lt;code&gt;get_map( )&lt;/code&gt; function downloads the map for a given place. Alternatively, it can be an address, latitude/longitude or a bounding box. The &lt;em&gt;maptype&lt;/em&gt; argument allows us to indicate the style or type of map. You can find more details in the help of the &lt;code&gt;?get_map&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;When we build a graph with &lt;em&gt;ggplot&lt;/em&gt; we usually start with &lt;code&gt;ggplot( )&lt;/code&gt;. In this case, we start with &lt;code&gt;ggmap( )&lt;/code&gt; that includes the object with our background map. Then we add with &lt;code&gt;geom_sf( )&lt;/code&gt; the points of the cinemas in Madrid. It is important to indicate with the argument &lt;em&gt;inherit.aes = FALSE&lt;/em&gt; that it has to use the &lt;em&gt;aesthetic mappings&lt;/em&gt; of the spatial object &lt;em&gt;osm_points&lt;/em&gt;. In addition, we change the color, fill, transparency (&lt;em&gt;alpha&lt;/em&gt;), type and size of the circles.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#our background map
+mad_map &amp;lt;- get_map(getbb(&amp;quot;Madrid&amp;quot;),maptype = &amp;quot;toner-background&amp;quot;)
+
+#final map
+ggmap(mad_map)+
+  geom_sf(data=cinema$osm_points,
+          inherit.aes =FALSE,
+          colour=&amp;quot;#238443&amp;quot;,
+          fill=&amp;quot;#004529&amp;quot;,
+          alpha=.5,
+          size=4,
+          shape=21)+
+  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-11-03-accessing-osm-data-with-r.en_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;where-can-we-find-mercadona-supermarkets&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Where can we find Mercadona supermarkets?&lt;/h3&gt;
+&lt;p&gt;Instead of obtaining a bounding box with the function &lt;em&gt;getbb( )&lt;/em&gt; we can build our own box. To do this, we create a matrix of two columns, the order has to be East/West/South/North. In the query we use two features: &lt;em&gt;name&lt;/em&gt; and &lt;em&gt;shop&lt;/em&gt; to filter supermarkets that are of this particular brand. Depending on the area or volume of the query, it is necessary to extend the waiting time. By default, the limit is set at 25 seconds (&lt;em&gt;timeout&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;The map, we create in this case, consists only of the supermarket points. Therefore, we use the usual grammar by adding the geometry &lt;code&gt;geom_sf( )&lt;/code&gt;. The &lt;code&gt;theme_void( )&lt;/code&gt; function removes everything except for the points. By default, the object &lt;em&gt;sf&lt;/em&gt; in &lt;em&gt;ggplot&lt;/em&gt; creates reticles, that can be removed using the &lt;code&gt;coord_sf( )&lt;/code&gt; function with the argument &lt;em&gt;datum = NA&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#bounding box for the Iberian Peninsula
+m &amp;lt;- matrix(c(-10,5,30,46),ncol=2,byrow=TRUE)
+row.names(m) &amp;lt;- c(&amp;quot;x&amp;quot;,&amp;quot;y&amp;quot;)
+names(m) &amp;lt;- c(&amp;quot;min&amp;quot;,&amp;quot;max&amp;quot;)
+
+#building the query
+q &amp;lt;- m %&amp;gt;% 
+      opq (timeout=25*100) %&amp;gt;%
+         add_osm_feature(&amp;quot;name&amp;quot;,&amp;quot;Mercadona&amp;quot;)%&amp;gt;%
+         add_osm_feature(&amp;quot;shop&amp;quot;,&amp;quot;supermarket&amp;quot;)
+
+#query
+mercadona &amp;lt;- osmdata_sf(q)
+
+#final map
+ggplot(mercadona$osm_points)+
+  geom_sf(colour=&amp;quot;#08519c&amp;quot;,
+          fill=&amp;quot;#08306b&amp;quot;,
+          alpha=.5,
+          size=1,
+          shape=21)+
+  coord_sf(datum=NA)+
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-11-03-accessing-osm-data-with-r.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Spatio-temporal variations of cloud fraction based on circulation types in the Iberian Peninsula</title>
+      <link>/en/publication/cloudiness_ip_2018/</link>
+      <pubDate>Thu, 01 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>/en/publication/cloudiness_ip_2018/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Access to climate reanalysis data from R</title>
-      <link>https://dominicroye.github.io/en/2018/access-to-climate-reanalysis-data-from-r/</link>
+      <link>/en/2018/access-to-climate-reanalysis-data-from-r/</link>
       <pubDate>Sat, 15 Sep 2018 10:59:44 +0100</pubDate>
       
-      <guid>https://dominicroye.github.io/en/2018/access-to-climate-reanalysis-data-from-r/</guid>
+      <guid>/en/2018/access-to-climate-reanalysis-data-from-r/</guid>
       <description>&lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/a&gt;&lt;/li&gt;
@@ -129,7 +261,7 @@ data_month &amp;lt;- aperm(data_month,c(2,1,3))
 df &amp;lt;- data.frame(lonlat,
                  Ta01=as.vector(data_month[,,1])-273.15,
                  Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Before we can make the map with &lt;em&gt;ggplot2&lt;/em&gt;, we have to adapt the table. The shapefile with the countries limits can be downloaded &lt;a href=&#34;https://dominicroye.github.io/files/CNTR_RG_03M_2014.zip&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Before we can make the map with &lt;em&gt;ggplot2&lt;/em&gt;, we have to adapt the table. The shapefile with the countries limits can be downloaded &lt;a href=&#34;/files/CNTR_RG_03M_2014.zip&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the wide table into a long one
 df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
              mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
@@ -156,7 +288,7 @@ ggplot(df)+
           labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
            facet_grid(month~.)+ #plot panels by month
              theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
@@ -199,11 +331,11 @@ ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
 server = ecmwf$ECMWFDataServer() #start the connection&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;One we get here, how do we create a query? The easiest thing is to go to the website of &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;, where we choose the database, in this case &lt;em&gt;ERA-Interim&lt;/em&gt; surface, to create a script with all the necessary data. More details about the syntax can be found &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;here&lt;/a&gt;. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://dominicroye.github.io/img/erainterim1.png&#34; /&gt;
+&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;https://dominicroye.github.io/img/erainterim2.png&#34; /&gt;
+&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;
 
 &lt;/div&gt;
 &lt;p&gt;With the syntax of the script from the &lt;em&gt;MARS Request&lt;/em&gt;, we can create the query in R.&lt;/p&gt;
@@ -284,7 +416,7 @@ psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
 #plot all points
 plot(st_geometry(coord))
 plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In the next steps we calculate the distance of our reference point to all the grid points. Then we look for the one with less distance.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#add the distance to the points
 coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
@@ -306,7 +438,7 @@ df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp
     labs(y=&amp;quot;Temperature (ºC)&amp;quot;,
              x=&amp;quot;&amp;quot;)+
     theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-access-to-climate-reanalysis-data-from-r.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -314,10 +446,10 @@ df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp
     
     <item>
       <title>the pie chart</title>
-      <link>https://dominicroye.github.io/en/2018/the-pie-chart/</link>
+      <link>/en/2018/the-pie-chart/</link>
       <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
       
-      <guid>https://dominicroye.github.io/en/2018/the-pie-chart/</guid>
+      <guid>/en/2018/the-pie-chart/</guid>
       <description>&lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
@@ -325,7 +457,7 @@ df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp
 &lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
 &lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;Simkin and Hastie (1987)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
 &lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;alternatives-to-the-pie-chart&#34; class=&#34;section level2&#34;&gt;
@@ -387,7 +519,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -395,7 +527,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#custom themes definitions
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -422,7 +554,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we expand our data with numbers from Italy
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -440,7 +572,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;waffle-plot&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Waffle plot&lt;/h3&gt;
@@ -455,7 +587,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #data
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colors
         rows=5) #row number &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#data
 medida &amp;lt;- c(41,59) #data from the OECD 2015
@@ -465,7 +597,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Treemap&lt;/h3&gt;
@@ -480,7 +612,7 @@ type=&amp;quot;index&amp;quot;,        #style more in ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-the-pie-chart.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;references&#34; class=&#34;section level3 unnumbered&#34;&gt;
@@ -500,109 +632,100 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     <item>
       <title>Spatial Analysis of Daily Precipitation Concentration in Puerto Rico</title>
-      <link>https://dominicroye.github.io/en/publication/ci_pr_2018/</link>
+      <link>/en/publication/ci_pr_2018/</link>
       <pubDate>Sun, 01 Jul 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/ci_pr_2018/</guid>
+      <guid>/en/publication/ci_pr_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Role of Apparent Temperature and Air Pollutants in Hospital Admissions for Acute Myocardial Infarction in the North of Spain</title>
-      <link>https://dominicroye.github.io/en/publication/iam_cantabria_2018/</link>
+      <link>/en/publication/iam_cantabria_2018/</link>
       <pubDate>Tue, 01 May 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/iam_cantabria_2018/</guid>
+      <guid>/en/publication/iam_cantabria_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Short-term effects of heat and cold on respiratory drug use. A time-series epidemiological study in A Coruña, Spain</title>
-      <link>https://dominicroye.github.io/en/publication/pharma_coru%C3%B1a_2018/</link>
+      <link>/en/publication/pharma_coru%C3%B1a_2018/</link>
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/pharma_coru%C3%B1a_2018/</guid>
+      <guid>/en/publication/pharma_coru%C3%B1a_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Spatial–temporal patterns of cloud-to-ground lightning over the northwest Iberian Peninsula during the period 2010–2015</title>
-      <link>https://dominicroye.github.io/en/publication/lightning_galicia_2018/</link>
+      <link>/en/publication/lightning_galicia_2018/</link>
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/lightning_galicia_2018/</guid>
+      <guid>/en/publication/lightning_galicia_2018/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
-      <link>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_en/</link>
+      <link>/en/publication/appliedgeophysics_2017/</link>
       <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_en/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Observed Changes in Daily Precipitation Extremes at Annual Timescale Over the Eastern Mediterranean During 1961–2012</title>
-      <link>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_es/</link>
-      <pubDate>Wed, 01 Nov 2017 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/en/publication/appliedgeophysics_2017_es/</guid>
+      <guid>/en/publication/appliedgeophysics_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The effects of hot nights on mortality in Barcelona, Spain</title>
-      <link>https://dominicroye.github.io/en/publication/hotnights_bcn_2017/</link>
+      <link>/en/publication/hotnights_bcn_2017/</link>
       <pubDate>Tue, 01 Aug 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/hotnights_bcn_2017/</guid>
+      <guid>/en/publication/hotnights_bcn_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Concentration of Daily Precipitation in the Contiguous United States</title>
-      <link>https://dominicroye.github.io/en/publication/usa_ci_2017/</link>
+      <link>/en/publication/usa_ci_2017/</link>
       <pubDate>Thu, 01 Jun 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/usa_ci_2017/</guid>
+      <guid>/en/publication/usa_ci_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Co-creation and Participatory Design of Big Data Infrastructures on the Field of Human Health Related Climate Services</title>
-      <link>https://dominicroye.github.io/en/publication/chapter_springer_2017/</link>
+      <link>/en/publication/chapter_springer_2017/</link>
       <pubDate>Sun, 01 Jan 2017 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/chapter_springer_2017/</guid>
+      <guid>/en/publication/chapter_springer_2017/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Winter circulation weather types and hospital admissions for respiratory diseases in Galicia, Spain</title>
-      <link>https://dominicroye.github.io/en/publication/cwt_galicia_resp_2016/</link>
+      <link>/en/publication/cwt_galicia_resp_2016/</link>
       <pubDate>Fri, 01 Apr 2016 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/cwt_galicia_resp_2016/</guid>
+      <guid>/en/publication/cwt_galicia_resp_2016/</guid>
       <description></description>
     </item>
     
     <item>
       <title>Analysis of tropical nights on the atlantic coast of the Iberian Peninsula. A proposed methodology</title>
-      <link>https://dominicroye.github.io/en/publication/hotnights_age_2015/</link>
+      <link>/en/publication/hotnights_age_2015/</link>
       <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/hotnights_age_2015/</guid>
+      <guid>/en/publication/hotnights_age_2015/</guid>
       <description></description>
     </item>
     
     <item>
       <title>The use of climate databases netCDF with array structure in the environment of R</title>
-      <link>https://dominicroye.github.io/en/publication/ncdf_2015/</link>
+      <link>/en/publication/ncdf_2015/</link>
       <pubDate>Tue, 01 Dec 2015 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/en/publication/ncdf_2015/</guid>
+      <guid>/en/publication/ncdf_2015/</guid>
       <description>&lt;p&gt;Used datasets are available for download &lt;a href=&#34;https://drive.google.com/open?id=1LYOm80dxQW_xMFUZ6kJ4qCKvwOXTWSIg&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.
 Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
 
