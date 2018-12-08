@@ -164,7 +164,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            guides(fill=guide_colorbar(barwidth = 1))+
              theme_strip&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-05-how-to-create-warming-stripes-in-r.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In case we want to get only the strips, we can use &lt;code&gt;theme_void( )&lt;/code&gt; and the argument &lt;em&gt;show.legend = FALSE&lt;/em&gt; in &lt;code&gt;geom_tile( )&lt;/code&gt; to remove all style elements.&lt;/p&gt;
+&lt;p&gt;In case we want to get only the strips, we can use &lt;code&gt;theme_void( )&lt;/code&gt; and the argument &lt;em&gt;show.legend = FALSE&lt;/em&gt; in &lt;code&gt;geom_tile( )&lt;/code&gt; to remove all style elements. We can also change the color for the &lt;code&gt;NA&lt;/code&gt; values, including the argument &lt;em&gt;na.value = “gray70”&lt;/em&gt; in the &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
              aes(x=date,y=1,fill=ta))+
         geom_tile(show.legend = FALSE)+
