@@ -392,8 +392,8 @@
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>How can you obtain this data?</p>
-<p>Well, in this case I used points of interest (POIs) from the database of <em>Open Street Maps</em> (OSM). Obviously OSM not only contains streets and highways, but also information that can be useful, when we use a map such as locations of hospitals or gas stations. To avoid downloading the entire OSM and extracting the required information, you can use an <em>overpass API</em>, which allows us to query the OSM database with our own criteria.</p>
-<p>An easy way to access an <em>overpass API</em> is through <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous page can be found <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">here</a>. However, we have at our disposal a package <em>osmdata</em> that allows us to create and make queries directly from the R environment. Nevertheless, the use of the <em>overpass-turbo.eu</em> can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.</p>
+<p>Well, in this case I used points of interest (POIs) from the database of <em>Open Street Maps</em> (OSM). Obviously OSM not only contains streets and highways, but also information that can be useful when we use a map such as locations of hospitals or gas stations. To avoid downloading the entire OSM and extracting the required information, you can use an <em>overpass API</em>, which allows us to query the OSM database with our own criteria.</p>
+<p>An easy way to access an <em>overpass API</em> is through <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous web can be found <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">here</a>. However, we have at our disposal a package <em>osmdata</em> that allows us to create and make queries directly from the R environment. Nevertheless, the use of the <em>overpass-turbo.eu</em> can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.</p>
 </div>
 <div id="accessing-the-overpass-api-from-r" class="section level2">
 <h2>Accessing the overpass API from R</h2>
@@ -425,7 +425,7 @@ head(available_tags(&quot;shop&quot;))</code></pre>
 <pre><code>## [1] &quot;agrarian&quot;  &quot;alcohol&quot;   &quot;anime&quot;     &quot;antiques&quot;  &quot;appliance&quot; &quot;art&quot;</code></pre>
 <div id="the-first-query-where-are-cinemas-in-madrid" class="section level3">
 <h3>The first query: Where are cinemas in Madrid?</h3>
-<p>To build the query, we use the <em>pipe operator</em> <code>%&gt;%</code>, which helps to chain several functions without assigning the result to a new object. Its use is very extended especially with the <em>tidyverse</em> package collection. If you want to know more about its use, you can find <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> a tutorial.</p>
+<p>To build the query, we use the <em>pipe operator</em> <code>%&gt;%</code>, which helps to chain several functions without assigning the result to a new object. Its use is very extended especially within the <em>tidyverse</em> package collection. If you want to know more about its use, you can find <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> a tutorial.</p>
 <p>In the first part of the query we need to indicate the place where we want to extract the information. The <code>getbb( )</code> function creates a boundering box for a given place, looking for the name. The main function is <code>opq( )</code> which build the final query. We add our filter criteria with the <code>add_osm_feature( )</code> function. In this first query we will look for cinemas in Madrid. That’s why we use as key <em>amenity</em> and <em>cinema</em> as tag. There are several formats to obtain the resulting spatial data of the query. The <code>osmdata_*( )</code> function sends the query to the server and, depending on the suffix * sf/sp/xml, returns a <em>simple feature</em>, <em>spatial</em> or <em>XML</em> format.</p>
 <pre class="r"><code>#building the query
 q &lt;- getbb(&quot;Madrid&quot;)%&gt;%
@@ -444,7 +444,7 @@ cinema</code></pre>
 <pre><code>## Object of class &#39;osmdata&#39; with:
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
-##             $timestamp : [ do\. 1 nov\. 2018 13:35:15 ]
+##             $timestamp : [ mi\. 4 nov\. 2018 13:50:58 ]
 ##            $osm_points : &#39;sf&#39; Simple Features Collection with 222 points
 ##             $osm_lines : &#39;sf&#39; Simple Features Collection with 0 linestrings
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 14 polygons
@@ -536,6 +536,11 @@ ggplot(mercadona$osm_points)+
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/en/2018/how-to-create-warming-stripes-in-r/" rel="next">How to create &#39;Warming Stripes&#39; in R</a>
+  </div>
   
   
   <div class="post-nav-item">
