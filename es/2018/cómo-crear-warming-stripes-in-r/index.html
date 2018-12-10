@@ -477,8 +477,9 @@ summary(temp_lisboa_yr) </code></pre>
                        axis.title = element_blank(),
                        panel.grid.major=element_blank(),
                        legend.title = element_blank(),
-                       axis.text.x=element_text(vjust=5),
-                       panel.grid.minor=element_blank()
+                       axis.text.x=element_text(vjust=3),
+                       panel.grid.minor=element_blank(),
+                       plot.title=element_text(size=14,face=&quot;bold&quot;)
                        )
 
 
@@ -528,8 +529,11 @@ brewer.pal.info</code></pre>
            scale_x_date(date_breaks = &quot;6 years&quot;,
                      date_labels = &quot;%Y&quot;,
                      expand=c(0,0))+
+           scale_y_continuous(expand=c(0,0))+
            scale_fill_gradientn(colors=rev(col_strip))+
            guides(fill=guide_colorbar(barwidth = 1))+
+           labs(title=&quot;LISBOA 1880-2018&quot;,
+                caption=&quot;Datos: GISS Surface Temperature Analysis&quot;)+
              theme_strip</code></pre>
 <p><img src="/post/2018-12-05-como-crear-warming-stripes-en-r.es_files/figure-html/unnamed-chunk-7-1.png" width="1152" /></p>
 <p>En el caso de que quisieramos obtener únicamente las tiras, podemos usar <code>theme_void( )</code> y el argumento <em>show.legend=FALSE</em> en <code>geom_tile( )</code> para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores <code>NA</code>, incluyendo el argumento <em>na.value=“grey70”</em> en la función <code>scale_fill_gradientn( )</code>.</p>

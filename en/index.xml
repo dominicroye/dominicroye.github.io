@@ -109,8 +109,9 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
                        axis.title = element_blank(),
                        panel.grid.major=element_blank(),
                        legend.title = element_blank(),
-                       axis.text.x=element_text(vjust=5),
-                       panel.grid.minor=element_blank()
+                       axis.text.x=element_text(vjust=3),
+                       panel.grid.minor=element_blank(),
+                        plot.title=element_text(size=14,face=&amp;quot;bold&amp;quot;)
                        )
 
 
@@ -160,9 +161,12 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
                      expand=c(0,0))+
+           scale_y_continuous(expand=c(0,0))+
            scale_fill_gradientn(colors=rev(col_strip))+
-           guides(fill=guide_colorbar(barwidth = 1))+
-             theme_strip&lt;/code&gt;&lt;/pre&gt;
+             guides(fill=guide_colorbar(barwidth = 1))+
+            labs(title=&amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption=&amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+              theme_strip&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/2018-12-05-how-to-create-warming-stripes-in-r.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In case we want to get only the strips, we can use &lt;code&gt;theme_void( )&lt;/code&gt; and the argument &lt;em&gt;show.legend = FALSE&lt;/em&gt; in &lt;code&gt;geom_tile( )&lt;/code&gt; to remove all style elements. We can also change the color for the &lt;code&gt;NA&lt;/code&gt; values, including the argument &lt;em&gt;na.value = “gray70”&lt;/em&gt; in the &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
