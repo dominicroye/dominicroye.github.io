@@ -5,8 +5,8 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="theme" content="hugo-academic">
-  <meta name="generator" content="Hugo 0.47.1" />
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.52" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -26,9 +26,19 @@
   
 
   
+
+  
+
+  
+
+  
+
+  
+
   
   
-  <meta name="theme-color" content="#0095eb">
+  
+  <meta name="theme-color" content="#2962ff">
   
 
   
@@ -36,9 +46,9 @@
   
   
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha512-6MXa8B6uaO18Hid6blRMetEIoPqHf7Ux1tnyIQdpt9qI5OACx7C+O3IVTr98vwGnlcg0LOLa02i9Y1HpVhlfiw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" integrity="sha512-SfTiTlX6kk+qitfevl/7LibUOeJWlt9rbyDn92a1DqWOw9vWG2MFoays0sgObmWazO5BQPiFucnnEAjpAB+/Sw==" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
 
     
@@ -61,7 +71,7 @@
 
   
   
-  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair&#43;Display:400,700%7cFauna&#43;One">
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair+Display:400,700|Fauna+One">
   
 
   <link rel="stylesheet" href="/en/styles.css">
@@ -98,15 +108,18 @@
 
   <link rel="canonical" href="/en/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/">
 
-  <meta property="twitter:card" content="summary_large_image">
   
-  <meta property="twitter:site" content="@dr_xeo">
-  <meta property="twitter:creator" content="@dr_xeo">
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
   
   <meta property="og:site_name" content="Dominic Royé">
   <meta property="og:url" content="/en/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/">
   <meta property="og:title" content="Acceso a la base de datos de OpenStreetMaps desde R | Dominic Royé">
-  <meta property="og:description" content="Recientemente creé un mapa de la distribución de las gasolineras y estaciones de carga eléctrica en Europa. ¿Cómo se puede obtener estos datos? Pues, en este caso usé puntos de interés (PDIs) de la base de datos de *Open Street Maps* (OSM). Obviamente OSM no sólo contiene las carreteras sino también información que nos puede ser útil a la hora de usar un mapa como por ejemplo las ubicaciones de hospitales o gasolineras."><meta property="og:image" content="img/mercadonas.png">
+  <meta property="og:description" content="Recientemente creé un mapa de la distribución de las gasolineras y estaciones de carga eléctrica en Europa. ¿Cómo se puede obtener estos datos? Pues, en este caso usé puntos de interés (PDIs) de la base de datos de *Open Street Maps* (OSM). Obviamente OSM no sólo contiene las carreteras sino también información que nos puede ser útil a la hora de usar un mapa como por ejemplo las ubicaciones de hospitales o gasolineras."><meta property="og:image" content="/img/mercadonas.png">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2018-11-03T00:00:00&#43;00:00">
@@ -123,12 +136,12 @@
     window.cookieconsent.initialise({
       "palette": {
         "popup": {
-          "background": "#0095eb",
+          "background": "#2962ff",
           "text": "#fff"
         },
         "button": {
           "background": "#fff",
-          "text": "#0095eb"
+          "text": "#2962ff"
         }
       },
       "theme": "classic",
@@ -143,56 +156,69 @@
 
 
   
-          <meta property="og:type" content="website" />
-          <meta property="og:title" content="Acceso a la base de datos de OpenStreetMaps desde R &middot; Dominic Royé"/>
-          <meta property="og:description" content="Blog of Dominic Royé - geographic data | understanding the world"/>
-          <meta property="og:site_name" content="Dominic Royé"/>
-          <meta property="og:url" content="/en/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/"/>
-          <meta property="og:locale" content="en">
-            
-          <meta property="og:image" content="https://dominicroye.github.io"/>
-          <meta property="og:image:secure_url" content=""/>
-          
-          <meta property="og:type" content="website"/>
 
   <title>Acceso a la base de datos de OpenStreetMaps desde R | Dominic Royé</title>
 
 </head>
-<body id="top" data-spy="scroll" data-target="#toc" data-offset="71" >
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
 
-<nav class="navbar navbar-default navbar-fixed-top" id="navbar-main">
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
   <div class="container">
 
     
-    <div class="navbar-header">
+      <a class="navbar-brand" href="/en"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
       
-      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse"
-              data-target=".navbar-collapse" aria-expanded="false">
-        <span class="sr-only">Toggle navigation</span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
-        <span class="icon-bar"></span>
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
       </button>
       
-      <a class="navbar-brand" href="/en"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
-    </div>
 
     
-    <div class="collapse navbar-collapse">
+    <div class="collapse navbar-collapse" id="navbar">
 
       
       
-      <ul class="nav navbar-nav navbar-right">
+      <ul class="navbar-nav ml-auto">
         
 
         
-        
+
         
         
         
 
         <li class="nav-item">
-          <a href="/en/#">
+          <a class="nav-link" href="/en/#">
             
             <span>home</span>
             
@@ -203,7 +229,7 @@
         
 
         
-        
+
         
         
         
@@ -211,7 +237,7 @@
         
 
         <li class="nav-item">
-          <a href="/en/#posts">
+          <a class="nav-link" href="/en/#posts">
             
             <span>blog</span>
             
@@ -222,7 +248,7 @@
         
 
         
-        
+
         
         
         
@@ -230,7 +256,7 @@
         
 
         <li class="nav-item">
-          <a href="/en/#publications_selected">
+          <a class="nav-link" href="/en/#publications_selected">
             
             <span>publications</span>
             
@@ -241,7 +267,7 @@
         
 
         
-        
+
         
         
         
@@ -249,7 +275,26 @@
         
 
         <li class="nav-item">
-          <a href="/en/#about">
+          <a class="nav-link" href="/en/#graphs">
+            
+            <span>graphs</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#about">
             
             <span>me</span>
             
@@ -258,9 +303,17 @@
 
         
         
-      
 
       
+
+        
+
+        
+
+        
+
+        
+
       </ul>
 
     </div>
@@ -271,10 +324,19 @@
 <article class="article" itemscope itemtype="http://schema.org/Article">
 
   
+
+
+
+
+
+
+
+
+
 <div class="article-header">
   
   
-    <img src="/img/mercadonas.png" class="article-banner" itemprop="image">
+  <img src="/img/mercadonas.png" class="article-banner" itemprop="image" alt="">
   
 
   
@@ -282,9 +344,18 @@
 
 
 
-  <div class="article-container">
-    <h1 itemprop="name">Acceso a la base de datos de OpenStreetMaps desde R</h1>
 
+  
+
+  
+  
+  
+<div class="article-container pt-3">
+  <h1 itemprop="name">Acceso a la base de datos de OpenStreetMaps desde R</h1>
+
+  
+
+  
     
 
 <div class="article-metadata">
@@ -320,7 +391,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-categories">
-    <i class="fa fa-folder"></i>
+    <i class="fas fa-folder"></i>
     
     <a href="/en/categories/visualizaci%C3%B3n/">visualización</a>, 
     
@@ -340,39 +411,36 @@
   <ul class="share">
     <li>
       <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R&amp;url=https://dominicroye.github.io%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f"
+         href="https://twitter.com/intent/tweet?text=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R&amp;url=%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f"
          target="_blank" rel="noopener">
-        <i class="fa fa-twitter"></i>
+        <i class="fab fa-twitter"></i>
       </a>
     </li>
-
-
-
     <li>
       <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f"
+         href="https://www.facebook.com/sharer.php?u=%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f"
          target="_blank" rel="noopener">
-        <i class="fa fa-facebook"></i>
+        <i class="fab fa-facebook-f"></i>
       </a>
     </li>
     <li>
       <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https://dominicroye.github.io%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f&amp;title=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f&amp;title=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R"
          target="_blank" rel="noopener">
-        <i class="fa fa-linkedin"></i>
+        <i class="fab fa-linkedin-in"></i>
       </a>
     </li>
     <li>
       <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=https://dominicroye.github.io%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f&amp;title=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R"
+         href="http://service.weibo.com/share/share.php?url=%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f&amp;title=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R"
          target="_blank" rel="noopener">
-        <i class="fa fa-weibo"></i>
+        <i class="fab fa-weibo"></i>
       </a>
     </li>
     <li>
       <a class="email"
-         href="mailto:?subject=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R&amp;body=https://dominicroye.github.io%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f">
-        <i class="fa fa-envelope"></i>
+         href="mailto:?subject=Acceso%20a%20la%20base%20de%20datos%20de%20OpenStreetMaps%20desde%20R&amp;body=%2fen%2f2018%2facceso-a-la-base-de-datos-de-openstreetmaps-desde-r%2f">
+        <i class="fas fa-envelope"></i>
       </a>
     </li>
   </ul>
@@ -383,9 +451,36 @@
 
 </div>
 
+    
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+  
+</div>
+
+
+
+  <div class="article-container">
 
     <div class="article-style" itemprop="articleBody">
-      <div id="la-base-de-datos-de-open-street-maps" class="section level2">
+      
+
+
+<div id="la-base-de-datos-de-open-street-maps" class="section level2">
 <h2>La base de datos de Open Street Maps</h2>
 <p>Recientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.</p>
 <blockquote class="twitter-tweet"><p lang="en" dir="ltr">Population density through the number of gas stations in Europe. <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw">@AGE_Oficial</a> <a href="https://twitter.com/mipazos?ref_src=twsrc%5Etfw">@mipazos</a> <a href="https://twitter.com/simongerman600?ref_src=twsrc%5Etfw">@simongerman600</a> <a href="https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw">@openstreetmap</a> <a href="https://t.co/eIUx2yn7ej">pic.twitter.com/eIUx2yn7ej</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw">February 25, 2018</a></blockquote>
@@ -412,7 +507,7 @@ library(ggmap)</code></pre>
 </div>
 <div id="construir-una-consulta" class="section level2">
 <h2>Construir una consulta</h2>
-<p>Antes de crear una consulta, debemos conocer qué podemos filtrar. La función <code>available_features( )</code> nos devuelve un listado amplio de las características disponibles en OSM que a su vez tienen diferentes categorías (<em>tags</em>). Están disponibles más detalles en la <em>wiki</em> de OMS <a href="https://wiki.openstreetmap.org/wiki/ES:Caracter%C3%ADsticas_del_mapa">aquí</a>. Por ejemplo, la característica <em>shop</em> contiene como categoría entre otros <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
+<p>Antes de crear una consulta, debemos conocer qué podemos filtrar. La función <code>available_features( )</code> nos devuelve un listado amplio de las características disponibles en OSM que a su vez tienen diferentes categorías (<em>tags</em>). Están disponibles más detalles en la <em>wiki</em> de OSM <a href="https://wiki.openstreetmap.org/wiki/ES:Caracter%C3%ADsticas_del_mapa">aquí</a>. Por ejemplo, la característica <em>shop</em> contiene como categoría entre otros <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
 <pre class="r"><code>#las primeras cinco características 
 head(available_features())</code></pre>
 <pre><code>## [1] &quot;4wd only&quot;  &quot;abandoned&quot; &quot;abutters&quot;  &quot;access&quot;    &quot;addr&quot;      &quot;addr:city&quot;</code></pre>
@@ -426,7 +521,7 @@ head(available_tags(&quot;shop&quot;))</code></pre>
 <div id="la-primera-consulta-donde-podemos-encontrar-cines-en-madrid" class="section level3">
 <h3>La primera consulta: ¿Dónde podemos encontrar cines en Madrid?</h3>
 <p>Para construir la consulta se hace uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
-<p>En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función <code>getbb( )</code> crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es <code>opq( )</code> que construye la consulta final. Añadimos con la función <code>add_osm_feature( )</code> nuestros criterios de filtro. En esta primara consulta buscaremos cines en Madrid. Por eso usamos como clave <em>amenity</em> y como categoría <em>cinema</em>. Existen varios formatos para obtener el resultado de la consulta. La función <code>osmdata_*( )</code> envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato <em>simple feature</em>, <em>spatial</em> o <em>XML</em>.</p>
+<p>En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función <code>getbb( )</code> crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es <code>opq( )</code> que construye la consulta final. Añadimos con la función <code>add_osm_feature( )</code> nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave <em>amenity</em> y como categoría <em>cinema</em>. Existen varios formatos para obtener el resultado de la consulta. La función <code>osmdata_*( )</code> envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato <em>simple feature</em>, <em>spatial</em> o <em>XML</em>.</p>
 <pre class="r"><code>#construcción de la consulta
 q &lt;- getbb(&quot;Madrid&quot;)%&gt;%
       opq()%&gt;%
@@ -444,7 +539,7 @@ cinema</code></pre>
 <pre><code>## Object of class &#39;osmdata&#39; with:
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
-##             $timestamp : [ do\. 1 nov\. 2018 12:14:05 ]
+##             $timestamp : [ ju\. 5 dic\. 2018 10:03:13 ]
 ##            $osm_points : &#39;sf&#39; Simple Features Collection with 222 points
 ##             $osm_lines : &#39;sf&#39; Simple Features Collection with 0 linestrings
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 14 polygons
@@ -453,7 +548,7 @@ cinema</code></pre>
 <p>Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría <em>osm_points</em>.</p>
 <p>¿Cómo podemos visulizar estos puntos?</p>
 <p>La ventaja de objetos <em>sf</em> es que para <em>ggplot2</em> existe una geometría propia <code>geom_sf( )</code>. Además, haciendo uso de <em>ggmap</em> podemos incluir un mapa de fondo. La función <code>get_map( )</code> descarga el mapa para un lugar dado. En lugar puede ser una dirección, latitud/longitud o un rectángulo de selección. El argumento <em>maptype</em> nos permite indicar el estilo o tipo de mapa. Podemos consultar más detalles en la ayuda de la función <code>?get_map</code>.</p>
-<p>Cuando construimos un gráfico con <em>ggplot</em> habitualmente empezamos con <code>ggplot( )</code>. En este caso, se empieza por <em>ggmap( )</em> que incluye el objeto con nuestro mapa de fondo. Después añadimos con <code>geom_sf( )</code> los puntos de los cines en Madrid. Es importante indicar con el argumento <em>inherit.aes=FALSE</em> que debe usar <em>aesthetic mappings</em> del objeto espacial <em>osm_points</em>. Además, indicamos el color (<em>colour</em>, <em>fill</em>), transparencia (<em>alpha</em>) tipo y tamaño (<em>size</em>) del círculo.</p>
+<p>Cuando construimos un gráfico con <em>ggplot</em> habitualmente empezamos con <code>ggplot( )</code>. En este caso, se empieza por <code>ggmap( )</code> que incluye el objeto con nuestro mapa de fondo. Después añadimos con <code>geom_sf( )</code> los puntos de los cines en Madrid. Es importante indicar con el argumento <em>inherit.aes=FALSE</em> que debe usar <em>aesthetic mappings</em> del objeto espacial <em>osm_points</em>. Además, indicamos el color (<em>colour</em>, <em>fill</em>), transparencia (<em>alpha</em>), tipo y tamaño (<em>size</em>) del círculo.</p>
 <pre class="r"><code>#nuestro mapa de fondo
 mad_map &lt;- get_map(getbb(&quot;Madrid&quot;),maptype = &quot;toner-background&quot;)
 
@@ -467,11 +562,11 @@ ggmap(mad_map)+
           size=4,
           shape=21)+
   labs(x=&quot;&quot;,y=&quot;&quot;)</code></pre>
-<p><img src="/post/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r_files/figure-html/fig.width==5-1.png" width="672" /></p>
+<p><img src="/post/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r.es_files/figure-html/fig.width==5-1.png" width="672" /></p>
 </div>
 <div id="donde-estan-los-supermercados-de-mercadona" class="section level3">
 <h3>¿Dónde están los supermercados de Mercadona?</h3>
-<p>En lugar de obtener un rectángulo de selección con la función <em>getbb( )</em> podemos construir el nuestro propio. Para ello, creamos una matriz de dos columnas, siendo aquí el orden Este/Oeste/Sur/Norte. En la consulta usamos dos características: <em>name</em> y <em>shop</em> para poder filtrar supermercados que sean de esta marca en concreto. En función del area o bien del volumen que tenga la consulta, es necesario ampliar el tiempo de espera. Por defecto, son 25 segundo (<em>timeout</em>).</p>
+<p>En lugar de obtener un rectángulo de selección con la función <code>getbb( )</code> podemos construir nuestro propio. Para ello, creamos una matriz de dos columnas, siendo aquí el orden Este/Oeste/Sur/Norte. En la consulta usamos dos características: <em>name</em> y <em>shop</em> para poder filtrar supermercados que sean de esta marca en concreto. En función del area o bien del volumen que tenga la consulta, es necesario ampliar el tiempo de espera. Por defecto, son 25 segundo (<em>timeout</em>).</p>
 <p>El mapa que creamos en este caso se basa únicamente en los puntos de supermercados. Por eso, usamos la gramática habitual añadiendo la geometría <code>geom_sf( )</code>. La función <code>theme_void( )</code> elimina todo con excepción de los puntos. Por defecto, el objeto <em>sf</em> en <em>ggplot</em> crea retículas que se pueden quitar usando la función <code>coord_sf( )</code> con el argumento <em>datum=NA</em>.</p>
 <pre class="r"><code>#rectángulo de selección para la Península Ibérica
 m &lt;- matrix(c(-10,5,30,46),ncol=2,byrow=TRUE)
@@ -503,7 +598,7 @@ ggplot(mercadona$osm_points)+
           shape=21)+
   coord_sf(datum=NA)+
   theme_void()</code></pre>
-<p><img src="/post/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="/post/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 </div>
 
@@ -514,14 +609,99 @@ ggplot(mercadona$osm_points)+
 
 <div class="article-tags">
   
-  <a class="label label-default" href="/en/tags/base-de-datos/">base de datos</a>
+  <a class="badge badge-light" href="/en/tags/base-de-datos/">base de datos</a>
   
-  <a class="label label-default" href="/en/tags/overpass-api/">overpass API</a>
+  <a class="badge badge-light" href="/en/tags/overpass-api/">overpass API</a>
   
-  <a class="label label-default" href="/en/tags/osm/">OSM</a>
+  <a class="badge badge-light" href="/en/tags/osm/">OSM</a>
   
-  <a class="label label-default" href="/en/tags/puntos-de-inter%C3%A9s/">Puntos de interés</a>
+  <a class="badge badge-light" href="/en/tags/puntos-de-inter%C3%A9s/">Puntos de interés</a>
   
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="/en">Dr. Dominic Royé</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+          <i class="fa fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+          <i class="ai ai-researchgate"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/dominicroye" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
 </div>
 
 
@@ -543,6 +723,11 @@ ggplot(mercadona$osm_points)+
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/en/2018/how-to-create-warming-stripes-in-r/" rel="next">How to create &#39;Warming Stripes&#39; in R</a>
+  </div>
   
   
   <div class="post-nav-item">
@@ -584,48 +769,50 @@ ggplot(mercadona$osm_points)+
   </div>
 </article>
 
-<footer class="site-footer">
-  <div class="container">
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
 
     
-
-    <p class="powered-by">
-
-      &copy; 2018 Dominic Royé. All rights reserved. &middot; 
-
-      Powered by the
-      <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-      <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
-
-      <span class="pull-right" aria-hidden="true">
-        <a href="#" id="back_to_top">
-          <span class="button_icon">
-            <i class="fa fa-chevron-up fa-2x"></i>
-          </span>
-        </a>
-      </span>
-
-    </p>
-  </div>
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
 </footer>
+
+</div>
 
 
 <div id="modal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close btn-large" data-dismiss="modal">&times;</button>
-        <h4 class="modal-title">Cite</h4>
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
       </div>
-      <div>
-        <pre><code class="modal-body tex"></code></pre>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
       </div>
       <div class="modal-footer">
-        <a class="btn btn-primary btn-outline js-copy-cite" href="#" target="_blank">
-          <i class="fa fa-copy"></i> Copy
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
         </a>
-        <a class="btn btn-primary btn-outline js-download-cite" href="#" target="_blank">
-          <i class="fa fa-download"></i> Download
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
         </a>
         <div id="modal-error"></div>
       </div>
@@ -641,9 +828,9 @@ ggplot(mercadona$osm_points)+
     
     
     
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js" integrity="sha512-3P8rXCuGJdNZOnUx/03c1jOTnMn3rP63nBip5gOP2qmUh5YAdVAvFZ1E+QLZZbC1rtMrQb+mah3AfYW11RUrWA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha512-iztkobsvnjKfAtTNdHkGVjAYTrrtlC7mGp/54c40wowO7LhURYl3gVzzcEqGl/qKXQltJ2HwMrdLcNUdo+N/RQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
 
@@ -657,9 +844,6 @@ ggplot(mercadona$osm_points)+
 
       
       
-    
-
-    <script src="/js/hugo-academic.js"></script>
     
 
     
@@ -677,30 +861,28 @@ ggplot(mercadona$osm_points)+
     
 
     
+
     
-    <script>
-      const search_index_filename = "/search.json";
-      const i18n = {
-        'placeholder': "Search...",
-        'no_results': "No results found"
-      };
-      const content_type = {
-        'post': "Posts",
-        'project': "Projects",
-        'publication' : "Publications",
-        'talk' : "Talks"
-        };
-    </script>
+    
+
     
 
     
     
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/fuse.js/3.2.1/fuse.min.js" integrity="sha256-VzgmKYmhsGNNN4Ph1kMW+BjoYJM2jV5i4IlFoeZA9XI=" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/mark.js/8.11.1/jquery.mark.min.js" integrity="sha256-4HLtjeVgH0eIB3aZ9mLYF6E8oU5chNdjU6p6rrXpl9U=" crossorigin="anonymous"></script>
-    <script src="/js/search.js"></script>
+
+    
     
 
     
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
     
 
   </body>

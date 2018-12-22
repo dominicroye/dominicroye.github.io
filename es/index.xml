@@ -1466,7 +1466,7 @@ library(RColorBrewer)
 temp_lisboa &amp;lt;- read_csv(&amp;quot;temp_lisboa.csv&amp;quot;)
 
 str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    139 obs. of  18 variables:
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;spec_tbl_df&amp;#39;, &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 139 obs. of  18 variables:
 ##  $ YEAR  : num  1880 1881 1882 1883 1884 ...
 ##  $ JAN   : num  9.17 11.37 10.07 10.86 11.16 ...
 ##  $ FEB   : num  12 11.8 11.9 11.5 10.6 ...
@@ -1593,7 +1593,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            labs(title=&amp;quot;LISBOA 1880-2018&amp;quot;,
                 caption=&amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
              theme_strip&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-05-como-crear-warming-stripes-en-r.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;En el caso de que quisieramos obtener únicamente las tiras, podemos usar &lt;code&gt;theme_void( )&lt;/code&gt; y el argumento &lt;em&gt;show.legend=FALSE&lt;/em&gt; en &lt;code&gt;geom_tile( )&lt;/code&gt; para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores &lt;code&gt;NA&lt;/code&gt;, incluyendo el argumento &lt;em&gt;na.value=“grey70”&lt;/em&gt; en la función &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
              aes(x=date,y=1,fill=ta))+
@@ -1604,7 +1604,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            scale_y_discrete(expand=c(0,0))+
            scale_fill_gradientn(colors=rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-12-05-como-crear-warming-stripes-en-r.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1677,12 +1677,12 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
-##             $timestamp : [ ju\. 5 dic\. 2018 10:03:13 ]
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 222 points
-##             $osm_lines : &amp;#39;sf&amp;#39; Simple Features Collection with 0 linestrings
+##                  $meta : metadata including timestamp and version numbers
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 226 points
+##             $osm_lines : NULL
 ##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 14 polygons
-##        $osm_multilines : &amp;#39;sf&amp;#39; Simple Features Collection with 0 multilinestrings
-##     $osm_multipolygons : &amp;#39;sf&amp;#39; Simple Features Collection with 0 multipolygons&lt;/code&gt;&lt;/pre&gt;
+##        $osm_multilines : NULL
+##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;¿Cómo podemos visulizar estos puntos?&lt;/p&gt;
 &lt;p&gt;La ventaja de objetos &lt;em&gt;sf&lt;/em&gt; es que para &lt;em&gt;ggplot2&lt;/em&gt; existe una geometría propia &lt;code&gt;geom_sf( )&lt;/code&gt;. Además, haciendo uso de &lt;em&gt;ggmap&lt;/em&gt; podemos incluir un mapa de fondo. La función &lt;code&gt;get_map( )&lt;/code&gt; descarga el mapa para un lugar dado. En lugar puede ser una dirección, latitud/longitud o un rectángulo de selección. El argumento &lt;em&gt;maptype&lt;/em&gt; nos permite indicar el estilo o tipo de mapa. Podemos consultar más detalles en la ayuda de la función &lt;code&gt;?get_map&lt;/code&gt;.&lt;/p&gt;
@@ -1700,7 +1700,7 @@ ggmap(mad_map)+
           size=4,
           shape=21)+
   labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;donde-estan-los-supermercados-de-mercadona&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;¿Dónde están los supermercados de Mercadona?&lt;/h3&gt;
@@ -1719,7 +1719,7 @@ q &amp;lt;- m %&amp;gt;%
 
 str(q) #estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
-##  $ bbox    : chr &amp;quot;30,-10,46,5&amp;quot;
+##  $ bbox    : chr &amp;quot;5,-10,46,30&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:2500];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr [1:2] &amp;quot; [\&amp;quot;name\&amp;quot;=\&amp;quot;Mercadona\&amp;quot;]&amp;quot; &amp;quot; [\&amp;quot;shop\&amp;quot;=\&amp;quot;supermarket\&amp;quot;]&amp;quot;
@@ -1736,7 +1736,7 @@ ggplot(mercadona$osm_points)+
           shape=21)+
   coord_sf(datum=NA)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1880,7 +1880,7 @@ df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
 
 #importamos el limite de países
 limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR\content\post\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
 ## Simple feature collection with 256 features and 3 fields
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
@@ -1900,7 +1900,7 @@ ggplot(df)+
           labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
            facet_grid(month~.)+ #mapa por mes
              theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
@@ -2027,7 +2027,7 @@ psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
 #plot de los puntos
 plot(st_geometry(coord))
 plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;En los próximos pasos calculamos la distancia de nuestro punto de referencia a todos los puntos del grid. Posteriormente, buscamos aquel con menos distancia.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadimos la distancia a los puntos
 coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
@@ -2049,7 +2049,7 @@ df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp
     labs(y=&amp;quot;Temperatura (ºC)&amp;quot;,
              x=&amp;quot;&amp;quot;)+
     theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -2133,7 +2133,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -2141,7 +2141,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definiciones sobre el theme que usamos
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -2167,7 +2167,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra úni
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#ampliamos los datos con las cifras de Italia
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -2185,7 +2185,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;grafico-de-waffle&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
@@ -2199,7 +2199,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #datos
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colores
         rows=5) #número de filas &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;medida &amp;lt;- c(41,59) #datos de la OECD 2015
 names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
@@ -2207,7 +2207,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
@@ -2221,7 +2221,7 @@ type=&amp;quot;index&amp;quot;,        #estilo más en ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/2018-08-22-el-grafico-de-tarta.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;referencias&#34; class=&#34;section level3 unnumbered&#34;&gt;
