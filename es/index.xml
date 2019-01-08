@@ -12,7 +12,7 @@
     <item>
       <title>Calcular la distancia al mar en R</title>
       <link>/es/2019/calcular-la-distancia-al-mar-en-r/</link>
-      <pubDate>Thu, 10 Jan 2019 00:00:00 +0000</pubDate>
+      <pubDate>Tue, 08 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/es/2019/calcular-la-distancia-al-mar-en-r/</guid>
       <description>
@@ -71,7 +71,7 @@ library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale=50) #mapamundi con 50m de resolución
 
 plot(world) #tiene clase sp por defecto&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los límites de Islandia 
 iceland &amp;lt;- ne_countries(scale=10,country = &amp;quot;Iceland&amp;quot;,returnclass = &amp;quot;sf&amp;quot;)
 
@@ -115,7 +115,7 @@ iceland&lt;/code&gt;&lt;/pre&gt;
 ## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#aquí Islandia
 plot(iceland)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Por defecto, la función &lt;code&gt;plot( )&lt;/code&gt; con la clase &lt;em&gt;sf&lt;/em&gt; nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; o el argumento &lt;em&gt;max.plot&lt;/em&gt; &lt;code&gt;plot(iceland,max.plot=1)&lt;/code&gt;. Con el argumento &lt;em&gt;max.plot=1&lt;/em&gt; la función usa la primera variable disponible del mapa.&lt;/p&gt;
 &lt;p&gt;Además, vemos en la información del objeto &lt;em&gt;sf&lt;/em&gt; que la proyección es WGS84 con grados decimales (código EPSG:4326). Para el cálculo de distancias es más conveniente usar metros en lugar de grados. Debido a ello, lo primero que hacemos es transformar el mapa de Islandia a UTM Zona 27 (código EPSG:3055). Más información sobre EPSG y proyecciones &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;aquí&lt;/a&gt;. Con ese objetivo, usamos la función &lt;code&gt;st_transform( )&lt;/code&gt;. Simplemente indicamos el mapa y el código EPSG.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transformamos a UTM
@@ -129,13 +129,13 @@ grid &amp;lt;- st_make_grid(iceland,cellsize = 5000,what = &amp;quot;centers&amp
 
 #nuestra red sobre la extensión de Islandia
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exraemos sólamente los puntos en los límites de Islandia
 grid &amp;lt;- st_intersection(grid,iceland)   
 
 #nuestra red ahora
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-la-distancia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular la distancia&lt;/h2&gt;
@@ -174,7 +174,7 @@ ggplot(df,aes(X,Y,fill=dist))+ #variables
              labs(fill=&amp;quot;Distance (km)&amp;quot;)+ #nombre de la leyenda
              theme_void()+ #estilo del mapa
               theme(legend.position = &amp;quot;bottom&amp;quot;) #posición de la leyenda&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;exportar-la-distancia-como-raster&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Exportar la distancia como raster&lt;/h2&gt;
@@ -219,7 +219,7 @@ dist_raster&lt;/code&gt;&lt;/pre&gt;
 ## values      : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plotear el raster
 plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exportamos el raster
 writeRaster(dist_raster,file=&amp;quot;dist_islandia.tif&amp;quot;,format=&amp;quot;GTiff&amp;quot;, overwrite=TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Con el cálculo de la distancia podemos llegar crear &lt;em&gt;arte&lt;/em&gt;, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;aquí más&lt;/a&gt;).&lt;/p&gt;
