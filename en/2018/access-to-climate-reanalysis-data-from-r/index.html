@@ -1,0 +1,1181 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.52" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/en/2018/access-to-climate-reanalysis-data-from-r/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair+Display:400,700|Fauna+One">
+  
+
+  <link rel="stylesheet" href="/en/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/en/2018/access-to-climate-reanalysis-data-from-r/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/en/2018/access-to-climate-reanalysis-data-from-r/">
+  <meta property="og:title" content="Access to climate reanalysis data from R | Dominic Royé">
+  <meta property="og:description" content="In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans."><meta property="og:image" content="/en/2018/access-to-climate-reanalysis-data-from-r/featured.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2018-09-15T10:59:44&#43;01:00">
+  
+  <meta property="article:modified_time" content="2018-09-15T10:59:44&#43;01:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#2962ff",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#2962ff"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "This website uses cookies to ensure you get the best experience on our website.",
+        "dismiss": "Got it!",
+        "link": "Learn more",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>Access to climate reanalysis data from R | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/en"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#">
+            
+            <span>home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#publications_selected">
+            
+            <span>publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#graphs">
+            
+            <span>graphs</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#about">
+            
+            <span>me</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="article-header d-xl-none">
+  <div class="featured-image" style="background-image: url('/en/2018/access-to-climate-reanalysis-data-from-r/featured_hubf5f1f4c663823de4fface96a92fe838_257097_800x0_resize_box_2.png');"></div>
+  
+</div>
+
+
+<div class="container-fluid split-header d-none d-xl-block">
+  <div class="row">
+    <div class="col-6">
+      <div class="split-header-content">
+        <h1 itemprop="name">Access to climate reanalysis data from R</h1>
+
+        
+
+        
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-09-15 10:59:44 &#43;0100 BST" itemprop="datePublished">
+    <time datetime="2018-09-15 10:59:44 &#43;0100 BST" itemprop="dateModified">
+      2018-09-15
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/en/2018/access-to-climate-reanalysis-data-from-r/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/en/categories/r/">R</a>, 
+    
+    <a href="/en/categories/rintermediate/">R:intermediate</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+        
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Access%20to%20climate%20reanalysis%20data%20from%20R&amp;url=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f&amp;title=Access%20to%20climate%20reanalysis%20data%20from%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f&amp;title=Access%20to%20climate%20reanalysis%20data%20from%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Access%20to%20climate%20reanalysis%20data%20from%20R&amp;body=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="split-header-image">
+        <img src="/en/2018/access-to-climate-reanalysis-data-from-r/featured_hubf5f1f4c663823de4fface96a92fe838_257097_680x500_fill_q90_box_smart1_2.png" itemprop="image" alt="">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="article-container d-xl-none">
+  <h1 itemprop="name">Access to climate reanalysis data from R</h1>
+
+  
+
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-09-15 10:59:44 &#43;0100 BST" itemprop="datePublished">
+    <time datetime="2018-09-15 10:59:44 &#43;0100 BST" itemprop="dateModified">
+      2018-09-15
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/en/2018/access-to-climate-reanalysis-data-from-r/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/en/categories/r/">R</a>, 
+    
+    <a href="/en/categories/rintermediate/">R:intermediate</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Access%20to%20climate%20reanalysis%20data%20from%20R&amp;url=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f&amp;title=Access%20to%20climate%20reanalysis%20data%20from%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f&amp;title=Access%20to%20climate%20reanalysis%20data%20from%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Access%20to%20climate%20reanalysis%20data%20from%20R&amp;body=%2fen%2f2018%2faccess-to-climate-reanalysis-data-from-r%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+<div id="TOC">
+<ul>
+<li><a href="#introduction"><span class="toc-section-number">1</span> Introduction</a></li>
+<li><a href="#ncep"><span class="toc-section-number">2</span> NCEP</a><ul>
+<li><a href="#packages"><span class="toc-section-number">2.1</span> Packages</a></li>
+<li><a href="#data-download"><span class="toc-section-number">2.2</span> Data download</a></li>
+<li><a href="#monthly-average"><span class="toc-section-number">2.3</span> Monthly average</a></li>
+<li><a href="#visualization"><span class="toc-section-number">2.4</span> Visualization</a></li>
+</ul></li>
+<li><a href="#era-interim"><span class="toc-section-number">3</span> ERA-Interim</a><ul>
+<li><a href="#installation"><span class="toc-section-number">3.1</span> Installation</a></li>
+<li><a href="#connection-and-download-with-the-ecmwf-api"><span class="toc-section-number">3.2</span> Connection and download with the ECMWF API</a></li>
+<li><a href="#processing-ncdf"><span class="toc-section-number">3.3</span> Processing ncdf</a></li>
+</ul></li>
+</ul>
+</div>
+
+<p><em>A friend advised me to introduce R levels as categories. An idea that I now add to each blog post. There are three levels: elementary, intermediate, and advanced. I hope it will help the reader and the R user.</em></p>
+<hr />
+<div id="introduction" class="section level1">
+<h1><span class="header-section-number">1</span> Introduction</h1>
+<p>In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are a combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans. The two most used reanalyses are <a href="https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2">NCEP-DO</a> (Reanalysis II) from the <em>NOAA/OAR/ESRL</em>, an improved version of <em>NCEP-NCAR</em> (Reanalysis I), and <em>ERA-Interim</em> from the <a href="https://www.ecmwf.int/en/research/climate-reanalysis"><em>ECMWF</em></a>. Since <em>NCEP-DO</em> is the first generation, it is recommended to use third-generation climate reanalysis, especially <em>ERA-Interim</em>. An overview of the current atmospheric reanalysis can be found <a href="https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses">here</a>. First, let’s see how to access the <em>NCEP</em> data through an R library on <em>CRAN</em> that facilitates the download and handling of the data. Then we will do the same with the <em>ERA-Interim</em>, however, to access this last reanalysis dataset it is necessary to use <em>python</em> and the corresponding API of the <em>ECMWF</em>.</p>
+</div>
+<div id="ncep" class="section level1">
+<h1><span class="header-section-number">2</span> NCEP</h1>
+<p>To access the <em>NCEP</em> reanalysis it is required to install the corresponding package <em>RNCEP</em>. The main function is <code>NCEP.gather( )</code>. The resolution of the <em>NCEP</em> reanalysis is 2.5º X 2.5º.</p>
+<div id="packages" class="section level2">
+<h2><span class="header-section-number">2.1</span> Packages</h2>
+<pre class="r"><code>#install the RNCEP, lubridate and tidyverse packages
+if(!require(&quot;RNCEP&quot;)) install.packages(&quot;RNCEP&quot;)
+if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+
+#load the packages
+library(RNCEP)
+library(lubridate) #date and time manipulation
+library(tidyverse) #data manipulation and visualization
+library(RColorBrewer) #color schemes
+library(sf) #to import a spatial object and to work with geom_sf in ggplot2</code></pre>
+</div>
+<div id="data-download" class="section level2">
+<h2><span class="header-section-number">2.2</span> Data download</h2>
+<p>We will download the air temperature of the 850haPa pressure level for the year 2016. The variables and pressure levels can be found in the details of the function <code>?NCEP.gather</code>. The <em>reanalysis2</em> argument allows us to download both version I and version II, being by default <em>FALSE</em>, that is, we access reanalysis I. In all the requests we will obtain data of every 6 hours (00:00, 06:00, 12:00 and 18:00). This supposes a total of 1464 values for the year 2016.</p>
+<pre class="r"><code>#define the necessary arguments
+month_range &lt;- c(1,12)     #period of months
+year_range &lt;- c(2016,2016) #period of years
+
+lat_range &lt;- c(30,60)      #latitude range
+lon_range &lt;- c(-30,50)     #longitude range
+ 
+
+data &lt;- NCEP.gather(&quot;air&quot;,    #name of the variable
+                    850, #pressure level 850hPa
+                    month_range,year_range,
+                    lat_range,lon_range,
+                    return.units = TRUE,
+                    reanalysis2=TRUE)</code></pre>
+<pre><code>## [1] Units of variable &#39;air&#39; are degK
+## [1] Units of variable &#39;air&#39; are degK</code></pre>
+<pre class="r"><code>#dimensions                    
+dim(data) </code></pre>
+<pre><code>## [1]   13   33 1464</code></pre>
+<pre class="r"><code>#we find lon, lat and time with dimnames()
+#date and time
+date_time &lt;- dimnames(data)[[3]]
+date_time &lt;- ymd_h(date_time)
+head(date_time)</code></pre>
+<pre><code>## [1] &quot;2016-01-01 00:00:00 UTC&quot; &quot;2016-01-01 06:00:00 UTC&quot;
+## [3] &quot;2016-01-01 12:00:00 UTC&quot; &quot;2016-01-01 18:00:00 UTC&quot;
+## [5] &quot;2016-01-02 00:00:00 UTC&quot; &quot;2016-01-02 06:00:00 UTC&quot;</code></pre>
+<pre class="r"><code>#longitude and latitude
+lat &lt;- dimnames(data)[[1]]
+lon &lt;- dimnames(data)[[2]]
+head(lon);head(lat)</code></pre>
+<pre><code>## [1] &quot;-30&quot;   &quot;-27.5&quot; &quot;-25&quot;   &quot;-22.5&quot; &quot;-20&quot;   &quot;-17.5&quot;</code></pre>
+<pre><code>## [1] &quot;60&quot;   &quot;57.5&quot; &quot;55&quot;   &quot;52.5&quot; &quot;50&quot;   &quot;47.5&quot;</code></pre>
+</div>
+<div id="monthly-average" class="section level2">
+<h2><span class="header-section-number">2.3</span> Monthly average</h2>
+<p>We see that the downloaded data is an <em>array</em> of three dimensions with [lat, lon, time]. As above mentioned, we extracted latitude, longitude and time. The temperature is given in Kelvin. The objective in the next section will be to show two maps comparing January and July.</p>
+<pre class="r"><code>#create our grouping variable
+group &lt;- month(date_time) 
+
+#estimate the average temperature by month 
+data_month &lt;- aperm(
+  apply(
+    data, #our data
+    c(1,2), #apply to each time series 1:row, 2:column a the mean( ) function
+    by, #group by
+    group, #months
+    function(x)ifelse(all(is.na(x)),NA,mean(x))),
+  c(2,3,1)) #reorder to get an array like the original
+
+dim(data_month) #850haPa temperature per month January to December</code></pre>
+<pre><code>## [1] 13 33 12</code></pre>
+</div>
+<div id="visualization" class="section level2">
+<h2><span class="header-section-number">2.4</span> Visualization</h2>
+<p>Once we got here, we can visualize the 850hPa temperature of January and July with <em>ggplot2</em>. In this example, I use <code>geom_sf( )</code> from the library <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, which makes the work easier to visualize spatial objects in <em>ggplot</em> (in the near future I will make a post about <em>sf</em> and <em>ggplot</em>). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the <code>expand.grid( )</code> function.</p>
+<pre class="r"><code>#first we create all the combinations of lon-lat
+lonlat &lt;- expand.grid(lon=lon,lat=lat)
+
+#as lonlat was a row/column name, it is character, that&#39;s why we convert it into numeric
+lonlat &lt;- apply(lonlat,2,as.numeric)
+
+#lon and lat are not in the order as we expect
+#row=lon; column=lat
+data_month &lt;- aperm(data_month,c(2,1,3))
+
+#subtract 273.15K to convert K to ºC.
+df &lt;- data.frame(lonlat,
+                 Ta01=as.vector(data_month[,,1])-273.15,
+                 Ta07=as.vector(data_month[,,7])-273.15)</code></pre>
+<p>Before we can make the map with <em>ggplot2</em>, we have to adapt the table. The shapefile with the countries limits can be downloaded <a href="/files/CNTR_RG_03M_2014.zip">here</a>.</p>
+<pre class="r"><code>#convert the wide table into a long one
+df &lt;- gather(df,month,Ta,Ta01:Ta07)%&gt;%
+             mutate(month=factor(month,unique(month),c(&quot;Jan&quot;,&quot;Jul&quot;)))
+
+#import the countries limits
+limit &lt;- st_read(&quot;CNTR_RG_03M_2014.shp&quot;)</code></pre>
+<pre><code>## Reading layer `CNTR_RG_03M_2014&#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2018-09-15-access-to-climate-reanalysis-data-from-r\CNTR_RG_03M_2014.shp&#39; using driver `ESRI Shapefile&#39;
+## Simple feature collection with 256 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.66068
+## epsg (SRID):    NA
+## proj4string:    +proj=longlat +ellps=GRS80 +no_defs</code></pre>
+<pre class="r"><code>#color scheme
+colbr &lt;- brewer.pal(11,&quot;RdBu&quot;)
+
+ggplot(df)+
+      geom_tile(aes(lon,lat,fill=Ta))+ #temperature data
+      geom_sf(data=limit,fill=NA,size=.5)+ #limits 
+        scale_fill_gradientn(colours=rev(colbr))+
+          coord_sf(ylim=c(30,60),xlim=c(-30,50))+
+          scale_x_continuous(breaks=seq(-30,50,10),expand=c(0,0))+
+          scale_y_continuous(breaks=seq(30,60,5),expand=c(0,0))+
+          labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;Ta 850hPa (ºC)&quot;)+
+           facet_grid(month~.)+ #plot panels by month
+             theme_bw()</code></pre>
+<p><img src="/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+</div>
+</div>
+<div id="era-interim" class="section level1">
+<h1><span class="header-section-number">3</span> ERA-Interim</h1>
+<p>The <em>ECMWF</em> offers access to its public databases from a <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. It is required to be registered on the <em>ECMWF</em> website. You can register <a href="https://apps.ecmwf.int/registration/">here</a>. When dealing with another programming language, in R we have to use an interface between both which allows the library <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
+<div id="installation" class="section level2">
+<h2><span class="header-section-number">3.1</span> Installation</h2>
+<pre class="r"><code>if(!require(&quot;reticulate&quot;)) install.packages(&quot;reticulate&quot;)
+if(!require(&quot;ncdf4&quot;)) install.packages(&quot;ncdf4&quot;) #to manage netCDF format
+
+#load packages
+library(reticulate)
+library(ncdf4)</code></pre>
+<p>Once we have installed <em>anaconda</em> and the package <em>reticulate</em>, we can install the library <em>python ecmwfapi</em>. We can carry out the installation, or through the Windows CMD using the command <em>conda install -c conda-forge ecmwf-api-client</em>, or with the R function <code>py_install( )</code> from the <em>reticulate</em> package. The same function allows us to install any <em>python</em> library from R.</p>
+<pre class="r"><code>#install the python ECMWF API
+py_install(&quot;ecmwf-api-client&quot;)</code></pre>
+<pre><code>## 
+## Installation complete.</code></pre>
+</div>
+<div id="connection-and-download-with-the-ecmwf-api" class="section level2">
+<h2><span class="header-section-number">3.2</span> Connection and download with the ECMWF API</h2>
+<p>In order to access the API, it is required to create a file with the user’s information.</p>
+<p>The “.ecmwfapirc” file must contain the following information:</p>
+<pre><code>{
+    &quot;url&quot;   : &quot;https://api.ecmwf.int/v1&quot;,
+    &quot;key&quot;   : &quot;XXXXXXXXXXXXXXXXXXXXXX&quot;,
+    &quot;email&quot; : &quot;john.smith@example.com&quot;
+}</code></pre>
+<p>The key can be obtained with the user account <a href="https://api.ecmwf.int/v1/key/">here</a>.</p>
+<p>The file can be created with the Windows notebook.</p>
+<ol style="list-style-type: decimal">
+<li>We create a document “ecmwfapirc.txt”.</li>
+<li>Rename this file to “.ecmwfapirc.”</li>
+</ol>
+<p>The last point disappears automatically. Then we save this file in “C:/USERNAME/.ecmwfapirc” or “C:/USERNAME/Documents/.ecmwfapirc”.</p>
+<pre class="r"><code>#import the python library ecmwfapi
+ecmwf &lt;- import(&#39;ecmwfapi&#39;)
+
+#for this step there must exist the file .ecmwfapirc
+server = ecmwf$ECMWFDataServer() #start the connection</code></pre>
+<p>One we get here, how do we create a query? The easiest thing is to go to the website of <a href="http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/"><em>ECMWF</em></a>, where we choose the database, in this case <em>ERA-Interim</em> surface, to create a script with all the necessary data. More details about the syntax can be found <a href="https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax">here</a>. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in <em>python</em>.</p>
+<div class="figure">
+<img src="/img/erainterim1.png" />
+
+</div>
+<div class="figure">
+<img src="/img/erainterim2.png" />
+
+</div>
+<p>With the syntax of the script from the <em>MARS Request</em>, we can create the query in R.</p>
+<pre class="r"><code>#we create the query
+query &lt;-r_to_py(list(
+  class=&#39;ei&#39;,
+  dataset= &quot;interim&quot;, #dataset
+  date= &quot;2017-01-01/to/2017-12-31&quot;, #time period
+  expver= &quot;1&quot;,
+  grid= &quot;0.125/0.125&quot;, #resolution
+  levtype=&quot;sfc&quot;,
+  param= &quot;167.128&quot;, # air temperature (2m)
+  area=&quot;45/-10/30/5&quot;, #N/W/S/E
+  step= &quot;0&quot;,
+  stream=&quot;oper&quot;,
+  time=&quot;00:00:00/06:00:00/12:00:00/18:00:00&quot;, #hours
+  type=&quot;an&quot;,
+  format= &quot;netcdf&quot;, #format
+  target=&#39;ta2017.nc&#39; #file name
+))
+
+#query to get the ncdf
+server$retrieve(query)</code></pre>
+<p>The result is a netCDF file that we can process with the library <em>ncdf4</em>.</p>
+</div>
+<div id="processing-ncdf" class="section level2">
+<h2><span class="header-section-number">3.3</span> Processing ncdf</h2>
+<p>In the next section, the objective will be the extraction of a time serie from the closest coordinate to a given one. We will use the coordinates of Madrid (40.418889, -3.691944).</p>
+<pre class="r"><code>#load packages
+library(sf)
+library(ncdf4)
+library(tidyverse)</code></pre>
+<pre class="r"><code>#open the connection with the ncdf file
+nc &lt;- nc_open(&quot;ta2017.nc&quot;)
+
+#extract lon and lat
+lat &lt;- ncvar_get(nc,&#39;latitude&#39;)
+lon &lt;- ncvar_get(nc,&#39;longitude&#39;)
+dim(lat);dim(lon)</code></pre>
+<pre><code>## [1] 121</code></pre>
+<pre><code>## [1] 121</code></pre>
+<pre class="r"><code>#extract the time
+t &lt;- ncvar_get(nc, &quot;time&quot;)
+
+#time unit: hours since 1900-01-01
+ncatt_get(nc,&#39;time&#39;)</code></pre>
+<pre><code>## $units
+## [1] &quot;hours since 1900-01-01 00:00:00.0&quot;
+## 
+## $long_name
+## [1] &quot;time&quot;
+## 
+## $calendar
+## [1] &quot;gregorian&quot;</code></pre>
+<pre class="r"><code>#convert the hours into date + hour
+#as_datetime() function of the lubridate package needs seconds
+timestamp &lt;- as_datetime(c(t*60*60),origin=&quot;1900-01-01&quot;)
+
+#import the data
+data &lt;- ncvar_get(nc,&quot;t2m&quot;)
+
+#close the conection with the ncdf file
+nc_close(nc)</code></pre>
+<p>In this next section we use the <em>sf</em> package, which is replacing the well known <em>sp</em> and <em>rgdal</em> packages.</p>
+<pre class="r"><code>#create all the combinations of lon-lat
+lonlat &lt;- expand.grid(lon=lon,lat=lat)
+
+#we must convert the coordinates in a spatial object sf
+#we also indicate the coordinate system in EPSG code
+coord &lt;- st_as_sf(lonlat,coords=c(&quot;lon&quot;,&quot;lat&quot;))%&gt;%
+                    st_set_crs(4326)
+
+#we do the same with our coordinate of Madrid
+psj &lt;- st_point(c(-3.691944,40.418889))%&gt;%
+                   st_sfc()%&gt;%
+                     st_set_crs(4326)
+
+#plot all points
+plot(st_geometry(coord))
+plot(psj,add=TRUE,pch = 3, col = &#39;red&#39;)</code></pre>
+<p><img src="/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>In the next steps we calculate the distance of our reference point to all the grid points. Then we look for the one with less distance.</p>
+<pre class="r"><code>#add the distance to the points
+coord &lt;- mutate(coord,dist=st_distance(coord,psj))
+
+#create a distance matrix with the same dimensions as our data
+dist_mat &lt;- matrix(coord$dist,dim(data)[-3])
+
+#the arrayInd function is useful to obtain the row and column indexes
+mat_index &lt;- as.vector(arrayInd(which.min(dist_mat), dim(dist_mat)))
+
+#we extract the time serie and change the unit from K to ºC
+#we convert the time in date + hour
+df &lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&gt;%
+        mutate(ta=ta-273.15,time=ymd_hms(time))</code></pre>
+<p>Finally, we visualize our time series.</p>
+<pre class="r"><code>ggplot(df,
+       aes(time,ta))+
+    geom_line()+
+    labs(y=&quot;Temperature (ºC)&quot;,
+             x=&quot;&quot;)+
+    theme_bw()</code></pre>
+<p><img src="/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/en/tags/reanalisis/">reanalisis</a>
+  
+  <a class="badge badge-light" href="/en/tags/interim/">interim</a>
+  
+  <a class="badge badge-light" href="/en/tags/ncep-ncar/">NCEP/NCAR</a>
+  
+  <a class="badge badge-light" href="/en/tags/era/">era</a>
+  
+  <a class="badge badge-light" href="/en/tags/download/">download</a>
+  
+  <a class="badge badge-light" href="/en/tags/ncdf/">ncdf</a>
+  
+  <a class="badge badge-light" href="/en/tags/access/">access</a>
+  
+  <a class="badge badge-light" href="/en/tags/api/">api</a>
+  
+  <a class="badge badge-light" href="/en/tags/python/">python</a>
+  
+  <a class="badge badge-light" href="/en/tags/ecmwf/">ECMWF</a>
+  
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="/en">Dr. Dominic Royé</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+          <i class="fa fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+          <i class="ai ai-researchgate"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/dominicroye" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="/en/2018/accessing-openstreetmap-data-with-r/" rel="next">Accessing OpenStreetMap data with R</a>
+  </div>
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/en/2018/the-pie-chart/" rel="prev">the pie chart</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+

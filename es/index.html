@@ -1,0 +1,1375 @@
+
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.52" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="Blog of Dominic Royé - geographic data | understanding the world">
+
+  
+  <link rel="alternate" hreflang="en" href="/en/">
+  
+  <link rel="alternate" hreflang="en-us" href="/es/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair+Display:400,700|Fauna+One">
+  
+
+  <link rel="stylesheet" href="/es/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/es/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/es/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/es/">
+
+  
+  
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/es/">
+  <meta property="og:title" content="Dominic Royé">
+  <meta property="og:description" content="Blog of Dominic Royé - geographic data | understanding the world"><meta property="og:image" content="/img/potrai_domi.jpg">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="og:updated_time" content="2017-10-15T00:00:00&#43;01:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#2962ff",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#2962ff"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "Este sitio web utiliza cookies para garantizarle una mejor experiencia.",
+        "dismiss": "Entendido!",
+        "link": "Más información",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#navbar-main" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/es"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Barra de navegación">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#" data-target="#">
+            
+            <span>inicio</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#posts" data-target="#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#publications_selected" data-target="#publications_selected">
+            
+            <span>publicaciones</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#graphs" data-target="#graphs">
+            
+            <span>gráficos</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#about" data-target="#about">
+            
+            <span>mí</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+        <li class="nav-item dropdown">
+          <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" aria-haspopup="true">
+            <i class="fas fa-globe" aria-hidden="true"></i>
+            <span>Español</span>
+          </a>
+          <ul class="dropdown-menu">
+            
+            <li class="dropdown-item my-0 py-0 mx-0 px-0">
+              <a href="/en/" data-target="/en/">
+                <span>English</span>
+              </a>
+            </li>
+            
+          </ul>
+        </li>
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+
+<span id="homepage" style="display: none"></span>
+
+
+  
+
+
+
+
+
+  
+  
+  
+    
+
+
+
+
+
+
+  
+
+
+<section id="hero" class="hero-overlay" style="
+
+background-color: #666;
+
+
+background-image:
+linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.1)), 
+url('/img/headers/mapa.jpg')
+
+;">
+
+  <div class="container">
+
+    <h1 class="hero-title" itemprop="headline">
+      geographic data
+    </h1>
+
+    
+    <p class="hero-lead">Understanding the World
+<br></p>
+    
+
+    
+
+  </div>
+
+</section>
+
+  
+
+  
+  
+  
+  <section id="posts" class="home-section">
+    <div class="container">
+      
+
+
+
+
+<div class="row">
+  <div class="col-12 col-lg-4 section-heading">
+
+    <h1>Entradas recientes</h1>
+    
+    
+    <p class="view-all">
+      <a href="/es/post/">
+        Más posts
+        <i class="fas fa-angle-double-right"></i>
+      </a>
+    </p>
+    
+
+  </div>
+  <div class="col-12 col-lg-8">
+
+    
+
+    
+      
+
+      
+      
+
+        
+
+        
+        
+
+        
+        
+          
+      
+          
+      
+          
+      
+          
+      
+
+      
+      
+        
+          
+
+<div class="card-simple" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2019-01-08 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2019-01-08 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2019-01-08
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2019/calcular-la-distancia-al-mar-en-r/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/sig/">sig</a>, 
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="/es/categories/relemental/">R:elemental</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+  
+  
+  
+  
+  <a href="/es/2019/calcular-la-distancia-al-mar-en-r/">
+      <img src="/es/2019/calcular-la-distancia-al-mar-en-r/featured_hu987eb252c5a3adbf8f2c2e98fd68b622_3121564_918x517_fill_q90_box_smart1.jpg" class="article-banner" itemprop="image" alt="">
+  </a>
+  
+  <h3 class="article-title" itemprop="headline">
+    <a href="/es/2019/calcular-la-distancia-al-mar-en-r/" itemprop="url">Calcular la distancia al mar en R</a>
+  </h3>
+  <div class="article-style" itemprop="articleBody">
+    
+    <p>En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?</p>
+    
+  </div>
+  <p class="read-more" itemprop="mainEntityOfPage">
+    <a href="/es/2019/calcular-la-distancia-al-mar-en-r/" class="btn btn-outline-primary my-1">
+      CONTINUAR LEYENDO
+    </a>
+  </p>
+</div>
+
+
+
+
+        
+      
+
+      
+
+        
+
+        
+        
+
+        
+        
+          
+      
+          
+      
+          
+      
+
+      
+      
+        
+          
+
+<div class="card-simple" itemscope itemprop="blogPost" itemtype="http://schema.org/BlogPosting">
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-12-05 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2018-12-05 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2018-12-05
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/visualizaci%C3%B3n/">visualización</a>, 
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="/es/categories/relemental/">R:elemental</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+  
+  
+  
+  
+  <a href="/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/">
+      <img src="/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/featured_hu16db9f9df0ff2da9db957db9d87ae3f3_14607_918x517_fill_q90_box_smart1_2.png" class="article-banner" itemprop="image" alt="">
+  </a>
+  
+  <h3 class="article-title" itemprop="headline">
+    <a href="/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/" itemprop="url">Cómo crear &#39;Warming Stripes&#39; in R</a>
+  </h3>
+  <div class="article-style" itemprop="articleBody">
+    
+    <p>Este año se hicieron muy famosos en todo el mundo los llamados warming stripes, las tiras del calentamiento global, que fueron creados por el científico Ed Hawkins de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.</p>
+    
+  </div>
+  <p class="read-more" itemprop="mainEntityOfPage">
+    <a href="/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/" class="btn btn-outline-primary my-1">
+      CONTINUAR LEYENDO
+    </a>
+  </p>
+</div>
+
+
+
+
+        
+      
+
+      
+    
+
+  </div>
+</div>
+
+    </div>
+  </section>
+  
+
+  
+  
+  
+  <section id="graphs" class="home-section">
+    <div class="container">
+      
+
+
+
+
+<div class="row">
+  <div class="col-12 col-lg-4 section-heading">
+
+    <h1>Gráficos</h1>
+    
+    
+    <p class="view-all">
+      <a href="/es/graphs/">
+        Más gráficos
+        <i class="fas fa-angle-double-right"></i>
+      </a>
+    </p>
+    
+
+  </div>
+  <div class="col-12 col-lg-8">
+
+    
+
+    
+      
+
+      
+      
+
+        
+
+        
+        
+
+        
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+
+      
+      
+        
+          
+
+<div class="card-simple" itemscope itemprop="bloggraphs" itemtype="http://schema.org/Bloggraphsing">
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2018-12-15 00:00:00 &#43;0000 GMT" itemprop="datePublished">
+    <time datetime="2018-12-15 00:00:00 &#43;0000 GMT" itemprop="dateModified">
+      2018-12-15
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/graphs/climate/#disqus_thread"></a>
+  
+
+  
+
+  
+
+</div>
+
+
+  
+  
+  
+  <h3 class="article-title" itemprop="headline">
+    <a href="/es/graphs/climate/" itemprop="url">Clima y tiempo</a>
+  </h3>
+  <div class="article-style" itemprop="articleBody">
+    
+    <p></p>
+    
+  </div>
+  <p class="read-more" itemprop="mainEntityOfPage">
+    <a href="/es/graphs/climate/" class="btn btn-outline-primary my-1">
+      CONTINUAR LEYENDO
+    </a>
+  </p>
+</div>
+
+        
+      
+
+      
+
+        
+
+        
+        
+
+        
+        
+          
+      
+          
+      
+          
+      
+          
+      
+          
+      
+
+      
+      
+        
+          
+
+<div class="card-simple" itemscope itemprop="bloggraphs" itemtype="http://schema.org/Bloggraphsing">
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+        Última actualización el
+    
+    <meta content="2018-12-15 00:00:00 &#43;0000 GMT" itemprop="datePublished">
+    <time datetime="2018-01-06 00:00:00 &#43;0000 GMT" itemprop="dateModified">
+      2018-01-06
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/graphs/geography/#disqus_thread"></a>
+  
+
+  
+
+  
+
+</div>
+
+
+  
+  
+  
+  <h3 class="article-title" itemprop="headline">
+    <a href="/es/graphs/geography/" itemprop="url">Geografía</a>
+  </h3>
+  <div class="article-style" itemprop="articleBody">
+    
+    <p></p>
+    
+  </div>
+  <p class="read-more" itemprop="mainEntityOfPage">
+    <a href="/es/graphs/geography/" class="btn btn-outline-primary my-1">
+      CONTINUAR LEYENDO
+    </a>
+  </p>
+</div>
+
+        
+      
+
+      
+    
+
+  </div>
+</div>
+
+    </div>
+  </section>
+  
+
+  
+  
+  
+  <section id="publications_selected" class="home-section">
+    <div class="container">
+      
+
+
+
+
+<div class="row">
+  <div class="col-12 col-lg-4 section-heading">
+    <h1>Publicaciones</h1>
+    
+    
+    <p class="view-all">
+      <a href="/es/publication/">
+        Más publicaciones
+        <i class="fas fa-angle-double-right"></i>
+      </a>
+    </p>
+    
+  </div>
+  <div class="col-12 col-lg-8">
+    
+
+    
+      
+    
+
+    
+
+    
+    
+      
+        <div class="pub-list-item" style="margin-bottom: 1rem" itemscope itemtype="http://schema.org/CreativeWork">
+  <i class="far fa-file-alt pub-icon" aria-hidden="true"></i>
+  <span itemprop="author">
+    F Mori-Gamarra, L Moure-Rodríguez, X Sureda, C Carbiae, D Royé, A Montes-Martínez, F Cadaveira, F Caamaño-Isorna</span>
+  (2018).
+  <a href="/es/publication/alcohol_galicia2018/" itemprop="name">Densidad de los puntos de venta de alcohol y su consumo en jóvenes de Galicia</a>.
+  In <em>Gaceta Sanitaria</em>.
+  
+  <p>
+
+
+
+
+
+
+
+  
+    
+  
+
+
+<a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="/files/S0213911118302383.pdf" target="_blank" rel="noopener">
+  PDF
+</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="https://www.doi.org/10.1016/j.gaceta.2018.09.005" target="_blank" rel="noopener">
+    
+    10.1016/j.gaceta.2018.09.005
+  </a>
+
+</p>
+</div>
+
+      
+    
+      
+        <div class="pub-list-item" style="margin-bottom: 1rem" itemscope itemtype="http://schema.org/CreativeWork">
+  <i class="far fa-file-alt pub-icon" aria-hidden="true"></i>
+  <span itemprop="author">
+    D Royé, N Lorenzo, D Rasilla, A Martí</span>
+  (2018).
+  <a href="/es/publication/cloudiness_ip_2018/" itemprop="name">Spatio-temporal variations of cloud fraction based on circulation types in the Iberian Peninsula</a>.
+  In <em>International Journal of Climatology</em>.
+  
+  <p>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="https://doi.org/10.1002/joc.5914" target="_blank" rel="noopener">
+    
+    10.1002/joc.5914
+  </a>
+
+</p>
+</div>
+
+      
+    
+      
+        <div class="pub-list-item" style="margin-bottom: 1rem" itemscope itemtype="http://schema.org/CreativeWork">
+  <i class="far fa-file-alt pub-icon" aria-hidden="true"></i>
+  <span itemprop="author">
+    A Vélez, J Martin-Vide, D Royé, O Santaella</span>
+  (2018).
+  <a href="/es/publication/ci_pr_2018/" itemprop="name">Spatial Analysis of Daily Precipitation Concentration in Puerto Rico</a>.
+  In <em>Theoretical and Applied Climatology, Online First</em>.
+  
+  <p>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  
+  
+    
+  
+  <a class="btn btn-outline-primary my-1 mr-1 btn-sm" href="https://www.doi.org/10.1007/s00704-018-2550-1" target="_blank" rel="noopener">
+    
+    10.1007/s00704-018-2550-1
+  </a>
+
+</p>
+</div>
+
+      
+    
+
+  </div>
+</div>
+
+    </div>
+  </section>
+  
+
+  
+  
+  
+  <section id="about" class="home-section">
+    <div class="container">
+      
+
+
+
+<div class="row" itemprop="author" itemscope itemtype="http://schema.org/Person" itemref="person-email">
+  <div class="col-12 col-lg-4">
+    <div id="profile">
+
+      
+      <img class="portrait" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+      
+
+      <div class="portrait-title">
+        <h2 itemprop="name">Dr. Dominic Royé</h2>
+        
+
+        
+        
+
+        
+        <h3 itemprop="worksFor" itemscope itemtype="http://schema.org/Organization">
+          <a href="http://usc.es" target="_blank" itemprop="url" rel="noopener">
+          <span itemprop="name">Universidade de Santiago de Compostela</span>
+          </a>
+        </h3>
+        
+      </div>
+
+      <link itemprop="url" href="/">
+
+      <ul class="network-icon" aria-hidden="true">
+        
+        
+        
+        
+        
+        
+        
+        
+        <li>
+          <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+            <i class="fa fa-envelope big-icon"></i>
+          </a>
+        </li>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        
+          
+        
+        <li>
+          <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+            <i class="fab fa-twitter big-icon"></i>
+          </a>
+        </li>
+        
+        
+        
+        
+        
+        
+        
+        
+          
+        
+        <li>
+          <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+            <i class="ai ai-researchgate big-icon"></i>
+          </a>
+        </li>
+        
+        
+        
+        
+          
+        
+        
+        
+        
+        
+          
+        
+        <li>
+          <a itemprop="sameAs" href="//github.com/dominicroye" >
+            <i class="fab fa-github big-icon"></i>
+          </a>
+        </li>
+        
+      </ul>
+
+    </div>
+  </div>
+  <div class="col-12 col-lg-8" itemprop="description">
+
+    
+
+<h1 id="sobre-mí">Sobre mí</h1>
+
+<p>Soy climatólogo y actualmente investigador posdoctoral y profesor en la Universidad de Santiago de Compostela, pero desde 2017 me encuentro trabajando en la Universidad de Oporto, en el Departamento de Geografía, durante dos años. Soy originario de Grevenbroich, cerca de Colonia, en Alemania. Me gradué en Geografía y Filología Hispánica en la Universidad de Colonia y la Universidad RWTH-Aachen en 2010. Después de haber conocido mi esposa en Galicia, me vine a Santiago de Compostela, en el noroeste de España, e hice mi doctorado en 2015 sobre la relación entre salud y clima en la misma universidad. Ahora vivo en la fantástica ciudad de Oporto en Portugal.</p>
+
+<p>Las principales líneas de investigación son, por un lado, la biometeorología y la geografía de salud, la relación entre la salud humana y el ambiente atmosférico, y por otro lado, la geografía física aplicada enfocando las variables atmosféricas y sus comportamientos espacio-temporales.</p>
+
+<p>Soy un entusiasta usuario R, con mucha curiosidad por el análisis espacial, la visualizaciones, gestión y la manipulación de datos, y GIS.</p>
+
+<p>Soy miembro del grupo <a href="http://www.usc.es/saudep/" target="_blank">Salud Pública</a> en la Universidad de Santiago de Compostela. Además, soy colaborador
+de otros dos grupos de investigación, <a href="https://geobiomet.es/" target="_blank">Geobiomet</a> en la Universidad de Cantabria y <a href="http://www.ub.edu/gc/" target="_blank">Climatology Group</a> en la Universidad de Barcelona.</p>
+
+<p>No dudes en ponerte en contacto conmigo.</p>
+
+
+    <div class="row">
+
+      
+      <div class="col-md-5">
+        <h3>Intereses</h3>
+        <ul class="ul-interests">
+          
+          <li>climatología aplicada</li>
+          
+          <li>geografía física</li>
+          
+          <li>biometeorología</li>
+          
+          <li>salud pública</li>
+          
+          <li>sistemas de información geográfica</li>
+          
+          <li>programación R</li>
+          
+          <li>gestión, manipulación y visualización de datos</li>
+          
+        </ul>
+      </div>
+      
+
+      
+      <div class="col-md-7">
+        <h3>Educación</h3>
+        <ul class="ul-edu fa-ul">
+          
+          <li>
+            <i class="fa-li fas fa-graduation-cap"></i>
+            <div class="description">
+              <p class="course">Doctor en Geografía Física, 2015</p>
+              <p class="institution">Universidade de Santiago de Compostela, España</p>
+            </div>
+          </li>
+          
+          <li>
+            <i class="fa-li fas fa-graduation-cap"></i>
+            <div class="description">
+              <p class="course">Geografía y Filología Hispanica, 2010</p>
+              <p class="institution">Universidad de Colonia | Universidad RWTH-Aachen, Alemania</p>
+            </div>
+          </li>
+          
+        </ul>
+      </div>
+      
+
+    </div>
+  </div>
+</div>
+
+    </div>
+  </section>
+  
+
+
+
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+
+
