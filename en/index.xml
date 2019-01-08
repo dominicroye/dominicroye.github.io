@@ -10,6 +10,226 @@
     <atom:link href="/en/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Calculating the distance to the sea in R</title>
+      <link>/en/2019/calculating-the-distance-to-the-sea-in-r/</link>
+      <pubDate>Thu, 10 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2019/calculating-the-distance-to-the-sea-in-r/</guid>
+      <description>
+
+
+&lt;p&gt;The distance to the sea is a fundamental variable in geography, especially relevant when it comes to modeling. For example, in interpolations of air temperature, the distance to the sea is usually used as a predictor variable, since there is a casual relationship between the two that explains the spatial variation. How can we estimate the (shortest) distance to the coast in R?&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following libraries:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Library&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Set of vector maps ‘natural earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RColorBrewer&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Color palettes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the libraries if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+#packages
+library(rnaturalearth)
+library(sf)
+library(raster)
+library(tidyverse)
+library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-coast-of-iceland-as-an-example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The coast of Iceland as an example&lt;/h2&gt;
+&lt;p&gt;Our example in this post will be Iceland, and, as it is an island territory it will facilitate the tutorial showing the process in a simple manner. The &lt;em&gt;rnaturalearth&lt;/em&gt; package allows you to import the boundaries of countries (with different administrative levels) from around the world. The data comes from the platform &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. I recommend exploring the package, more info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;here&lt;/a&gt;. The &lt;code&gt;ne_countries( )&lt;/code&gt; function imports the country boundaries. In this case we indicate with the argument &lt;em&gt;scale&lt;/em&gt; the resolution (10, 50 or 110m), with &lt;em&gt;country&lt;/em&gt; we indicate the specific country of interest and with &lt;em&gt;returnclass&lt;/em&gt; we determine which class we want (&lt;em&gt;sf&lt;/em&gt; or &lt;em&gt;sp&lt;/em&gt;), in our case &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale=50) #world map with 50m resolution
+
+plot(world) #sp class by default&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2019-01-10-calculating-the-distance-to-the-sea/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the limits of Iceland
+iceland &amp;lt;- ne_countries(scale=10,country = &amp;quot;Iceland&amp;quot;,returnclass = &amp;quot;sf&amp;quot;)
+
+#info of our spatial vector object
+iceland&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 1 feature and 94 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
+## 188 Admin-0 country         0         3    Iceland    ISL        0     2
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
+##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
+## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &amp;lt;NA&amp;gt;
+##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
+## 188 Iceland     IS Republic of Iceland      &amp;lt;NA&amp;gt;    Iceland      &amp;lt;NA&amp;gt;
+##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
+## 188     &amp;lt;NA&amp;gt;   Iceland     &amp;lt;NA&amp;gt;         1         4         4          9
+##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
+## 188  339747       10      16150     2017         NA     2016
+##                        economy           income_grp wikipedia fips_10_
+## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
+##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
+## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
+##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
+## 188 Exact WOE match as country        ISL        ISL         NA         NA
+##     continent region_un       subregion             region_wb name_len
+## 188    Europe    Europe Northern Europe Europe &amp;amp; Central Asia        7
+##     long_len abbrev_len tiny homepart min_zoom min_label max_label
+## 188        7          7   NA        1        0         2         7
+##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
+## 188 1159320917       Q189    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Island Iceland Islandia Islande
+##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
+## 188    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Izland Islandia Islanda    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt; IJsland
+##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 Islandia Islândia    &amp;lt;NA&amp;gt;  Island Izlanda Iceland    &amp;lt;NA&amp;gt;
+##                           geometry
+## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#here Iceland
+plot(iceland)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2019-01-10-calculating-the-distance-to-the-sea/index.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default, the &lt;code&gt;plot( )&lt;/code&gt; function with the class &lt;em&gt;sf&lt;/em&gt; creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; or the limit argument &lt;code&gt;plot(iceland, max.plot = 1)&lt;/code&gt;. With the argument &lt;em&gt;max.plot = 1&lt;/em&gt; the function uses the first available variable of the map.&lt;/p&gt;
+&lt;p&gt;In addition, we see in the information of the object &lt;em&gt;sf&lt;/em&gt; that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;here&lt;/a&gt;. For that purpose, we use the &lt;code&gt;st_transform( )&lt;/code&gt; function. We simply indicate the map and the EPSG code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform to UTM
+iceland &amp;lt;- st_transform(iceland,3055)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-a-fishnet-of-points&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Create a fishnet of points&lt;/h2&gt;
+&lt;p&gt;We still need the points where we want to know the distance. In our case it will be a regular fishnet of points in Iceland with a resolution of 5km. We do this with the function &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicating the resolution in the unit of the coordinate system (meters in our case) with the argument &lt;em&gt;cellsize&lt;/em&gt;, and what geometry we would like to create &lt;em&gt;what&lt;/em&gt; (polygons, centers or corners).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create the fishnet
+grid &amp;lt;- st_make_grid(iceland,cellsize = 5000,what = &amp;quot;centers&amp;quot;)
+
+#our fishnet with the extension of Iceland
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2019-01-10-calculating-the-distance-to-the-sea/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#only extract the points in the limits of Iceland
+grid &amp;lt;- st_intersection(grid,iceland)   
+
+#our fishnet now
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2019-01-10-calculating-the-distance-to-the-sea/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calculating-the-distance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calculating the distance&lt;/h2&gt;
+&lt;p&gt;To estimate the distance we use the &lt;code&gt;st_distance( )&lt;/code&gt; function that returns a vector of distances for all our points in the fishnet. But first it is necessary to transform the map of Iceland from a polygon shape (MULTIPOLYGON) to a line (MULTILINESTRING). More details with &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform Iceland from polygon shape to line
+iceland &amp;lt;- st_cast(iceland,&amp;quot;MULTILINESTRING&amp;quot;)
+
+#calculation of the distance between the coast and our points
+dist &amp;lt;- st_distance(iceland,grid)
+
+#distance with unit in meters
+head(dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plotting-the-calculated-distance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Plotting the calculated distance&lt;/h2&gt;
+&lt;p&gt;Once obtained the distance for our points, we can combine them with the coordinates and plot them in &lt;em&gt;ggplot2&lt;/em&gt;. For this, we create a &lt;em&gt;data.frame&lt;/em&gt;. The object &lt;em&gt;dist&lt;/em&gt; is a matrix of one column, so we have to convert it to a vector with the function &lt;code&gt;as.vector( )&lt;/code&gt;. In addition, we divide by 1000 to convert the distance in meters to km. The &lt;code&gt;st_coordinates( )&lt;/code&gt; function extracts the coordinates of our points. For the final visualization we use a vector of colors with the RdGy palette (more &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a data.frame with the distance and the coordinates of the points
+df &amp;lt;- data.frame(dist=as.vector(dist)/1000,
+                    st_coordinates(grid))
+
+#structure
+str(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    4104 obs. of  3 variables:
+##  $ dist: num  0.791 1.151 1.271 3.129 2.429 ...
+##  $ X   : num  608796 613796 583796 588796 593796 ...
+##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colors 
+col_dist &amp;lt;- brewer.pal(11,&amp;quot;RdGy&amp;quot;)
+
+
+ggplot(df,aes(X,Y,fill=dist))+ #variables
+         geom_tile()+ #geometry
+           scale_fill_gradientn(colours=rev(col_dist))+ #colors for plotting the distance
+             labs(fill=&amp;quot;Distance (km)&amp;quot;)+ #legend name
+             theme_void()+ #map theme
+              theme(legend.position = &amp;quot;bottom&amp;quot;) #legend position&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2019-01-10-calculating-the-distance-to-the-sea/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;export-the-distance-as-a-raster&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Export the distance as a raster&lt;/h2&gt;
+&lt;p&gt;To be able to export the estimated distance to the sea of Iceland, we need to use the &lt;code&gt;rasterize( )&lt;/code&gt; function of the library &lt;em&gt;raster&lt;/em&gt;.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;First, it is necessary to create an empty raster. In this raster we have to indicate the resolution, in our case it is of 5000m, the projection and the extension of the raster.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;p&gt;We can extract the projection from the information of the map of Iceland.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The extension can be extracted from our &lt;em&gt;grid&lt;/em&gt; points with the function &lt;code&gt;extent( )&lt;/code&gt;. However, this last function needs the class &lt;em&gt;sp&lt;/em&gt;, so we pass the object &lt;em&gt;grid&lt;/em&gt; in &lt;em&gt;sf&lt;/em&gt; format, only for this time, to the class &lt;em&gt;sp&lt;/em&gt; using the function &lt;code&gt;as( )&lt;/code&gt; and the argument “Spatial”.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;ol start=&#34;2&#34; style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;In addition to the above, the &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt;, that we created earlier, has to be converted into the &lt;em&gt;sf&lt;/em&gt; class. Therefore, we apply the function &lt;code&gt;st_as_sf( )&lt;/code&gt; with the argument &lt;em&gt;coords&lt;/em&gt; indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#get the extension
+ext &amp;lt;- extent(as(grid,&amp;quot;Spatial&amp;quot;))
+
+#extent object
+ext&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : Extent 
+## xmin        : 338795.6 
+## xmax        : 848795.6 
+## ymin        : 7033371 
+## ymax        : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destination
+r &amp;lt;- raster(resolution=5000,ext=ext,crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+
+#convert the points to a spatial object class sf
+dist_sf &amp;lt;- st_as_sf(df,coords=c(&amp;quot;X&amp;quot;,&amp;quot;Y&amp;quot;))%&amp;gt;%
+                      st_set_crs(3055)
+
+#create the distance raster
+dist_raster &amp;lt;- rasterize(dist_sf,r,&amp;quot;dist&amp;quot;,fun=mean)
+
+#raster
+dist_raster&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : RasterLayer 
+## dimensions  : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution  : 5000, 5000  (x, y)
+## extent      : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## data source : in memory
+## names       : layer 
+## values      : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot the raster
+plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2019-01-10-calculating-the-distance-to-the-sea/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#export the raster
+writeRaster(dist_raster,file=&amp;quot;dist_islandia.tif&amp;quot;,format=&amp;quot;GTiff&amp;quot;, overwrite=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the calculation of distance we can create art, as seen in the header of this post, which includes a world map only with the distance to the sea of all continents. A different perspective to our world (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;here more (spanish)&lt;/a&gt;) .&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Alcohol outlet density and alcohol consumption in Galician youth</title>
       <link>/en/publication/alcohol_galicia2018/</link>
       <pubDate>Fri, 21 Dec 2018 00:00:00 +0000</pubDate>
@@ -24,7 +244,21 @@
       <pubDate>Sat, 15 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/en/graphs/climate/</guid>
-      <description>
+      <description>&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;//player.vimeo.com/video/310077447&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+ &lt;/div&gt;
+
+Probability of a frost day (minimum temperature less than 0ºC) through the year in Europe. Data: &lt;a href=&#34;http://c3surf.knmi.nl/dataaccess/access_eobs.php&#34; target=&#34;_blank&#34;&gt;E-OBS 18e&lt;/a&gt;.&lt;/p&gt;
+
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;//player.vimeo.com/video/310070253&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+ &lt;/div&gt;
+
+Probability of a frost day (minimum temperature less than 0ºC/32ºF) through the year in the Contiguous United States. Data: &lt;a href=&#34;https://developers.google.com/earth-engine/datasets/catalog/OREGONSTATE_PRISM_AN81m&#34; target=&#34;_blank&#34;&gt;PRISM&lt;/a&gt;. Platform: &lt;a href=&#34;https://earthengine.google.com/&#34; target=&#34;_blank&#34;&gt;Google Earth Engine&lt;/a&gt;.&lt;/p&gt;
+
+
 
 &lt;div class=&#34;gallery&#34;&gt;
 
@@ -1630,7 +1864,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;the-database-of-open-street-maps&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The database of Open Street Maps&lt;/h2&gt;
 &lt;p&gt;Recently I created a map of the distribution of gas stations and electric charging stations in Europe.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; @mipazos &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;How can you obtain this data?&lt;/p&gt;
@@ -2271,15 +2505,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
       <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
       
       <guid>/en/publication/pharma_coru%C3%B1a_2018/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Spatial–temporal patterns of cloud-to-ground lightning over the northwest Iberian Peninsula during the period 2010–2015</title>
-      <link>/en/publication/lightning_galicia_2018/</link>
-      <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/en/publication/lightning_galicia_2018/</guid>
       <description></description>
     </item>
     

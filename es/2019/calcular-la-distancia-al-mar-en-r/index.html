@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.52" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/es/2019/calcular-la-distancia-al-mar-en-r/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair+Display:400,700|Fauna+One">
+  
+
+  <link rel="stylesheet" href="/es/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/es/2019/calcular-la-distancia-al-mar-en-r/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/es/2019/calcular-la-distancia-al-mar-en-r/">
+  <meta property="og:title" content="Calcular la distancia al mar en R | Dominic Royé">
+  <meta property="og:description" content="En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?"><meta property="og:image" content="/es/2019/calcular-la-distancia-al-mar-en-r/featured.jpg">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2019-01-10T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2019-01-10T00:00:00&#43;00:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#2962ff",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#2962ff"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "Este sitio web utiliza cookies para garantizarle una mejor experiencia.",
+        "dismiss": "Entendido!",
+        "link": "Más información",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>Calcular la distancia al mar en R | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/es"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Barra de navegación">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#">
+            
+            <span>inicio</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#publications_selected">
+            
+            <span>publicaciones</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#graphs">
+            
+            <span>gráficos</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#about">
+            
+            <span>mí</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="article-header d-xl-none">
+  <div class="featured-image" style="background-image: url('/es/2019/calcular-la-distancia-al-mar-en-r/featured_hu987eb252c5a3adbf8f2c2e98fd68b622_3121564_800x0_resize_q75_box.jpg');"></div>
+  
+</div>
+
+
+<div class="container-fluid split-header d-none d-xl-block">
+  <div class="row">
+    <div class="col-6">
+      <div class="split-header-content">
+        <h1 itemprop="name">Calcular la distancia al mar en R</h1>
+
+        
+
+        
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2019-01-10 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2019-01-10 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2019-01-10
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2019/calcular-la-distancia-al-mar-en-r/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/sig/">sig</a>, 
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="/es/categories/relemental/">R:elemental</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+        
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Calcular%20la%20distancia%20al%20mar%20en%20R&amp;url=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f&amp;title=Calcular%20la%20distancia%20al%20mar%20en%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f&amp;title=Calcular%20la%20distancia%20al%20mar%20en%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Calcular%20la%20distancia%20al%20mar%20en%20R&amp;body=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="split-header-image">
+        <img src="/es/2019/calcular-la-distancia-al-mar-en-r/featured_hu987eb252c5a3adbf8f2c2e98fd68b622_3121564_680x500_fill_q90_box_smart1.jpg" itemprop="image" alt="">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="article-container d-xl-none">
+  <h1 itemprop="name">Calcular la distancia al mar en R</h1>
+
+  
+
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2019-01-10 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2019-01-10 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2019-01-10
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2019/calcular-la-distancia-al-mar-en-r/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/sig/">sig</a>, 
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="/es/categories/relemental/">R:elemental</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Calcular%20la%20distancia%20al%20mar%20en%20R&amp;url=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f&amp;title=Calcular%20la%20distancia%20al%20mar%20en%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f&amp;title=Calcular%20la%20distancia%20al%20mar%20en%20R"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Calcular%20la%20distancia%20al%20mar%20en%20R&amp;body=%2fes%2f2019%2fcalcular-la-distancia-al-mar-en-r%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+
+<p>En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?</p>
+<div id="librerias" class="section level2">
+<h2>Librerías</h2>
+<p>En este post usaremos las siguientes librerías:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Librería</th>
+<th align="left">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Conjunto de librerías (visualización y manipulación de datos): ggplot2, dplyr, etc.</td>
+</tr>
+<tr class="even">
+<td align="left">sf</td>
+<td align="left">Simple Feature: importar, exportar y manipular datos vectoriales</td>
+</tr>
+<tr class="odd">
+<td align="left">raster</td>
+<td align="left">Importar, exportar y manipular raster</td>
+</tr>
+<tr class="even">
+<td align="left">rnaturalearth</td>
+<td align="left">Conjunto de mapas vectoriales ‘natural earth’</td>
+</tr>
+<tr class="odd">
+<td align="left">RColorBrewer</td>
+<td align="left">Paletas de colores</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#instalamos las librerías si hace falta
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;raster&quot;)) install.packages(&quot;raster&quot;)
+if(!require(&quot;rnaturalearth&quot;)) install.packages(&quot;rnaturalearth&quot;)
+
+#librerías
+library(rnaturalearth)
+library(sf)
+library(raster)
+library(tidyverse)
+library(RColorBrewer)</code></pre>
+</div>
+<div id="la-costa-de-islandia-como-ejemplo" class="section level2">
+<h2>La costa de Islandia como ejemplo</h2>
+<p>Nuestro ejemplo en este post será Islandia, como es un territorio insular facilitará el ensayo y de este modo es posible mostrar el proceso de forma sencilla. La librería <em>rnaturalearth</em> permite importar los límites de países (con diferentes niveles administrativos) de todo el mundo. Los datos vienen de la plataforma <a href="http://www.naturalearthdata.com/">naturalearthdata.com</a>. Recomiendo explorar la librería, más info <a href="https://github.com/ropensci/rnaturalearth">aquí</a>. La función <code>ne_countries( )</code> importa los límites de países. En este caso indicamos con el argumento <em>scale</em> la resolución (10,50 o 110m), con <em>country</em> indicamos el país concreto de interés y con <em>returnclass</em> determinamos que clase queremos (<em>sf</em> o <em>sp</em>), en nuestro caso <em>sf</em> (simple feature).</p>
+<pre class="r"><code>world &lt;- ne_countries(scale=50) #mapamundi con 50m de resolución
+
+plot(world) #tiene clase sp por defecto</code></pre>
+<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<pre class="r"><code>#importamos los límites de Islandia 
+iceland &lt;- ne_countries(scale=10,country = &quot;Iceland&quot;,returnclass = &quot;sf&quot;)
+
+#info del objeto vectorial
+iceland</code></pre>
+<pre><code>## Simple feature collection with 1 feature and 94 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
+## 188 Admin-0 country         0         3    Iceland    ISL        0     2
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
+##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
+## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &lt;NA&gt;
+##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
+## 188 Iceland     IS Republic of Iceland      &lt;NA&gt;    Iceland      &lt;NA&gt;
+##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
+## 188     &lt;NA&gt;   Iceland     &lt;NA&gt;         1         4         4          9
+##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
+## 188  339747       10      16150     2017         NA     2016
+##                        economy           income_grp wikipedia fips_10_
+## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
+##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
+## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
+##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
+## 188 Exact WOE match as country        ISL        ISL         NA         NA
+##     continent region_un       subregion             region_wb name_len
+## 188    Europe    Europe Northern Europe Europe &amp; Central Asia        7
+##     long_len abbrev_len tiny homepart min_zoom min_label max_label
+## 188        7          7   NA        1        0         2         7
+##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
+## 188 1159320917       Q189    &lt;NA&gt;    &lt;NA&gt;  Island Iceland Islandia Islande
+##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
+## 188    &lt;NA&gt;    &lt;NA&gt;  Izland Islandia Islanda    &lt;NA&gt;    &lt;NA&gt; IJsland
+##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 Islandia Islândia    &lt;NA&gt;  Island Izlanda Iceland    &lt;NA&gt;
+##                           geometry
+## 188 MULTIPOLYGON (((-14.56363 6...</code></pre>
+<pre class="r"><code>#aquí Islandia
+plot(iceland)</code></pre>
+<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p>Por defecto, la función <code>plot( )</code> con la clase <em>sf</em> nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable <code>plot(iceland[&quot;admin&quot;])</code> o el argumento <em>max.plot</em> <code>plot(iceland,max.plot=1)</code>. Con el argumento <em>max.plot=1</em> la función usa la primera variable disponible del mapa.</p>
+<p>Además, vemos en la información del objeto <em>sf</em> que la proyección es WGS84 con grados decimales (código EPSG:4326). Para el cálculo de distancias es más conveniente usar metros en lugar de grados. Debido a ello, lo primero que hacemos es transformar el mapa de Islandia a UTM Zona 27 (código EPSG:3055). Más información sobre EPSG y proyecciones <a href="http://spatialreference.org/ref/epsg/wgs-84/">aquí</a>. Con ese objetivo, usamos la función <code>st_transform( )</code>. Simplemente indicamos el mapa y el código EPSG.</p>
+<pre class="r"><code>#transformamos a UTM
+iceland &lt;- st_transform(iceland,3055)</code></pre>
+</div>
+<div id="crear-una-red-de-puntos" class="section level2">
+<h2>Crear una red de puntos</h2>
+<p>Todavía necesitamos los puntos donde queremos conocer la distancia. En nuestro caso será una red regular de puntos en Islandia con una resolución de 5km. Esa tarea la hacemos con la función <code>st_make_grid( )</code>, indicando con el argumento <em>cellsize</em> la resolución en la unidad del sistema de coordenadas (metros en nuestro caso) y qué geometría nos gustaría crear <em>what</em> (poligonos, centros o esquinas).</p>
+<pre class="r"><code>#crear red de puntos
+grid &lt;- st_make_grid(iceland,cellsize = 5000,what = &quot;centers&quot;)
+
+#nuestra red sobre la extensión de Islandia
+plot(grid)</code></pre>
+<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code>#exraemos sólamente los puntos en los límites de Islandia
+grid &lt;- st_intersection(grid,iceland)   
+
+#nuestra red ahora
+plot(grid)</code></pre>
+<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="calcular-la-distancia" class="section level2">
+<h2>Calcular la distancia</h2>
+<p>Para estimar la distancia usamos la función <code>st_distance( )</code> que nos devuelve un vector de distancias para todos nuestros puntos de la red. Pero antes es necesario transformar el mapa de Islandia de una forma de polígono (MULTIPOLYGON) a línea (MULTILINESTRING). Más detalles con <code>?st_cast</code>.</p>
+<pre class="r"><code>#convertimos Islandia de geometría poligono a línea
+iceland &lt;- st_cast(iceland,&quot;MULTILINESTRING&quot;)
+
+#cálculo de la distancia entre la costa y nuestros puntos
+dist &lt;- st_distance(iceland,grid)
+
+#distancia con unidad en metros
+head(dist)</code></pre>
+<pre><code>## Units: [m]
+## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472</code></pre>
+</div>
+<div id="visualizar-la-distancia-calculada" class="section level2">
+<h2>Visualizar la distancia calculada</h2>
+<p>Una vez obtenida la distancia para nuestros puntos, podemos combinarlos con las coordenadas y plotearlos en <em>ggplot2</em>. Para ello, creamos un <em>data.frame</em>. El objeto <em>dist</em> es una matriz de una columna, por eso, tenemos que convertirla a vector con la función <code>as.vector( )</code>. Además, dividimos por 1000 para convertir la distancia en metros a km. La función <code>st_coordinates( )</code> extrae las coordenadas de nuestros puntos. Para la visualización usamos un vector de colores con la gama RdGy (más <a href="http://colorbrewer2.org">aquí</a>).</p>
+<pre class="r"><code>#creamos un data.frame con la distancia y las coorendas de los puntos
+df &lt;- data.frame(dist=as.vector(dist)/1000,
+                    st_coordinates(grid))
+
+#estructura
+str(df)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    4104 obs. of  3 variables:
+##  $ dist: num  0.791 1.151 1.271 3.129 2.429 ...
+##  $ X   : num  608796 613796 583796 588796 593796 ...
+##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...</code></pre>
+<pre class="r"><code>#colores 
+col_dist &lt;- brewer.pal(11,&quot;RdGy&quot;)
+
+
+ggplot(df,aes(X,Y,fill=dist))+ #variables
+         geom_tile()+ #geometría
+           scale_fill_gradientn(colours=rev(col_dist))+ #colores para la distancia
+             labs(fill=&quot;Distance (km)&quot;)+ #nombre de la leyenda
+             theme_void()+ #estilo del mapa
+              theme(legend.position = &quot;bottom&quot;) #posición de la leyenda</code></pre>
+<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="exportar-la-distancia-como-raster" class="section level2">
+<h2>Exportar la distancia como raster</h2>
+<p>Para poder exportar la distancia con respecto al mar de Islandia, debemos usar la función <code>rasterize( )</code> de la librería <em>raster</em>.</p>
+<ol style="list-style-type: decimal">
+<li><p>Primero, es necesario crear un raster vacío. En este raster debemos indicar la resolución, en nuestro caso es de 5000m, la proyección y la extensión del raster.</p>
+<ol style="list-style-type: lower-alpha">
+<li><p>La proyección la podemos extraer de la información del mapa de Islandia.</p></li>
+<li><p>La extensión la conseguimos extraer de nuestros puntos <em>grid</em> con la función <code>extent( )</code>. No obstante, esta última función necesita la clase <em>sp</em>, por eso pasamos el objeto <em>grid</em> en formato <em>sf</em>, únicamente para ello, a la clase <em>sp</em> usando la función <code>as( )</code> y el argumento “Spatial”.</p></li>
+</ol></li>
+<li><p>Además de lo anterior, el <em>data.frame</em> <strong>df</strong> que creamos antes debemos convertir en clase <em>sf</em>. Por eso, aplicamos la función <code>st_as_sf( )</code> con el argumento <em>coords</em> indicando los nombres de las coordenadas. Adicionalmente, también definimos el sistema de coordenadas que conocemos.</p></li>
+</ol>
+<pre class="r"><code>#obtenemos la extensión
+ext &lt;- extent(as(grid,&quot;Spatial&quot;))
+
+#objeto extent
+ext</code></pre>
+<pre><code>## class       : Extent 
+## xmin        : 338795.6 
+## xmax        : 848795.6 
+## ymin        : 7033371 
+## ymax        : 7383371</code></pre>
+<pre class="r"><code>#raster destino
+r &lt;- raster(resolution=5000,ext=ext,crs=&quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&quot;)
+
+#convertimos los puntos a un spatial object clase sf
+dist_sf &lt;- st_as_sf(df,coords=c(&quot;X&quot;,&quot;Y&quot;))%&gt;%
+                      st_set_crs(3055)
+
+#creamos el raster de la distancia
+dist_raster &lt;- rasterize(dist_sf,r,&quot;dist&quot;,fun=mean)
+
+#raster
+dist_raster</code></pre>
+<pre><code>## class       : RasterLayer 
+## dimensions  : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution  : 5000, 5000  (x, y)
+## extent      : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## data source : in memory
+## names       : layer 
+## values      : 0.006124901, 115.1712  (min, max)</code></pre>
+<pre class="r"><code>#plotear el raster
+plot(dist_raster)</code></pre>
+<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar/index.es_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code>#exportamos el raster
+writeRaster(dist_raster,file=&quot;dist_islandia.tif&quot;,format=&quot;GTiff&quot;, overwrite=TRUE)</code></pre>
+<p>Con el cálculo de la distancia podemos llegar crear <em>arte</em>, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (<a href="https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/">aquí más</a>).</p>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/es/tags/distancia/">distancia</a>
+  
+  <a class="badge badge-light" href="/es/tags/raster/">raster</a>
+  
+  <a class="badge badge-light" href="/es/tags/calculo/">calculo</a>
+  
+  <a class="badge badge-light" href="/es/tags/variable/">variable</a>
+  
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="/es">Dr. Dominic Royé</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+          <i class="fa fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+          <i class="ai ai-researchgate"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/dominicroye" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+
+    
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Anterior</div>
+    <a href="/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/" rel="prev">Cómo crear &#39;Warming Stripes&#39; in R</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+
