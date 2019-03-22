@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.52" />
+  <meta name="generator" content="Hugo 0.53" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -602,13 +602,13 @@
 
 
 <p>En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?</p>
-<div id="librerias" class="section level2">
-<h2>Librerías</h2>
-<p>En este post usaremos las siguientes librerías:</p>
+<div id="paquetes" class="section level2">
+<h2>Paquetes</h2>
+<p>En este post usaremos los siguientes paquetes:</p>
 <table>
 <thead>
 <tr class="header">
-<th align="left">Librería</th>
+<th align="left">Paquete</th>
 <th align="left">Descripción</th>
 </tr>
 </thead>
@@ -635,7 +635,7 @@
 </tr>
 </tbody>
 </table>
-<pre class="r"><code>#instalamos las librerías si hace falta
+<pre class="r"><code>#instalamos los paquetes si hace falta
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
 if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
 if(!require(&quot;raster&quot;)) install.packages(&quot;raster&quot;)
@@ -919,6 +919,11 @@ writeRaster(dist_raster,file=&quot;dist_islandia.tif&quot;,format=&quot;GTiff&qu
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Siguiente</div>
+    <a href="/es/2019/importar-varias-hojas-excel-en-r/" rel="next">Importar varias hojas Excel en R</a>
+  </div>
   
   
   <div class="post-nav-item">

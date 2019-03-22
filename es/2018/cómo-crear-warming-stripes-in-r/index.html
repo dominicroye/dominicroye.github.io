@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.52" />
+  <meta name="generator" content="Hugo 0.53" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -609,11 +609,11 @@
 <blockquote class="twitter-tweet"><p lang="es" dir="ltr"><a href="https://twitter.com/hashtag/Temperatura?src=hash&amp;ref_src=twsrc%5Etfw">#Temperatura</a> anual en <a href="https://twitter.com/hashtag/MadridRetiro?src=hash&amp;ref_src=twsrc%5Etfw">#MadridRetiro</a> desde 1920 a 2017.  <a href="https://twitter.com/hashtag/CambioClimatico?src=hash&amp;ref_src=twsrc%5Etfw">#CambioClimatico</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> (idea de <a href="https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw">@ed_hawkins</a> 🙏) <a href="https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw">@Divulgameteo</a> <a href="https://twitter.com/edupenabad?ref_src=twsrc%5Etfw">@edupenabad</a> <a href="https://twitter.com/climayagua?ref_src=twsrc%5Etfw">@climayagua</a> <a href="https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw">@ClimaGroupUB</a> <a href="https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw">@4gotas_com</a> <a href="https://t.co/wmLb5uczpT">pic.twitter.com/wmLb5uczpT</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw">June 2, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
-<p>En este post voy a enseñar cómo se pueden crear estas tiras en R con la librería <em>ggplot2</em>. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de <em>ggplot2</em>.</p>
+<p>En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete <em>ggplot2</em>. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de <em>ggplot2</em>.</p>
 <div id="datos" class="section level2">
 <h2>Datos</h2>
-<p>En este caso usaremos las temperaturas anuales de Lisboa del <a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a> que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar <a href="/files/temp_lisboa.csv">aquí</a>. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de librerías <em>tidyverse</em> que incluyen también <em>ggplot2</em>. Además, nos hará falta la librería <em>lubridate</em> para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.</p>
-<pre class="r"><code>#instalamos las librerías lubridate y tidyverse
+<p>En este caso usaremos las temperaturas anuales de Lisboa del <a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a> que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar <a href="/files/temp_lisboa.csv">aquí</a>. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes <em>tidyverse</em> que incluyen también <em>ggplot2</em>. Además, nos hará falta el paquete <em>lubridate</em> para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.</p>
+<pre class="r"><code>#instalamos los paquetes lubridate y tidyverse
 if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
 
@@ -683,7 +683,7 @@ summary(temp_lisboa_yr) </code></pre>
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90</code></pre>
 <pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))</code></pre>
-<p>Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas de la librería <em>lubridate</em> y las funciones de apoyo dentro de <em>ggplot2</em>. La función <code>str_c( )</code> de la librería <em>stringr</em>, forma parte de la colección de <em>tidyverse</em>, es similar a <code>paste( )</code> de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función <code>ymd( )</code> (year month day) de la librería <em>lubridate</em> convierte una fecha en un objeto <em>Date</em>. Es posible combinar varias funciones haciendo uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
+<p>Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas del paquete <em>lubridate</em> y las funciones de apoyo dentro de <em>ggplot2</em>. La función <code>str_c( )</code> del paquete <em>stringr</em>, forma parte de la colección de <em>tidyverse</em>, es similar a <code>paste( )</code> de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función <code>ymd( )</code> (year month day) del paquete <em>lubridate</em> convierte una fecha en un objeto <em>Date</em>. Es posible combinar varias funciones haciendo uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
 <pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&quot;01-01&quot;,sep=&quot;-&quot;)%&gt;%ymd())</code></pre>
 </div>
 <div id="creando-las-tiras" class="section level2">

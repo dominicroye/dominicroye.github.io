@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.52" />
+  <meta name="generator" content="Hugo 0.53" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -613,12 +613,12 @@
 
 <p>¿Cómo se puede obtener estos datos?</p>
 <p>Pues, en este caso usé puntos de interés (PDIs) de la base de datos de <em>Open Street Maps</em> (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una <em>overpass API</em>, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.</p>
-<p>Una forma fácil de acceder a una <em>overpass API</em> es a través de <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">aquí</a>. Sin embargo, tenemos a nuestra disposicón una librería <em>osmdata</em> que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la <em>overpass-turbo.eu</em> puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.</p>
+<p>Una forma fácil de acceder a una <em>overpass API</em> es a través de <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">aquí</a>. Sin embargo, tenemos a nuestra disposicón el paquete <em>osmdata</em> que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la <em>overpass-turbo.eu</em> puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.</p>
 </div>
 <div id="acceso-a-la-overpass-api-desde-r" class="section level2">
 <h2>Acceso a la overpass API desde R</h2>
-<p>El primer paso, que debemos seguir, es instalar varias librerías, en el caso de que no estén instaldas. En casi todos mis scripts hago uso de <a href="https://www.tidyverse.org/"><em>tidyverse</em></a> que es una colección fundamental de distintas librerías, incluyendo <em>dplyr</em> (manipulación de datos), <em>ggplot2</em> (visualización), etc. La librería <a href="https://r-spatial.github.io/sf/articles/sf1.html"><em>sf</em></a> es el nuevo estándar para trabajar con datos espaciales y es compatible con <em>ggplot2</em> y <em>dplyr</em>. Por último, <a href="http://stat405.had.co.nz/ggmap.pdf"><em>ggmap</em></a> nos facilita el trabajo para crear mapas.</p>
-<pre class="r"><code>#instalamos las librerías osmdata, sf, tidyverse y ggmap
+<p>El primer paso, que debemos seguir, es instalar varios paquetes, en el caso de que no estén instaldos. En casi todos mis scripts hago uso de <a href="https://www.tidyverse.org/"><em>tidyverse</em></a> que es una colección fundamental de distintos paquetes, incluyendo <em>dplyr</em> (manipulación de datos), <em>ggplot2</em> (visualización), etc. El paquete <a href="https://r-spatial.github.io/sf/articles/sf1.html"><em>sf</em></a> es el nuevo estándar para trabajar con datos espaciales y es compatible con <em>ggplot2</em> y <em>dplyr</em>. Por último, <a href="http://stat405.had.co.nz/ggmap.pdf"><em>ggmap</em></a> nos facilita el trabajo para crear mapas.</p>
+<pre class="r"><code>#instalamos los paquetes osmdata, sf, tidyverse y ggmap
 if(!require(&quot;osmdata&quot;)) install.packages(&quot;osmdata&quot;)
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
 if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
@@ -645,7 +645,7 @@ head(available_tags(&quot;shop&quot;))</code></pre>
 <pre><code>## [1] &quot;agrarian&quot;  &quot;alcohol&quot;   &quot;anime&quot;     &quot;antiques&quot;  &quot;appliance&quot; &quot;art&quot;</code></pre>
 <div id="la-primera-consulta-donde-podemos-encontrar-cines-en-madrid" class="section level3">
 <h3>La primera consulta: ¿Dónde podemos encontrar cines en Madrid?</h3>
-<p>Para construir la consulta se hace uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
+<p>Para construir la consulta se hace uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
 <p>En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función <code>getbb( )</code> crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es <code>opq( )</code> que construye la consulta final. Añadimos con la función <code>add_osm_feature( )</code> nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave <em>amenity</em> y como categoría <em>cinema</em>. Existen varios formatos para obtener el resultado de la consulta. La función <code>osmdata_*( )</code> envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato <em>simple feature</em>, <em>spatial</em> o <em>XML</em>.</p>
 <pre class="r"><code>#construcción de la consulta
 q &lt;- getbb(&quot;Madrid&quot;)%&gt;%
@@ -665,9 +665,9 @@ cinema</code></pre>
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &#39;sf&#39; Simple Features Collection with 226 points
+##            $osm_points : &#39;sf&#39; Simple Features Collection with 195 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 14 polygons
+##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL</code></pre>
 <p>Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría <em>osm_points</em>.</p>

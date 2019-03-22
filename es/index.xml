@@ -10,6 +10,262 @@
     <atom:link href="/es/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Importar varias hojas Excel en R</title>
+      <link>/es/2019/importar-varias-hojas-excel-en-r/</link>
+      <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2019/importar-varias-hojas-excel-en-r/</guid>
+      <description>
+
+
+&lt;p&gt;Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentra en dos archvios de Excel con hojas para cada año entre 2000 y 2005: &lt;a href=&#34;/files/Data_Excel.zip&#34;&gt;descarga&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readxl&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar archivos Excel&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
+
+
+#librerías
+library(tidyverse)
+library(fs)
+library(readxl)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por defecto, la función &lt;code&gt;read_excel()&lt;/code&gt; importa la primera hoja. Para importar una hoja diferente es necesario indicarlo con el argumento &lt;em&gt;sheet&lt;/em&gt; o bien el número o el nombre (segundo argumento).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importar primera hoja
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importar hoja 3
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2002-01-01 00:00:00   8.7  2002
+##  2 2002-01-02 00:00:00   7.4  2002
+##  3 2002-01-03 00:00:00   8.5  2002
+##  4 2002-01-04 00:00:00   9.2  2002
+##  5 2002-01-05 00:00:00   9.3  2002
+##  6 2002-01-06 00:00:00   7.3  2002
+##  7 2002-01-07 00:00:00   5.4  2002
+##  8 2002-01-08 00:00:00   5.6  2002
+##  9 2002-01-09 00:00:00   6.8  2002
+## 10 2002-01-10 00:00:00   6.1  2002
+## # ... with 355 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La función &lt;code&gt;excel_sheets()&lt;/code&gt; permite extraer los nombres de las hojas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+path%&amp;gt;%
+  excel_sheets()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado nos indica que en cada hoja encontramos un año de los datos desde 2000 a 2005. La función más importante para leer múltiples hojas es &lt;code&gt;map()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que forma parte de la colección de paquetes &lt;em&gt;{tidyverse}&lt;/em&gt;. &lt;code&gt;map()&lt;/code&gt; permite aplicar una función a cada elemento de un vector o lista.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map(read_excel,
+           path=path)
+        
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 6
+##  $ 2000:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:366] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ 2001:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2001-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.2 8.8 7.5 9.2 10 9 5.5 4.6 3 7.9 ...
+##   ..$ yr  : num [1:365] 2001 2001 2001 2001 2001 ...
+##  $ 2002:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2002-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.7 7.4 8.5 9.2 9.3 7.3 5.4 5.6 6.8 6.1 ...
+##   ..$ yr  : num [1:365] 2002 2002 2002 2002 2002 ...
+##  $ 2003:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2003-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 9.4 10.8 9.7 9.2 6.3 6.6 3.8 6.4 4.3 3.4 ...
+##   ..$ yr  : num [1:365] 2003 2003 2003 2003 2003 ...
+##  $ 2004:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2004-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 6.6 5.9 7.8 8.1 6.4 5.7 5.2 6.9 11.8 12.2 ...
+##   ..$ yr  : num [1:366] 2004 2004 2004 2004 2004 ...
+##  $ 2005:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2005-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 7.1 7.8 6.4 5.6 4.4 6.8 7.4 6 5.2 4.2 ...
+##   ..$ yr  : num [1:365] 2005 2005 2005 2005 2005 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una lista nombrada con el nombre de cada hoja que contiene el data.frame. Dado que se trata de la misma tabla en todas las hojas, podríamos usar la función &lt;code&gt;bind_rows()&lt;/code&gt;, no obstante, existe una variante de &lt;code&gt;map()&lt;/code&gt;que directamente nos une todas las tablas por fila: &lt;code&gt;map_df()&lt;/code&gt;. Si fuese necesario unir por columna se debería usar &lt;code&gt;map_dfc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map_df(read_excel,
+           path=path)
+
+mad&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 2,182 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En nuestro caso tenemos una columna en cada hoja (año, pero también la fecha) que diferencia cada tabla. Si no fuera el caso, deberíamos usar el nombre de las hojas como nueva columna al unir todas. En &lt;code&gt;bind_rows()&lt;/code&gt; puede hacerse con el argumento &lt;em&gt;.id&lt;/em&gt; asignando un nombre para la columna. Lo mismo valdría para &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map_df(read_excel,
+           path=path,
+           .id=&amp;quot;yr2&amp;quot;)
+
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
+##  $ yr2 : chr  &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;¿Pero cómo importamos múltiples archivos de Excel?&lt;/p&gt;
+&lt;p&gt;Para ello, primero debemos conocer la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;a href=&#34;https://github.com/r-lib/fs&#34;&gt;&lt;em&gt;{fs}&lt;/em&gt;&lt;/a&gt;. Es cierto que existe la función &lt;code&gt;dir()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;, pero las ventajas del reciente paquete son varias, pero especialmente es la compatibilidad con la colección de &lt;em&gt;{tidyverse}&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dir_ls()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.es.html    index.es.Rmd     
+## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#podemos filtrar los archivos que queremos
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Importamos los dos archivos de Excel que tenemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#sin unir
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+  map(read_excel)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   1.2  2000
+##  2 2000-01-02 00:00:00   3.6  2000
+##  3 2000-01-03 00:00:00   5.7  2000
+##  4 2000-01-04 00:00:00   5.1  2000
+##  5 2000-01-05 00:00:00   2.2  2000
+##  6 2000-01-06 00:00:00   1.8  2000
+##  7 2000-01-07 00:00:00   4.2  2000
+##  8 2000-01-08 00:00:00   4.2  2000
+##  9 2000-01-09 00:00:00   4.2  2000
+## 10 2000-01-10 00:00:00   1.7  2000
+## # ... with 356 more rows
+## 
+## $madrid_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#uniendo con una nueva columna
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+  map_df(read_excel,.id=&amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
+##    city             date                   ta    yr
+##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 berlin_temp.xlsx 2000-01-01 00:00:00   1.2  2000
+##  2 berlin_temp.xlsx 2000-01-02 00:00:00   3.6  2000
+##  3 berlin_temp.xlsx 2000-01-03 00:00:00   5.7  2000
+##  4 berlin_temp.xlsx 2000-01-04 00:00:00   5.1  2000
+##  5 berlin_temp.xlsx 2000-01-05 00:00:00   2.2  2000
+##  6 berlin_temp.xlsx 2000-01-06 00:00:00   1.8  2000
+##  7 berlin_temp.xlsx 2000-01-07 00:00:00   4.2  2000
+##  8 berlin_temp.xlsx 2000-01-08 00:00:00   4.2  2000
+##  9 berlin_temp.xlsx 2000-01-09 00:00:00   4.2  2000
+## 10 berlin_temp.xlsx 2000-01-10 00:00:00   1.7  2000
+## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ahora bien, en este caso sólo importamos la primera hoja de cada archivo Excel. Para resolver este problema, debemos crear nuestra propia función. En esta función hacemos lo que hicimos previamente de forma individual.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
+  path%&amp;gt;%
+    excel_sheets() %&amp;gt;% 
+    set_names() %&amp;gt;% 
+  map_df(read_excel, path = path)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aplicamos nuestra función creada para importar múltiples hojas de varios archivos Excel.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#por separado
+data &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map(read_multiple_excel)
+
+str(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 2
+##  $ berlin_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ madrid_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#unir todas
+data_df &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map_df(read_multiple_excel,
+                  .id=&amp;quot;city&amp;quot;)
+
+str(data_df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
+##  $ city: chr  &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>Calcular la distancia al mar en R</title>
       <link>/es/2019/calcular-la-distancia-al-mar-en-r/</link>
       <pubDate>Tue, 08 Jan 2019 00:00:00 +0000</pubDate>
@@ -19,13 +275,13 @@
 
 
 &lt;p&gt;En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?&lt;/p&gt;
-&lt;div id=&#34;librerias&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Librerías&lt;/h2&gt;
-&lt;p&gt;En este post usaremos las siguientes librerías:&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Librería&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
 &lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
 &lt;/tr&gt;
 &lt;/thead&gt;
@@ -52,7 +308,7 @@
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos las librerías si hace falta
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
 if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
@@ -266,6 +522,266 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
   
 
 
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Bilbao.&#34; href=&#34;/img/album/anomalias_Bilbao&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Bilbao&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Bilbao. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Zaragoza.&#34; href=&#34;/img/album/anomalias_Zaragoza&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Zaragoza&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Zaragoza. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Santander.&#34; href=&#34;/img/album/anomalias_Santander&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Santander&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Santander. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Málaga.&#34; href=&#34;/img/album/anomalias_Malaga&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Malaga&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Málaga. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Sevilla.&#34; href=&#34;/img/album/anomalias_Sevilla&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Sevilla&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Sevilla. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Santiago.&#34; href=&#34;/img/album/anomalias_Santiago&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Santiago&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Santiago. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Valencia.&#34; href=&#34;/img/album/anomalias_Valencia&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Valencia&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Valencia. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Vigo.&#34; href=&#34;/img/album/anomalias_Vigo&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Vigo&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Vigo. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en A Coruña.&#34; href=&#34;/img/album/anomalias_A%20Coru%c3%b1a&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_A%20Coru%c3%b1a&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en A Coruña. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Madrid.&#34; href=&#34;/img/album/Madrid_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Madrid_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Madrid. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Santander.&#34; href=&#34;/img/album/Santander_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Santander_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Santander. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Barcelona.&#34; href=&#34;/img/album/Barcelona_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Barcelona_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Barcelona. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Santiago.&#34; href=&#34;/img/album/Santiago_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Santiago_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Santiago. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Bilbao.&#34; href=&#34;/img/album/Bilbao_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Bilbao_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Bilbao. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Sevilla.&#34; href=&#34;/img/album/Sevilla_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Sevilla_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Sevilla. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de A Coruña.&#34; href=&#34;/img/album/A%20Coru%c3%b1a_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/A%20Coru%c3%b1a_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de A Coruña. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Anomalías de la temperatura media diaria en invierno de Málaga.&#34; href=&#34;/img/album/Malaga_invierno.png&#34;&gt;
+    &lt;img src=&#34;/img/album/Malaga_invierno.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Anomalías de la temperatura media diaria en invierno de Málaga. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Las series temporales se homogeneizaron con &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Promedio del primer día de verano en Europa.&#34; href=&#34;/img/album/first_summer.png&#34;&gt;
+    &lt;img src=&#34;/img/album/first_summer.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Promedio del primer día de verano en Europa (temperatura máxima &amp;gt;25ºC). Datos: &lt;a href=&#34;http://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php#datafiles&#34; target=&#34;_blank&#34;&gt;E-OSB 18e&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Distribución del promedio del primer día de verano en Europa.&#34; href=&#34;/img/album/density_firstsummer.png&#34;&gt;
+    &lt;img src=&#34;/img/album/density_firstsummer.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Distribución del promedio del primer día de verano en Europa (temperatura máxima &amp;gt;25ºC). Datos: &lt;a href=&#34;http://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php#datafiles&#34; target=&#34;_blank&#34;&gt;E-OSB 18e&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Warming stripes for several Spanish cities.&#34; href=&#34;/img/album/tiras_spain.png&#34;&gt;
+    &lt;img src=&#34;/img/album/tiras_spain.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Warming stripes for several Spanish cities. These graphs represent and communicate climate change in a very illustrative and effective way. Data: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;. Time series were homogenized with &lt;a href=&#34;http://www.climatol.eu/&#34; target=&#34;_blank&#34;&gt;climatol&lt;/a&gt;. More: &lt;a href=&#34;https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/&#34; target=&#34;_blank&#34;&gt;post&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
   
   
   
@@ -1690,11 +2206,11 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
 &lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;es&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/Temperatura?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#Temperatura&lt;/a&gt; anual en &lt;a href=&#34;https://twitter.com/hashtag/MadridRetiro?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#MadridRetiro&lt;/a&gt; desde 1920 a 2017.  &lt;a href=&#34;https://twitter.com/hashtag/CambioClimatico?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#CambioClimatico&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; (idea de &lt;a href=&#34;https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw&#34;&gt;@ed_hawkins&lt;/a&gt; 🙏) &lt;a href=&#34;https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw&#34;&gt;@Divulgameteo&lt;/a&gt; &lt;a href=&#34;https://twitter.com/edupenabad?ref_src=twsrc%5Etfw&#34;&gt;@edupenabad&lt;/a&gt; &lt;a href=&#34;https://twitter.com/climayagua?ref_src=twsrc%5Etfw&#34;&gt;@climayagua&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw&#34;&gt;@ClimaGroupUB&lt;/a&gt; &lt;a href=&#34;https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw&#34;&gt;@4gotas_com&lt;/a&gt; &lt;a href=&#34;https://t.co/wmLb5uczpT&#34;&gt;pic.twitter.com/wmLb5uczpT&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw&#34;&gt;June 2, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
-&lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con la librería &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
 &lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de librerías &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta la librería &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos las librerías lubridate y tidyverse
+&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta el paquete &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes lubridate y tidyverse
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 
@@ -1764,7 +2280,7 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas de la librería &lt;em&gt;lubridate&lt;/em&gt; y las funciones de apoyo dentro de &lt;em&gt;ggplot2&lt;/em&gt;. La función &lt;code&gt;str_c( )&lt;/code&gt; de la librería &lt;em&gt;stringr&lt;/em&gt;, forma parte de la colección de &lt;em&gt;tidyverse&lt;/em&gt;, es similar a &lt;code&gt;paste( )&lt;/code&gt; de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función &lt;code&gt;ymd( )&lt;/code&gt; (year month day) de la librería &lt;em&gt;lubridate&lt;/em&gt; convierte una fecha en un objeto &lt;em&gt;Date&lt;/em&gt;. Es posible combinar varias funciones haciendo uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
+&lt;p&gt;Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas del paquete &lt;em&gt;lubridate&lt;/em&gt; y las funciones de apoyo dentro de &lt;em&gt;ggplot2&lt;/em&gt;. La función &lt;code&gt;str_c( )&lt;/code&gt; del paquete &lt;em&gt;stringr&lt;/em&gt;, forma parte de la colección de &lt;em&gt;tidyverse&lt;/em&gt;, es similar a &lt;code&gt;paste( )&lt;/code&gt; de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función &lt;code&gt;ymd( )&lt;/code&gt; (year month day) del paquete &lt;em&gt;lubridate&lt;/em&gt; convierte una fecha en un objeto &lt;em&gt;Date&lt;/em&gt;. Es posible combinar varias funciones haciendo uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&amp;quot;01-01&amp;quot;,sep=&amp;quot;-&amp;quot;)%&amp;gt;%ymd())&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;creando-las-tiras&#34; class=&#34;section level2&#34;&gt;
@@ -1867,12 +2383,12 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 
 &lt;p&gt;¿Cómo se puede obtener estos datos?&lt;/p&gt;
 &lt;p&gt;Pues, en este caso usé puntos de interés (PDIs) de la base de datos de &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una &lt;em&gt;overpass API&lt;/em&gt;, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.&lt;/p&gt;
-&lt;p&gt;Una forma fácil de acceder a una &lt;em&gt;overpass API&lt;/em&gt; es a través de &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;aquí&lt;/a&gt;. Sin embargo, tenemos a nuestra disposicón una librería &lt;em&gt;osmdata&lt;/em&gt; que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la &lt;em&gt;overpass-turbo.eu&lt;/em&gt; puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.&lt;/p&gt;
+&lt;p&gt;Una forma fácil de acceder a una &lt;em&gt;overpass API&lt;/em&gt; es a través de &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;aquí&lt;/a&gt;. Sin embargo, tenemos a nuestra disposicón el paquete &lt;em&gt;osmdata&lt;/em&gt; que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la &lt;em&gt;overpass-turbo.eu&lt;/em&gt; puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;acceso-a-la-overpass-api-desde-r&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Acceso a la overpass API desde R&lt;/h2&gt;
-&lt;p&gt;El primer paso, que debemos seguir, es instalar varias librerías, en el caso de que no estén instaldas. En casi todos mis scripts hago uso de &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;em&gt;tidyverse&lt;/em&gt;&lt;/a&gt; que es una colección fundamental de distintas librerías, incluyendo &lt;em&gt;dplyr&lt;/em&gt; (manipulación de datos), &lt;em&gt;ggplot2&lt;/em&gt; (visualización), etc. La librería &lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt; es el nuevo estándar para trabajar con datos espaciales y es compatible con &lt;em&gt;ggplot2&lt;/em&gt; y &lt;em&gt;dplyr&lt;/em&gt;. Por último, &lt;a href=&#34;http://stat405.had.co.nz/ggmap.pdf&#34;&gt;&lt;em&gt;ggmap&lt;/em&gt;&lt;/a&gt; nos facilita el trabajo para crear mapas.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos las librerías osmdata, sf, tidyverse y ggmap
+&lt;p&gt;El primer paso, que debemos seguir, es instalar varios paquetes, en el caso de que no estén instaldos. En casi todos mis scripts hago uso de &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;em&gt;tidyverse&lt;/em&gt;&lt;/a&gt; que es una colección fundamental de distintos paquetes, incluyendo &lt;em&gt;dplyr&lt;/em&gt; (manipulación de datos), &lt;em&gt;ggplot2&lt;/em&gt; (visualización), etc. El paquete &lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt; es el nuevo estándar para trabajar con datos espaciales y es compatible con &lt;em&gt;ggplot2&lt;/em&gt; y &lt;em&gt;dplyr&lt;/em&gt;. Por último, &lt;a href=&#34;http://stat405.had.co.nz/ggmap.pdf&#34;&gt;&lt;em&gt;ggmap&lt;/em&gt;&lt;/a&gt; nos facilita el trabajo para crear mapas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes osmdata, sf, tidyverse y ggmap
 if(!require(&amp;quot;osmdata&amp;quot;)) install.packages(&amp;quot;osmdata&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
@@ -1899,7 +2415,7 @@ head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;la-primera-consulta-donde-podemos-encontrar-cines-en-madrid&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;La primera consulta: ¿Dónde podemos encontrar cines en Madrid?&lt;/h3&gt;
-&lt;p&gt;Para construir la consulta se hace uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con la librería &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
+&lt;p&gt;Para construir la consulta se hace uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
 &lt;p&gt;En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función &lt;code&gt;getbb( )&lt;/code&gt; crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es &lt;code&gt;opq( )&lt;/code&gt; que construye la consulta final. Añadimos con la función &lt;code&gt;add_osm_feature( )&lt;/code&gt; nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave &lt;em&gt;amenity&lt;/em&gt; y como categoría &lt;em&gt;cinema&lt;/em&gt;. Existen varios formatos para obtener el resultado de la consulta. La función &lt;code&gt;osmdata_*( )&lt;/code&gt; envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; o &lt;em&gt;XML&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#construcción de la consulta
 q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;)%&amp;gt;%
@@ -1919,9 +2435,9 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 226 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 195 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 14 polygons
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
@@ -2004,7 +2520,7 @@ ggplot(mercadona$osm_points)+
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#introduccion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#librerias&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Librerías&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#paquetes&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#descarga-de-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#promedio-mensual&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Promedio mensual&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#visualizacion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/a&gt;&lt;/li&gt;
@@ -2014,6 +2530,7 @@ ggplot(mercadona$osm_points)+
 &lt;li&gt;&lt;a href=&#34;#conexion-y-descarga-con-la-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#procesar-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#actualizacion-para-acceder-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
@@ -2021,14 +2538,14 @@ ggplot(mercadona$osm_points)+
 &lt;hr /&gt;
 &lt;div id=&#34;introduccion&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/h1&gt;
-&lt;p&gt;En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) de la &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, una versión mejorada de &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), y &lt;em&gt;ERA-Interim&lt;/em&gt; del &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;ECMWF&lt;/a&gt;. Dado que &lt;em&gt;NCEP-DO&lt;/em&gt; es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente &lt;em&gt;ERA-Interim&lt;/em&gt;. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;aquí&lt;/a&gt;. Primero vamos a ver cómo acceder a los datos del &lt;em&gt;NCEP&lt;/em&gt; a través de una librería de R en &lt;em&gt;CRAN&lt;/em&gt; que facilita la descarga y el manejo de los datos. Después haremos lo mismo con &lt;em&gt;ERA-Interim&lt;/em&gt;, no obstante, para acceder a este último dataset de reanálisis es necesario usar &lt;em&gt;python&lt;/em&gt; y la correspondiente API del &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) de la &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, una versión mejorada de &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), y &lt;em&gt;ERA-Interim&lt;/em&gt; del &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;ECMWF&lt;/a&gt;. Dado que &lt;em&gt;NCEP-DO&lt;/em&gt; es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente &lt;em&gt;ERA-Interim&lt;/em&gt;. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;aquí&lt;/a&gt;. Primero vamos a ver cómo acceder a los datos del &lt;em&gt;NCEP&lt;/em&gt; a través de un paquete de R en &lt;em&gt;CRAN&lt;/em&gt; que facilita la descarga y el manejo de los datos. Después haremos lo mismo con &lt;em&gt;ERA-Interim&lt;/em&gt;, no obstante, para acceder a este último dataset de reanálisis es necesario usar &lt;em&gt;python&lt;/em&gt; y la correspondiente API del &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
-&lt;p&gt;Para acceder a los reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es necesario instalar la librería correspondiente &lt;em&gt;RNCEP&lt;/em&gt;. La función principal es &lt;code&gt;NCEP.gather( )&lt;/code&gt;. La resolución del reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es de 2,5º X 2,5º.&lt;/p&gt;
-&lt;div id=&#34;librerias&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Librerías&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos las librerías RNCEP, lubridate y tidyverse
+&lt;p&gt;Para acceder a los reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es necesario instalar el paquete correspondiente &lt;em&gt;RNCEP&lt;/em&gt;. La función principal es &lt;code&gt;NCEP.gather( )&lt;/code&gt;. La resolución del reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es de 2,5º X 2,5º.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes RNCEP, lubridate y tidyverse
 if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
@@ -2099,7 +2616,7 @@ dim(data_month) #temperatura 850haP por mes enero a diciembre&lt;/code&gt;&lt;/p
 &lt;/div&gt;
 &lt;div id=&#34;visualizacion&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/h2&gt;
-&lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; de la librería &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; del paquetes &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#primero creamos todas las combinaciones de lonlat
 lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
 
@@ -2146,7 +2663,7 @@ ggplot(df)+
 &lt;/div&gt;
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
-&lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite la librería &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite el paquete &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;instalacion&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
@@ -2155,7 +2672,7 @@ if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quo
 #cargamos las librerías
 library(reticulate)
 library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Una vez que tenemos instalado &lt;em&gt;anaconda&lt;/em&gt; y la librería &lt;em&gt;reticulate&lt;/em&gt;, podemos instalar la librería &lt;em&gt;python ecmwfapi&lt;/em&gt;. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, o bien con la función &lt;code&gt;py_install( )&lt;/code&gt; de la librería &lt;em&gt;reticulate&lt;/em&gt;. La misma función permite instalar cualquier librería &lt;em&gt;python&lt;/em&gt; desde R.&lt;/p&gt;
+&lt;p&gt;Una vez que tenemos instalado &lt;em&gt;anaconda&lt;/em&gt; y el paquete &lt;em&gt;reticulate&lt;/em&gt;, podemos instalar el paquete &lt;em&gt;python ecmwfapi&lt;/em&gt;. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, o bien con la función &lt;code&gt;py_install( )&lt;/code&gt; del paquete &lt;em&gt;reticulate&lt;/em&gt;. La misma función permite instalar cualquier librería &lt;em&gt;python&lt;/em&gt; desde R.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos la API ECMWF
 py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
@@ -2211,7 +2728,7 @@ query &amp;lt;-r_to_py(list(
 ))
 
 server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El resultado es un archivo netCDF que podemos processar con la librería &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;El resultado es un archivo netCDF que podemos processar con el paquete &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;procesar-ncdf&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/h2&gt;
@@ -2251,7 +2768,7 @@ data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
 
 #cerramos la conexión
 nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF &lt;a href=&#34;https://dominicroye.github.io/en/publication/ncdf_2015/&#34;&gt;aqui&lt;/a&gt;. En esta próxima sección hacemos uso de la librería &lt;em&gt;sf&lt;/em&gt; la cuál está sustituyendo las más conocidas &lt;em&gt;sp&lt;/em&gt; y &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF &lt;a href=&#34;https://dominicroye.github.io/en/publication/ncdf_2015/&#34;&gt;aqui&lt;/a&gt;. En esta próxima sección hacemos uso del paquete &lt;em&gt;sf&lt;/em&gt; la cuál está sustituyendo las más conocidas &lt;em&gt;sp&lt;/em&gt; y &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos todas las combinaciones
 lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
 
@@ -2292,6 +2809,99 @@ df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp
     theme_bw()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;actualizacion-para-acceder-era-5&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/h1&gt;
+&lt;p&gt;Recientemente el nuevo reanálisis ERA-5 con &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;&lt;em&gt;single level&lt;/em&gt;&lt;/a&gt; o &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview&#34;&gt;&lt;em&gt;pressure level&lt;/em&gt;&lt;/a&gt; fue puesto a disposición de los usarios. Es la quinta generación del European Centre for Medium-Range Weather Forecasts (ECMWF) y accesible a través de una nueva API de Copernicus. El nuevo reanálisis ERA-5 tiene una cobertura temporal desde 1950 hasta la actualidad a una resolución horizontal de 30km a nivel mundial, con 137 niveles desde la superficie hasta una altura de 80km. Una diferencia importante con respecto al ERA-Interim anterior es la resolución temporal con datos horarios.&lt;/p&gt;
+&lt;p&gt;El acceso cambia a la infrastructura de Climate Data Store (CDS) con su propia API. Es posible descargar directamente desde la página o usando la Python API en una forma similar a la ya presentada en este post. Sin embargo, existen ligeras diferencias que voy a explicar a continuación.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Es necesario tener una cuenta en CDS de Copernicus &lt;a href=&#34;https://cds.climate.copernicus.eu/user/register&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Nuevamente, hace falta una clave &lt;a href=&#34;https://cds.climate.copernicus.eu/api-how-to&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Cambia la librería de Python y algo los argumentos en la consulta.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cargamos las librerías 
+library(sf)
+library(ncdf4)
+library(tidyverse)
+library(reticulate)
+
+#instalamos la CDS API
+conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;,pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para poder acceder a la API un requisito es crear un archivo con la información del usuario.&lt;/p&gt;
+&lt;p&gt;El archivo “.cdsapirc” debe contener la siguiente información:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+url: https://cds.climate.copernicus.eu/api/v2
+key: {uid}:{api-key}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La clave la podemos obtener con la cuenta de usuario en el &lt;em&gt;User profile&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;El archivo se puede crear con el bloc de notas de Windows del mismo modo como ha sido explicado para ERA-Interim.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos la librería python CDS
+cdsapi &amp;lt;- import(&amp;#39;cdsapi&amp;#39;)
+
+#en este paso debe existir el archivo .cdsapirc
+server = cdsapi$Client() #iniciamos la conexión&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Con la sintaxis del script que nos da la &lt;em&gt;Show API request&lt;/em&gt; podemos crear la consulta en R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos la consulta
+query &amp;lt;- r_to_py(list(
+    variable= &amp;quot;2m_temperature&amp;quot;,
+    product_type= &amp;quot;reanalysis&amp;quot;,
+    year= &amp;quot;2018&amp;quot;,
+    month= &amp;quot;07&amp;quot;, #formato: &amp;quot;01&amp;quot;,&amp;quot;01&amp;quot;, etc.
+    day= str_pad(1:31,2,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),   
+    time= str_c(0:23,&amp;quot;00&amp;quot;,sep=&amp;quot;:&amp;quot;)%&amp;gt;%str_pad(5,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),
+    format= &amp;quot;netcdf&amp;quot;,
+    area = &amp;quot;45/-20/35/5&amp;quot; # North, West, South, East
+  ))
+
+server$retrieve(&amp;quot;reanalysis-era5-single-levels&amp;quot;,
+                  query,
+                 &amp;quot;era5_ta_2018.nc&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Es posible que la primera vez se reciba un mensaje de error, dado que todavía no se han aceptado los términos y las condiciones requeridas. Únicamente se debe seguir el enlace indicado.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Error in py_call_impl(callable, dots$args, dots$keywords) : 
+  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &amp;#39;Licence to Use Copernicus Products&amp;#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A partir de aquí podemos seguir los mismos pasos como los hechos con ERA-Interim.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#abrimos la conexión con el archivo
+nc &amp;lt;- nc_open(&amp;quot;era5_ta_2018.nc&amp;quot;)
+
+#extraemos lon y lat
+lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
+lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
+dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 41&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 101&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extraemos el tiempo
+t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
+
+#unidad del tiempo: horas desde 1900-01-01
+ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $units
+## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
+## 
+## $long_name
+## [1] &amp;quot;time&amp;quot;
+## 
+## $calendar
+## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos las horas en fecha+hora 
+#as_datetime de lubridate espera segundos
+timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
+
+#temperatura en K de julio 2018
+head(timestamp)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2018-07-01 00:00:00 UTC&amp;quot; &amp;quot;2018-07-01 01:00:00 UTC&amp;quot;
+## [3] &amp;quot;2018-07-01 02:00:00 UTC&amp;quot; &amp;quot;2018-07-01 03:00:00 UTC&amp;quot;
+## [5] &amp;quot;2018-07-01 04:00:00 UTC&amp;quot; &amp;quot;2018-07-01 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los datos
+data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
+
+#plot
+filled.contour(data[,,1])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(data.frame(date=timestamp,ta=data[1,5,]),
+     type=&amp;quot;l&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cerramos la conexión
+nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -2495,15 +3105,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
       <pubDate>Tue, 01 May 2018 00:00:00 +0000</pubDate>
       
       <guid>/es/publication/iam_cantabria_2018/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Short-term effects of heat and cold on respiratory drug use. A time-series epidemiological study in A Coruña, Spain</title>
-      <link>/es/publication/pharma_coru%C3%B1a_2018/</link>
-      <pubDate>Sun, 01 Apr 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/es/publication/pharma_coru%C3%B1a_2018/</guid>
       <description></description>
     </item>
     

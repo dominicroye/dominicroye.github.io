@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.52" />
+  <meta name="generator" content="Hugo 0.53" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -610,6 +610,7 @@
 <li><a href="#connection-and-download-with-the-ecmwf-api"><span class="toc-section-number">3.2</span> Connection and download with the ECMWF API</a></li>
 <li><a href="#processing-ncdf"><span class="toc-section-number">3.3</span> Processing ncdf</a></li>
 </ul></li>
+<li><a href="#update-for-accessing-era-5"><span class="toc-section-number">4</span> Update for accessing ERA-5</a></li>
 </ul>
 </div>
 
@@ -889,6 +890,102 @@ df &lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&gt;%
     theme_bw()</code></pre>
 <p><img src="/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
+</div>
+<div id="update-for-accessing-era-5" class="section level1">
+<h1><span class="header-section-number">4</span> Update for accessing ERA-5</h1>
+<p>Recently the new reanalysis ERA-5 with <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview">single level</a> or <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview">pressure level</a> was made available to users. It is the fifth generation of the European Center for Medium-Range Weather Forecasts (ECMWF) and accessible through a new Copernicus API. The ERA-5 reanalysis has a temporary coverage from 1950 to the present at a horizontal resolution of 30km worldwide, with 137 levels from the surface to a height of 80km. An important difference with respect to the previous ERA-Interim is the temporal resolution with hourly data.</p>
+<p>The access changes to the Climate Data Store (CDS) infrastructure with its own API. It is possible to download directly from the web or using the Python API in a similar way to the one already presented in this post. However, there are slight differences which I will explain below.</p>
+<ol style="list-style-type: decimal">
+<li>It is necessary to have a Copernicus CDS account <a href="https://cds.climate.copernicus.eu/user/register">link</a></li>
+<li>Again, you need a account key <a href="https://cds.climate.copernicus.eu/api-how-to">link</a></li>
+<li>There are changes in the Python library and in some arguments of the query.</li>
+</ol>
+<pre class="r"><code>#load libraries 
+library(sf)
+library(ncdf4)
+library(tidyverse)
+library(reticulate)
+
+#install the CDS API
+conda_install(&quot;r-reticulate&quot;,&quot;cdsapi&quot;,pip=TRUE)</code></pre>
+<p>To be able to access the API, a requirement is to create a file with the user’s information.</p>
+<p>The “.cdsapirc” file must contain the following information:</p>
+<pre><code>
+url: https://cds.climate.copernicus.eu/api/v2
+key: {uid}:{api-key}
+</code></pre>
+<p>The key can be obtained with the user account in the <em>User profile</em>.</p>
+<p>The file can be created in the same way as it has been explained for ERA-Interim.</p>
+<pre class="r"><code>#import python CDS-API
+cdsapi &lt;- import(&#39;cdsapi&#39;)
+
+#for this step there must exist the file .cdsapirc
+server = cdsapi$Client() #start the connection</code></pre>
+<p>With the syntax of the script from the <em>Show API request</em> <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview">single level</a>, we can create the query in R.</p>
+<pre class="r"><code>#we create the query
+query &lt;- r_to_py(list(
+    variable= &quot;2m_temperature&quot;,
+    product_type= &quot;reanalysis&quot;,
+    year= &quot;2018&quot;,
+    month= &quot;07&quot;, #formato: &quot;01&quot;,&quot;01&quot;, etc.
+    day= str_pad(1:31,2,&quot;left&quot;,&quot;0&quot;),   
+    time= str_c(0:23,&quot;00&quot;,sep=&quot;:&quot;)%&gt;%str_pad(5,&quot;left&quot;,&quot;0&quot;),
+    format= &quot;netcdf&quot;,
+    area = &quot;45/-20/35/5&quot; # North, West, South, East
+  ))
+
+#query to get the ncdf
+server$retrieve(&quot;reanalysis-era5-single-levels&quot;,
+                  query,
+                 &quot;era5_ta_2018.nc&quot;)</code></pre>
+<p>It is possible that the first time an error message is received, given that the required terms and conditions have not yet been accepted. Simply, the indicated link should be followed.</p>
+<pre><code>Error in py_call_impl(callable, dots$args, dots$keywords) : 
+  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &#39;Licence to Use Copernicus Products&#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products</code></pre>
+<p>From here we can follow the same steps as with ERA-Interim.</p>
+<pre class="r"><code>#open the connection with the file
+nc &lt;- nc_open(&quot;era5_ta_2018.nc&quot;)
+
+#extract lon, lat
+lat &lt;- ncvar_get(nc,&#39;latitude&#39;)
+lon &lt;- ncvar_get(nc,&#39;longitude&#39;)
+dim(lat);dim(lon)</code></pre>
+<pre><code>## [1] 41</code></pre>
+<pre><code>## [1] 101</code></pre>
+<pre class="r"><code>#extract time
+t &lt;- ncvar_get(nc, &quot;time&quot;)
+
+#time unit: hours from 1900-01-01
+ncatt_get(nc,&#39;time&#39;)</code></pre>
+<pre><code>## $units
+## [1] &quot;hours since 1900-01-01 00:00:00.0&quot;
+## 
+## $long_name
+## [1] &quot;time&quot;
+## 
+## $calendar
+## [1] &quot;gregorian&quot;</code></pre>
+<pre class="r"><code>#we convert the hours into date+time 
+#as_datetime from lubridate needs seconds
+timestamp &lt;- as_datetime(c(t*60*60),origin=&quot;1900-01-01&quot;)
+
+#temperatures in K from july 2018
+head(timestamp)</code></pre>
+<pre><code>## [1] &quot;2018-07-01 00:00:00 UTC&quot; &quot;2018-07-01 01:00:00 UTC&quot;
+## [3] &quot;2018-07-01 02:00:00 UTC&quot; &quot;2018-07-01 03:00:00 UTC&quot;
+## [5] &quot;2018-07-01 04:00:00 UTC&quot; &quot;2018-07-01 05:00:00 UTC&quot;</code></pre>
+<pre class="r"><code>#import temperature data
+data &lt;- ncvar_get(nc,&quot;t2m&quot;)
+
+#plot 2018-07-01
+filled.contour(data[,,1])</code></pre>
+<p><img src="/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code>#time serie plot for a pixel
+plot(data.frame(date=timestamp,
+                ta=data[1,5,]),
+     type=&quot;l&quot;)</code></pre>
+<p><img src="/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<pre class="r"><code>#close the conection with the ncdf file
+nc_close(nc)</code></pre>
 </div>
 
     </div>

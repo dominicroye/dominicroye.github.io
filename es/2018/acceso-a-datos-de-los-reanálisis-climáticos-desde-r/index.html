@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.52" />
+  <meta name="generator" content="Hugo 0.53" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -600,7 +600,7 @@
 <ul>
 <li><a href="#introduccion"><span class="toc-section-number">1</span> Introducción</a></li>
 <li><a href="#ncep"><span class="toc-section-number">2</span> NCEP</a><ul>
-<li><a href="#librerias"><span class="toc-section-number">2.1</span> Librerías</a></li>
+<li><a href="#paquetes"><span class="toc-section-number">2.1</span> Paquetes</a></li>
 <li><a href="#descarga-de-datos"><span class="toc-section-number">2.2</span> Descarga de datos</a></li>
 <li><a href="#promedio-mensual"><span class="toc-section-number">2.3</span> Promedio mensual</a></li>
 <li><a href="#visualizacion"><span class="toc-section-number">2.4</span> Visualización</a></li>
@@ -610,6 +610,7 @@
 <li><a href="#conexion-y-descarga-con-la-ecmwf-api"><span class="toc-section-number">3.2</span> Conexión y descarga con la ECMWF API</a></li>
 <li><a href="#procesar-ncdf"><span class="toc-section-number">3.3</span> Procesar ncdf</a></li>
 </ul></li>
+<li><a href="#actualizacion-para-acceder-era-5"><span class="toc-section-number">4</span> Actualización para acceder ERA-5</a></li>
 </ul>
 </div>
 
@@ -617,14 +618,14 @@
 <hr />
 <div id="introduccion" class="section level1">
 <h1><span class="header-section-number">1</span> Introducción</h1>
-<p>En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son <a href="https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2">NCEP-DO</a> (Reanalysis II) de la <em>NOAA/OAR/ESRL</em>, una versión mejorada de <em>NCEP-NCAR</em> (Reanalysis I), y <em>ERA-Interim</em> del <a href="https://www.ecmwf.int/en/research/climate-reanalysis">ECMWF</a>. Dado que <em>NCEP-DO</em> es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente <em>ERA-Interim</em>. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar <a href="https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses">aquí</a>. Primero vamos a ver cómo acceder a los datos del <em>NCEP</em> a través de una librería de R en <em>CRAN</em> que facilita la descarga y el manejo de los datos. Después haremos lo mismo con <em>ERA-Interim</em>, no obstante, para acceder a este último dataset de reanálisis es necesario usar <em>python</em> y la correspondiente API del <em>ECMWF</em>.</p>
+<p>En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son <a href="https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2">NCEP-DO</a> (Reanalysis II) de la <em>NOAA/OAR/ESRL</em>, una versión mejorada de <em>NCEP-NCAR</em> (Reanalysis I), y <em>ERA-Interim</em> del <a href="https://www.ecmwf.int/en/research/climate-reanalysis">ECMWF</a>. Dado que <em>NCEP-DO</em> es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente <em>ERA-Interim</em>. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar <a href="https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses">aquí</a>. Primero vamos a ver cómo acceder a los datos del <em>NCEP</em> a través de un paquete de R en <em>CRAN</em> que facilita la descarga y el manejo de los datos. Después haremos lo mismo con <em>ERA-Interim</em>, no obstante, para acceder a este último dataset de reanálisis es necesario usar <em>python</em> y la correspondiente API del <em>ECMWF</em>.</p>
 </div>
 <div id="ncep" class="section level1">
 <h1><span class="header-section-number">2</span> NCEP</h1>
-<p>Para acceder a los reanálisis del <em>NCEP</em> es necesario instalar la librería correspondiente <em>RNCEP</em>. La función principal es <code>NCEP.gather( )</code>. La resolución del reanálisis del <em>NCEP</em> es de 2,5º X 2,5º.</p>
-<div id="librerias" class="section level2">
-<h2><span class="header-section-number">2.1</span> Librerías</h2>
-<pre class="r"><code>#instalamos las librerías RNCEP, lubridate y tidyverse
+<p>Para acceder a los reanálisis del <em>NCEP</em> es necesario instalar el paquete correspondiente <em>RNCEP</em>. La función principal es <code>NCEP.gather( )</code>. La resolución del reanálisis del <em>NCEP</em> es de 2,5º X 2,5º.</p>
+<div id="paquetes" class="section level2">
+<h2><span class="header-section-number">2.1</span> Paquetes</h2>
+<pre class="r"><code>#instalamos los paquetes RNCEP, lubridate y tidyverse
 if(!require(&quot;RNCEP&quot;)) install.packages(&quot;RNCEP&quot;)
 if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
@@ -695,7 +696,7 @@ dim(data_month) #temperatura 850haP por mes enero a diciembre</code></pre>
 </div>
 <div id="visualizacion" class="section level2">
 <h2><span class="header-section-number">2.4</span> Visualización</h2>
-<p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> de la librería <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
+<p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> del paquetes <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
 <pre class="r"><code>#primero creamos todas las combinaciones de lonlat
 lonlat &lt;- expand.grid(lon=lon,lat=lat)
 
@@ -742,7 +743,7 @@ ggplot(df)+
 </div>
 <div id="era-interim" class="section level1">
 <h1><span class="header-section-number">3</span> ERA-Interim</h1>
-<p>El <em>ECMWF</em> ofrece acceso a sus bases de datos públicos a partir de una <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. Es necesario estar registrado en la web del <em>ECMWF</em>. Se puede darse de alta <a href="https://apps.ecmwf.int/registration/">aquí</a>. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite la librería <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
+<p>El <em>ECMWF</em> ofrece acceso a sus bases de datos públicos a partir de una <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. Es necesario estar registrado en la web del <em>ECMWF</em>. Se puede darse de alta <a href="https://apps.ecmwf.int/registration/">aquí</a>. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite el paquete <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
 <div id="instalacion" class="section level2">
 <h2><span class="header-section-number">3.1</span> Instalación</h2>
 <pre class="r"><code>if(!require(&quot;reticulate&quot;)) install.packages(&quot;reticulate&quot;)
@@ -751,7 +752,7 @@ if(!require(&quot;ncdf4&quot;)) install.packages(&quot;ncdf4&quot;) #para maneja
 #cargamos las librerías
 library(reticulate)
 library(ncdf4)</code></pre>
-<p>Una vez que tenemos instalado <em>anaconda</em> y la librería <em>reticulate</em>, podemos instalar la librería <em>python ecmwfapi</em>. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando <em>conda install -c conda-forge ecmwf-api-client</em>, o bien con la función <code>py_install( )</code> de la librería <em>reticulate</em>. La misma función permite instalar cualquier librería <em>python</em> desde R.</p>
+<p>Una vez que tenemos instalado <em>anaconda</em> y el paquete <em>reticulate</em>, podemos instalar el paquete <em>python ecmwfapi</em>. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando <em>conda install -c conda-forge ecmwf-api-client</em>, o bien con la función <code>py_install( )</code> del paquete <em>reticulate</em>. La misma función permite instalar cualquier librería <em>python</em> desde R.</p>
 <pre class="r"><code>#instalamos la API ECMWF
 py_install(&quot;ecmwf-api-client&quot;)</code></pre>
 <pre><code>## 
@@ -807,7 +808,7 @@ query &lt;-r_to_py(list(
 ))
 
 server$retrieve(query)</code></pre>
-<p>El resultado es un archivo netCDF que podemos processar con la librería <em>ncdf4</em>.</p>
+<p>El resultado es un archivo netCDF que podemos processar con el paquete <em>ncdf4</em>.</p>
 </div>
 <div id="procesar-ncdf" class="section level2">
 <h2><span class="header-section-number">3.3</span> Procesar ncdf</h2>
@@ -847,7 +848,7 @@ data &lt;- ncvar_get(nc,&quot;t2m&quot;)
 
 #cerramos la conexión
 nc_close(nc)</code></pre>
-<p>Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF <a href="https://dominicroye.github.io/en/publication/ncdf_2015/">aqui</a>. En esta próxima sección hacemos uso de la librería <em>sf</em> la cuál está sustituyendo las más conocidas <em>sp</em> y <em>rgdal</em>.</p>
+<p>Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF <a href="https://dominicroye.github.io/en/publication/ncdf_2015/">aqui</a>. En esta próxima sección hacemos uso del paquete <em>sf</em> la cuál está sustituyendo las más conocidas <em>sp</em> y <em>rgdal</em>.</p>
 <pre class="r"><code>#creamos todas las combinaciones
 lonlat &lt;- expand.grid(lon=lon,lat=lat)
 
@@ -888,6 +889,99 @@ df &lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&gt;%
     theme_bw()</code></pre>
 <p><img src="/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
+</div>
+<div id="actualizacion-para-acceder-era-5" class="section level1">
+<h1><span class="header-section-number">4</span> Actualización para acceder ERA-5</h1>
+<p>Recientemente el nuevo reanálisis ERA-5 con <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview"><em>single level</em></a> o <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview"><em>pressure level</em></a> fue puesto a disposición de los usarios. Es la quinta generación del European Centre for Medium-Range Weather Forecasts (ECMWF) y accesible a través de una nueva API de Copernicus. El nuevo reanálisis ERA-5 tiene una cobertura temporal desde 1950 hasta la actualidad a una resolución horizontal de 30km a nivel mundial, con 137 niveles desde la superficie hasta una altura de 80km. Una diferencia importante con respecto al ERA-Interim anterior es la resolución temporal con datos horarios.</p>
+<p>El acceso cambia a la infrastructura de Climate Data Store (CDS) con su propia API. Es posible descargar directamente desde la página o usando la Python API en una forma similar a la ya presentada en este post. Sin embargo, existen ligeras diferencias que voy a explicar a continuación.</p>
+<ol style="list-style-type: decimal">
+<li>Es necesario tener una cuenta en CDS de Copernicus <a href="https://cds.climate.copernicus.eu/user/register">link</a></li>
+<li>Nuevamente, hace falta una clave <a href="https://cds.climate.copernicus.eu/api-how-to">link</a></li>
+<li>Cambia la librería de Python y algo los argumentos en la consulta.</li>
+</ol>
+<pre class="r"><code>#cargamos las librerías 
+library(sf)
+library(ncdf4)
+library(tidyverse)
+library(reticulate)
+
+#instalamos la CDS API
+conda_install(&quot;r-reticulate&quot;,&quot;cdsapi&quot;,pip=TRUE)</code></pre>
+<p>Para poder acceder a la API un requisito es crear un archivo con la información del usuario.</p>
+<p>El archivo “.cdsapirc” debe contener la siguiente información:</p>
+<pre><code>
+url: https://cds.climate.copernicus.eu/api/v2
+key: {uid}:{api-key}
+</code></pre>
+<p>La clave la podemos obtener con la cuenta de usuario en el <em>User profile</em>.</p>
+<p>El archivo se puede crear con el bloc de notas de Windows del mismo modo como ha sido explicado para ERA-Interim.</p>
+<pre class="r"><code>#importamos la librería python CDS
+cdsapi &lt;- import(&#39;cdsapi&#39;)
+
+#en este paso debe existir el archivo .cdsapirc
+server = cdsapi$Client() #iniciamos la conexión</code></pre>
+<p>Con la sintaxis del script que nos da la <em>Show API request</em> podemos crear la consulta en R.</p>
+<pre class="r"><code>#creamos la consulta
+query &lt;- r_to_py(list(
+    variable= &quot;2m_temperature&quot;,
+    product_type= &quot;reanalysis&quot;,
+    year= &quot;2018&quot;,
+    month= &quot;07&quot;, #formato: &quot;01&quot;,&quot;01&quot;, etc.
+    day= str_pad(1:31,2,&quot;left&quot;,&quot;0&quot;),   
+    time= str_c(0:23,&quot;00&quot;,sep=&quot;:&quot;)%&gt;%str_pad(5,&quot;left&quot;,&quot;0&quot;),
+    format= &quot;netcdf&quot;,
+    area = &quot;45/-20/35/5&quot; # North, West, South, East
+  ))
+
+server$retrieve(&quot;reanalysis-era5-single-levels&quot;,
+                  query,
+                 &quot;era5_ta_2018.nc&quot;)</code></pre>
+<p>Es posible que la primera vez se reciba un mensaje de error, dado que todavía no se han aceptado los términos y las condiciones requeridas. Únicamente se debe seguir el enlace indicado.</p>
+<pre><code>Error in py_call_impl(callable, dots$args, dots$keywords) : 
+  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &#39;Licence to Use Copernicus Products&#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products</code></pre>
+<p>A partir de aquí podemos seguir los mismos pasos como los hechos con ERA-Interim.</p>
+<pre class="r"><code>#abrimos la conexión con el archivo
+nc &lt;- nc_open(&quot;era5_ta_2018.nc&quot;)
+
+#extraemos lon y lat
+lat &lt;- ncvar_get(nc,&#39;latitude&#39;)
+lon &lt;- ncvar_get(nc,&#39;longitude&#39;)
+dim(lat);dim(lon)</code></pre>
+<pre><code>## [1] 41</code></pre>
+<pre><code>## [1] 101</code></pre>
+<pre class="r"><code>#extraemos el tiempo
+t &lt;- ncvar_get(nc, &quot;time&quot;)
+
+#unidad del tiempo: horas desde 1900-01-01
+ncatt_get(nc,&#39;time&#39;)</code></pre>
+<pre><code>## $units
+## [1] &quot;hours since 1900-01-01 00:00:00.0&quot;
+## 
+## $long_name
+## [1] &quot;time&quot;
+## 
+## $calendar
+## [1] &quot;gregorian&quot;</code></pre>
+<pre class="r"><code>#convertimos las horas en fecha+hora 
+#as_datetime de lubridate espera segundos
+timestamp &lt;- as_datetime(c(t*60*60),origin=&quot;1900-01-01&quot;)
+
+#temperatura en K de julio 2018
+head(timestamp)</code></pre>
+<pre><code>## [1] &quot;2018-07-01 00:00:00 UTC&quot; &quot;2018-07-01 01:00:00 UTC&quot;
+## [3] &quot;2018-07-01 02:00:00 UTC&quot; &quot;2018-07-01 03:00:00 UTC&quot;
+## [5] &quot;2018-07-01 04:00:00 UTC&quot; &quot;2018-07-01 05:00:00 UTC&quot;</code></pre>
+<pre class="r"><code>#importamos los datos
+data &lt;- ncvar_get(nc,&quot;t2m&quot;)
+
+#plot
+filled.contour(data[,,1])</code></pre>
+<p><img src="/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<pre class="r"><code>plot(data.frame(date=timestamp,ta=data[1,5,]),
+     type=&quot;l&quot;)</code></pre>
+<p><img src="/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-2.png" width="672" /></p>
+<pre class="r"><code>#cerramos la conexión
+nc_close(nc)</code></pre>
 </div>
 
     </div>
