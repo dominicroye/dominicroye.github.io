@@ -8,7 +8,7 @@
     <copyright>&amp;copy; 2018-2019 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sun, 10 Mar 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/es/categories/gesti%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/es/categories/gesti%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,9 +17,268 @@
       <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/es/2019/importar-varias-hojas-excel-en-r/</guid>
-      <description>Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentra en dos archvios de Excel con hojas para cada año entre 2000 y 2005: descarga.
-PaquetesEn este post usaremos los siguientes paquetes:
-PaqueteDescripcióntidyverseConjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.</description>
+      <description>
+
+
+&lt;p&gt;Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentra en dos archvios de Excel con hojas para cada año entre 2000 y 2005: &lt;a href=&#34;/files/Data_Excel.zip&#34;&gt;descarga&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readxl&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar archivos Excel&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
+
+
+#librerías
+library(tidyverse)
+library(fs)
+library(readxl)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por defecto, la función &lt;code&gt;read_excel()&lt;/code&gt; importa la primera hoja. Para importar una hoja diferente es necesario indicarlo con el argumento &lt;em&gt;sheet&lt;/em&gt; o bien el número o el nombre (segundo argumento).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importar primera hoja
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importar hoja 3
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2002-01-01 00:00:00   8.7  2002
+##  2 2002-01-02 00:00:00   7.4  2002
+##  3 2002-01-03 00:00:00   8.5  2002
+##  4 2002-01-04 00:00:00   9.2  2002
+##  5 2002-01-05 00:00:00   9.3  2002
+##  6 2002-01-06 00:00:00   7.3  2002
+##  7 2002-01-07 00:00:00   5.4  2002
+##  8 2002-01-08 00:00:00   5.6  2002
+##  9 2002-01-09 00:00:00   6.8  2002
+## 10 2002-01-10 00:00:00   6.1  2002
+## # ... with 355 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La función &lt;code&gt;excel_sheets()&lt;/code&gt; permite extraer los nombres de las hojas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+path%&amp;gt;%
+  excel_sheets()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado nos indica que en cada hoja encontramos un año de los datos desde 2000 a 2005. La función más importante para leer múltiples hojas es &lt;code&gt;map()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que forma parte de la colección de paquetes &lt;em&gt;{tidyverse}&lt;/em&gt;. &lt;code&gt;map()&lt;/code&gt; permite aplicar una función a cada elemento de un vector o lista.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map(read_excel,
+           path=path)
+        
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 6
+##  $ 2000:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:366] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ 2001:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2001-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.2 8.8 7.5 9.2 10 9 5.5 4.6 3 7.9 ...
+##   ..$ yr  : num [1:365] 2001 2001 2001 2001 2001 ...
+##  $ 2002:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2002-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.7 7.4 8.5 9.2 9.3 7.3 5.4 5.6 6.8 6.1 ...
+##   ..$ yr  : num [1:365] 2002 2002 2002 2002 2002 ...
+##  $ 2003:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2003-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 9.4 10.8 9.7 9.2 6.3 6.6 3.8 6.4 4.3 3.4 ...
+##   ..$ yr  : num [1:365] 2003 2003 2003 2003 2003 ...
+##  $ 2004:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2004-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 6.6 5.9 7.8 8.1 6.4 5.7 5.2 6.9 11.8 12.2 ...
+##   ..$ yr  : num [1:366] 2004 2004 2004 2004 2004 ...
+##  $ 2005:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2005-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 7.1 7.8 6.4 5.6 4.4 6.8 7.4 6 5.2 4.2 ...
+##   ..$ yr  : num [1:365] 2005 2005 2005 2005 2005 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una lista nombrada con el nombre de cada hoja que contiene el data.frame. Dado que se trata de la misma tabla en todas las hojas, podríamos usar la función &lt;code&gt;bind_rows()&lt;/code&gt;, no obstante, existe una variante de &lt;code&gt;map()&lt;/code&gt;que directamente nos une todas las tablas por fila: &lt;code&gt;map_df()&lt;/code&gt;. Si fuese necesario unir por columna se debería usar &lt;code&gt;map_dfc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map_df(read_excel,
+           path=path)
+
+mad&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 2,182 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En nuestro caso tenemos una columna en cada hoja (año, pero también la fecha) que diferencia cada tabla. Si no fuera el caso, deberíamos usar el nombre de las hojas como nueva columna al unir todas. En &lt;code&gt;bind_rows()&lt;/code&gt; puede hacerse con el argumento &lt;em&gt;.id&lt;/em&gt; asignando un nombre para la columna. Lo mismo valdría para &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map_df(read_excel,
+           path=path,
+           .id=&amp;quot;yr2&amp;quot;)
+
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
+##  $ yr2 : chr  &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;¿Pero cómo importamos múltiples archivos de Excel?&lt;/p&gt;
+&lt;p&gt;Para ello, primero debemos conocer la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;a href=&#34;https://github.com/r-lib/fs&#34;&gt;&lt;em&gt;{fs}&lt;/em&gt;&lt;/a&gt;. Es cierto que existe la función &lt;code&gt;dir()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;, pero las ventajas del reciente paquete son varias, pero especialmente es la compatibilidad con la colección de &lt;em&gt;{tidyverse}&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dir_ls()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.es.html    index.es.Rmd     
+## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#podemos filtrar los archivos que queremos
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Importamos los dos archivos de Excel que tenemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#sin unir
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+  map(read_excel)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   1.2  2000
+##  2 2000-01-02 00:00:00   3.6  2000
+##  3 2000-01-03 00:00:00   5.7  2000
+##  4 2000-01-04 00:00:00   5.1  2000
+##  5 2000-01-05 00:00:00   2.2  2000
+##  6 2000-01-06 00:00:00   1.8  2000
+##  7 2000-01-07 00:00:00   4.2  2000
+##  8 2000-01-08 00:00:00   4.2  2000
+##  9 2000-01-09 00:00:00   4.2  2000
+## 10 2000-01-10 00:00:00   1.7  2000
+## # ... with 356 more rows
+## 
+## $madrid_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#uniendo con una nueva columna
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+  map_df(read_excel,.id=&amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
+##    city             date                   ta    yr
+##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 berlin_temp.xlsx 2000-01-01 00:00:00   1.2  2000
+##  2 berlin_temp.xlsx 2000-01-02 00:00:00   3.6  2000
+##  3 berlin_temp.xlsx 2000-01-03 00:00:00   5.7  2000
+##  4 berlin_temp.xlsx 2000-01-04 00:00:00   5.1  2000
+##  5 berlin_temp.xlsx 2000-01-05 00:00:00   2.2  2000
+##  6 berlin_temp.xlsx 2000-01-06 00:00:00   1.8  2000
+##  7 berlin_temp.xlsx 2000-01-07 00:00:00   4.2  2000
+##  8 berlin_temp.xlsx 2000-01-08 00:00:00   4.2  2000
+##  9 berlin_temp.xlsx 2000-01-09 00:00:00   4.2  2000
+## 10 berlin_temp.xlsx 2000-01-10 00:00:00   1.7  2000
+## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ahora bien, en este caso sólo importamos la primera hoja de cada archivo Excel. Para resolver este problema, debemos crear nuestra propia función. En esta función hacemos lo que hicimos previamente de forma individual.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
+  path%&amp;gt;%
+    excel_sheets() %&amp;gt;% 
+    set_names() %&amp;gt;% 
+  map_df(read_excel, path = path)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aplicamos nuestra función creada para importar múltiples hojas de varios archivos Excel.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#por separado
+data &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map(read_multiple_excel)
+
+str(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 2
+##  $ berlin_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ madrid_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#unir todas
+data_df &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map_df(read_multiple_excel,
+                  .id=&amp;quot;city&amp;quot;)
+
+str(data_df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
+##  $ city: chr  &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>excel</category>
+      
+            <category>hojas</category>
+      
+            <category>importar</category>
+      
+      
+            <category>gestión</category>
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
     </item>
     
   </channel>

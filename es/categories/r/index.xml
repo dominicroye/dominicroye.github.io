@@ -8,7 +8,7 @@
     <copyright>&amp;copy; 2018-2019 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sun, 10 Mar 2019 00:00:00 +0000</lastBuildDate>
     
-	<atom:link href="/es/categories/r/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="/es/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -17,9 +17,268 @@
       <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
       
       <guid>/es/2019/importar-varias-hojas-excel-en-r/</guid>
-      <description>Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentra en dos archvios de Excel con hojas para cada año entre 2000 y 2005: descarga.
-PaquetesEn este post usaremos los siguientes paquetes:
-PaqueteDescripcióntidyverseConjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.</description>
+      <description>
+
+
+&lt;p&gt;Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentra en dos archvios de Excel con hojas para cada año entre 2000 y 2005: &lt;a href=&#34;/files/Data_Excel.zip&#34;&gt;descarga&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readxl&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar archivos Excel&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
+
+
+#librerías
+library(tidyverse)
+library(fs)
+library(readxl)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por defecto, la función &lt;code&gt;read_excel()&lt;/code&gt; importa la primera hoja. Para importar una hoja diferente es necesario indicarlo con el argumento &lt;em&gt;sheet&lt;/em&gt; o bien el número o el nombre (segundo argumento).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importar primera hoja
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importar hoja 3
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2002-01-01 00:00:00   8.7  2002
+##  2 2002-01-02 00:00:00   7.4  2002
+##  3 2002-01-03 00:00:00   8.5  2002
+##  4 2002-01-04 00:00:00   9.2  2002
+##  5 2002-01-05 00:00:00   9.3  2002
+##  6 2002-01-06 00:00:00   7.3  2002
+##  7 2002-01-07 00:00:00   5.4  2002
+##  8 2002-01-08 00:00:00   5.6  2002
+##  9 2002-01-09 00:00:00   6.8  2002
+## 10 2002-01-10 00:00:00   6.1  2002
+## # ... with 355 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La función &lt;code&gt;excel_sheets()&lt;/code&gt; permite extraer los nombres de las hojas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+path%&amp;gt;%
+  excel_sheets()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado nos indica que en cada hoja encontramos un año de los datos desde 2000 a 2005. La función más importante para leer múltiples hojas es &lt;code&gt;map()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que forma parte de la colección de paquetes &lt;em&gt;{tidyverse}&lt;/em&gt;. &lt;code&gt;map()&lt;/code&gt; permite aplicar una función a cada elemento de un vector o lista.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map(read_excel,
+           path=path)
+        
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 6
+##  $ 2000:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:366] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ 2001:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2001-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.2 8.8 7.5 9.2 10 9 5.5 4.6 3 7.9 ...
+##   ..$ yr  : num [1:365] 2001 2001 2001 2001 2001 ...
+##  $ 2002:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2002-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.7 7.4 8.5 9.2 9.3 7.3 5.4 5.6 6.8 6.1 ...
+##   ..$ yr  : num [1:365] 2002 2002 2002 2002 2002 ...
+##  $ 2003:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2003-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 9.4 10.8 9.7 9.2 6.3 6.6 3.8 6.4 4.3 3.4 ...
+##   ..$ yr  : num [1:365] 2003 2003 2003 2003 2003 ...
+##  $ 2004:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2004-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 6.6 5.9 7.8 8.1 6.4 5.7 5.2 6.9 11.8 12.2 ...
+##   ..$ yr  : num [1:366] 2004 2004 2004 2004 2004 ...
+##  $ 2005:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2005-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 7.1 7.8 6.4 5.6 4.4 6.8 7.4 6 5.2 4.2 ...
+##   ..$ yr  : num [1:365] 2005 2005 2005 2005 2005 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una lista nombrada con el nombre de cada hoja que contiene el data.frame. Dado que se trata de la misma tabla en todas las hojas, podríamos usar la función &lt;code&gt;bind_rows()&lt;/code&gt;, no obstante, existe una variante de &lt;code&gt;map()&lt;/code&gt;que directamente nos une todas las tablas por fila: &lt;code&gt;map_df()&lt;/code&gt;. Si fuese necesario unir por columna se debería usar &lt;code&gt;map_dfc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map_df(read_excel,
+           path=path)
+
+mad&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 2,182 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En nuestro caso tenemos una columna en cada hoja (año, pero también la fecha) que diferencia cada tabla. Si no fuera el caso, deberíamos usar el nombre de las hojas como nueva columna al unir todas. En &lt;code&gt;bind_rows()&lt;/code&gt; puede hacerse con el argumento &lt;em&gt;.id&lt;/em&gt; asignando un nombre para la columna. Lo mismo valdría para &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path%&amp;gt;%
+        excel_sheets()%&amp;gt;%
+        set_names()%&amp;gt;%
+       map_df(read_excel,
+           path=path,
+           .id=&amp;quot;yr2&amp;quot;)
+
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
+##  $ yr2 : chr  &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;¿Pero cómo importamos múltiples archivos de Excel?&lt;/p&gt;
+&lt;p&gt;Para ello, primero debemos conocer la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;a href=&#34;https://github.com/r-lib/fs&#34;&gt;&lt;em&gt;{fs}&lt;/em&gt;&lt;/a&gt;. Es cierto que existe la función &lt;code&gt;dir()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;, pero las ventajas del reciente paquete son varias, pero especialmente es la compatibilidad con la colección de &lt;em&gt;{tidyverse}&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dir_ls()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.es.html    index.es.Rmd     
+## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#podemos filtrar los archivos que queremos
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Importamos los dos archivos de Excel que tenemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#sin unir
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+  map(read_excel)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   1.2  2000
+##  2 2000-01-02 00:00:00   3.6  2000
+##  3 2000-01-03 00:00:00   5.7  2000
+##  4 2000-01-04 00:00:00   5.1  2000
+##  5 2000-01-05 00:00:00   2.2  2000
+##  6 2000-01-06 00:00:00   1.8  2000
+##  7 2000-01-07 00:00:00   4.2  2000
+##  8 2000-01-08 00:00:00   4.2  2000
+##  9 2000-01-09 00:00:00   4.2  2000
+## 10 2000-01-10 00:00:00   1.7  2000
+## # ... with 356 more rows
+## 
+## $madrid_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#uniendo con una nueva columna
+dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+  map_df(read_excel,.id=&amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
+##    city             date                   ta    yr
+##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 berlin_temp.xlsx 2000-01-01 00:00:00   1.2  2000
+##  2 berlin_temp.xlsx 2000-01-02 00:00:00   3.6  2000
+##  3 berlin_temp.xlsx 2000-01-03 00:00:00   5.7  2000
+##  4 berlin_temp.xlsx 2000-01-04 00:00:00   5.1  2000
+##  5 berlin_temp.xlsx 2000-01-05 00:00:00   2.2  2000
+##  6 berlin_temp.xlsx 2000-01-06 00:00:00   1.8  2000
+##  7 berlin_temp.xlsx 2000-01-07 00:00:00   4.2  2000
+##  8 berlin_temp.xlsx 2000-01-08 00:00:00   4.2  2000
+##  9 berlin_temp.xlsx 2000-01-09 00:00:00   4.2  2000
+## 10 berlin_temp.xlsx 2000-01-10 00:00:00   1.7  2000
+## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ahora bien, en este caso sólo importamos la primera hoja de cada archivo Excel. Para resolver este problema, debemos crear nuestra propia función. En esta función hacemos lo que hicimos previamente de forma individual.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
+  path%&amp;gt;%
+    excel_sheets() %&amp;gt;% 
+    set_names() %&amp;gt;% 
+  map_df(read_excel, path = path)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aplicamos nuestra función creada para importar múltiples hojas de varios archivos Excel.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#por separado
+data &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map(read_multiple_excel)
+
+str(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 2
+##  $ berlin_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ madrid_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#unir todas
+data_df &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map_df(read_multiple_excel,
+                  .id=&amp;quot;city&amp;quot;)
+
+str(data_df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
+##  $ city: chr  &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>excel</category>
+      
+            <category>hojas</category>
+      
+            <category>importar</category>
+      
+      
+            <category>gestión</category>
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
     </item>
     
     <item>
@@ -28,8 +287,232 @@ PaquetesEn este post usaremos los siguientes paquetes:
       <pubDate>Tue, 08 Jan 2019 00:00:00 +0000</pubDate>
       
       <guid>/es/2019/calcular-la-distancia-al-mar-en-r/</guid>
-      <description>En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?
-PaquetesEn este post usaremos los siguientes paquetes:</description>
+      <description>
+
+
+&lt;p&gt;En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de librerías (visualización y manipulación de datos): ggplot2, dplyr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de mapas vectoriales ‘natural earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RColorBrewer&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Paletas de colores&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+#librerías
+library(rnaturalearth)
+library(sf)
+library(raster)
+library(tidyverse)
+library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;la-costa-de-islandia-como-ejemplo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;La costa de Islandia como ejemplo&lt;/h2&gt;
+&lt;p&gt;Nuestro ejemplo en este post será Islandia, como es un territorio insular facilitará el ensayo y de este modo es posible mostrar el proceso de forma sencilla. La librería &lt;em&gt;rnaturalearth&lt;/em&gt; permite importar los límites de países (con diferentes niveles administrativos) de todo el mundo. Los datos vienen de la plataforma &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. Recomiendo explorar la librería, más info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;aquí&lt;/a&gt;. La función &lt;code&gt;ne_countries( )&lt;/code&gt; importa los límites de países. En este caso indicamos con el argumento &lt;em&gt;scale&lt;/em&gt; la resolución (10,50 o 110m), con &lt;em&gt;country&lt;/em&gt; indicamos el país concreto de interés y con &lt;em&gt;returnclass&lt;/em&gt; determinamos que clase queremos (&lt;em&gt;sf&lt;/em&gt; o &lt;em&gt;sp&lt;/em&gt;), en nuestro caso &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale=50) #mapamundi con 50m de resolución
+
+plot(world) #tiene clase sp por defecto&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los límites de Islandia 
+iceland &amp;lt;- ne_countries(scale=10,country = &amp;quot;Iceland&amp;quot;,returnclass = &amp;quot;sf&amp;quot;)
+
+#info del objeto vectorial
+iceland&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 1 feature and 94 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
+## 188 Admin-0 country         0         3    Iceland    ISL        0     2
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
+##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
+## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &amp;lt;NA&amp;gt;
+##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
+## 188 Iceland     IS Republic of Iceland      &amp;lt;NA&amp;gt;    Iceland      &amp;lt;NA&amp;gt;
+##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
+## 188     &amp;lt;NA&amp;gt;   Iceland     &amp;lt;NA&amp;gt;         1         4         4          9
+##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
+## 188  339747       10      16150     2017         NA     2016
+##                        economy           income_grp wikipedia fips_10_
+## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
+##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
+## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
+##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
+## 188 Exact WOE match as country        ISL        ISL         NA         NA
+##     continent region_un       subregion             region_wb name_len
+## 188    Europe    Europe Northern Europe Europe &amp;amp; Central Asia        7
+##     long_len abbrev_len tiny homepart min_zoom min_label max_label
+## 188        7          7   NA        1        0         2         7
+##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
+## 188 1159320917       Q189    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Island Iceland Islandia Islande
+##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
+## 188    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Izland Islandia Islanda    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt; IJsland
+##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 Islandia Islândia    &amp;lt;NA&amp;gt;  Island Izlanda Iceland    &amp;lt;NA&amp;gt;
+##                           geometry
+## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#aquí Islandia
+plot(iceland)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Por defecto, la función &lt;code&gt;plot( )&lt;/code&gt; con la clase &lt;em&gt;sf&lt;/em&gt; nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; o el argumento &lt;em&gt;max.plot&lt;/em&gt; &lt;code&gt;plot(iceland,max.plot=1)&lt;/code&gt;. Con el argumento &lt;em&gt;max.plot=1&lt;/em&gt; la función usa la primera variable disponible del mapa.&lt;/p&gt;
+&lt;p&gt;Además, vemos en la información del objeto &lt;em&gt;sf&lt;/em&gt; que la proyección es WGS84 con grados decimales (código EPSG:4326). Para el cálculo de distancias es más conveniente usar metros en lugar de grados. Debido a ello, lo primero que hacemos es transformar el mapa de Islandia a UTM Zona 27 (código EPSG:3055). Más información sobre EPSG y proyecciones &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;aquí&lt;/a&gt;. Con ese objetivo, usamos la función &lt;code&gt;st_transform( )&lt;/code&gt;. Simplemente indicamos el mapa y el código EPSG.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transformamos a UTM
+iceland &amp;lt;- st_transform(iceland,3055)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;crear-una-red-de-puntos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Crear una red de puntos&lt;/h2&gt;
+&lt;p&gt;Todavía necesitamos los puntos donde queremos conocer la distancia. En nuestro caso será una red regular de puntos en Islandia con una resolución de 5km. Esa tarea la hacemos con la función &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicando con el argumento &lt;em&gt;cellsize&lt;/em&gt; la resolución en la unidad del sistema de coordenadas (metros en nuestro caso) y qué geometría nos gustaría crear &lt;em&gt;what&lt;/em&gt; (poligonos, centros o esquinas).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#crear red de puntos
+grid &amp;lt;- st_make_grid(iceland,cellsize = 5000,what = &amp;quot;centers&amp;quot;)
+
+#nuestra red sobre la extensión de Islandia
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exraemos sólamente los puntos en los límites de Islandia
+grid &amp;lt;- st_intersection(grid,iceland)   
+
+#nuestra red ahora
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-la-distancia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular la distancia&lt;/h2&gt;
+&lt;p&gt;Para estimar la distancia usamos la función &lt;code&gt;st_distance( )&lt;/code&gt; que nos devuelve un vector de distancias para todos nuestros puntos de la red. Pero antes es necesario transformar el mapa de Islandia de una forma de polígono (MULTIPOLYGON) a línea (MULTILINESTRING). Más detalles con &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos Islandia de geometría poligono a línea
+iceland &amp;lt;- st_cast(iceland,&amp;quot;MULTILINESTRING&amp;quot;)
+
+#cálculo de la distancia entre la costa y nuestros puntos
+dist &amp;lt;- st_distance(iceland,grid)
+
+#distancia con unidad en metros
+head(dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualizar-la-distancia-calculada&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualizar la distancia calculada&lt;/h2&gt;
+&lt;p&gt;Una vez obtenida la distancia para nuestros puntos, podemos combinarlos con las coordenadas y plotearlos en &lt;em&gt;ggplot2&lt;/em&gt;. Para ello, creamos un &lt;em&gt;data.frame&lt;/em&gt;. El objeto &lt;em&gt;dist&lt;/em&gt; es una matriz de una columna, por eso, tenemos que convertirla a vector con la función &lt;code&gt;as.vector( )&lt;/code&gt;. Además, dividimos por 1000 para convertir la distancia en metros a km. La función &lt;code&gt;st_coordinates( )&lt;/code&gt; extrae las coordenadas de nuestros puntos. Para la visualización usamos un vector de colores con la gama RdGy (más &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;aquí&lt;/a&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos un data.frame con la distancia y las coorendas de los puntos
+df &amp;lt;- data.frame(dist=as.vector(dist)/1000,
+                    st_coordinates(grid))
+
+#estructura
+str(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    4104 obs. of  3 variables:
+##  $ dist: num  0.791 1.151 1.271 3.129 2.429 ...
+##  $ X   : num  608796 613796 583796 588796 593796 ...
+##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colores 
+col_dist &amp;lt;- brewer.pal(11,&amp;quot;RdGy&amp;quot;)
+
+
+ggplot(df,aes(X,Y,fill=dist))+ #variables
+         geom_tile()+ #geometría
+           scale_fill_gradientn(colours=rev(col_dist))+ #colores para la distancia
+             labs(fill=&amp;quot;Distance (km)&amp;quot;)+ #nombre de la leyenda
+             theme_void()+ #estilo del mapa
+              theme(legend.position = &amp;quot;bottom&amp;quot;) #posición de la leyenda&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exportar-la-distancia-como-raster&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Exportar la distancia como raster&lt;/h2&gt;
+&lt;p&gt;Para poder exportar la distancia con respecto al mar de Islandia, debemos usar la función &lt;code&gt;rasterize( )&lt;/code&gt; de la librería &lt;em&gt;raster&lt;/em&gt;.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;Primero, es necesario crear un raster vacío. En este raster debemos indicar la resolución, en nuestro caso es de 5000m, la proyección y la extensión del raster.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;p&gt;La proyección la podemos extraer de la información del mapa de Islandia.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;La extensión la conseguimos extraer de nuestros puntos &lt;em&gt;grid&lt;/em&gt; con la función &lt;code&gt;extent( )&lt;/code&gt;. No obstante, esta última función necesita la clase &lt;em&gt;sp&lt;/em&gt;, por eso pasamos el objeto &lt;em&gt;grid&lt;/em&gt; en formato &lt;em&gt;sf&lt;/em&gt;, únicamente para ello, a la clase &lt;em&gt;sp&lt;/em&gt; usando la función &lt;code&gt;as( )&lt;/code&gt; y el argumento “Spatial”.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;Además de lo anterior, el &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt; que creamos antes debemos convertir en clase &lt;em&gt;sf&lt;/em&gt;. Por eso, aplicamos la función &lt;code&gt;st_as_sf( )&lt;/code&gt; con el argumento &lt;em&gt;coords&lt;/em&gt; indicando los nombres de las coordenadas. Adicionalmente, también definimos el sistema de coordenadas que conocemos.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#obtenemos la extensión
+ext &amp;lt;- extent(as(grid,&amp;quot;Spatial&amp;quot;))
+
+#objeto extent
+ext&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : Extent 
+## xmin        : 338795.6 
+## xmax        : 848795.6 
+## ymin        : 7033371 
+## ymax        : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destino
+r &amp;lt;- raster(resolution=5000,ext=ext,crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+
+#convertimos los puntos a un spatial object clase sf
+dist_sf &amp;lt;- st_as_sf(df,coords=c(&amp;quot;X&amp;quot;,&amp;quot;Y&amp;quot;))%&amp;gt;%
+                      st_set_crs(3055)
+
+#creamos el raster de la distancia
+dist_raster &amp;lt;- rasterize(dist_sf,r,&amp;quot;dist&amp;quot;,fun=mean)
+
+#raster
+dist_raster&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : RasterLayer 
+## dimensions  : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution  : 5000, 5000  (x, y)
+## extent      : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## data source : in memory
+## names       : layer 
+## values      : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plotear el raster
+plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exportamos el raster
+writeRaster(dist_raster,file=&amp;quot;dist_islandia.tif&amp;quot;,format=&amp;quot;GTiff&amp;quot;, overwrite=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Con el cálculo de la distancia podemos llegar crear &lt;em&gt;arte&lt;/em&gt;, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;aquí más&lt;/a&gt;).&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>distancia</category>
+      
+            <category>raster</category>
+      
+            <category>calculo</category>
+      
+            <category>variable</category>
+      
+      
+            <category>sig</category>
+      
+            <category>R</category>
+      
+            <category>R:elemental</category>
+      
     </item>
     
     <item>
@@ -38,9 +521,189 @@ PaquetesEn este post usaremos los siguientes paquetes:</description>
       <pubDate>Wed, 05 Dec 2018 00:00:00 +0000</pubDate>
       
       <guid>/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</guid>
-      <description>Este año se hicieron muy famosos en todo el mundo los llamados warming stripes, las tiras del calentamiento global, que fueron creadas por el científico Ed Hawkins de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.
-Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: https://t.co/H5Hv9YgZ7v pic.twitter.com/YMzdySrr3A
-&amp;mdash; Ed Hawkins (@ed_hawkins) May 23, 2018  A partir de su idea, creé tiras para ejemplos de España, como el siguiente de Madrid.</description>
+      <description>
+
+
+&lt;p&gt;Este año se hicieron muy famosos en todo el mundo los llamados &lt;em&gt;warming stripes&lt;/em&gt;, las tiras del calentamiento global, que fueron creadas por el científico &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;A partir de su idea, creé tiras para ejemplos de España, como el siguiente de Madrid.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;es&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/Temperatura?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#Temperatura&lt;/a&gt; anual en &lt;a href=&#34;https://twitter.com/hashtag/MadridRetiro?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#MadridRetiro&lt;/a&gt; desde 1920 a 2017.  &lt;a href=&#34;https://twitter.com/hashtag/CambioClimatico?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#CambioClimatico&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; (idea de &lt;a href=&#34;https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw&#34;&gt;@ed_hawkins&lt;/a&gt; 🙏) &lt;a href=&#34;https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw&#34;&gt;@Divulgameteo&lt;/a&gt; &lt;a href=&#34;https://twitter.com/edupenabad?ref_src=twsrc%5Etfw&#34;&gt;@edupenabad&lt;/a&gt; &lt;a href=&#34;https://twitter.com/climayagua?ref_src=twsrc%5Etfw&#34;&gt;@climayagua&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw&#34;&gt;@ClimaGroupUB&lt;/a&gt; &lt;a href=&#34;https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw&#34;&gt;@4gotas_com&lt;/a&gt; &lt;a href=&#34;https://t.co/wmLb5uczpT&#34;&gt;pic.twitter.com/wmLb5uczpT&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw&#34;&gt;June 2, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta el paquete &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes lubridate y tidyverse
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+
+#librerías
+library(tidyverse)
+library(lubridate)
+library(RColorBrewer)
+
+#importar las temperaturas anuales
+temp_lisboa &amp;lt;- read_csv(&amp;quot;temp_lisboa.csv&amp;quot;)
+
+str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;spec_tbl_df&amp;#39;, &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 139 obs. of  18 variables:
+##  $ YEAR  : num  1880 1881 1882 1883 1884 ...
+##  $ JAN   : num  9.17 11.37 10.07 10.86 11.16 ...
+##  $ FEB   : num  12 11.8 11.9 11.5 10.6 ...
+##  $ MAR   : num  13.6 14.1 13.5 10.5 12.4 ...
+##  $ APR   : num  13.1 14.4 14 13.8 12.2 ...
+##  $ MAY   : num  15.7 17.3 15.6 14.6 16.4 ...
+##  $ JUN   : num  17 19.2 17.9 17.2 19.1 ...
+##  $ JUL   : num  19.1 21.8 20.3 19.5 21.4 ...
+##  $ AUG   : num  20.6 23.5 21 21.6 22.4 ...
+##  $ SEP   : num  20.7 20 18 18.8 19.5 ...
+##  $ OCT   : num  17.9 16.3 16.4 15.8 16.4 ...
+##  $ NOV   : num  12.5 14.7 13.7 13.5 12.5 ...
+##  $ DEC   : num  11.07 9.97 10.66 9.46 10.25 ...
+##  $ D-J-F : num  10.7 11.4 10.6 11 10.4 ...
+##  $ M-A-M : num  14.1 15.2 14.3 12.9 13.6 ...
+##  $ J-J-A : num  18.9 21.5 19.7 19.4 20.9 ...
+##  $ S-O-N : num  17 17 16 16 16.1 ...
+##  $ metANN: num  15.2 16.3 15.2 14.8 15.3 ...
+##  - attr(*, &amp;quot;spec&amp;quot;)=
+##   .. cols(
+##   ..   YEAR = col_double(),
+##   ..   JAN = col_double(),
+##   ..   FEB = col_double(),
+##   ..   MAR = col_double(),
+##   ..   APR = col_double(),
+##   ..   MAY = col_double(),
+##   ..   JUN = col_double(),
+##   ..   JUL = col_double(),
+##   ..   AUG = col_double(),
+##   ..   SEP = col_double(),
+##   ..   OCT = col_double(),
+##   ..   NOV = col_double(),
+##   ..   DEC = col_double(),
+##   ..   `D-J-F` = col_double(),
+##   ..   `M-A-M` = col_double(),
+##   ..   `J-J-A` = col_double(),
+##   ..   `S-O-N` = col_double(),
+##   ..   metANN = col_double()
+##   .. )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos en las columnas que tenemos valores mensuales y estacionales, y el valor anual. Pero antes de proceder a visualizar la temperatura anual, debemos sustituir los valores ausentes &lt;em&gt;999.9&lt;/em&gt; por &lt;code&gt;NA&lt;/code&gt;, usando la función &lt;code&gt;ifelse( )&lt;/code&gt; que lleva una condición y los argumentos correspondientes a verdadero y falso de la condición dada.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#selecionamos la columna del año y la temperatura anual
+temp_lisboa_yr &amp;lt;- select(temp_lisboa,YEAR,metANN)
+
+#cambiamos el nombre de la columna 
+temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr,ta=metANN)
+
+#valores ausentes 999.9
+summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##       YEAR            ta        
+##  Min.   :1880   Min.   : 14.53  
+##  1st Qu.:1914   1st Qu.: 15.65  
+##  Median :1949   Median : 16.11  
+##  Mean   :1949   Mean   : 37.38  
+##  3rd Qu.:1984   3rd Qu.: 16.70  
+##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas del paquete &lt;em&gt;lubridate&lt;/em&gt; y las funciones de apoyo dentro de &lt;em&gt;ggplot2&lt;/em&gt;. La función &lt;code&gt;str_c( )&lt;/code&gt; del paquete &lt;em&gt;stringr&lt;/em&gt;, forma parte de la colección de &lt;em&gt;tidyverse&lt;/em&gt;, es similar a &lt;code&gt;paste( )&lt;/code&gt; de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función &lt;code&gt;ymd( )&lt;/code&gt; (year month day) del paquete &lt;em&gt;lubridate&lt;/em&gt; convierte una fecha en un objeto &lt;em&gt;Date&lt;/em&gt;. Es posible combinar varias funciones haciendo uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&amp;quot;01-01&amp;quot;,sep=&amp;quot;-&amp;quot;)%&amp;gt;%ymd())&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creando-las-tiras&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creando las tiras&lt;/h2&gt;
+&lt;p&gt;Primero, creamos el estilo del gráfico, especificando todo los argumentos del aspecto que queremos ajustar. Partimos del estilo por defecto de &lt;code&gt;theme_minimal( )&lt;/code&gt;. Además, asignamos los colores procedientes de &lt;em&gt;RColorBrewer&lt;/em&gt; a un objeto &lt;em&gt;col_srip&lt;/em&gt;. Más información sobre los colores usados &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_strip &amp;lt;- theme_minimal()+
+                 theme(axis.text.y = element_blank(),
+                       axis.line.y = element_blank(),
+                       axis.title = element_blank(),
+                       panel.grid.major=element_blank(),
+                       legend.title = element_blank(),
+                       axis.text.x=element_text(vjust=3),
+                       panel.grid.minor=element_blank(),
+                       plot.title=element_text(size=14,face=&amp;quot;bold&amp;quot;)
+                       )
+
+
+col_strip &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+
+brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
+## BrBG            11      div       TRUE
+## PiYG            11      div       TRUE
+## PRGn            11      div       TRUE
+## PuOr            11      div       TRUE
+## RdBu            11      div       TRUE
+## RdGy            11      div      FALSE
+## RdYlBu          11      div       TRUE
+## RdYlGn          11      div      FALSE
+## Spectral        11      div      FALSE
+## Accent           8     qual      FALSE
+## Dark2            8     qual       TRUE
+## Paired          12     qual       TRUE
+## Pastel1          9     qual      FALSE
+## Pastel2          8     qual      FALSE
+## Set1             9     qual      FALSE
+## Set2             8     qual       TRUE
+## Set3            12     qual      FALSE
+## Blues            9      seq       TRUE
+## BuGn             9      seq       TRUE
+## BuPu             9      seq       TRUE
+## GnBu             9      seq       TRUE
+## Greens           9      seq       TRUE
+## Greys            9      seq       TRUE
+## Oranges          9      seq       TRUE
+## OrRd             9      seq       TRUE
+## PuBu             9      seq       TRUE
+## PuBuGn           9      seq       TRUE
+## PuRd             9      seq       TRUE
+## Purples          9      seq       TRUE
+## RdPu             9      seq       TRUE
+## Reds             9      seq       TRUE
+## YlGn             9      seq       TRUE
+## YlGnBu           9      seq       TRUE
+## YlOrBr           9      seq       TRUE
+## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para el gráfico final usamos la geometría &lt;code&gt;geom_tile( )&lt;/code&gt;. Como los datos no tienen un valor específico para el eje Y, usamos un valor &lt;em&gt;dummy&lt;/em&gt;, aquí es 1. Además, ajusto el ancho de la barra de colores en la leyenda.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
+             aes(x=date,y=1,fill=ta))+
+        geom_tile()+
+           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
+                     date_labels = &amp;quot;%Y&amp;quot;,
+                     expand=c(0,0))+
+           scale_y_continuous(expand=c(0,0))+
+           scale_fill_gradientn(colors=rev(col_strip))+
+           guides(fill=guide_colorbar(barwidth = 1))+
+           labs(title=&amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption=&amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+             theme_strip&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;En el caso de que quisieramos obtener únicamente las tiras, podemos usar &lt;code&gt;theme_void( )&lt;/code&gt; y el argumento &lt;em&gt;show.legend=FALSE&lt;/em&gt; en &lt;code&gt;geom_tile( )&lt;/code&gt; para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores &lt;code&gt;NA&lt;/code&gt;, incluyendo el argumento &lt;em&gt;na.value=“grey70”&lt;/em&gt; en la función &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
+             aes(x=date,y=1,fill=ta))+
+        geom_tile(show.legend = FALSE)+
+           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
+                     date_labels = &amp;quot;%Y&amp;quot;,
+                     expand=c(0,0))+
+           scale_y_discrete(expand=c(0,0))+
+           scale_fill_gradientn(colors=rev(col_strip))+
+             theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>ggplot2</category>
+      
+            <category>warming stripes</category>
+      
+            <category>calentamiento global</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:elemental</category>
+      
     </item>
     
     <item>
@@ -49,10 +712,149 @@ Visualising global temperature change since records began in 1850. Versions for 
       <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
       
       <guid>/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</guid>
-      <description>La base de datos de Open Street MapsRecientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.
-Population density through the number of gas stations in Europe. #dataviz @AGE_Oficial @mipazos @simongerman600 @openstreetmap pic.twitter.com/eIUx2yn7ej
-&amp;mdash; Dominic Royé (@dr_xeo) February 25, 2018  ¿Cómo se puede obtener estos datos?
-Pues, en este caso usé puntos de interés (PDIs) de la base de datos de Open Street Maps (OSM).</description>
+      <description>
+
+
+&lt;div id=&#34;la-base-de-datos-de-open-street-maps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;La base de datos de Open Street Maps&lt;/h2&gt;
+&lt;p&gt;Recientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; @mipazos &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;¿Cómo se puede obtener estos datos?&lt;/p&gt;
+&lt;p&gt;Pues, en este caso usé puntos de interés (PDIs) de la base de datos de &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una &lt;em&gt;overpass API&lt;/em&gt;, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.&lt;/p&gt;
+&lt;p&gt;Una forma fácil de acceder a una &lt;em&gt;overpass API&lt;/em&gt; es a través de &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;aquí&lt;/a&gt;. Sin embargo, tenemos a nuestra disposicón el paquete &lt;em&gt;osmdata&lt;/em&gt; que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la &lt;em&gt;overpass-turbo.eu&lt;/em&gt; puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;acceso-a-la-overpass-api-desde-r&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Acceso a la overpass API desde R&lt;/h2&gt;
+&lt;p&gt;El primer paso, que debemos seguir, es instalar varios paquetes, en el caso de que no estén instaldos. En casi todos mis scripts hago uso de &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;em&gt;tidyverse&lt;/em&gt;&lt;/a&gt; que es una colección fundamental de distintos paquetes, incluyendo &lt;em&gt;dplyr&lt;/em&gt; (manipulación de datos), &lt;em&gt;ggplot2&lt;/em&gt; (visualización), etc. El paquete &lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt; es el nuevo estándar para trabajar con datos espaciales y es compatible con &lt;em&gt;ggplot2&lt;/em&gt; y &lt;em&gt;dplyr&lt;/em&gt;. Por último, &lt;a href=&#34;http://stat405.had.co.nz/ggmap.pdf&#34;&gt;&lt;em&gt;ggmap&lt;/em&gt;&lt;/a&gt; nos facilita el trabajo para crear mapas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes osmdata, sf, tidyverse y ggmap
+if(!require(&amp;quot;osmdata&amp;quot;)) install.packages(&amp;quot;osmdata&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggmap&amp;quot;)) install.packages(&amp;quot;ggmap&amp;quot;)
+
+#cargamos las librerías
+library(tidyverse)
+library(osmdata)
+library(sf)
+library(ggmap)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construir-una-consulta&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Construir una consulta&lt;/h2&gt;
+&lt;p&gt;Antes de crear una consulta, debemos conocer qué podemos filtrar. La función &lt;code&gt;available_features( )&lt;/code&gt; nos devuelve un listado amplio de las características disponibles en OSM que a su vez tienen diferentes categorías (&lt;em&gt;tags&lt;/em&gt;). Están disponibles más detalles en la &lt;em&gt;wiki&lt;/em&gt; de OSM &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Caracter%C3%ADsticas_del_mapa&#34;&gt;aquí&lt;/a&gt;. Por ejemplo, la característica &lt;em&gt;shop&lt;/em&gt; contiene como categoría entre otros &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#las primeras cinco características 
+head(available_features())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalaciones y establecimientos públicos
+head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal boarding&amp;quot; &amp;quot;animal shelter&amp;quot;  &amp;quot;archive&amp;quot;         &amp;quot;arts centre&amp;quot;    
+## [5] &amp;quot;atm&amp;quot;             &amp;quot;baby hatch&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#tiendas
+head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;la-primera-consulta-donde-podemos-encontrar-cines-en-madrid&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;La primera consulta: ¿Dónde podemos encontrar cines en Madrid?&lt;/h3&gt;
+&lt;p&gt;Para construir la consulta se hace uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
+&lt;p&gt;En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función &lt;code&gt;getbb( )&lt;/code&gt; crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es &lt;code&gt;opq( )&lt;/code&gt; que construye la consulta final. Añadimos con la función &lt;code&gt;add_osm_feature( )&lt;/code&gt; nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave &lt;em&gt;amenity&lt;/em&gt; y como categoría &lt;em&gt;cinema&lt;/em&gt;. Existen varios formatos para obtener el resultado de la consulta. La función &lt;code&gt;osmdata_*( )&lt;/code&gt; envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; o &lt;em&gt;XML&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#construcción de la consulta
+q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;)%&amp;gt;%
+      opq()%&amp;gt;%
+       add_osm_feature(&amp;quot;amenity&amp;quot;, &amp;quot;cinema&amp;quot;)
+
+str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
+##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
+##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
+##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
+cinema&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##         $overpass_call : The call submitted to the overpass API
+##                  $meta : metadata including timestamp and version numbers
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 195 points
+##             $osm_lines : NULL
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
+##        $osm_multilines : NULL
+##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;¿Cómo podemos visulizar estos puntos?&lt;/p&gt;
+&lt;p&gt;La ventaja de objetos &lt;em&gt;sf&lt;/em&gt; es que para &lt;em&gt;ggplot2&lt;/em&gt; existe una geometría propia &lt;code&gt;geom_sf( )&lt;/code&gt;. Además, haciendo uso de &lt;em&gt;ggmap&lt;/em&gt; podemos incluir un mapa de fondo. La función &lt;code&gt;get_map( )&lt;/code&gt; descarga el mapa para un lugar dado. En lugar puede ser una dirección, latitud/longitud o un rectángulo de selección. El argumento &lt;em&gt;maptype&lt;/em&gt; nos permite indicar el estilo o tipo de mapa. Podemos consultar más detalles en la ayuda de la función &lt;code&gt;?get_map&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Cuando construimos un gráfico con &lt;em&gt;ggplot&lt;/em&gt; habitualmente empezamos con &lt;code&gt;ggplot( )&lt;/code&gt;. En este caso, se empieza por &lt;code&gt;ggmap( )&lt;/code&gt; que incluye el objeto con nuestro mapa de fondo. Después añadimos con &lt;code&gt;geom_sf( )&lt;/code&gt; los puntos de los cines en Madrid. Es importante indicar con el argumento &lt;em&gt;inherit.aes=FALSE&lt;/em&gt; que debe usar &lt;em&gt;aesthetic mappings&lt;/em&gt; del objeto espacial &lt;em&gt;osm_points&lt;/em&gt;. Además, indicamos el color (&lt;em&gt;colour&lt;/em&gt;, &lt;em&gt;fill&lt;/em&gt;), transparencia (&lt;em&gt;alpha&lt;/em&gt;), tipo y tamaño (&lt;em&gt;size&lt;/em&gt;) del círculo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#nuestro mapa de fondo
+mad_map &amp;lt;- get_map(getbb(&amp;quot;Madrid&amp;quot;),maptype = &amp;quot;toner-background&amp;quot;)
+
+#mapa final
+ggmap(mad_map)+
+  geom_sf(data=cinema$osm_points,
+          inherit.aes =FALSE,
+          colour=&amp;quot;#238443&amp;quot;,
+          fill=&amp;quot;#004529&amp;quot;,
+          alpha=.5,
+          size=4,
+          shape=21)+
+  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;donde-estan-los-supermercados-de-mercadona&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;¿Dónde están los supermercados de Mercadona?&lt;/h3&gt;
+&lt;p&gt;En lugar de obtener un rectángulo de selección con la función &lt;code&gt;getbb( )&lt;/code&gt; podemos construir nuestro propio. Para ello, creamos una matriz de dos columnas, siendo aquí el orden Este/Oeste/Sur/Norte. En la consulta usamos dos características: &lt;em&gt;name&lt;/em&gt; y &lt;em&gt;shop&lt;/em&gt; para poder filtrar supermercados que sean de esta marca en concreto. En función del area o bien del volumen que tenga la consulta, es necesario ampliar el tiempo de espera. Por defecto, son 25 segundo (&lt;em&gt;timeout&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;El mapa que creamos en este caso se basa únicamente en los puntos de supermercados. Por eso, usamos la gramática habitual añadiendo la geometría &lt;code&gt;geom_sf( )&lt;/code&gt;. La función &lt;code&gt;theme_void( )&lt;/code&gt; elimina todo con excepción de los puntos. Por defecto, el objeto &lt;em&gt;sf&lt;/em&gt; en &lt;em&gt;ggplot&lt;/em&gt; crea retículas que se pueden quitar usando la función &lt;code&gt;coord_sf( )&lt;/code&gt; con el argumento &lt;em&gt;datum=NA&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#rectángulo de selección para la Península Ibérica
+m &amp;lt;- matrix(c(-10,5,30,46),ncol=2,byrow=TRUE)
+row.names(m) &amp;lt;- c(&amp;quot;x&amp;quot;,&amp;quot;y&amp;quot;)
+names(m) &amp;lt;- c(&amp;quot;min&amp;quot;,&amp;quot;max&amp;quot;)
+
+#construcción de la consulta
+q &amp;lt;- m %&amp;gt;% 
+      opq (timeout=25*100) %&amp;gt;%
+         add_osm_feature(&amp;quot;name&amp;quot;,&amp;quot;Mercadona&amp;quot;)%&amp;gt;%
+         add_osm_feature(&amp;quot;shop&amp;quot;,&amp;quot;supermarket&amp;quot;)
+
+str(q) #estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ bbox    : chr &amp;quot;5,-10,46,30&amp;quot;
+##  $ prefix  : chr &amp;quot;[out:xml][timeout:2500];\n(\n&amp;quot;
+##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
+##  $ features: chr [1:2] &amp;quot; [\&amp;quot;name\&amp;quot;=\&amp;quot;Mercadona\&amp;quot;]&amp;quot; &amp;quot; [\&amp;quot;shop\&amp;quot;=\&amp;quot;supermarket\&amp;quot;]&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#consulta 
+mercadona &amp;lt;- osmdata_sf(q)
+
+#mapa final del resultado
+ggplot(mercadona$osm_points)+
+  geom_sf(colour=&amp;quot;#08519c&amp;quot;,
+          fill=&amp;quot;#08306b&amp;quot;,
+          alpha=.5,
+          size=1,
+          shape=21)+
+  coord_sf(datum=NA)+
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>base de datos</category>
+      
+            <category>overpass API</category>
+      
+            <category>OSM</category>
+      
+            <category>Puntos de interés</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R:elemental</category>
+      
+            <category>R</category>
+      
+            <category>mapping</category>
+      
     </item>
     
     <item>
@@ -61,7 +863,422 @@ Pues, en este caso usé puntos de interés (PDIs) de la base de datos de Open St
       <pubDate>Sat, 15 Sep 2018 10:59:44 +0100</pubDate>
       
       <guid>/es/2018/acceso-a-datos-de-los-rean%C3%A1lisis-clim%C3%A1ticos-desde-r/</guid>
-      <description>1 Introducción2 NCEP2.1 Paquetes2.2 Descarga de datos2.3 Promedio mensual2.4 Visualización3 ERA-Interim3.1 Instalación3.2 Conexión y descarga con la ECMWF API3.3 Procesar ncdf4 Actualización para acceder ERA-5Un amigo me propuso que presentara los niveles de aprendizaje de R como categorías. Una idea que ahora introduzco para cada entrada del blog. Hay tres niveles: elemental, intermedio y avanzado.</description>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduccion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#paquetes&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#descarga-de-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#promedio-mensual&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Promedio mensual&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualizacion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#era-interim&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#instalacion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conexion-y-descarga-con-la-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#procesar-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#actualizacion-para-acceder-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;Un amigo me propuso que presentara los niveles de aprendizaje de R como categorías. Una idea que ahora introduzco para cada entrada del blog. Hay tres niveles: elemental, intermedio y avanzado. Espero que ayude al lector y al usuario R.&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;introduccion&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/h1&gt;
+&lt;p&gt;En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) de la &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, una versión mejorada de &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), y &lt;em&gt;ERA-Interim&lt;/em&gt; del &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;ECMWF&lt;/a&gt;. Dado que &lt;em&gt;NCEP-DO&lt;/em&gt; es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente &lt;em&gt;ERA-Interim&lt;/em&gt;. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;aquí&lt;/a&gt;. Primero vamos a ver cómo acceder a los datos del &lt;em&gt;NCEP&lt;/em&gt; a través de un paquete de R en &lt;em&gt;CRAN&lt;/em&gt; que facilita la descarga y el manejo de los datos. Después haremos lo mismo con &lt;em&gt;ERA-Interim&lt;/em&gt;, no obstante, para acceder a este último dataset de reanálisis es necesario usar &lt;em&gt;python&lt;/em&gt; y la correspondiente API del &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
+&lt;p&gt;Para acceder a los reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es necesario instalar el paquete correspondiente &lt;em&gt;RNCEP&lt;/em&gt;. La función principal es &lt;code&gt;NCEP.gather( )&lt;/code&gt;. La resolución del reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es de 2,5º X 2,5º.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes RNCEP, lubridate y tidyverse
+if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+
+#cargamos las librerías
+library(RNCEP)
+library(lubridate) #la necesitamos para manipular fechas
+library(tidyverse) #para visualizar y manipular 
+library(RColorBrewer) #colores para la visualización
+library(sf) #para importar un shapefile y trabajar con geom_sf&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;descarga-de-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/h2&gt;
+&lt;p&gt;Descargaremos la temperatura del aire a la altura de 850haPa para el año 2016. Las variables y niveles de presión pueden ser consultados en los detalles de la función &lt;code&gt;?NCEP.gather&lt;/code&gt;. El argumento &lt;em&gt;reanalysis2&lt;/em&gt; nos permite descargar tanto la versión I como la versión II, siendo por defecto &lt;em&gt;FALSE&lt;/em&gt;, o sea, se accede al reanálisis I. En todas las consultas obtendremos datos horarios de cada 6 horas (00:00, 06:00, 12:00 y 18:00). Esto supone un total de 1464 valores para el año 2016.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definimos los argumentos necesarios
+month_range &amp;lt;- c(1,12)     #período de meses
+year_range &amp;lt;- c(2016,2016) #período de años
+
+lat_range &amp;lt;- c(30,60)      #rango de latitud
+lon_range &amp;lt;- c(-30,50)     #rango de longitud
+ 
+
+data &amp;lt;- NCEP.gather(&amp;quot;air&amp;quot;,    #nombre de la variable
+                    850, #altura 850hPa
+                    month_range,year_range,
+                    lat_range,lon_range,
+                    return.units = TRUE,
+                    reanalysis2=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] Units of variable &amp;#39;air&amp;#39; are degK
+## [1] Units of variable &amp;#39;air&amp;#39; are degK&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#dimensiones                     
+dim(data) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   13   33 1464&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#encontramos en dimnames( ) lon,lat y tiempo
+#fechas y horas 
+date_time &amp;lt;- dimnames(data)[[3]]
+date_time &amp;lt;- ymd_h(date_time)
+head(date_time)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2016-01-01 00:00:00 UTC&amp;quot; &amp;quot;2016-01-01 06:00:00 UTC&amp;quot;
+## [3] &amp;quot;2016-01-01 12:00:00 UTC&amp;quot; &amp;quot;2016-01-01 18:00:00 UTC&amp;quot;
+## [5] &amp;quot;2016-01-02 00:00:00 UTC&amp;quot; &amp;quot;2016-01-02 06:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#longitud y latitud
+lat &amp;lt;- dimnames(data)[[1]]
+lon &amp;lt;- dimnames(data)[[2]]
+head(lon);head(lat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;-30&amp;quot;   &amp;quot;-27.5&amp;quot; &amp;quot;-25&amp;quot;   &amp;quot;-22.5&amp;quot; &amp;quot;-20&amp;quot;   &amp;quot;-17.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;60&amp;quot;   &amp;quot;57.5&amp;quot; &amp;quot;55&amp;quot;   &amp;quot;52.5&amp;quot; &amp;quot;50&amp;quot;   &amp;quot;47.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;promedio-mensual&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Promedio mensual&lt;/h2&gt;
+&lt;p&gt;Vemos que se trata de un &lt;em&gt;array&lt;/em&gt; de tres dimensiones con [lat,lon,tiempo]. Además, extraemos latitud, longitud y el tiempo. La temperatura está dada en Kelvin. El objetivo aquí será mostrar dos mapas comparando enero y julio de 2016.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos nuestra variable de agrupación 
+group &amp;lt;- month(date_time) 
+
+#estimamos el promedio por mes de la temperatura
+data_month &amp;lt;- aperm(
+  apply(
+    data, #nuestros datos
+    c(1,2), #aplicamos a cada serie temporal 1:fila, 2:columna la función mean( )
+    by, #agrupar por 
+    group, #meses como agrupación
+    function(x)ifelse(all(is.na(x)),NA,mean(x))),
+  c(2,3,1)) #reordenamos para obtener un array como el original
+
+dim(data_month) #temperatura 850haP por mes enero a diciembre&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 13 33 12&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualizacion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/h2&gt;
+&lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; del paquetes &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#primero creamos todas las combinaciones de lonlat
+lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
+
+#lonlat es carácter, ya que fue un nombre, por eso lo convertimos en númerico
+lonlat &amp;lt;- apply(lonlat,2,as.numeric)
+
+#lon y lat no están en el orden como lo esperamos
+#fila=lon; columna=lat
+data_month &amp;lt;- aperm(data_month,c(2,1,3))
+
+#subtraemos 273.15K para convertir K a ºC.
+df &amp;lt;- data.frame(lonlat,
+                 Ta01=as.vector(data_month[,,1])-273.15,
+                 Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Antes de visualizar los datos con &lt;em&gt;ggplot2&lt;/em&gt;, tenemos que adpatar la tabla. El shapefile con los limites de los países se puede descargar &lt;a href=&#34;/files/CNTR_RG_03M_2014.zip&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos la tabla ancha en una larga
+df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
+             mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
+
+#importamos el limite de países
+limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 256 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.66068
+## epsg (SRID):    NA
+## proj4string:    +proj=longlat +ellps=GRS80 +no_defs&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#gama de colores
+colbr &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+
+ggplot(df)+
+      geom_tile(aes(lon,lat,fill=Ta))+ #temperatura
+      geom_sf(data=limit,fill=NA,size=.5)+ #limite
+        scale_fill_gradientn(colours=rev(colbr))+
+          coord_sf(ylim=c(30,60),xlim=c(-30,50))+
+          scale_x_continuous(breaks=seq(-30,50,10),expand=c(0,0))+
+          scale_y_continuous(breaks=seq(30,60,5),expand=c(0,0))+
+          labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
+           facet_grid(month~.)+ #mapa por mes
+             theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
+&lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite el paquete &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;instalacion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
+if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quot;) #para manejar formato netCDF
+
+#cargamos las librerías
+library(reticulate)
+library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Una vez que tenemos instalado &lt;em&gt;anaconda&lt;/em&gt; y el paquete &lt;em&gt;reticulate&lt;/em&gt;, podemos instalar el paquete &lt;em&gt;python ecmwfapi&lt;/em&gt;. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, o bien con la función &lt;code&gt;py_install( )&lt;/code&gt; del paquete &lt;em&gt;reticulate&lt;/em&gt;. La misma función permite instalar cualquier librería &lt;em&gt;python&lt;/em&gt; desde R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos la API ECMWF
+py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Installation complete.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;conexion-y-descarga-con-la-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/h2&gt;
+&lt;p&gt;Para poder acceder a la API es requisito crear un archivo con la información del usuario.&lt;/p&gt;
+&lt;p&gt;El archivo “.ecmwfapirc” debe contener la siguiente información:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;url&amp;quot;   : &amp;quot;https://api.ecmwf.int/v1&amp;quot;,
+    &amp;quot;key&amp;quot;   : &amp;quot;XXXXXXXXXXXXXXXXXXXXXX&amp;quot;,
+    &amp;quot;email&amp;quot; : &amp;quot;john.smith@example.com&amp;quot;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La clave podemos obtenerla con la cuenta de usuario &lt;a href=&#34;https://api.ecmwf.int/v1/key/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;El archivo se puede crear con el bloc de notas de Windows.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Creamos un documento “ecmwfapirc.txt”.&lt;/li&gt;
+&lt;li&gt;Renombramos este archivo a “.ecmwfapirc.”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;El último punto desaparece de forma automática. Después guardamos este archivo en “C:/USERNAME/.ecmwfapirc” o “C:/USERNAME/Documents/.ecmwfapirc”.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos la librería python ecmwfapi
+ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
+
+#en este paso debe existir el archivo .ecmwfapirc
+server = ecmwf$ECMWFDataServer() #iniciamos la conexión&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Llegados a este punto, ¿cómo creamos una consulta? Lo más fácil es ir a la web del &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt; dónde elegimos la base de datos, en este caso &lt;em&gt;ERA-Interim&lt;/em&gt; en superficie, para crear un script con todos los datos necesarios. Más detalles sobre la sintaxis podemos encontrar &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;aquí&lt;/a&gt;. Cuando procedemos en la web sólamente tenemos que hacer click en “View MARS Request”. Este paso nos lleva al script en &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;
+
+&lt;/div&gt;
+&lt;p&gt;Con la sintaxis del script que nos da la &lt;em&gt;MARS Request&lt;/em&gt; podemos crear la consulta en R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos la consulta
+query &amp;lt;-r_to_py(list(
+  class=&amp;#39;ei&amp;#39;,
+  dataset= &amp;quot;interim&amp;quot;, #base de datos
+  date= &amp;quot;2017-01-01/to/2017-12-31&amp;quot;, #periodo 
+  expver= &amp;quot;1&amp;quot;,
+  grid= &amp;quot;0.125/0.125&amp;quot;, #resolución
+  levtype=&amp;quot;sfc&amp;quot;,
+  param= &amp;quot;167.128&amp;quot;, # temperatura del aire (2m)
+  area=&amp;quot;45/-10/30/5&amp;quot;, #N/W/S/E
+  step= &amp;quot;0&amp;quot;,
+  stream=&amp;quot;oper&amp;quot;,
+  time=&amp;quot;00:00:00/06:00:00/12:00:00/18:00:00&amp;quot;, #paso de tiempo
+  type=&amp;quot;an&amp;quot;,
+  format= &amp;quot;netcdf&amp;quot;, #formato
+  target=&amp;#39;ta2017.nc&amp;#39; #nombre del archivo
+))
+
+server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es un archivo netCDF que podemos processar con el paquete &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;procesar-ncdf&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/h2&gt;
+&lt;p&gt;A partir de aquí, el objetivo será la extracción de una serie temporal de una coordenada más próxima a una dada. Usaremos las coordenadas de Madrid (40.418889, -3.691944).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cargamos las librerías 
+library(sf)
+library(ncdf4)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#abrimos la conexión con el archivo
+nc &amp;lt;- nc_open(&amp;quot;ta2017.nc&amp;quot;)
+
+#extraemos lon y lat
+lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
+lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
+dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extraemos el tiempo
+t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
+
+#unidad del tiempo: horas desde 1900-01-01
+ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $units
+## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
+## 
+## $long_name
+## [1] &amp;quot;time&amp;quot;
+## 
+## $calendar
+## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos las horas en fecha+hora 
+#as_datetime de lubridate espera segundos
+timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
+
+#importamos los datos
+data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
+
+#cerramos la conexión
+nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF &lt;a href=&#34;https://dominicroye.github.io/en/publication/ncdf_2015/&#34;&gt;aqui&lt;/a&gt;. En esta próxima sección hacemos uso del paquete &lt;em&gt;sf&lt;/em&gt; la cuál está sustituyendo las más conocidas &lt;em&gt;sp&lt;/em&gt; y &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos todas las combinaciones
+lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
+
+#debemos convertir las coordenadas en objeto espacial sf
+#además indicamos el sistema de coordenadas en codigo EPSG
+coord &amp;lt;- st_as_sf(lonlat,coords=c(&amp;quot;lon&amp;quot;,&amp;quot;lat&amp;quot;))%&amp;gt;%
+                    st_set_crs(4326)
+
+#lo mismo hacemos con nuestra coordenada de Madrid
+psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
+                   st_sfc()%&amp;gt;%
+                     st_set_crs(4326)
+
+#plot de los puntos
+plot(st_geometry(coord))
+plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;En los próximos pasos calculamos la distancia de nuestro punto de referencia a todos los puntos del grid. Posteriormente, buscamos aquel con menos distancia.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadimos la distancia a los puntos
+coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
+
+#creamos una matrix de distancia con las mismas dimensiones que nuestros datos
+dist_mat &amp;lt;- matrix(coord$dist,dim(data)[-3])
+
+#la función arrayInd es útil para obtener los índices fila y columna en este caso
+mat_index &amp;lt;- as.vector(arrayInd(which.min(dist_mat), dim(dist_mat)))
+
+#extraemos la serie temporal y cambiamos la unidad de K a ºC
+#convertimos el tiempo en fecha + hora
+df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp;gt;%
+        mutate(ta=ta-273.15,time=ymd_hms(time))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para terminar, visualizamos nuestra serie temporal.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(df,
+       aes(time,ta))+
+    geom_line()+
+    labs(y=&amp;quot;Temperatura (ºC)&amp;quot;,
+             x=&amp;quot;&amp;quot;)+
+    theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;actualizacion-para-acceder-era-5&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/h1&gt;
+&lt;p&gt;Recientemente el nuevo reanálisis ERA-5 con &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;&lt;em&gt;single level&lt;/em&gt;&lt;/a&gt; o &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview&#34;&gt;&lt;em&gt;pressure level&lt;/em&gt;&lt;/a&gt; fue puesto a disposición de los usarios. Es la quinta generación del European Centre for Medium-Range Weather Forecasts (ECMWF) y accesible a través de una nueva API de Copernicus. El nuevo reanálisis ERA-5 tiene una cobertura temporal desde 1950 hasta la actualidad a una resolución horizontal de 30km a nivel mundial, con 137 niveles desde la superficie hasta una altura de 80km. Una diferencia importante con respecto al ERA-Interim anterior es la resolución temporal con datos horarios.&lt;/p&gt;
+&lt;p&gt;El acceso cambia a la infrastructura de Climate Data Store (CDS) con su propia API. Es posible descargar directamente desde la página o usando la Python API en una forma similar a la ya presentada en este post. Sin embargo, existen ligeras diferencias que voy a explicar a continuación.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Es necesario tener una cuenta en CDS de Copernicus &lt;a href=&#34;https://cds.climate.copernicus.eu/user/register&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Nuevamente, hace falta una clave &lt;a href=&#34;https://cds.climate.copernicus.eu/api-how-to&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Cambia la librería de Python y algo los argumentos en la consulta.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cargamos las librerías 
+library(sf)
+library(ncdf4)
+library(tidyverse)
+library(reticulate)
+
+#instalamos la CDS API
+conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;,pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para poder acceder a la API un requisito es crear un archivo con la información del usuario.&lt;/p&gt;
+&lt;p&gt;El archivo “.cdsapirc” debe contener la siguiente información:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+url: https://cds.climate.copernicus.eu/api/v2
+key: {uid}:{api-key}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La clave la podemos obtener con la cuenta de usuario en el &lt;em&gt;User profile&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;El archivo se puede crear con el bloc de notas de Windows del mismo modo como ha sido explicado para ERA-Interim.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos la librería python CDS
+cdsapi &amp;lt;- import(&amp;#39;cdsapi&amp;#39;)
+
+#en este paso debe existir el archivo .cdsapirc
+server = cdsapi$Client() #iniciamos la conexión&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Con la sintaxis del script que nos da la &lt;em&gt;Show API request&lt;/em&gt; podemos crear la consulta en R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos la consulta
+query &amp;lt;- r_to_py(list(
+    variable= &amp;quot;2m_temperature&amp;quot;,
+    product_type= &amp;quot;reanalysis&amp;quot;,
+    year= &amp;quot;2018&amp;quot;,
+    month= &amp;quot;07&amp;quot;, #formato: &amp;quot;01&amp;quot;,&amp;quot;01&amp;quot;, etc.
+    day= str_pad(1:31,2,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),   
+    time= str_c(0:23,&amp;quot;00&amp;quot;,sep=&amp;quot;:&amp;quot;)%&amp;gt;%str_pad(5,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),
+    format= &amp;quot;netcdf&amp;quot;,
+    area = &amp;quot;45/-20/35/5&amp;quot; # North, West, South, East
+  ))
+
+server$retrieve(&amp;quot;reanalysis-era5-single-levels&amp;quot;,
+                  query,
+                 &amp;quot;era5_ta_2018.nc&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Es posible que la primera vez se reciba un mensaje de error, dado que todavía no se han aceptado los términos y las condiciones requeridas. Únicamente se debe seguir el enlace indicado.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Error in py_call_impl(callable, dots$args, dots$keywords) : 
+  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &amp;#39;Licence to Use Copernicus Products&amp;#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A partir de aquí podemos seguir los mismos pasos como los hechos con ERA-Interim.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#abrimos la conexión con el archivo
+nc &amp;lt;- nc_open(&amp;quot;era5_ta_2018.nc&amp;quot;)
+
+#extraemos lon y lat
+lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
+lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
+dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 41&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 101&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extraemos el tiempo
+t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
+
+#unidad del tiempo: horas desde 1900-01-01
+ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $units
+## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
+## 
+## $long_name
+## [1] &amp;quot;time&amp;quot;
+## 
+## $calendar
+## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos las horas en fecha+hora 
+#as_datetime de lubridate espera segundos
+timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
+
+#temperatura en K de julio 2018
+head(timestamp)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2018-07-01 00:00:00 UTC&amp;quot; &amp;quot;2018-07-01 01:00:00 UTC&amp;quot;
+## [3] &amp;quot;2018-07-01 02:00:00 UTC&amp;quot; &amp;quot;2018-07-01 03:00:00 UTC&amp;quot;
+## [5] &amp;quot;2018-07-01 04:00:00 UTC&amp;quot; &amp;quot;2018-07-01 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los datos
+data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
+
+#plot
+filled.contour(data[,,1])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(data.frame(date=timestamp,ta=data[1,5,]),
+     type=&amp;quot;l&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cerramos la conexión
+nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>reanalisis</category>
+      
+            <category>interim</category>
+      
+            <category>NCEP/NCAR</category>
+      
+            <category>era</category>
+      
+            <category>descarga</category>
+      
+            <category>ncdf</category>
+      
+            <category>acceso</category>
+      
+            <category>api</category>
+      
+            <category>python</category>
+      
+            <category>ECMWF</category>
+      
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
     </item>
     
     <item>
@@ -70,7 +1287,208 @@ Pues, en este caso usé puntos de interés (PDIs) de la base de datos de Open St
       <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
       
       <guid>/es/2018/el-gr%C3%A1fico-de-tarta/</guid>
-      <description>Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo.</description>
+      <description>
+
+
+&lt;p&gt;Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R. Espero que os guste. Cualquier sugerencia o idea, será bienvenida.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;preambulo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preámbulo&lt;/h2&gt;
+&lt;p&gt;Siempre he querido escribir sobre el uso del gráfico de tarta. El gráfico circular es ampliamente usado en investigación, docencia, periodismo o en informes técnicos. Es más, no sé si es debido a Excel, pero todavía peor que el mismo gráfico de tarta es su versión en 3D (también para el gráfico de barras). Sobre las versiones 3D únicamente debo decir que no es recomendable, ya que en estos casos la tercera dimensión no contiene ninguna información y por tanto no ayuda en leer correctamente la información del gráfico. Respecto al gráfico de tarta, entre muchos expertos no se aconseja claramente su uso. Pero, ¿por qué?&lt;/p&gt;
+&lt;p&gt;Ya en un estudio hecho por &lt;span class=&#34;citation&#34;&gt;Simkin y Hastie (1987)&lt;/span&gt; encontraron que la interpretación y el procesamiento de ángulos es más díficil que el de formas lineales. Mayormente es más fácil leer un gráfico de barras que uno de tarta. Un problema que se hace muy visible cuando nos encontramos con; 1) demasiadas categorías 2) pocas diferencias entre las categorías 3) un mal uso de colores como leyenda ó 4) comparaciones entre varios gráficos de tarta.&lt;/p&gt;
+&lt;p&gt;Para decidir qué posibles representaciones gráficas existen para nuestros datos, recomiendo ir a la página web &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; o usar &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora bien, ¿qué alternativas podemos usar en R?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;alternativas-al-grafico-de-tarta&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Alternativas al gráfico de tarta&lt;/h2&gt;
+&lt;p&gt;Los datos sobre el estado de la enfermedad &lt;strong&gt;sarampión&lt;/strong&gt; corresponden a junio de 2018 en Europa y vienen del &lt;a href=&#34;https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases&#34;&gt;ECDC&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#librerías
+library(tidyverse)
+library(scales)
+library(RColorBrewer)
+
+#datos
+measles &amp;lt;- data.frame(
+          vacc_status=c(&amp;quot;Unvaccinated&amp;quot;,&amp;quot;1 Dose&amp;quot;,
+                        &amp;quot;&amp;gt;= 2 Dose&amp;quot;,&amp;quot;Unkown Dose&amp;quot;,&amp;quot;Unkown&amp;quot;),
+          prop=c(0.75,0.091,0.05,0.012,0.096)
+          )
+
+#ordenamos de mayor a menor y lo fijamos con un factor 
+
+measles &amp;lt;- arrange(measles,
+                   desc(prop))%&amp;gt;%
+              mutate(vacc_status=factor(vacc_status,vacc_status))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;vacc_status&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;prop&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unvaccinated&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.750&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unkown&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.096&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1 Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.091&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&amp;gt;= 2 Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.050&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unkown Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.012&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div id=&#34;grafico-de-barra-o-similar&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Gráfico de barra o similar&lt;/h4&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(vacc_status,prop))+
+            geom_bar(stat=&amp;quot;identity&amp;quot;)+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1))+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
+            geom_pointrange()+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1))+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definiciones sobre el theme que usamos
+theme_singlebar &amp;lt;- theme_bw()+
+  theme(
+    legend.position = &amp;quot;bottom&amp;quot;,
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    plot.title=element_text(size=14, face=&amp;quot;bold&amp;quot;)
+  )
+
+mutate(measles,
+       vacc_status=factor(vacc_status,               #cambiamos el orden de las categorías
+                          rev(levels(vacc_status))))%&amp;gt;%
+ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra única
+         geom_bar(stat=&amp;quot;identity&amp;quot;)+
+          scale_y_continuous(breaks=seq(0,1,.1),
+                             labels=percent,
+                             limits=c(0,1),
+                             expand=c(.01,.01))+
+          scale_x_continuous(expand=c(0,0))+
+              scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
+                coord_flip()+
+                  theme_singlebar&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#ampliamos los datos con las cifras de Italia
+measles2 &amp;lt;- mutate(measles,
+                  italy=c(0.826,0.081,0.053,0.013,0.027),
+                  vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&amp;gt;%
+                rename(europe=&amp;quot;prop&amp;quot;)%&amp;gt;%
+                gather(region,prop,europe:italy)
+
+
+ggplot(measles2,aes(region,prop,fill=vacc_status))+
+            geom_bar(stat=&amp;quot;identity&amp;quot;,position=&amp;quot;stack&amp;quot;)+ #stack: columna 100%
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1),
+                                expand=c(0,0))+
+            scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;grafico-de-waffle&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#libería
+library(waffle)
+
+#la función de waffle usa un vector con nombres
+val_measles &amp;lt;- round(measles$prop*100)
+names(val_measles) &amp;lt;- measles$vacc_status
+
+waffle(val_measles, #datos
+        colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colores
+        rows=5) #número de filas &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;medida &amp;lt;- c(41,59) #datos de la OECD 2015
+names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
+
+waffle(medida,
+       colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
+       rows=5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#librería
+library(treemap)
+
+treemap(measles,
+index=&amp;quot;vacc_status&amp;quot;, #variable de categrías
+vSize=&amp;quot;prop&amp;quot;,        #valores
+type=&amp;quot;index&amp;quot;,        #estilo más en ?treemap
+title=&amp;quot;&amp;quot;,            
+palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;referencias&#34; class=&#34;section level3 unnumbered&#34;&gt;
+&lt;h3&gt;Referencias&lt;/h3&gt;
+&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
+&lt;div id=&#34;ref-Robbins2013&#34;&gt;
+&lt;p&gt;Robbins, Naomi B. 2013. &lt;em&gt;Creating more effective graphs. A succinct and highly readable guide to creating effective graph.&lt;/em&gt; Chart House.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ref-Simkin1987&#34;&gt;
+&lt;p&gt;Simkin, D, y R Hastie. 1987. «An Information-Processing Analysis of Graph Perception». &lt;em&gt;Journal of the American Statistical Association&lt;/em&gt; 82 (398): 454-65.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>gráfico de tarta</category>
+      
+            <category>datos</category>
+      
+            <category>circular</category>
+      
+            <category>proporciones</category>
+      
+            <category>primera entrada</category>
+      
+            <category>treemap</category>
+      
+            <category>waffle</category>
+      
+            <category>barra</category>
+      
+            <category>visualización</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:elemental</category>
+      
     </item>
     
   </channel>
