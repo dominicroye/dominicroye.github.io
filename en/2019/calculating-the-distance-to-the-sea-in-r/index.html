@@ -807,6 +807,11 @@ plot(dist_raster)</code></pre>
 <p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>#export the raster
 writeRaster(dist_raster,file=&quot;dist_islandia.tif&quot;,format=&quot;GTiff&quot;, overwrite=TRUE)</code></pre>
+<p>The <code>rasterize( )</code> function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The <code>rasterFromXYZ( )</code> function converts a <em>data.frame</em> with longitude, latitude and the variable <em>Z</em> into a raster object. It is important that the order should be longitude, latitude, variables.</p>
+<pre class="r"><code>r &lt;- rasterFromXYZ(df[,c(2:3,1)],crs=&quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&quot;)
+
+plot(r)</code></pre>
+<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>With the calculation of distance we can create art, as seen in the header of this post, which includes a world map only with the distance to the sea of all continents. A different perspective to our world (<a href="https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/">here more (spanish)</a>) .</p>
 </div>
 
