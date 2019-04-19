@@ -10,6 +10,411 @@
     <atom:link href="/es/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Resumir tests de correlaciones en R</title>
+      <link>/es/2019/resumir-tests-de-correlaciones-en-r/</link>
+      <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
+      <description>
+
+
+&lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;broom&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Convierte resultados de funciones estadísticas (lm, t.test, cor.test, etc.) en bonitas tablas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#librerías
+library(tidyverse)
+library(broom)
+library(fs)
+library(lubridate)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar datos&lt;/h2&gt;
+&lt;p&gt;Primero debemos importar la precipitación diaria de las estaciones meteorológicas seleccionadas.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Creamos un vector con todos los archivos de precipitación con la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;em&gt;{fs}&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Importamos los datos con ayuda de la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que aplica otra función a un vector o lista, y los une en una única tabla.&lt;/li&gt;
+&lt;li&gt;&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Seleccionamos únicamente las columnas que nos interesan, b) Convertimos la fecha en objeto &lt;em&gt;date&lt;/em&gt; con la función &lt;code&gt;ymd()&lt;/code&gt; del paquete &lt;em&gt;{lubridate}&lt;/em&gt;, c) Creamos una nueva columna &lt;em&gt;yr&lt;/em&gt; con el año, d) Dividimos la precipitación entre 10 y reclasificamos valores ausentes -9999 por NA, e) Por último, reclasificamos la ID de cada estación meteorológica, creando un factor con nuevas etiquetas.&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Más detalles sobre el uso de las funciones &lt;code&gt;dir_ls()&lt;/code&gt; y &lt;code&gt;map_df()&lt;/code&gt; en este último &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#archivos de la precipitación
+files &amp;lt;- dir_ls(regexp = &amp;quot;txt&amp;quot;)
+files&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
+## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
+pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## Parsed with column specification:
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 5
+##    STAID SOUID     DATE    RR  Q_RR
+##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1  1393 20611 19470301     0     0
+##  2  1393 20611 19470302     5     0
+##  3  1393 20611 19470303     0     0
+##  4  1393 20611 19470304    33     0
+##  5  1393 20611 19470305    15     0
+##  6  1393 20611 19470306     0     0
+##  7  1393 20611 19470307    85     0
+##  8  1393 20611 19470308     3     0
+##  9  1393 20611 19470309     0     0
+## 10  1393 20611 19470310     0     0
+## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos los niveles del factor 
+id &amp;lt;- unique(pr$STAID)
+
+#las etiquetas correspondientes
+lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;,&amp;quot;Santiago&amp;quot;,&amp;quot;Barcelona&amp;quot;,&amp;quot;Madrid&amp;quot;,&amp;quot;Valencia&amp;quot;)
+
+#primeros cambios
+pr &amp;lt;- select(pr,STAID,DATE,RR)%&amp;gt;% 
+        mutate(DATE=ymd(DATE), 
+               RR=ifelse(RR==-9999,NA,RR/10), 
+               STAID=factor(STAID,id,lab), 
+               yr=year(DATE)) 
+pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
+##    STAID  DATE          RR    yr
+##    &amp;lt;fct&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Bilbao 1947-03-01   0    1947
+##  2 Bilbao 1947-03-02   0.5  1947
+##  3 Bilbao 1947-03-03   0    1947
+##  4 Bilbao 1947-03-04   3.3  1947
+##  5 Bilbao 1947-03-05   1.5  1947
+##  6 Bilbao 1947-03-06   0    1947
+##  7 Bilbao 1947-03-07   8.5  1947
+##  8 Bilbao 1947-03-08   0.3  1947
+##  9 Bilbao 1947-03-09   0    1947
+## 10 Bilbao 1947-03-10   0    1947
+## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lo que todavía nos hace falta es filtrar y calcular la suma anual de precipitación. En principio, no es lo más correcto sumar la precipitación sin tener en cuenta que haya valores ausentes, pero nos sirve igualmente para este ensayo. Después, cambiamos el formato de la tabla con la función &lt;code&gt;spread()&lt;/code&gt;, pasando de una tabla larga a una ancha, es decir, queremos obtener una columna por estación meteorológica.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr,DATE&amp;gt;=&amp;quot;1950-01-01&amp;quot;,DATE&amp;lt;&amp;quot;2018-01-01&amp;quot;)%&amp;gt;%
+           group_by(STAID,yr)%&amp;gt;%
+             summarise(pr=sum(RR,na.rm = TRUE))
+pr_yr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
+## # Groups:   STAID [5]
+##    STAID     yr    pr
+##    &amp;lt;fct&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Bilbao  1950 1342 
+##  2 Bilbao  1951 1306.
+##  3 Bilbao  1952 1355.
+##  4 Bilbao  1953 1372.
+##  5 Bilbao  1954 1428.
+##  6 Bilbao  1955 1062.
+##  7 Bilbao  1956 1254.
+##  8 Bilbao  1957  968.
+##  9 Bilbao  1958 1272.
+## 10 Bilbao  1959 1450.
+## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr,STAID,pr)
+pr_yr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
+##       yr Bilbao Santiago Barcelona Madrid Valencia
+##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1  1950  1342     1800.      345     NA        NA
+##  2  1951  1306.    2344.     1072.   798.       NA
+##  3  1952  1355.    1973.      415.   524.       NA
+##  4  1953  1372.     973.      683.   365.       NA
+##  5  1954  1428.    1348.      581.   246.       NA
+##  6  1955  1062.    1769.      530.   473.       NA
+##  7  1956  1254.    1533.      695.   480.       NA
+##  8  1957   968.    1599.      635.   424.       NA
+##  9  1958  1272.    2658.      479.   482.       NA
+## 10  1959  1450.    2847.     1006    665.       NA
+## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
+telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   yr = col_double(),
+##   NAO = col_double(),
+##   WeMO = col_double(),
+##   EA = col_double(),
+##   `POL-EUAS` = col_double(),
+##   `EATL/WRUS` = col_double(),
+##   MO = col_double(),
+##   SCAND = col_double(),
+##   AO = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 9
+##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND       AO
+##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1  1950  0.49  0.555 -0.332     0.0217     -0.0567 0.335  0.301   -1.99e-1
+##  2  1951 -0.07  0.379 -0.372     0.402      -0.419  0.149 -0.00667 -3.65e-1
+##  3  1952 -0.37  0.693 -0.688    -0.0117     -0.711  0.282  0.0642  -6.75e-1
+##  4  1953  0.4  -0.213 -0.727    -0.0567     -0.0508 0.216  0.0233  -1.64e-2
+##  5  1954  0.51  1.20  -0.912     0.142      -0.318  0.386  0.458   -5.83e-4
+##  6  1955 -0.64  0.138 -0.824    -0.0267      0.154  0.134  0.0392  -3.62e-1
+##  7  1956  0.17  0.617 -1.29     -0.197       0.0617 0.256  0.302   -1.63e-1
+##  8  1957 -0.02  0.321 -0.952    -0.638      -0.167  0.322 -0.134   -3.42e-1
+##  9  1958  0.12  0.941 -0.243     0.138       0.661  0.296  0.279   -8.68e-1
+## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
+## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último nos falta unir ambas tablas por año.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr,telecon,by=&amp;quot;yr&amp;quot;)
+data_all&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
+##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
+##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1  1950  1342     1800.      345     NA        NA  0.49  0.555 -0.332
+##  2  1951  1306.    2344.     1072.   798.       NA -0.07  0.379 -0.372
+##  3  1952  1355.    1973.      415.   524.       NA -0.37  0.693 -0.688
+##  4  1953  1372.     973.      683.   365.       NA  0.4  -0.213 -0.727
+##  5  1954  1428.    1348.      581.   246.       NA  0.51  1.20  -0.912
+##  6  1955  1062.    1769.      530.   473.       NA -0.64  0.138 -0.824
+##  7  1956  1254.    1533.      695.   480.       NA  0.17  0.617 -1.29 
+##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
+##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
+## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
+## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
+## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;test-de-correlacion&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Test de correlación&lt;/h2&gt;
+&lt;p&gt;Un test de correlación lo podemos hacer con la función &lt;code&gt;cor.test()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;. En este caso entre la precipitación anual de Bilbao y el índice de NAO.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao,data_all$NAO,
+                        method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
+## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Spearman&amp;#39;s rank correlation rho
+## 
+## data:  data_all$Bilbao and data_all$NAO
+## S = 44372, p-value = 0.2126
+## alternative hypothesis: true rho is not equal to 0
+## sample estimates:
+##       rho 
+## 0.1531149&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 8
+##  $ statistic  : Named num 44372
+##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##  $ parameter  : NULL
+##  $ p.value    : num 0.213
+##  $ estimate   : Named num 0.153
+##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##  $ null.value : Named num 0
+##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##  $ alternative: chr &amp;quot;two.sided&amp;quot;
+##  $ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##  $ data.name  : chr &amp;quot;data_all$Bilbao and data_all$NAO&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr &amp;quot;htest&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos que el resultado está en un formato poco manejable. Nos resume la correlación con todos los parametros estadísticos necesarios para sacar una conclusión sobre la relación. La estructura orginal es una lista de vectores. No obstante, la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt; nos permite convertir el resultado en formato de tabla.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 5
+##   estimate statistic p.value method                          alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;      
+## 1    0.153    44372.   0.213 Spearman&amp;#39;s rank correlation rho two.sided&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aplicar-el-test-de-correlacion-a-multiples-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aplicar el test de correlación a múltiples variables&lt;/h2&gt;
+&lt;p&gt;El objetivo es aplicar el test de correlación a todas las estaciones meteorológicas e índices de teleconexión.&lt;/p&gt;
+&lt;p&gt;Primero, debemos pasar la tabla al formato largo, o sea, crear una columna de la ciudad y el valor de la precipitación correspondiente. Después lo repetimos para las teleconexiones.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all,city,pr,Bilbao:Valencia)%&amp;gt;%
+                     gather(telecon,index,NAO:AO)
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
+##       yr city      pr telecon index
+##    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;
+##  1  1950 Bilbao 1342  NAO      0.49
+##  2  1951 Bilbao 1306. NAO     -0.07
+##  3  1952 Bilbao 1355. NAO     -0.37
+##  4  1953 Bilbao 1372. NAO      0.4 
+##  5  1954 Bilbao 1428. NAO      0.51
+##  6  1955 Bilbao 1062. NAO     -0.64
+##  7  1956 Bilbao 1254. NAO      0.17
+##  8  1957 Bilbao  968. NAO     -0.02
+##  9  1958 Bilbao 1272. NAO      0.12
+## 10  1959 Bilbao 1450. NAO      0.49
+## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para poder aplicar el test a todas las ciudades, debemos tener las correspondientes agrupaciones. Por ello, usamos la función &lt;code&gt;group_by()&lt;/code&gt; indicando los dos grupos (&lt;em&gt;city&lt;/em&gt; y &lt;em&gt;telecon&lt;/em&gt;), y además, aplicamos la función &lt;code&gt;nest()&lt;/code&gt; del paquete &lt;em&gt;{tidyr}&lt;/em&gt;, colección &lt;em&gt;{tidyverse}&lt;/em&gt;, con el objetivo de crear listas de tablas encajadas por fila. En otras palabras, en cada fila de cada ciudad y teleconexión tendremos una nueva tabla que contiene correspondientemente el año, la precipitación y el valor del índice.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data,city,telecon)%&amp;gt;%nest()
+data_nest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
+##    city      telecon data             
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
+##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
+##  $ city   : chr &amp;quot;Bilbao&amp;quot;
+##  $ telecon: chr &amp;quot;NAO&amp;quot;
+##  $ data   :List of 1
+##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
+##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El siguiente paso es crear una función, en la que definimos el test de correlación y lo pasamos al formato limpio, que aplicamos a cada agrupación.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr,df$index,method=&amp;quot;spearman&amp;quot;)%&amp;gt;%tidy()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ahora sólo nos queda por aplicar nuestra función a la columna que contiene las tablas por cada combinación entre ciudad y teleconexión. Para ello, usamos la función &lt;code&gt;map()&lt;/code&gt; que aplica otra función sobre un vector o lista. Lo que hacemos es crear una nueva columna que contiene el resultado, una tabla del resumen estadístico, por cada fila de cada combinación.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data,cor_fun))
+data_nest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
+##    city      telecon data              model           
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
+##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
+##  $ city   : chr &amp;quot;Bilbao&amp;quot;
+##  $ telecon: chr &amp;quot;NAO&amp;quot;
+##  $ data   :List of 1
+##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
+##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##  $ model  :List of 1
+##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 1 obs. of  5 variables:
+##   .. ..$ estimate   : num 0.153
+##   .. ..$ statistic  : num 44372
+##   .. ..$ p.value    : num 0.213
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;¿Cómo podemos deshacer la lista de tablas en cada fila de nuestra tabla?&lt;/p&gt;
+&lt;p&gt;Pues bien, primero eliminamos la columna con los datos y después aplicamos simplemente la función &lt;code&gt;unnest()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest,-data)%&amp;gt;%unnest()
+corr_pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
+##    city    telecon estimate statistic  p.value method           alternative
+##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;      
+##  1 Bilbao  NAO       0.153     44372. 0.213    Spearman&amp;#39;s rank~ two.sided  
+##  2 Santia~ NAO      -0.181     61902. 0.139    Spearman&amp;#39;s rank~ two.sided  
+##  3 Barcel~ NAO      -0.0203    53460. 0.869    Spearman&amp;#39;s rank~ two.sided  
+##  4 Madrid  NAO      -0.291     64692. 0.0169   Spearman&amp;#39;s rank~ two.sided  
+##  5 Valenc~ NAO      -0.113     27600. 0.422    Spearman&amp;#39;s rank~ two.sided  
+##  6 Bilbao  WeMO      0.404     31242. 0.000706 Spearman&amp;#39;s rank~ two.sided  
+##  7 Santia~ WeMO      0.332     35014. 0.00594  Spearman&amp;#39;s rank~ two.sided  
+##  8 Barcel~ WeMO      0.0292    50862  0.813    Spearman&amp;#39;s rank~ two.sided  
+##  9 Madrid  WeMO      0.109     44660  0.380    Spearman&amp;#39;s rank~ two.sided  
+## 10 Valenc~ WeMO     -0.252     31056. 0.0688   Spearman&amp;#39;s rank~ two.sided  
+## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una tabla en la que podemos ver las correlaciones y su significación estadística para cada ciudad y teleconexiones.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;heatmap-de-los-resultados&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Heatmap de los resultados&lt;/h2&gt;
+&lt;p&gt;Finalmente, hacemos un &lt;em&gt;heatmap&lt;/em&gt; del resultado obtenido. Antes creamos una columna que indica si la correlación es significativa con p-valor menor de 0,05.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr,sig=ifelse(p.value&amp;lt;0.05,&amp;quot;Sig.&amp;quot;,&amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
+  geom_tile(data=corr_pr,
+            aes(city,telecon,fill=estimate),
+            size=1,
+            colour=&amp;quot;white&amp;quot;)+
+  geom_tile(data=filter(corr_pr,sig==&amp;quot;Sig.&amp;quot;),
+            aes(city,telecon),
+            size=1,
+            colour=&amp;quot;black&amp;quot;,
+            fill=&amp;quot;transparent&amp;quot;)+
+  geom_text(data=corr_pr,
+            aes(city,telecon,label=round(estimate,2),
+            fontface=ifelse(sig==&amp;quot;Sig.&amp;quot;,&amp;quot;bold&amp;quot;,&amp;quot;plain&amp;quot;)))+
+  scale_fill_gradient2(breaks=seq(-1,1,0.2))+
+  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;&amp;quot;,p.value=&amp;quot;&amp;quot;)+
+  theme_minimal()+
+  theme(panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2019-04-17-resumir-tests-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
       <title>synoptReg: An R package for computing a synoptic climate classification and a spatial regionalization of environmental data</title>
       <link>/es/publication/synoptreg_2019/</link>
       <pubDate>Mon, 15 Apr 2019 00:00:00 +0000</pubDate>
@@ -553,8 +958,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Bilbao.&#34; href=&#34;/img/album/anomalias_Bilbao&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Bilbao&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Bilbao.&#34; href=&#34;/img/album/anomalias_Bilbao.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Bilbao.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Bilbao. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -566,8 +971,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Zaragoza.&#34; href=&#34;/img/album/anomalias_Zaragoza&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Zaragoza&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Zaragoza.&#34; href=&#34;/img/album/anomalias_Zaragoza.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Zaragoza.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Zaragoza. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -579,8 +984,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Santander.&#34; href=&#34;/img/album/anomalias_Santander&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Santander&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Santander.&#34; href=&#34;/img/album/anomalias_Santander.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Santander.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Santander. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -592,8 +997,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Málaga.&#34; href=&#34;/img/album/anomalias_Malaga&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Malaga&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Málaga.&#34; href=&#34;/img/album/anomalias_Malaga.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Malaga.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Málaga. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -605,8 +1010,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Sevilla.&#34; href=&#34;/img/album/anomalias_Sevilla&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Sevilla&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Sevilla.&#34; href=&#34;/img/album/anomalias_Sevilla.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Sevilla.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Sevilla. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -618,8 +1023,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Santiago.&#34; href=&#34;/img/album/anomalias_Santiago&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Santiago&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Santiago.&#34; href=&#34;/img/album/anomalias_Santiago.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Santiago.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Santiago. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -631,8 +1036,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Valencia.&#34; href=&#34;/img/album/anomalias_Valencia&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Valencia&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Valencia.&#34; href=&#34;/img/album/anomalias_Valencia.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Valencia.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Valencia. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -644,8 +1049,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Vigo.&#34; href=&#34;/img/album/anomalias_Vigo&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_Vigo&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en Vigo.&#34; href=&#34;/img/album/anomalias_Vigo.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_Vigo.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en Vigo. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -657,8 +1062,8 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
     
   
-  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en A Coruña.&#34; href=&#34;/img/album/anomalias_A%20Coru%c3%b1a&#34;&gt;
-    &lt;img src=&#34;/img/album/anomalias_A%20Coru%c3%b1a&#34; alt=&#34;&#34;&gt;
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Las anomalías invernales de temperatura y precipitación en A Coruña.&#34; href=&#34;/img/album/anomalias_A%20Coru%c3%b1a.png&#34;&gt;
+    &lt;img src=&#34;/img/album/anomalias_A%20Coru%c3%b1a.png&#34; alt=&#34;&#34;&gt;
   &lt;/a&gt;
 &lt;div class=&#34;imgcap&#34;&gt;Las anomalías invernales de temperatura y precipitación en A Coruña. Datos: &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34; target=&#34;_blank&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/div&gt;
 &lt;/div&gt;
@@ -1581,6 +1986,32 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
   
 
 
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Tiempo de viaje a centros urbanos de alta densidad a través del transporte de superficie en España.&#34; href=&#34;/img/album/acces_mapa_esp.png&#34;&gt;
+    &lt;img src=&#34;/img/album/acces_mapa_esp.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Tiempo de viaje a centros urbanos de alta densidad a través del transporte de superficie en España. Datos: &lt;a href=&#34;https://resourcewatch.org/data/explore/cit01701-Travel-Time-to-Major-Cities&#34; target=&#34;_blank&#34;&gt;resourcewatch.org&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Ranking del tiempo de viaje a centros urbanos de alta densidad a través del transporte de superficie según provincias españolas.&#34; href=&#34;/img/album/acces_rank.png&#34;&gt;
+    &lt;img src=&#34;/img/album/acces_rank.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Ranking del tiempo de viaje a centros urbanos de alta densidad a través del transporte de superficie según provincias españolas. Datos: &lt;a href=&#34;https://resourcewatch.org/data/explore/cit01701-Travel-Time-to-Major-Cities&#34; target=&#34;_blank&#34;&gt;resourcewatch.org&lt;/a&gt;.&lt;/div&gt;
+&lt;/div&gt;
   
   
   
@@ -2951,190 +3382,6 @@ filled.contour(data[,,1])&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cerramos la conexión
 nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>El gráfico de tarta</title>
-      <link>/es/2018/el-gr%C3%A1fico-de-tarta/</link>
-      <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
-      
-      <guid>/es/2018/el-gr%C3%A1fico-de-tarta/</guid>
-      <description>
-
-
-&lt;p&gt;Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R. Espero que os guste. Cualquier sugerencia o idea, será bienvenida.&lt;/p&gt;
-&lt;hr /&gt;
-&lt;div id=&#34;preambulo&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Preámbulo&lt;/h2&gt;
-&lt;p&gt;Siempre he querido escribir sobre el uso del gráfico de tarta. El gráfico circular es ampliamente usado en investigación, docencia, periodismo o en informes técnicos. Es más, no sé si es debido a Excel, pero todavía peor que el mismo gráfico de tarta es su versión en 3D (también para el gráfico de barras). Sobre las versiones 3D únicamente debo decir que no es recomendable, ya que en estos casos la tercera dimensión no contiene ninguna información y por tanto no ayuda en leer correctamente la información del gráfico. Respecto al gráfico de tarta, entre muchos expertos no se aconseja claramente su uso. Pero, ¿por qué?&lt;/p&gt;
-&lt;p&gt;Ya en un estudio hecho por &lt;span class=&#34;citation&#34;&gt;Simkin y Hastie (1987)&lt;/span&gt; encontraron que la interpretación y el procesamiento de ángulos es más díficil que el de formas lineales. Mayormente es más fácil leer un gráfico de barras que uno de tarta. Un problema que se hace muy visible cuando nos encontramos con; 1) demasiadas categorías 2) pocas diferencias entre las categorías 3) un mal uso de colores como leyenda ó 4) comparaciones entre varios gráficos de tarta.&lt;/p&gt;
-&lt;p&gt;Para decidir qué posibles representaciones gráficas existen para nuestros datos, recomiendo ir a la página web &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; o usar &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
-&lt;p&gt;Ahora bien, ¿qué alternativas podemos usar en R?&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;alternativas-al-grafico-de-tarta&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Alternativas al gráfico de tarta&lt;/h2&gt;
-&lt;p&gt;Los datos sobre el estado de la enfermedad &lt;strong&gt;sarampión&lt;/strong&gt; corresponden a junio de 2018 en Europa y vienen del &lt;a href=&#34;https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases&#34;&gt;ECDC&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#librerías
-library(tidyverse)
-library(scales)
-library(RColorBrewer)
-
-#datos
-measles &amp;lt;- data.frame(
-          vacc_status=c(&amp;quot;Unvaccinated&amp;quot;,&amp;quot;1 Dose&amp;quot;,
-                        &amp;quot;&amp;gt;= 2 Dose&amp;quot;,&amp;quot;Unkown Dose&amp;quot;,&amp;quot;Unkown&amp;quot;),
-          prop=c(0.75,0.091,0.05,0.012,0.096)
-          )
-
-#ordenamos de mayor a menor y lo fijamos con un factor 
-
-measles &amp;lt;- arrange(measles,
-                   desc(prop))%&amp;gt;%
-              mutate(vacc_status=factor(vacc_status,vacc_status))&lt;/code&gt;&lt;/pre&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;vacc_status&lt;/th&gt;
-&lt;th align=&#34;right&#34;&gt;prop&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Unvaccinated&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;0.750&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Unkown&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;0.096&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;1 Dose&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;0.091&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;&amp;gt;= 2 Dose&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;0.050&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;Unkown Dose&lt;/td&gt;
-&lt;td align=&#34;right&#34;&gt;0.012&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;div id=&#34;grafico-de-barra-o-similar&#34; class=&#34;section level4&#34;&gt;
-&lt;h4&gt;Gráfico de barra o similar&lt;/h4&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(vacc_status,prop))+
-            geom_bar(stat=&amp;quot;identity&amp;quot;)+
-             scale_y_continuous(breaks=seq(0,1,.1),
-                                labels=percent,    #convertimos en %
-                                limits=c(0,1))+
-            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
-            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
-            geom_pointrange()+
-             scale_y_continuous(breaks=seq(0,1,.1),
-                                labels=percent,    #convertimos en %
-                                limits=c(0,1))+
-            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
-            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definiciones sobre el theme que usamos
-theme_singlebar &amp;lt;- theme_bw()+
-  theme(
-    legend.position = &amp;quot;bottom&amp;quot;,
-    axis.title = element_blank(),
-    axis.ticks.y = element_blank(),
-    axis.text.y = element_blank(),
-    panel.border = element_blank(),
-    panel.grid=element_blank(),
-    plot.title=element_text(size=14, face=&amp;quot;bold&amp;quot;)
-  )
-
-mutate(measles,
-       vacc_status=factor(vacc_status,               #cambiamos el orden de las categorías
-                          rev(levels(vacc_status))))%&amp;gt;%
-ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra única
-         geom_bar(stat=&amp;quot;identity&amp;quot;)+
-          scale_y_continuous(breaks=seq(0,1,.1),
-                             labels=percent,
-                             limits=c(0,1),
-                             expand=c(.01,.01))+
-          scale_x_continuous(expand=c(0,0))+
-              scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
-                coord_flip()+
-                  theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#ampliamos los datos con las cifras de Italia
-measles2 &amp;lt;- mutate(measles,
-                  italy=c(0.826,0.081,0.053,0.013,0.027),
-                  vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&amp;gt;%
-                rename(europe=&amp;quot;prop&amp;quot;)%&amp;gt;%
-                gather(region,prop,europe:italy)
-
-
-ggplot(measles2,aes(region,prop,fill=vacc_status))+
-            geom_bar(stat=&amp;quot;identity&amp;quot;,position=&amp;quot;stack&amp;quot;)+ #stack: columna 100%
-             scale_y_continuous(breaks=seq(0,1,.1),
-                                labels=percent,    #convertimos en %
-                                limits=c(0,1),
-                                expand=c(0,0))+
-            scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
-            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
-            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;grafico-de-waffle&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#libería
-library(waffle)
-
-#la función de waffle usa un vector con nombres
-val_measles &amp;lt;- round(measles$prop*100)
-names(val_measles) &amp;lt;- measles$vacc_status
-
-waffle(val_measles, #datos
-        colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colores
-        rows=5) #número de filas &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;medida &amp;lt;- c(41,59) #datos de la OECD 2015
-names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
-
-waffle(medida,
-       colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
-       rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#librería
-library(treemap)
-
-treemap(measles,
-index=&amp;quot;vacc_status&amp;quot;, #variable de categrías
-vSize=&amp;quot;prop&amp;quot;,        #valores
-type=&amp;quot;index&amp;quot;,        #estilo más en ?treemap
-title=&amp;quot;&amp;quot;,            
-palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
-)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;referencias&#34; class=&#34;section level3 unnumbered&#34;&gt;
-&lt;h3&gt;Referencias&lt;/h3&gt;
-&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
-&lt;div id=&#34;ref-Robbins2013&#34;&gt;
-&lt;p&gt;Robbins, Naomi B. 2013. &lt;em&gt;Creating more effective graphs. A succinct and highly readable guide to creating effective graph.&lt;/em&gt; Chart House.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ref-Simkin1987&#34;&gt;
-&lt;p&gt;Simkin, D, y R Hastie. 1987. «An Information-Processing Analysis of Graph Perception». &lt;em&gt;Journal of the American Statistical Association&lt;/em&gt; 82 (398): 454-65.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 </description>
     </item>
