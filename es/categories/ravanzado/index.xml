@@ -56,7 +56,7 @@ if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quo
 if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 
-#librerías
+#paquetes
 library(tidyverse)
 library(broom)
 library(fs)
@@ -79,7 +79,7 @@ files&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
 ## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
-pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
+pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Parsed with column specification:
 ## cols(
 ##   STAID = col_double(),
@@ -139,14 +139,14 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
 id &amp;lt;- unique(pr$STAID)
 
 #las etiquetas correspondientes
-lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;,&amp;quot;Santiago&amp;quot;,&amp;quot;Barcelona&amp;quot;,&amp;quot;Madrid&amp;quot;,&amp;quot;Valencia&amp;quot;)
+lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;, &amp;quot;Santiago&amp;quot;, &amp;quot;Barcelona&amp;quot;, &amp;quot;Madrid&amp;quot;, &amp;quot;Valencia&amp;quot;)
 
 #primeros cambios
-pr &amp;lt;- select(pr,STAID,DATE,RR)%&amp;gt;% 
-        mutate(DATE=ymd(DATE), 
-               RR=ifelse(RR==-9999,NA,RR/10), 
-               STAID=factor(STAID,id,lab), 
-               yr=year(DATE)) 
+pr &amp;lt;- select(pr, STAID, DATE, RR)%&amp;gt;% 
+        mutate(DATE = ymd(DATE), 
+               RR = ifelse(RR == -9999, NA, RR/10), 
+               STAID = factor(STAID, id, lab), 
+               yr = year(DATE)) 
 pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
 ##    STAID  DATE          RR    yr
@@ -163,9 +163,9 @@ pr&lt;/code&gt;&lt;/pre&gt;
 ## 10 Bilbao 1947-03-10   0    1947
 ## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Lo que todavía nos hace falta es filtrar y calcular la suma anual de precipitación. En principio, no es lo más correcto sumar la precipitación sin tener en cuenta que haya valores ausentes, pero nos sirve igualmente para este ensayo. Después, cambiamos el formato de la tabla con la función &lt;code&gt;spread()&lt;/code&gt;, pasando de una tabla larga a una ancha, es decir, queremos obtener una columna por estación meteorológica.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr,DATE&amp;gt;=&amp;quot;1950-01-01&amp;quot;,DATE&amp;lt;&amp;quot;2018-01-01&amp;quot;)%&amp;gt;%
-           group_by(STAID,yr)%&amp;gt;%
-             summarise(pr=sum(RR,na.rm = TRUE))
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
+           group_by(STAID, yr) %&amp;gt;%
+             summarise(pr = sum(RR, na.rm = TRUE))
 pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -182,7 +182,7 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 ##  9 Bilbao  1958 1272.
 ## 10 Bilbao  1959 1450.
 ## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr,STAID,pr)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr, STAID, pr)
 pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
 ##       yr Bilbao Santiago Barcelona Madrid Valencia
@@ -229,7 +229,7 @@ telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/
 ## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
 ## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Por último nos falta unir ambas tablas por año.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr,telecon,by=&amp;quot;yr&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
 data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
 ##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
@@ -250,7 +250,7 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;test-de-correlacion&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Test de correlación&lt;/h2&gt;
 &lt;p&gt;Un test de correlación lo podemos hacer con la función &lt;code&gt;cor.test()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;. En este caso entre la precipitación anual de Bilbao y el índice de NAO.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao,data_all$NAO,
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
                         method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
 ## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
@@ -289,8 +289,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Aplicar el test de correlación a múltiples variables&lt;/h2&gt;
 &lt;p&gt;El objetivo es aplicar el test de correlación a todas las estaciones meteorológicas e índices de teleconexión.&lt;/p&gt;
 &lt;p&gt;Primero, debemos pasar la tabla al formato largo, o sea, crear una columna de la ciudad y el valor de la precipitación correspondiente. Después lo repetimos para las teleconexiones.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all,city,pr,Bilbao:Valencia)%&amp;gt;%
-                     gather(telecon,index,NAO:AO)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all, city, pr, Bilbao:Valencia) %&amp;gt;%
+                     gather(telecon, index, NAO:AO)
 data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
 ##       yr city      pr telecon index
@@ -307,7 +307,7 @@ data&lt;/code&gt;&lt;/pre&gt;
 ## 10  1959 Bilbao 1450. NAO      0.49
 ## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Para poder aplicar el test a todas las ciudades, debemos tener las correspondientes agrupaciones. Por ello, usamos la función &lt;code&gt;group_by()&lt;/code&gt; indicando los dos grupos (&lt;em&gt;city&lt;/em&gt; y &lt;em&gt;telecon&lt;/em&gt;), y además, aplicamos la función &lt;code&gt;nest()&lt;/code&gt; del paquete &lt;em&gt;{tidyr}&lt;/em&gt;, colección &lt;em&gt;{tidyverse}&lt;/em&gt;, con el objetivo de crear listas de tablas encajadas por fila. En otras palabras, en cada fila de cada ciudad y teleconexión tendremos una nueva tabla que contiene correspondientemente el año, la precipitación y el valor del índice.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data,city,telecon)%&amp;gt;%nest()
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
 ##    city      telecon data             
@@ -323,7 +323,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
 ##  $ city   : chr &amp;quot;Bilbao&amp;quot;
 ##  $ telecon: chr &amp;quot;NAO&amp;quot;
@@ -333,9 +333,9 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
 ##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;El siguiente paso es crear una función, en la que definimos el test de correlación y lo pasamos al formato limpio, que aplicamos a cada agrupación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr,df$index,method=&amp;quot;spearman&amp;quot;)%&amp;gt;%tidy()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method=&amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ahora sólo nos queda por aplicar nuestra función a la columna que contiene las tablas por cada combinación entre ciudad y teleconexión. Para ello, usamos la función &lt;code&gt;map()&lt;/code&gt; que aplica otra función sobre un vector o lista. Lo que hacemos es crear una nueva columna que contiene el resultado, una tabla del resumen estadístico, por cada fila de cada combinación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data,cor_fun))
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
 ##    city      telecon data              model           
@@ -351,7 +351,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
 ##  $ city   : chr &amp;quot;Bilbao&amp;quot;
 ##  $ telecon: chr &amp;quot;NAO&amp;quot;
@@ -369,7 +369,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;¿Cómo podemos deshacer la lista de tablas en cada fila de nuestra tabla?&lt;/p&gt;
 &lt;p&gt;Pues bien, primero eliminamos la columna con los datos y después aplicamos simplemente la función &lt;code&gt;unnest()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest,-data)%&amp;gt;%unnest()
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()
 corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
 ##    city    telecon estimate statistic  p.value method           alternative
@@ -390,22 +390,22 @@ corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;heatmap-de-los-resultados&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Heatmap de los resultados&lt;/h2&gt;
 &lt;p&gt;Finalmente, hacemos un &lt;em&gt;heatmap&lt;/em&gt; del resultado obtenido. Antes creamos una columna que indica si la correlación es significativa con p-valor menor de 0,05.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr,sig=ifelse(p.value&amp;lt;0.05,&amp;quot;Sig.&amp;quot;,&amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr, sig = ifelse(p.value &amp;lt; 0.05, &amp;quot;Sig.&amp;quot;, &amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
-  geom_tile(data=corr_pr,
-            aes(city,telecon,fill=estimate),
-            size=1,
-            colour=&amp;quot;white&amp;quot;)+
-  geom_tile(data=filter(corr_pr,sig==&amp;quot;Sig.&amp;quot;),
-            aes(city,telecon),
-            size=1,
-            colour=&amp;quot;black&amp;quot;,
-            fill=&amp;quot;transparent&amp;quot;)+
-  geom_text(data=corr_pr,
-            aes(city,telecon,label=round(estimate,2),
-            fontface=ifelse(sig==&amp;quot;Sig.&amp;quot;,&amp;quot;bold&amp;quot;,&amp;quot;plain&amp;quot;)))+
-  scale_fill_gradient2(breaks=seq(-1,1,0.2))+
-  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;&amp;quot;,p.value=&amp;quot;&amp;quot;)+
+  geom_tile(data = corr_pr,
+            aes(city, telecon, fill = estimate),
+            size = 1,
+            colour = &amp;quot;white&amp;quot;)+
+  geom_tile(data = filter(corr_pr, sig == &amp;quot;Sig.&amp;quot;),
+            aes(city, telecon),
+            size = 1,
+            colour = &amp;quot;black&amp;quot;,
+            fill = &amp;quot;transparent&amp;quot;)+
+  geom_text(data = corr_pr,
+            aes(city, telecon, label = round(estimate, 2),
+            fontface = ifelse(sig == &amp;quot;Sig.&amp;quot;, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)))+
+  scale_fill_gradient2(breaks = seq(-1, 1, 0.2))+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;, p.value = &amp;quot;&amp;quot;)+
   theme_minimal()+
   theme(panel.grid.major = element_blank(),
         panel.border = element_blank(),

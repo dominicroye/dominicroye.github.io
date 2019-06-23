@@ -56,7 +56,7 @@ if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quo
 if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 
-#load libraries
+#load packages
 library(tidyverse)
 library(broom)
 library(fs)
@@ -79,7 +79,7 @@ files&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
 ## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import all files and join them together
-pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
+pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Parsed with column specification:
 ## cols(
 ##   STAID = col_double(),
@@ -139,14 +139,14 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
 id &amp;lt;- unique(pr$STAID)
 
 #the corresponding labels
-lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;,&amp;quot;Santiago&amp;quot;,&amp;quot;Barcelona&amp;quot;,&amp;quot;Madrid&amp;quot;,&amp;quot;Valencia&amp;quot;)
+lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;, &amp;quot;Santiago&amp;quot;, &amp;quot;Barcelona&amp;quot;, &amp;quot;Madrid&amp;quot;, &amp;quot;Valencia&amp;quot;)
 
 #first changes
-pr &amp;lt;- select(pr,STAID,DATE,RR)%&amp;gt;% 
-        mutate(DATE=ymd(DATE), 
-               RR=ifelse(RR==-9999,NA,RR/10), 
-               STAID=factor(STAID,id,lab), 
-               yr=year(DATE)) 
+pr &amp;lt;- select(pr, STAID, DATE, RR) %&amp;gt;% 
+        mutate(DATE = ymd(DATE), 
+               RR = ifelse(RR == -9999, NA, RR/10), 
+               STAID = factor(STAID, id, lab), 
+               yr = year(DATE)) 
 pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
 ##    STAID  DATE          RR    yr
@@ -163,9 +163,9 @@ pr&lt;/code&gt;&lt;/pre&gt;
 ## 10 Bilbao 1947-03-10   0    1947
 ## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We still need to filter and calculate the annual amount of precipitation. Actually, it is not correct to sum up precipitation without taking into account that there are missing values, but it should be enough for this practice. Then, we change the table format with the &lt;code&gt;spread()&lt;/code&gt; function, passing from a long to a wide table, that is, we want to obtain one column per weather station.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr,DATE&amp;gt;=&amp;quot;1950-01-01&amp;quot;,DATE&amp;lt;&amp;quot;2018-01-01&amp;quot;)%&amp;gt;%
-           group_by(STAID,yr)%&amp;gt;%
-             summarise(pr=sum(RR,na.rm = TRUE))
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
+           group_by(STAID, yr)%&amp;gt;%
+             summarise(pr = sum(RR, na.rm = TRUE))
 pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -182,7 +182,7 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 ##  9 Bilbao  1958 1272.
 ## 10 Bilbao  1959 1450.
 ## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr,STAID,pr)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr, STAID, pr)
 pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
 ##       yr Bilbao Santiago Barcelona Madrid Valencia
@@ -229,7 +229,7 @@ telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/
 ## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
 ## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally we need to join both tables by year.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr,telecon,by=&amp;quot;yr&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
 data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
 ##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
@@ -250,8 +250,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;correlation-test&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Correlation test&lt;/h2&gt;
 &lt;p&gt;A correlation test between paired samples can be done with the &lt;code&gt;cor.test()&lt;/code&gt; function of R Base. In this case between the annual precipitation of Bilbao and the NAO index.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao,data_all$NAO,
-                        method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
+                        method = &amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
 ## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
@@ -289,8 +289,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Apply the correlation test to multiple variables&lt;/h2&gt;
 &lt;p&gt;The objective is to apply the correlation test to all weather stations and climate teleconnection indices.&lt;/p&gt;
 &lt;p&gt;First, we must pass the table to the long format, that is, create a column/variable for the city and for the value of the corresponding precipitation. Then we repeat the same for the teleconnections indices.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all,city,pr,Bilbao:Valencia)%&amp;gt;%
-                     gather(telecon,index,NAO:AO)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all, city, pr, Bilbao:Valencia)%&amp;gt;%
+                     gather(telecon, index, NAO:AO)
 data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
 ##       yr city      pr telecon index
@@ -307,7 +307,7 @@ data&lt;/code&gt;&lt;/pre&gt;
 ## 10  1959 Bilbao 1450. NAO      0.49
 ## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To apply the test to all cities, we need the corresponding groupings. Therefore, we use the &lt;code&gt;group_by()&lt;/code&gt; function for indicating the two groups: &lt;em&gt;city&lt;/em&gt; and &lt;em&gt;telecon&lt;/em&gt;. In addition, we apply the &lt;code&gt;nest()&lt;/code&gt; function of the &lt;em&gt;{tidyr}&lt;/em&gt; package (&lt;em&gt;{tidyverse}&lt;/em&gt; collection) with the aim of creating lists of tables nested per row. In other words, in each row of each city and teleconnection index we will have a new table that contains the year, the precipitation value and the value of each teleconection, correspondingly.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data,city,telecon)%&amp;gt;%nest()
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
 ##    city      telecon data             
@@ -323,7 +323,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
 ##  $ city   : chr &amp;quot;Bilbao&amp;quot;
 ##  $ telecon: chr &amp;quot;NAO&amp;quot;
@@ -333,9 +333,9 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
 ##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The next step is to create a function, in which we define the correlation test and pass it to the clean format using the &lt;code&gt;tidy()&lt;/code&gt; function, which we apply to each groupings.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr,df$index,method=&amp;quot;spearman&amp;quot;)%&amp;gt;%tidy()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method = &amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now we only have to apply our function to the column that contains the tables for each combination between city and teleconnection. To do this, we use the &lt;code&gt;map()&lt;/code&gt; function that applies another function to a vector or list. What we do is create a new column that contains the result, a statistical summary table, for each combination.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data,cor_fun))
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
 ##    city      telecon data              model           
@@ -351,7 +351,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
 ##  $ city   : chr &amp;quot;Bilbao&amp;quot;
 ##  $ telecon: chr &amp;quot;NAO&amp;quot;
@@ -369,7 +369,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;How can we undo the list of tables in each row of our table?&lt;/p&gt;
 &lt;p&gt;First we eliminate the column with the data and then simply we can apply the &lt;code&gt;unnest()&lt;/code&gt; function.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest,-data)%&amp;gt;%unnest()
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()
 corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
 ##    city    telecon estimate statistic  p.value method           alternative
@@ -390,22 +390,22 @@ corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;heatmap-of-the-results&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Heatmap of the results&lt;/h2&gt;
 &lt;p&gt;Finally, we make a heatmap of the obtained result. But, previously we create a column that indicates whether the correlation is significant with p-value less than 0.05.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr,sig=ifelse(p.value&amp;lt;0.05,&amp;quot;Sig.&amp;quot;,&amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr, sig = ifelse(p.value &amp;lt;0.05, &amp;quot;Sig.&amp;quot;, &amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
-  geom_tile(data=corr_pr,
-            aes(city,telecon,fill=estimate),
-            size=1,
-            colour=&amp;quot;white&amp;quot;)+
-  geom_tile(data=filter(corr_pr,sig==&amp;quot;Sig.&amp;quot;),
-            aes(city,telecon),
-            size=1,
-            colour=&amp;quot;black&amp;quot;,
-            fill=&amp;quot;transparent&amp;quot;)+
-  geom_text(data=corr_pr,
-            aes(city,telecon,label=round(estimate,2),
-            fontface=ifelse(sig==&amp;quot;Sig.&amp;quot;,&amp;quot;bold&amp;quot;,&amp;quot;plain&amp;quot;)))+
-  scale_fill_gradient2(breaks=seq(-1,1,0.2))+
-  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;&amp;quot;,p.value=&amp;quot;&amp;quot;)+
+  geom_tile(data = corr_pr,
+            aes(city, telecon, fill = estimate),
+            size = 1,
+            colour = &amp;quot;white&amp;quot;)+
+  geom_tile(data = filter(corr_pr, sig == &amp;quot;Sig.&amp;quot;),
+            aes(city, telecon),
+            size = 1,
+            colour = &amp;quot;black&amp;quot;,
+            fill = &amp;quot;transparent&amp;quot;)+
+  geom_text(data = corr_pr,
+            aes(city, telecon, label = round(estimate, 2),
+            fontface = ifelse(sig == &amp;quot;Sig.&amp;quot;, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)))+
+  scale_fill_gradient2(breaks = seq(-1, 1, 0.2))+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;, p.value = &amp;quot;&amp;quot;)+
   theme_minimal()+
   theme(panel.grid.major = element_blank(),
         panel.border = element_blank(),
@@ -473,7 +473,7 @@ if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
 if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
 
 
-#load libraries
+#load packages
 library(tidyverse)
 library(fs)
 library(readxl)&lt;/code&gt;&lt;/pre&gt;
@@ -495,7 +495,7 @@ read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import third sheet
-read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;, 3)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
 ##    date                   ta    yr
 ##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -513,17 +513,17 @@ read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;excel_sheets()&lt;/code&gt; function can extract the names of the sheets.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-path%&amp;gt;%
+path %&amp;gt;%
   excel_sheets()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The results are the sheet names and we find the years from 2000 to 2005. The most important function to read multiple sheets is &lt;code&gt;map()&lt;/code&gt; of the &lt;em&gt;{purrr}&lt;/em&gt; package, which is part of the &lt;em&gt;{tidyverse]&lt;/em&gt; collection. &lt;code&gt;map()&lt;/code&gt; allows you to apply a function to each element of a vector or list.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map(read_excel,
-           path=path)
+           path = path)
         
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 6
@@ -554,11 +554,11 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The result is a named list with the name of each sheet that contains the data.frame. Since it is the same table in all sheets, we could use the function &lt;code&gt;bind_rows()&lt;/code&gt;, however, there is a variant of &lt;code&gt;map()&lt;/code&gt; that directly joins all the tables by row: &lt;code&gt;map_df()&lt;/code&gt;. If it were necessary to join by column, &lt;code&gt;map_dfc()&lt;/code&gt; could be used.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map_df(read_excel,
-           path=path)
+           path = path)
 
 mad&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
@@ -578,12 +578,12 @@ mad&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In our case we have a column in each sheet (year, but also the date) that differentiates each table. If it were not the case, we should use the name of the sheets as a new column when joining all of them. In &lt;code&gt;bind_rows()&lt;/code&gt; it can be done with the &lt;em&gt;.id&lt;/em&gt; argument by assigning a name for the column. The same works for &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map_df(read_excel,
-           path=path,
-           .id=&amp;quot;yr2&amp;quot;)
+           path = path,
+           .id = &amp;quot;yr2&amp;quot;)
 
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
@@ -597,11 +597,11 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.en.html    index.en.Rmd     
 ## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we can filter the files that we want
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We import the two Excel files.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#without joining
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
   map(read_excel)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
 ## # A tibble: 366 x 3
@@ -635,8 +635,8 @@ dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining with a new id column
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
-  map_df(read_excel,.id=&amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
+  map_df(read_excel, .id = &amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
 ##    city             date                   ta    yr
 ##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -653,14 +653,14 @@ dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
 ## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;However, in this case we only import the first sheet of each Excel file. To solve this problem, we must create our own function. In this function we do what we previously did individually.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
-  path%&amp;gt;%
+  path %&amp;gt;%
     excel_sheets() %&amp;gt;% 
     set_names() %&amp;gt;% 
   map_df(read_excel, path = path)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We apply our created function to import multiple sheets of several Excel files.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#separately
-data &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+data &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
            map(read_multiple_excel)
 
 str(data)&lt;/code&gt;&lt;/pre&gt;
@@ -674,9 +674,9 @@ str(data)&lt;/code&gt;&lt;/pre&gt;
 ##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
 ##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining all data.frames
-data_df &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+data_df &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
            map_df(read_multiple_excel,
-                  .id=&amp;quot;city&amp;quot;)
+                  .id = &amp;quot;city&amp;quot;)
 
 str(data_df)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
@@ -761,12 +761,12 @@ library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;the-coast-of-iceland-as-an-example&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The coast of Iceland as an example&lt;/h2&gt;
 &lt;p&gt;Our example in this post will be Iceland, and, as it is an island territory it will facilitate the tutorial showing the process in a simple manner. The &lt;em&gt;rnaturalearth&lt;/em&gt; package allows you to import the boundaries of countries (with different administrative levels) from around the world. The data comes from the platform &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. I recommend exploring the package, more info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;here&lt;/a&gt;. The &lt;code&gt;ne_countries( )&lt;/code&gt; function imports the country boundaries. In this case we indicate with the argument &lt;em&gt;scale&lt;/em&gt; the resolution (10, 50 or 110m), with &lt;em&gt;country&lt;/em&gt; we indicate the specific country of interest and with &lt;em&gt;returnclass&lt;/em&gt; we determine which class we want (&lt;em&gt;sf&lt;/em&gt; or &lt;em&gt;sp&lt;/em&gt;), in our case &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale=50) #world map with 50m resolution
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #world map with 50m resolution
 
 plot(world) #sp class by default&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the limits of Iceland
-iceland &amp;lt;- ne_countries(scale=10,country = &amp;quot;Iceland&amp;quot;,returnclass = &amp;quot;sf&amp;quot;)
+iceland &amp;lt;- ne_countries(scale = 10, country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
 
 #info of our spatial vector object
 iceland&lt;/code&gt;&lt;/pre&gt;
@@ -812,19 +812,19 @@ plot(iceland)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;By default, the &lt;code&gt;plot( )&lt;/code&gt; function with the class &lt;em&gt;sf&lt;/em&gt; creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; or the limit argument &lt;code&gt;plot(iceland, max.plot = 1)&lt;/code&gt;. With the argument &lt;em&gt;max.plot = 1&lt;/em&gt; the function uses the first available variable of the map.&lt;/p&gt;
 &lt;p&gt;In addition, we see in the information of the object &lt;em&gt;sf&lt;/em&gt; that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;here&lt;/a&gt;. For that purpose, we use the &lt;code&gt;st_transform( )&lt;/code&gt; function. We simply indicate the map and the EPSG code.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform to UTM
-iceland &amp;lt;- st_transform(iceland,3055)&lt;/code&gt;&lt;/pre&gt;
+iceland &amp;lt;- st_transform(iceland, 3055)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;create-a-fishnet-of-points&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Create a fishnet of points&lt;/h2&gt;
 &lt;p&gt;We still need the points where we want to know the distance. In our case it will be a regular fishnet of points in Iceland with a resolution of 5km. We do this with the function &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicating the resolution in the unit of the coordinate system (meters in our case) with the argument &lt;em&gt;cellsize&lt;/em&gt;, and what geometry we would like to create &lt;em&gt;what&lt;/em&gt; (polygons, centers or corners).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create the fishnet
-grid &amp;lt;- st_make_grid(iceland,cellsize = 5000,what = &amp;quot;centers&amp;quot;)
+grid &amp;lt;- st_make_grid(iceland, cellsize = 5000, what = &amp;quot;centers&amp;quot;)
 
 #our fishnet with the extension of Iceland
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#only extract the points in the limits of Iceland
-grid &amp;lt;- st_intersection(grid,iceland)   
+grid &amp;lt;- st_intersection(grid, iceland)   
 
 #our fishnet now
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
@@ -834,10 +834,10 @@ plot(grid)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Calculating the distance&lt;/h2&gt;
 &lt;p&gt;To estimate the distance we use the &lt;code&gt;st_distance( )&lt;/code&gt; function that returns a vector of distances for all our points in the fishnet. But first it is necessary to transform the map of Iceland from a polygon shape (MULTIPOLYGON) to a line (MULTILINESTRING). More details with &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform Iceland from polygon shape to line
-iceland &amp;lt;- st_cast(iceland,&amp;quot;MULTILINESTRING&amp;quot;)
+iceland &amp;lt;- st_cast(iceland, &amp;quot;MULTILINESTRING&amp;quot;)
 
 #calculation of the distance between the coast and our points
-dist &amp;lt;- st_distance(iceland,grid)
+dist &amp;lt;- st_distance(iceland, grid)
 
 #distance with unit in meters
 head(dist)&lt;/code&gt;&lt;/pre&gt;
@@ -848,7 +848,7 @@ head(dist)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Plotting the calculated distance&lt;/h2&gt;
 &lt;p&gt;Once obtained the distance for our points, we can combine them with the coordinates and plot them in &lt;em&gt;ggplot2&lt;/em&gt;. For this, we create a &lt;em&gt;data.frame&lt;/em&gt;. The object &lt;em&gt;dist&lt;/em&gt; is a matrix of one column, so we have to convert it to a vector with the function &lt;code&gt;as.vector( )&lt;/code&gt;. In addition, we divide by 1000 to convert the distance in meters to km. The &lt;code&gt;st_coordinates( )&lt;/code&gt; function extracts the coordinates of our points. For the final visualization we use a vector of colors with the RdGy palette (more &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a data.frame with the distance and the coordinates of the points
-df &amp;lt;- data.frame(dist=as.vector(dist)/1000,
+df &amp;lt;- data.frame(dist = as.vector(dist)/1000,
                     st_coordinates(grid))
 
 #structure
@@ -858,13 +858,13 @@ str(df)&lt;/code&gt;&lt;/pre&gt;
 ##  $ X   : num  608796 613796 583796 588796 593796 ...
 ##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colors 
-col_dist &amp;lt;- brewer.pal(11,&amp;quot;RdGy&amp;quot;)
+col_dist &amp;lt;- brewer.pal(11, &amp;quot;RdGy&amp;quot;)
 
 
-ggplot(df,aes(X,Y,fill=dist))+ #variables
+ggplot(df, aes(X, Y, fill = dist))+ #variables
          geom_tile()+ #geometry
-           scale_fill_gradientn(colours=rev(col_dist))+ #colors for plotting the distance
-             labs(fill=&amp;quot;Distance (km)&amp;quot;)+ #legend name
+           scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
+             labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #legend name
              theme_void()+ #map theme
               theme(legend.position = &amp;quot;bottom&amp;quot;) #legend position&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -883,42 +883,42 @@ ggplot(df,aes(X,Y,fill=dist))+ #variables
 &lt;li&gt;In addition to the above, the &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt;, that we created earlier, has to be converted into the &lt;em&gt;sf&lt;/em&gt; class. Therefore, we apply the function &lt;code&gt;st_as_sf( )&lt;/code&gt; with the argument &lt;em&gt;coords&lt;/em&gt; indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#get the extension
-ext &amp;lt;- extent(as(grid,&amp;quot;Spatial&amp;quot;))
+ext &amp;lt;- extent(as(grid, &amp;quot;Spatial&amp;quot;))
 
 #extent object
 ext&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## class       : Extent 
-## xmin        : 338795.6 
-## xmax        : 848795.6 
-## ymin        : 7033371 
-## ymax        : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : Extent 
+## xmin       : 338795.6 
+## xmax       : 848795.6 
+## ymin       : 7033371 
+## ymax       : 7383371&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destination
-r &amp;lt;- raster(resolution=5000,ext=ext,crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+r &amp;lt;- raster(resolution = 5000, ext = ext, crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 #convert the points to a spatial object class sf
-dist_sf &amp;lt;- st_as_sf(df,coords=c(&amp;quot;X&amp;quot;,&amp;quot;Y&amp;quot;))%&amp;gt;%
+dist_sf &amp;lt;- st_as_sf(df, coords = c(&amp;quot;X&amp;quot;, &amp;quot;Y&amp;quot;)) %&amp;gt;%
                       st_set_crs(3055)
 
 #create the distance raster
-dist_raster &amp;lt;- rasterize(dist_sf,r,&amp;quot;dist&amp;quot;,fun=mean)
+dist_raster &amp;lt;- rasterize(dist_sf, r, &amp;quot;dist&amp;quot;, fun = mean)
 
 #raster
 dist_raster&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## class       : RasterLayer 
-## dimensions  : 70, 102, 7140  (nrow, ncol, ncell)
-## resolution  : 5000, 5000  (x, y)
-## extent      : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
-## data source : in memory
-## names       : layer 
-## values      : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterLayer 
+## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution : 5000, 5000  (x, y)
+## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## source     : memory
+## names      : layer 
+## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot the raster
 plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#export the raster
-writeRaster(dist_raster,file=&amp;quot;dist_islandia.tif&amp;quot;,format=&amp;quot;GTiff&amp;quot;, overwrite=TRUE)&lt;/code&gt;&lt;/pre&gt;
+writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;rasterize( )&lt;/code&gt; function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; function converts a &lt;em&gt;data.frame&lt;/em&gt; with longitude, latitude and the variable &lt;em&gt;Z&lt;/em&gt; into a raster object. It is important that the order should be longitude, latitude, variables.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[,c(2:3,1)],crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -953,7 +953,7 @@ plot(r)&lt;/code&gt;&lt;/pre&gt;
 
 
 &lt;p&gt;This year, the so-called &lt;em&gt;warming stripes&lt;/em&gt;, which were created by the scientist &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; of the University of Reading, became very famous all over the world. These graphs represent and communicate climate change in a very illustrative and effective way.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins #ShowYourStripes (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;From his idea, I created strips for examples of Spain, like the next one in Madrid.&lt;/p&gt;
@@ -968,7 +968,7 @@ plot(r)&lt;/code&gt;&lt;/pre&gt;
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 
-#libraries
+#packages
 library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
@@ -1019,10 +1019,10 @@ str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
 ##   .. )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values &lt;em&gt;999.9&lt;/em&gt; with &lt;code&gt;NA&lt;/code&gt;, using the &lt;code&gt;ifelse( )&lt;/code&gt; function that evaluates a condition and perform the given argument corresponding to true and false.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#select only the annual temperature and year column
-temp_lisboa_yr &amp;lt;- select(temp_lisboa,YEAR,metANN)
+temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
 
 #rename the temperature column
-temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr,ta=metANN)
+temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr, ta = metANN)
 
 #missing values 999.9
 summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
@@ -1033,9 +1033,9 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
 ##  Mean   :1949   Mean   : 37.38  
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library &lt;em&gt;lubridate&lt;/em&gt; and the support functions inside of &lt;em&gt;ggplot2&lt;/em&gt;. The &lt;code&gt;str_c( )&lt;/code&gt; function of the library &lt;em&gt;stringr&lt;/em&gt;, part of the collection of &lt;em&gt;tidyverse&lt;/em&gt;, is similar to &lt;code&gt;paste( )&lt;/code&gt; of R Base that allows us to combine characters by specifying a separator (sep = “-”). The &lt;code&gt;ymd( )&lt;/code&gt; (year month day) function of the &lt;em&gt;lubridate&lt;/em&gt; library converts a date character into a &lt;em&gt;Date&lt;/em&gt; object. It is possible to combine several functions using the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; that helps to chain without assigning the result to a new object. Its use is very extended especially with the library &lt;em&gt;tidyverse&lt;/em&gt;. If you want to know more about its use, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; you have a tutorial.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&amp;quot;01-01&amp;quot;,sep=&amp;quot;-&amp;quot;)%&amp;gt;%ymd())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;creating-the-strips&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Creating the strips&lt;/h2&gt;
@@ -1044,15 +1044,15 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
                  theme(axis.text.y = element_blank(),
                        axis.line.y = element_blank(),
                        axis.title = element_blank(),
-                       panel.grid.major=element_blank(),
+                       panel.grid.major = element_blank(),
                        legend.title = element_blank(),
-                       axis.text.x=element_text(vjust=3),
-                       panel.grid.minor=element_blank(),
-                        plot.title=element_text(size=14,face=&amp;quot;bold&amp;quot;)
+                       axis.text.x = element_text(vjust = 3),
+                       panel.grid.minor = element_blank(),
+                        plot.title = element_text(size = 14, face = &amp;quot;bold&amp;quot;)
                        )
 
 
-col_strip &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+col_strip &amp;lt;- brewer.pal(11, &amp;quot;RdBu&amp;quot;)
 
 brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
@@ -1093,27 +1093,27 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 ## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;For the final graphic we use the geometry &lt;code&gt;geom_tile( )&lt;/code&gt;. Since the data does not have a specific value for the Y axis, we need a &lt;em&gt;dummy&lt;/em&gt; value, here I used 1. Also, I adjust the width of the color bar in the legend.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile()+
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
-                     expand=c(0,0))+
-           scale_y_continuous(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
-             guides(fill=guide_colorbar(barwidth = 1))+
-            labs(title=&amp;quot;LISBOA 1880-2018&amp;quot;,
-                caption=&amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+                     expand = c(0, 0))+
+           scale_y_continuous(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+             guides(fill = guide_colorbar(barwidth = 1))+
+            labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
               theme_strip&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In case we want to get only the strips, we can use &lt;code&gt;theme_void( )&lt;/code&gt; and the argument &lt;em&gt;show.legend = FALSE&lt;/em&gt; in &lt;code&gt;geom_tile( )&lt;/code&gt; to remove all style elements. We can also change the color for the &lt;code&gt;NA&lt;/code&gt; values, including the argument &lt;em&gt;na.value = “gray70”&lt;/em&gt; in the &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile(show.legend = FALSE)+
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
-                     expand=c(0,0))+
-           scale_y_discrete(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
+                     expand = c(0, 0))+
+           scale_y_discrete(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;

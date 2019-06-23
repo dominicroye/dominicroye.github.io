@@ -70,12 +70,12 @@ library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;the-coast-of-iceland-as-an-example&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The coast of Iceland as an example&lt;/h2&gt;
 &lt;p&gt;Our example in this post will be Iceland, and, as it is an island territory it will facilitate the tutorial showing the process in a simple manner. The &lt;em&gt;rnaturalearth&lt;/em&gt; package allows you to import the boundaries of countries (with different administrative levels) from around the world. The data comes from the platform &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. I recommend exploring the package, more info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;here&lt;/a&gt;. The &lt;code&gt;ne_countries( )&lt;/code&gt; function imports the country boundaries. In this case we indicate with the argument &lt;em&gt;scale&lt;/em&gt; the resolution (10, 50 or 110m), with &lt;em&gt;country&lt;/em&gt; we indicate the specific country of interest and with &lt;em&gt;returnclass&lt;/em&gt; we determine which class we want (&lt;em&gt;sf&lt;/em&gt; or &lt;em&gt;sp&lt;/em&gt;), in our case &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale=50) #world map with 50m resolution
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #world map with 50m resolution
 
 plot(world) #sp class by default&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the limits of Iceland
-iceland &amp;lt;- ne_countries(scale=10,country = &amp;quot;Iceland&amp;quot;,returnclass = &amp;quot;sf&amp;quot;)
+iceland &amp;lt;- ne_countries(scale = 10, country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
 
 #info of our spatial vector object
 iceland&lt;/code&gt;&lt;/pre&gt;
@@ -121,19 +121,19 @@ plot(iceland)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;By default, the &lt;code&gt;plot( )&lt;/code&gt; function with the class &lt;em&gt;sf&lt;/em&gt; creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; or the limit argument &lt;code&gt;plot(iceland, max.plot = 1)&lt;/code&gt;. With the argument &lt;em&gt;max.plot = 1&lt;/em&gt; the function uses the first available variable of the map.&lt;/p&gt;
 &lt;p&gt;In addition, we see in the information of the object &lt;em&gt;sf&lt;/em&gt; that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;here&lt;/a&gt;. For that purpose, we use the &lt;code&gt;st_transform( )&lt;/code&gt; function. We simply indicate the map and the EPSG code.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform to UTM
-iceland &amp;lt;- st_transform(iceland,3055)&lt;/code&gt;&lt;/pre&gt;
+iceland &amp;lt;- st_transform(iceland, 3055)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;create-a-fishnet-of-points&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Create a fishnet of points&lt;/h2&gt;
 &lt;p&gt;We still need the points where we want to know the distance. In our case it will be a regular fishnet of points in Iceland with a resolution of 5km. We do this with the function &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicating the resolution in the unit of the coordinate system (meters in our case) with the argument &lt;em&gt;cellsize&lt;/em&gt;, and what geometry we would like to create &lt;em&gt;what&lt;/em&gt; (polygons, centers or corners).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create the fishnet
-grid &amp;lt;- st_make_grid(iceland,cellsize = 5000,what = &amp;quot;centers&amp;quot;)
+grid &amp;lt;- st_make_grid(iceland, cellsize = 5000, what = &amp;quot;centers&amp;quot;)
 
 #our fishnet with the extension of Iceland
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#only extract the points in the limits of Iceland
-grid &amp;lt;- st_intersection(grid,iceland)   
+grid &amp;lt;- st_intersection(grid, iceland)   
 
 #our fishnet now
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
@@ -143,10 +143,10 @@ plot(grid)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Calculating the distance&lt;/h2&gt;
 &lt;p&gt;To estimate the distance we use the &lt;code&gt;st_distance( )&lt;/code&gt; function that returns a vector of distances for all our points in the fishnet. But first it is necessary to transform the map of Iceland from a polygon shape (MULTIPOLYGON) to a line (MULTILINESTRING). More details with &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform Iceland from polygon shape to line
-iceland &amp;lt;- st_cast(iceland,&amp;quot;MULTILINESTRING&amp;quot;)
+iceland &amp;lt;- st_cast(iceland, &amp;quot;MULTILINESTRING&amp;quot;)
 
 #calculation of the distance between the coast and our points
-dist &amp;lt;- st_distance(iceland,grid)
+dist &amp;lt;- st_distance(iceland, grid)
 
 #distance with unit in meters
 head(dist)&lt;/code&gt;&lt;/pre&gt;
@@ -157,7 +157,7 @@ head(dist)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Plotting the calculated distance&lt;/h2&gt;
 &lt;p&gt;Once obtained the distance for our points, we can combine them with the coordinates and plot them in &lt;em&gt;ggplot2&lt;/em&gt;. For this, we create a &lt;em&gt;data.frame&lt;/em&gt;. The object &lt;em&gt;dist&lt;/em&gt; is a matrix of one column, so we have to convert it to a vector with the function &lt;code&gt;as.vector( )&lt;/code&gt;. In addition, we divide by 1000 to convert the distance in meters to km. The &lt;code&gt;st_coordinates( )&lt;/code&gt; function extracts the coordinates of our points. For the final visualization we use a vector of colors with the RdGy palette (more &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a data.frame with the distance and the coordinates of the points
-df &amp;lt;- data.frame(dist=as.vector(dist)/1000,
+df &amp;lt;- data.frame(dist = as.vector(dist)/1000,
                     st_coordinates(grid))
 
 #structure
@@ -167,13 +167,13 @@ str(df)&lt;/code&gt;&lt;/pre&gt;
 ##  $ X   : num  608796 613796 583796 588796 593796 ...
 ##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colors 
-col_dist &amp;lt;- brewer.pal(11,&amp;quot;RdGy&amp;quot;)
+col_dist &amp;lt;- brewer.pal(11, &amp;quot;RdGy&amp;quot;)
 
 
-ggplot(df,aes(X,Y,fill=dist))+ #variables
+ggplot(df, aes(X, Y, fill = dist))+ #variables
          geom_tile()+ #geometry
-           scale_fill_gradientn(colours=rev(col_dist))+ #colors for plotting the distance
-             labs(fill=&amp;quot;Distance (km)&amp;quot;)+ #legend name
+           scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
+             labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #legend name
              theme_void()+ #map theme
               theme(legend.position = &amp;quot;bottom&amp;quot;) #legend position&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -192,42 +192,42 @@ ggplot(df,aes(X,Y,fill=dist))+ #variables
 &lt;li&gt;In addition to the above, the &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt;, that we created earlier, has to be converted into the &lt;em&gt;sf&lt;/em&gt; class. Therefore, we apply the function &lt;code&gt;st_as_sf( )&lt;/code&gt; with the argument &lt;em&gt;coords&lt;/em&gt; indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#get the extension
-ext &amp;lt;- extent(as(grid,&amp;quot;Spatial&amp;quot;))
+ext &amp;lt;- extent(as(grid, &amp;quot;Spatial&amp;quot;))
 
 #extent object
 ext&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## class       : Extent 
-## xmin        : 338795.6 
-## xmax        : 848795.6 
-## ymin        : 7033371 
-## ymax        : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : Extent 
+## xmin       : 338795.6 
+## xmax       : 848795.6 
+## ymin       : 7033371 
+## ymax       : 7383371&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destination
-r &amp;lt;- raster(resolution=5000,ext=ext,crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+r &amp;lt;- raster(resolution = 5000, ext = ext, crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 #convert the points to a spatial object class sf
-dist_sf &amp;lt;- st_as_sf(df,coords=c(&amp;quot;X&amp;quot;,&amp;quot;Y&amp;quot;))%&amp;gt;%
+dist_sf &amp;lt;- st_as_sf(df, coords = c(&amp;quot;X&amp;quot;, &amp;quot;Y&amp;quot;)) %&amp;gt;%
                       st_set_crs(3055)
 
 #create the distance raster
-dist_raster &amp;lt;- rasterize(dist_sf,r,&amp;quot;dist&amp;quot;,fun=mean)
+dist_raster &amp;lt;- rasterize(dist_sf, r, &amp;quot;dist&amp;quot;, fun = mean)
 
 #raster
 dist_raster&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## class       : RasterLayer 
-## dimensions  : 70, 102, 7140  (nrow, ncol, ncell)
-## resolution  : 5000, 5000  (x, y)
-## extent      : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
-## data source : in memory
-## names       : layer 
-## values      : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterLayer 
+## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution : 5000, 5000  (x, y)
+## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## source     : memory
+## names      : layer 
+## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot the raster
 plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#export the raster
-writeRaster(dist_raster,file=&amp;quot;dist_islandia.tif&amp;quot;,format=&amp;quot;GTiff&amp;quot;, overwrite=TRUE)&lt;/code&gt;&lt;/pre&gt;
+writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;rasterize( )&lt;/code&gt; function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; function converts a &lt;em&gt;data.frame&lt;/em&gt; with longitude, latitude and the variable &lt;em&gt;Z&lt;/em&gt; into a raster object. It is important that the order should be longitude, latitude, variables.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[,c(2:3,1)],crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;

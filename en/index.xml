@@ -10,6 +10,15 @@
     <atom:link href="/en/" rel="self" type="application/rss+xml" />
     
     <item>
+      <title>Os tempos e o clima de Galicia</title>
+      <link>/en/publication/os_tempos_2019/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/en/publication/os_tempos_2019/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Tidy correlation tests in R</title>
       <link>/en/2019/tidy-correlation-tests-in-r/</link>
       <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
@@ -54,7 +63,7 @@ if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quo
 if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 
-#load libraries
+#load packages
 library(tidyverse)
 library(broom)
 library(fs)
@@ -77,7 +86,7 @@ files&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
 ## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import all files and join them together
-pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
+pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Parsed with column specification:
 ## cols(
 ##   STAID = col_double(),
@@ -137,14 +146,14 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv,skip=20)&lt;/code&gt;&lt;/pre&gt;
 id &amp;lt;- unique(pr$STAID)
 
 #the corresponding labels
-lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;,&amp;quot;Santiago&amp;quot;,&amp;quot;Barcelona&amp;quot;,&amp;quot;Madrid&amp;quot;,&amp;quot;Valencia&amp;quot;)
+lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;, &amp;quot;Santiago&amp;quot;, &amp;quot;Barcelona&amp;quot;, &amp;quot;Madrid&amp;quot;, &amp;quot;Valencia&amp;quot;)
 
 #first changes
-pr &amp;lt;- select(pr,STAID,DATE,RR)%&amp;gt;% 
-        mutate(DATE=ymd(DATE), 
-               RR=ifelse(RR==-9999,NA,RR/10), 
-               STAID=factor(STAID,id,lab), 
-               yr=year(DATE)) 
+pr &amp;lt;- select(pr, STAID, DATE, RR) %&amp;gt;% 
+        mutate(DATE = ymd(DATE), 
+               RR = ifelse(RR == -9999, NA, RR/10), 
+               STAID = factor(STAID, id, lab), 
+               yr = year(DATE)) 
 pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
 ##    STAID  DATE          RR    yr
@@ -161,9 +170,9 @@ pr&lt;/code&gt;&lt;/pre&gt;
 ## 10 Bilbao 1947-03-10   0    1947
 ## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We still need to filter and calculate the annual amount of precipitation. Actually, it is not correct to sum up precipitation without taking into account that there are missing values, but it should be enough for this practice. Then, we change the table format with the &lt;code&gt;spread()&lt;/code&gt; function, passing from a long to a wide table, that is, we want to obtain one column per weather station.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr,DATE&amp;gt;=&amp;quot;1950-01-01&amp;quot;,DATE&amp;lt;&amp;quot;2018-01-01&amp;quot;)%&amp;gt;%
-           group_by(STAID,yr)%&amp;gt;%
-             summarise(pr=sum(RR,na.rm = TRUE))
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
+           group_by(STAID, yr)%&amp;gt;%
+             summarise(pr = sum(RR, na.rm = TRUE))
 pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -180,7 +189,7 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 ##  9 Bilbao  1958 1272.
 ## 10 Bilbao  1959 1450.
 ## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr,STAID,pr)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr, STAID, pr)
 pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
 ##       yr Bilbao Santiago Barcelona Madrid Valencia
@@ -227,7 +236,7 @@ telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/
 ## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
 ## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Finally we need to join both tables by year.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr,telecon,by=&amp;quot;yr&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
 data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
 ##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
@@ -248,8 +257,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;correlation-test&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Correlation test&lt;/h2&gt;
 &lt;p&gt;A correlation test between paired samples can be done with the &lt;code&gt;cor.test()&lt;/code&gt; function of R Base. In this case between the annual precipitation of Bilbao and the NAO index.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao,data_all$NAO,
-                        method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
+                        method = &amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
 ## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
@@ -287,8 +296,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Apply the correlation test to multiple variables&lt;/h2&gt;
 &lt;p&gt;The objective is to apply the correlation test to all weather stations and climate teleconnection indices.&lt;/p&gt;
 &lt;p&gt;First, we must pass the table to the long format, that is, create a column/variable for the city and for the value of the corresponding precipitation. Then we repeat the same for the teleconnections indices.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all,city,pr,Bilbao:Valencia)%&amp;gt;%
-                     gather(telecon,index,NAO:AO)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all, city, pr, Bilbao:Valencia)%&amp;gt;%
+                     gather(telecon, index, NAO:AO)
 data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
 ##       yr city      pr telecon index
@@ -305,7 +314,7 @@ data&lt;/code&gt;&lt;/pre&gt;
 ## 10  1959 Bilbao 1450. NAO      0.49
 ## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To apply the test to all cities, we need the corresponding groupings. Therefore, we use the &lt;code&gt;group_by()&lt;/code&gt; function for indicating the two groups: &lt;em&gt;city&lt;/em&gt; and &lt;em&gt;telecon&lt;/em&gt;. In addition, we apply the &lt;code&gt;nest()&lt;/code&gt; function of the &lt;em&gt;{tidyr}&lt;/em&gt; package (&lt;em&gt;{tidyverse}&lt;/em&gt; collection) with the aim of creating lists of tables nested per row. In other words, in each row of each city and teleconnection index we will have a new table that contains the year, the precipitation value and the value of each teleconection, correspondingly.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data,city,telecon)%&amp;gt;%nest()
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
 ##    city      telecon data             
@@ -321,7 +330,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
 ##  $ city   : chr &amp;quot;Bilbao&amp;quot;
 ##  $ telecon: chr &amp;quot;NAO&amp;quot;
@@ -331,9 +340,9 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
 ##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The next step is to create a function, in which we define the correlation test and pass it to the clean format using the &lt;code&gt;tidy()&lt;/code&gt; function, which we apply to each groupings.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr,df$index,method=&amp;quot;spearman&amp;quot;)%&amp;gt;%tidy()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method = &amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now we only have to apply our function to the column that contains the tables for each combination between city and teleconnection. To do this, we use the &lt;code&gt;map()&lt;/code&gt; function that applies another function to a vector or list. What we do is create a new column that contains the result, a statistical summary table, for each combination.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data,cor_fun))
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
 ##    city      telecon data              model           
@@ -349,7 +358,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest,1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
 ##  $ city   : chr &amp;quot;Bilbao&amp;quot;
 ##  $ telecon: chr &amp;quot;NAO&amp;quot;
@@ -367,7 +376,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;How can we undo the list of tables in each row of our table?&lt;/p&gt;
 &lt;p&gt;First we eliminate the column with the data and then simply we can apply the &lt;code&gt;unnest()&lt;/code&gt; function.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest,-data)%&amp;gt;%unnest()
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()
 corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
 ##    city    telecon estimate statistic  p.value method           alternative
@@ -388,22 +397,22 @@ corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;heatmap-of-the-results&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Heatmap of the results&lt;/h2&gt;
 &lt;p&gt;Finally, we make a heatmap of the obtained result. But, previously we create a column that indicates whether the correlation is significant with p-value less than 0.05.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr,sig=ifelse(p.value&amp;lt;0.05,&amp;quot;Sig.&amp;quot;,&amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr, sig = ifelse(p.value &amp;lt;0.05, &amp;quot;Sig.&amp;quot;, &amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
-  geom_tile(data=corr_pr,
-            aes(city,telecon,fill=estimate),
-            size=1,
-            colour=&amp;quot;white&amp;quot;)+
-  geom_tile(data=filter(corr_pr,sig==&amp;quot;Sig.&amp;quot;),
-            aes(city,telecon),
-            size=1,
-            colour=&amp;quot;black&amp;quot;,
-            fill=&amp;quot;transparent&amp;quot;)+
-  geom_text(data=corr_pr,
-            aes(city,telecon,label=round(estimate,2),
-            fontface=ifelse(sig==&amp;quot;Sig.&amp;quot;,&amp;quot;bold&amp;quot;,&amp;quot;plain&amp;quot;)))+
-  scale_fill_gradient2(breaks=seq(-1,1,0.2))+
-  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;&amp;quot;,p.value=&amp;quot;&amp;quot;)+
+  geom_tile(data = corr_pr,
+            aes(city, telecon, fill = estimate),
+            size = 1,
+            colour = &amp;quot;white&amp;quot;)+
+  geom_tile(data = filter(corr_pr, sig == &amp;quot;Sig.&amp;quot;),
+            aes(city, telecon),
+            size = 1,
+            colour = &amp;quot;black&amp;quot;,
+            fill = &amp;quot;transparent&amp;quot;)+
+  geom_text(data = corr_pr,
+            aes(city, telecon, label = round(estimate, 2),
+            fontface = ifelse(sig == &amp;quot;Sig.&amp;quot;, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)))+
+  scale_fill_gradient2(breaks = seq(-1, 1, 0.2))+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;, p.value = &amp;quot;&amp;quot;)+
   theme_minimal()+
   theme(panel.grid.major = element_blank(),
         panel.border = element_blank(),
@@ -473,7 +482,7 @@ if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
 if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
 
 
-#load libraries
+#load packages
 library(tidyverse)
 library(fs)
 library(readxl)&lt;/code&gt;&lt;/pre&gt;
@@ -495,7 +504,7 @@ read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import third sheet
-read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;, 3)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
 ##    date                   ta    yr
 ##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -513,17 +522,17 @@ read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;excel_sheets()&lt;/code&gt; function can extract the names of the sheets.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-path%&amp;gt;%
+path %&amp;gt;%
   excel_sheets()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The results are the sheet names and we find the years from 2000 to 2005. The most important function to read multiple sheets is &lt;code&gt;map()&lt;/code&gt; of the &lt;em&gt;{purrr}&lt;/em&gt; package, which is part of the &lt;em&gt;{tidyverse]&lt;/em&gt; collection. &lt;code&gt;map()&lt;/code&gt; allows you to apply a function to each element of a vector or list.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map(read_excel,
-           path=path)
+           path = path)
         
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 6
@@ -554,11 +563,11 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The result is a named list with the name of each sheet that contains the data.frame. Since it is the same table in all sheets, we could use the function &lt;code&gt;bind_rows()&lt;/code&gt;, however, there is a variant of &lt;code&gt;map()&lt;/code&gt; that directly joins all the tables by row: &lt;code&gt;map_df()&lt;/code&gt;. If it were necessary to join by column, &lt;code&gt;map_dfc()&lt;/code&gt; could be used.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map_df(read_excel,
-           path=path)
+           path = path)
 
 mad&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
@@ -578,12 +587,12 @@ mad&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In our case we have a column in each sheet (year, but also the date) that differentiates each table. If it were not the case, we should use the name of the sheets as a new column when joining all of them. In &lt;code&gt;bind_rows()&lt;/code&gt; it can be done with the &lt;em&gt;.id&lt;/em&gt; argument by assigning a name for the column. The same works for &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map_df(read_excel,
-           path=path,
-           .id=&amp;quot;yr2&amp;quot;)
+           path = path,
+           .id = &amp;quot;yr2&amp;quot;)
 
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
@@ -597,11 +606,11 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.en.html    index.en.Rmd     
 ## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we can filter the files that we want
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We import the two Excel files.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#without joining
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
   map(read_excel)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
 ## # A tibble: 366 x 3
@@ -635,8 +644,8 @@ dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining with a new id column
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
-  map_df(read_excel,.id=&amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
+  map_df(read_excel, .id = &amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
 ##    city             date                   ta    yr
 ##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -653,14 +662,14 @@ dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
 ## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;However, in this case we only import the first sheet of each Excel file. To solve this problem, we must create our own function. In this function we do what we previously did individually.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
-  path%&amp;gt;%
+  path %&amp;gt;%
     excel_sheets() %&amp;gt;% 
     set_names() %&amp;gt;% 
   map_df(read_excel, path = path)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We apply our created function to import multiple sheets of several Excel files.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#separately
-data &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+data &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
            map(read_multiple_excel)
 
 str(data)&lt;/code&gt;&lt;/pre&gt;
@@ -674,9 +683,9 @@ str(data)&lt;/code&gt;&lt;/pre&gt;
 ##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
 ##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining all data.frames
-data_df &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+data_df &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
            map_df(read_multiple_excel,
-                  .id=&amp;quot;city&amp;quot;)
+                  .id = &amp;quot;city&amp;quot;)
 
 str(data_df)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
@@ -747,12 +756,12 @@ library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;the-coast-of-iceland-as-an-example&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;The coast of Iceland as an example&lt;/h2&gt;
 &lt;p&gt;Our example in this post will be Iceland, and, as it is an island territory it will facilitate the tutorial showing the process in a simple manner. The &lt;em&gt;rnaturalearth&lt;/em&gt; package allows you to import the boundaries of countries (with different administrative levels) from around the world. The data comes from the platform &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. I recommend exploring the package, more info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;here&lt;/a&gt;. The &lt;code&gt;ne_countries( )&lt;/code&gt; function imports the country boundaries. In this case we indicate with the argument &lt;em&gt;scale&lt;/em&gt; the resolution (10, 50 or 110m), with &lt;em&gt;country&lt;/em&gt; we indicate the specific country of interest and with &lt;em&gt;returnclass&lt;/em&gt; we determine which class we want (&lt;em&gt;sf&lt;/em&gt; or &lt;em&gt;sp&lt;/em&gt;), in our case &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale=50) #world map with 50m resolution
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #world map with 50m resolution
 
 plot(world) #sp class by default&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the limits of Iceland
-iceland &amp;lt;- ne_countries(scale=10,country = &amp;quot;Iceland&amp;quot;,returnclass = &amp;quot;sf&amp;quot;)
+iceland &amp;lt;- ne_countries(scale = 10, country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
 
 #info of our spatial vector object
 iceland&lt;/code&gt;&lt;/pre&gt;
@@ -798,19 +807,19 @@ plot(iceland)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;By default, the &lt;code&gt;plot( )&lt;/code&gt; function with the class &lt;em&gt;sf&lt;/em&gt; creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; or the limit argument &lt;code&gt;plot(iceland, max.plot = 1)&lt;/code&gt;. With the argument &lt;em&gt;max.plot = 1&lt;/em&gt; the function uses the first available variable of the map.&lt;/p&gt;
 &lt;p&gt;In addition, we see in the information of the object &lt;em&gt;sf&lt;/em&gt; that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;here&lt;/a&gt;. For that purpose, we use the &lt;code&gt;st_transform( )&lt;/code&gt; function. We simply indicate the map and the EPSG code.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform to UTM
-iceland &amp;lt;- st_transform(iceland,3055)&lt;/code&gt;&lt;/pre&gt;
+iceland &amp;lt;- st_transform(iceland, 3055)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;create-a-fishnet-of-points&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Create a fishnet of points&lt;/h2&gt;
 &lt;p&gt;We still need the points where we want to know the distance. In our case it will be a regular fishnet of points in Iceland with a resolution of 5km. We do this with the function &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicating the resolution in the unit of the coordinate system (meters in our case) with the argument &lt;em&gt;cellsize&lt;/em&gt;, and what geometry we would like to create &lt;em&gt;what&lt;/em&gt; (polygons, centers or corners).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create the fishnet
-grid &amp;lt;- st_make_grid(iceland,cellsize = 5000,what = &amp;quot;centers&amp;quot;)
+grid &amp;lt;- st_make_grid(iceland, cellsize = 5000, what = &amp;quot;centers&amp;quot;)
 
 #our fishnet with the extension of Iceland
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#only extract the points in the limits of Iceland
-grid &amp;lt;- st_intersection(grid,iceland)   
+grid &amp;lt;- st_intersection(grid, iceland)   
 
 #our fishnet now
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
@@ -820,10 +829,10 @@ plot(grid)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Calculating the distance&lt;/h2&gt;
 &lt;p&gt;To estimate the distance we use the &lt;code&gt;st_distance( )&lt;/code&gt; function that returns a vector of distances for all our points in the fishnet. But first it is necessary to transform the map of Iceland from a polygon shape (MULTIPOLYGON) to a line (MULTILINESTRING). More details with &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform Iceland from polygon shape to line
-iceland &amp;lt;- st_cast(iceland,&amp;quot;MULTILINESTRING&amp;quot;)
+iceland &amp;lt;- st_cast(iceland, &amp;quot;MULTILINESTRING&amp;quot;)
 
 #calculation of the distance between the coast and our points
-dist &amp;lt;- st_distance(iceland,grid)
+dist &amp;lt;- st_distance(iceland, grid)
 
 #distance with unit in meters
 head(dist)&lt;/code&gt;&lt;/pre&gt;
@@ -834,7 +843,7 @@ head(dist)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Plotting the calculated distance&lt;/h2&gt;
 &lt;p&gt;Once obtained the distance for our points, we can combine them with the coordinates and plot them in &lt;em&gt;ggplot2&lt;/em&gt;. For this, we create a &lt;em&gt;data.frame&lt;/em&gt;. The object &lt;em&gt;dist&lt;/em&gt; is a matrix of one column, so we have to convert it to a vector with the function &lt;code&gt;as.vector( )&lt;/code&gt;. In addition, we divide by 1000 to convert the distance in meters to km. The &lt;code&gt;st_coordinates( )&lt;/code&gt; function extracts the coordinates of our points. For the final visualization we use a vector of colors with the RdGy palette (more &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a data.frame with the distance and the coordinates of the points
-df &amp;lt;- data.frame(dist=as.vector(dist)/1000,
+df &amp;lt;- data.frame(dist = as.vector(dist)/1000,
                     st_coordinates(grid))
 
 #structure
@@ -844,13 +853,13 @@ str(df)&lt;/code&gt;&lt;/pre&gt;
 ##  $ X   : num  608796 613796 583796 588796 593796 ...
 ##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colors 
-col_dist &amp;lt;- brewer.pal(11,&amp;quot;RdGy&amp;quot;)
+col_dist &amp;lt;- brewer.pal(11, &amp;quot;RdGy&amp;quot;)
 
 
-ggplot(df,aes(X,Y,fill=dist))+ #variables
+ggplot(df, aes(X, Y, fill = dist))+ #variables
          geom_tile()+ #geometry
-           scale_fill_gradientn(colours=rev(col_dist))+ #colors for plotting the distance
-             labs(fill=&amp;quot;Distance (km)&amp;quot;)+ #legend name
+           scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
+             labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #legend name
              theme_void()+ #map theme
               theme(legend.position = &amp;quot;bottom&amp;quot;) #legend position&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -869,42 +878,42 @@ ggplot(df,aes(X,Y,fill=dist))+ #variables
 &lt;li&gt;In addition to the above, the &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt;, that we created earlier, has to be converted into the &lt;em&gt;sf&lt;/em&gt; class. Therefore, we apply the function &lt;code&gt;st_as_sf( )&lt;/code&gt; with the argument &lt;em&gt;coords&lt;/em&gt; indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.&lt;/li&gt;
 &lt;/ol&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#get the extension
-ext &amp;lt;- extent(as(grid,&amp;quot;Spatial&amp;quot;))
+ext &amp;lt;- extent(as(grid, &amp;quot;Spatial&amp;quot;))
 
 #extent object
 ext&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## class       : Extent 
-## xmin        : 338795.6 
-## xmax        : 848795.6 
-## ymin        : 7033371 
-## ymax        : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : Extent 
+## xmin       : 338795.6 
+## xmax       : 848795.6 
+## ymin       : 7033371 
+## ymax       : 7383371&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destination
-r &amp;lt;- raster(resolution=5000,ext=ext,crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+r &amp;lt;- raster(resolution = 5000, ext = ext, crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 #convert the points to a spatial object class sf
-dist_sf &amp;lt;- st_as_sf(df,coords=c(&amp;quot;X&amp;quot;,&amp;quot;Y&amp;quot;))%&amp;gt;%
+dist_sf &amp;lt;- st_as_sf(df, coords = c(&amp;quot;X&amp;quot;, &amp;quot;Y&amp;quot;)) %&amp;gt;%
                       st_set_crs(3055)
 
 #create the distance raster
-dist_raster &amp;lt;- rasterize(dist_sf,r,&amp;quot;dist&amp;quot;,fun=mean)
+dist_raster &amp;lt;- rasterize(dist_sf, r, &amp;quot;dist&amp;quot;, fun = mean)
 
 #raster
 dist_raster&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## class       : RasterLayer 
-## dimensions  : 70, 102, 7140  (nrow, ncol, ncell)
-## resolution  : 5000, 5000  (x, y)
-## extent      : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
-## data source : in memory
-## names       : layer 
-## values      : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterLayer 
+## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution : 5000, 5000  (x, y)
+## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## source     : memory
+## names      : layer 
+## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot the raster
 plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#export the raster
-writeRaster(dist_raster,file=&amp;quot;dist_islandia.tif&amp;quot;,format=&amp;quot;GTiff&amp;quot;, overwrite=TRUE)&lt;/code&gt;&lt;/pre&gt;
+writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;rasterize( )&lt;/code&gt; function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; function converts a &lt;em&gt;data.frame&lt;/em&gt; with longitude, latitude and the variable &lt;em&gt;Z&lt;/em&gt; into a raster object. It is important that the order should be longitude, latitude, variables.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[,c(2:3,1)],crs=&amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
@@ -2681,7 +2690,7 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
 
 
 &lt;p&gt;This year, the so-called &lt;em&gt;warming stripes&lt;/em&gt;, which were created by the scientist &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; of the University of Reading, became very famous all over the world. These graphs represent and communicate climate change in a very illustrative and effective way.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins #ShowYourStripes (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;From his idea, I created strips for examples of Spain, like the next one in Madrid.&lt;/p&gt;
@@ -2696,7 +2705,7 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 
-#libraries
+#packages
 library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
@@ -2747,10 +2756,10 @@ str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
 ##   .. )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values &lt;em&gt;999.9&lt;/em&gt; with &lt;code&gt;NA&lt;/code&gt;, using the &lt;code&gt;ifelse( )&lt;/code&gt; function that evaluates a condition and perform the given argument corresponding to true and false.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#select only the annual temperature and year column
-temp_lisboa_yr &amp;lt;- select(temp_lisboa,YEAR,metANN)
+temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
 
 #rename the temperature column
-temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr,ta=metANN)
+temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr, ta = metANN)
 
 #missing values 999.9
 summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
@@ -2761,9 +2770,9 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
 ##  Mean   :1949   Mean   : 37.38  
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library &lt;em&gt;lubridate&lt;/em&gt; and the support functions inside of &lt;em&gt;ggplot2&lt;/em&gt;. The &lt;code&gt;str_c( )&lt;/code&gt; function of the library &lt;em&gt;stringr&lt;/em&gt;, part of the collection of &lt;em&gt;tidyverse&lt;/em&gt;, is similar to &lt;code&gt;paste( )&lt;/code&gt; of R Base that allows us to combine characters by specifying a separator (sep = “-”). The &lt;code&gt;ymd( )&lt;/code&gt; (year month day) function of the &lt;em&gt;lubridate&lt;/em&gt; library converts a date character into a &lt;em&gt;Date&lt;/em&gt; object. It is possible to combine several functions using the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; that helps to chain without assigning the result to a new object. Its use is very extended especially with the library &lt;em&gt;tidyverse&lt;/em&gt;. If you want to know more about its use, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; you have a tutorial.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&amp;quot;01-01&amp;quot;,sep=&amp;quot;-&amp;quot;)%&amp;gt;%ymd())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;creating-the-strips&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Creating the strips&lt;/h2&gt;
@@ -2772,15 +2781,15 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
                  theme(axis.text.y = element_blank(),
                        axis.line.y = element_blank(),
                        axis.title = element_blank(),
-                       panel.grid.major=element_blank(),
+                       panel.grid.major = element_blank(),
                        legend.title = element_blank(),
-                       axis.text.x=element_text(vjust=3),
-                       panel.grid.minor=element_blank(),
-                        plot.title=element_text(size=14,face=&amp;quot;bold&amp;quot;)
+                       axis.text.x = element_text(vjust = 3),
+                       panel.grid.minor = element_blank(),
+                        plot.title = element_text(size = 14, face = &amp;quot;bold&amp;quot;)
                        )
 
 
-col_strip &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+col_strip &amp;lt;- brewer.pal(11, &amp;quot;RdBu&amp;quot;)
 
 brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
@@ -2821,27 +2830,27 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 ## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;For the final graphic we use the geometry &lt;code&gt;geom_tile( )&lt;/code&gt;. Since the data does not have a specific value for the Y axis, we need a &lt;em&gt;dummy&lt;/em&gt; value, here I used 1. Also, I adjust the width of the color bar in the legend.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile()+
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
-                     expand=c(0,0))+
-           scale_y_continuous(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
-             guides(fill=guide_colorbar(barwidth = 1))+
-            labs(title=&amp;quot;LISBOA 1880-2018&amp;quot;,
-                caption=&amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+                     expand = c(0, 0))+
+           scale_y_continuous(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+             guides(fill = guide_colorbar(barwidth = 1))+
+            labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
               theme_strip&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;In case we want to get only the strips, we can use &lt;code&gt;theme_void( )&lt;/code&gt; and the argument &lt;em&gt;show.legend = FALSE&lt;/em&gt; in &lt;code&gt;geom_tile( )&lt;/code&gt; to remove all style elements. We can also change the color for the &lt;code&gt;NA&lt;/code&gt; values, including the argument &lt;em&gt;na.value = “gray70”&lt;/em&gt; in the &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile(show.legend = FALSE)+
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
-                     expand=c(0,0))+
-           scale_y_discrete(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
+                     expand = c(0, 0))+
+           scale_y_discrete(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
@@ -2981,408 +2990,6 @@ ggplot(mercadona$osm_points)+
       
       <guid>/en/publication/cloudiness_ip_2018/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>Access to climate reanalysis data from R</title>
-      <link>/en/2018/access-to-climate-reanalysis-data-from-r/</link>
-      <pubDate>Sat, 15 Sep 2018 10:59:44 +0100</pubDate>
-      
-      <guid>/en/2018/access-to-climate-reanalysis-data-from-r/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#packages&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#data-download&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#monthly-average&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#visualization&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#era-interim&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#installation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#connection-and-download-with-the-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#processing-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#update-for-accessing-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Update for accessing ERA-5&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;em&gt;A friend advised me to introduce R levels as categories. An idea that I now add to each blog post. There are three levels: elementary, intermediate, and advanced. I hope it will help the reader and the R user.&lt;/em&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/h1&gt;
-&lt;p&gt;In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are a combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans. The two most used reanalyses are &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) from the &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, an improved version of &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), and &lt;em&gt;ERA-Interim&lt;/em&gt; from the &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;. Since &lt;em&gt;NCEP-DO&lt;/em&gt; is the first generation, it is recommended to use third-generation climate reanalysis, especially &lt;em&gt;ERA-Interim&lt;/em&gt;. An overview of the current atmospheric reanalysis can be found &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;here&lt;/a&gt;. First, let’s see how to access the &lt;em&gt;NCEP&lt;/em&gt; data through an R library on &lt;em&gt;CRAN&lt;/em&gt; that facilitates the download and handling of the data. Then we will do the same with the &lt;em&gt;ERA-Interim&lt;/em&gt;, however, to access this last reanalysis dataset it is necessary to use &lt;em&gt;python&lt;/em&gt; and the corresponding API of the &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
-&lt;p&gt;To access the &lt;em&gt;NCEP&lt;/em&gt; reanalysis it is required to install the corresponding package &lt;em&gt;RNCEP&lt;/em&gt;. The main function is &lt;code&gt;NCEP.gather( )&lt;/code&gt;. The resolution of the &lt;em&gt;NCEP&lt;/em&gt; reanalysis is 2.5º X 2.5º.&lt;/p&gt;
-&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the RNCEP, lubridate and tidyverse packages
-if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-
-#load the packages
-library(RNCEP)
-library(lubridate) #date and time manipulation
-library(tidyverse) #data manipulation and visualization
-library(RColorBrewer) #color schemes
-library(sf) #to import a spatial object and to work with geom_sf in ggplot2&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;data-download&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/h2&gt;
-&lt;p&gt;We will download the air temperature of the 850haPa pressure level for the year 2016. The variables and pressure levels can be found in the details of the function &lt;code&gt;?NCEP.gather&lt;/code&gt;. The &lt;em&gt;reanalysis2&lt;/em&gt; argument allows us to download both version I and version II, being by default &lt;em&gt;FALSE&lt;/em&gt;, that is, we access reanalysis I. In all the requests we will obtain data of every 6 hours (00:00, 06:00, 12:00 and 18:00). This supposes a total of 1464 values for the year 2016.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#define the necessary arguments
-month_range &amp;lt;- c(1,12)     #period of months
-year_range &amp;lt;- c(2016,2016) #period of years
-
-lat_range &amp;lt;- c(30,60)      #latitude range
-lon_range &amp;lt;- c(-30,50)     #longitude range
- 
-
-data &amp;lt;- NCEP.gather(&amp;quot;air&amp;quot;,    #name of the variable
-                    850, #pressure level 850hPa
-                    month_range,year_range,
-                    lat_range,lon_range,
-                    return.units = TRUE,
-                    reanalysis2=TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] Units of variable &amp;#39;air&amp;#39; are degK
-## [1] Units of variable &amp;#39;air&amp;#39; are degK&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#dimensions                    
-dim(data) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1]   13   33 1464&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we find lon, lat and time with dimnames()
-#date and time
-date_time &amp;lt;- dimnames(data)[[3]]
-date_time &amp;lt;- ymd_h(date_time)
-head(date_time)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2016-01-01 00:00:00 UTC&amp;quot; &amp;quot;2016-01-01 06:00:00 UTC&amp;quot;
-## [3] &amp;quot;2016-01-01 12:00:00 UTC&amp;quot; &amp;quot;2016-01-01 18:00:00 UTC&amp;quot;
-## [5] &amp;quot;2016-01-02 00:00:00 UTC&amp;quot; &amp;quot;2016-01-02 06:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#longitude and latitude
-lat &amp;lt;- dimnames(data)[[1]]
-lon &amp;lt;- dimnames(data)[[2]]
-head(lon);head(lat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;-30&amp;quot;   &amp;quot;-27.5&amp;quot; &amp;quot;-25&amp;quot;   &amp;quot;-22.5&amp;quot; &amp;quot;-20&amp;quot;   &amp;quot;-17.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;60&amp;quot;   &amp;quot;57.5&amp;quot; &amp;quot;55&amp;quot;   &amp;quot;52.5&amp;quot; &amp;quot;50&amp;quot;   &amp;quot;47.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;monthly-average&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/h2&gt;
-&lt;p&gt;We see that the downloaded data is an &lt;em&gt;array&lt;/em&gt; of three dimensions with [lat, lon, time]. As above mentioned, we extracted latitude, longitude and time. The temperature is given in Kelvin. The objective in the next section will be to show two maps comparing January and July.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create our grouping variable
-group &amp;lt;- month(date_time) 
-
-#estimate the average temperature by month 
-data_month &amp;lt;- aperm(
-  apply(
-    data, #our data
-    c(1,2), #apply to each time series 1:row, 2:column a the mean( ) function
-    by, #group by
-    group, #months
-    function(x)ifelse(all(is.na(x)),NA,mean(x))),
-  c(2,3,1)) #reorder to get an array like the original
-
-dim(data_month) #850haPa temperature per month January to December&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 13 33 12&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/h2&gt;
-&lt;p&gt;Once we got here, we can visualize the 850hPa temperature of January and July with &lt;em&gt;ggplot2&lt;/em&gt;. In this example, I use &lt;code&gt;geom_sf( )&lt;/code&gt; from the library &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, which makes the work easier to visualize spatial objects in &lt;em&gt;ggplot&lt;/em&gt; (in the near future I will make a post about &lt;em&gt;sf&lt;/em&gt; and &lt;em&gt;ggplot&lt;/em&gt;). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the &lt;code&gt;expand.grid( )&lt;/code&gt; function.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#first we create all the combinations of lon-lat
-lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
-
-#as lonlat was a row/column name, it is character, that&amp;#39;s why we convert it into numeric
-lonlat &amp;lt;- apply(lonlat,2,as.numeric)
-
-#lon and lat are not in the order as we expect
-#row=lon; column=lat
-data_month &amp;lt;- aperm(data_month,c(2,1,3))
-
-#subtract 273.15K to convert K to ºC.
-df &amp;lt;- data.frame(lonlat,
-                 Ta01=as.vector(data_month[,,1])-273.15,
-                 Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Before we can make the map with &lt;em&gt;ggplot2&lt;/em&gt;, we have to adapt the table. The shapefile with the countries limits can be downloaded &lt;a href=&#34;/files/CNTR_RG_03M_2014.zip&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the wide table into a long one
-df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
-             mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
-
-#import the countries limits
-limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2018-09-15-access-to-climate-reanalysis-data-from-r\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
-## Simple feature collection with 256 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.66068
-## epsg (SRID):    NA
-## proj4string:    +proj=longlat +ellps=GRS80 +no_defs&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#color scheme
-colbr &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
-
-ggplot(df)+
-      geom_tile(aes(lon,lat,fill=Ta))+ #temperature data
-      geom_sf(data=limit,fill=NA,size=.5)+ #limits 
-        scale_fill_gradientn(colours=rev(colbr))+
-          coord_sf(ylim=c(30,60),xlim=c(-30,50))+
-          scale_x_continuous(breaks=seq(-30,50,10),expand=c(0,0))+
-          scale_y_continuous(breaks=seq(30,60,5),expand=c(0,0))+
-          labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
-           facet_grid(month~.)+ #plot panels by month
-             theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
-&lt;p&gt;The &lt;em&gt;ECMWF&lt;/em&gt; offers access to its public databases from a &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. It is required to be registered on the &lt;em&gt;ECMWF&lt;/em&gt; website. You can register &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;here&lt;/a&gt;. When dealing with another programming language, in R we have to use an interface between both which allows the library &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;installation&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
-if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quot;) #to manage netCDF format
-
-#load packages
-library(reticulate)
-library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install( )&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the python ECMWF API
-py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Installation complete.&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;connection-and-download-with-the-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/h2&gt;
-&lt;p&gt;In order to access the API, it is required to create a file with the user’s information.&lt;/p&gt;
-&lt;p&gt;The “.ecmwfapirc” file must contain the following information:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-    &amp;quot;url&amp;quot;   : &amp;quot;https://api.ecmwf.int/v1&amp;quot;,
-    &amp;quot;key&amp;quot;   : &amp;quot;XXXXXXXXXXXXXXXXXXXXXX&amp;quot;,
-    &amp;quot;email&amp;quot; : &amp;quot;john.smith@example.com&amp;quot;
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The key can be obtained with the user account &lt;a href=&#34;https://api.ecmwf.int/v1/key/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;The file can be created with the Windows notebook.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;We create a document “ecmwfapirc.txt”.&lt;/li&gt;
-&lt;li&gt;Rename this file to “.ecmwfapirc.”&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;The last point disappears automatically. Then we save this file in “C:/USERNAME/.ecmwfapirc” or “C:/USERNAME/Documents/.ecmwfapirc”.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the python library ecmwfapi
-ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
-
-#for this step there must exist the file .ecmwfapirc
-server = ecmwf$ECMWFDataServer() #start the connection&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;One we get here, how do we create a query? The easiest thing is to go to the website of &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;, where we choose the database, in this case &lt;em&gt;ERA-Interim&lt;/em&gt; surface, to create a script with all the necessary data. More details about the syntax can be found &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;here&lt;/a&gt;. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
-
-&lt;/div&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;
-
-&lt;/div&gt;
-&lt;p&gt;With the syntax of the script from the &lt;em&gt;MARS Request&lt;/em&gt;, we can create the query in R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create the query
-query &amp;lt;-r_to_py(list(
-  class=&amp;#39;ei&amp;#39;,
-  dataset= &amp;quot;interim&amp;quot;, #dataset
-  date= &amp;quot;2017-01-01/to/2017-12-31&amp;quot;, #time period
-  expver= &amp;quot;1&amp;quot;,
-  grid= &amp;quot;0.125/0.125&amp;quot;, #resolution
-  levtype=&amp;quot;sfc&amp;quot;,
-  param= &amp;quot;167.128&amp;quot;, # air temperature (2m)
-  area=&amp;quot;45/-10/30/5&amp;quot;, #N/W/S/E
-  step= &amp;quot;0&amp;quot;,
-  stream=&amp;quot;oper&amp;quot;,
-  time=&amp;quot;00:00:00/06:00:00/12:00:00/18:00:00&amp;quot;, #hours
-  type=&amp;quot;an&amp;quot;,
-  format= &amp;quot;netcdf&amp;quot;, #format
-  target=&amp;#39;ta2017.nc&amp;#39; #file name
-))
-
-#query to get the ncdf
-server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The result is a netCDF file that we can process with the library &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;processing-ncdf&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/h2&gt;
-&lt;p&gt;In the next section, the objective will be the extraction of a time serie from the closest coordinate to a given one. We will use the coordinates of Madrid (40.418889, -3.691944).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load packages
-library(sf)
-library(ncdf4)
-library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#open the connection with the ncdf file
-nc &amp;lt;- nc_open(&amp;quot;ta2017.nc&amp;quot;)
-
-#extract lon and lat
-lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
-lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
-dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extract the time
-t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
-
-#time unit: hours since 1900-01-01
-ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $units
-## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
-## 
-## $long_name
-## [1] &amp;quot;time&amp;quot;
-## 
-## $calendar
-## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the hours into date + hour
-#as_datetime() function of the lubridate package needs seconds
-timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
-
-#import the data
-data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
-
-#close the conection with the ncdf file
-nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In this next section we use the &lt;em&gt;sf&lt;/em&gt; package, which is replacing the well known &lt;em&gt;sp&lt;/em&gt; and &lt;em&gt;rgdal&lt;/em&gt; packages.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create all the combinations of lon-lat
-lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
-
-#we must convert the coordinates in a spatial object sf
-#we also indicate the coordinate system in EPSG code
-coord &amp;lt;- st_as_sf(lonlat,coords=c(&amp;quot;lon&amp;quot;,&amp;quot;lat&amp;quot;))%&amp;gt;%
-                    st_set_crs(4326)
-
-#we do the same with our coordinate of Madrid
-psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
-                   st_sfc()%&amp;gt;%
-                     st_set_crs(4326)
-
-#plot all points
-plot(st_geometry(coord))
-plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In the next steps we calculate the distance of our reference point to all the grid points. Then we look for the one with less distance.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#add the distance to the points
-coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
-
-#create a distance matrix with the same dimensions as our data
-dist_mat &amp;lt;- matrix(coord$dist,dim(data)[-3])
-
-#the arrayInd function is useful to obtain the row and column indexes
-mat_index &amp;lt;- as.vector(arrayInd(which.min(dist_mat), dim(dist_mat)))
-
-#we extract the time serie and change the unit from K to ºC
-#we convert the time in date + hour
-df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp;gt;%
-        mutate(ta=ta-273.15,time=ymd_hms(time))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally, we visualize our time series.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(df,
-       aes(time,ta))+
-    geom_line()+
-    labs(y=&amp;quot;Temperature (ºC)&amp;quot;,
-             x=&amp;quot;&amp;quot;)+
-    theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;update-for-accessing-era-5&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Update for accessing ERA-5&lt;/h1&gt;
-&lt;p&gt;Recently the new reanalysis ERA-5 with &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;single level&lt;/a&gt; or &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview&#34;&gt;pressure level&lt;/a&gt; was made available to users. It is the fifth generation of the European Center for Medium-Range Weather Forecasts (ECMWF) and accessible through a new Copernicus API. The ERA-5 reanalysis has a temporary coverage from 1950 to the present at a horizontal resolution of 30km worldwide, with 137 levels from the surface to a height of 80km. An important difference with respect to the previous ERA-Interim is the temporal resolution with hourly data.&lt;/p&gt;
-&lt;p&gt;The access changes to the Climate Data Store (CDS) infrastructure with its own API. It is possible to download directly from the web or using the Python API in a similar way to the one already presented in this post. However, there are slight differences which I will explain below.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;It is necessary to have a Copernicus CDS account &lt;a href=&#34;https://cds.climate.copernicus.eu/user/register&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Again, you need a account key &lt;a href=&#34;https://cds.climate.copernicus.eu/api-how-to&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;There are changes in the Python library and in some arguments of the query.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load libraries 
-library(sf)
-library(ncdf4)
-library(tidyverse)
-library(reticulate)
-
-#install the CDS API
-conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;,pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To be able to access the API, a requirement is to create a file with the user’s information.&lt;/p&gt;
-&lt;p&gt;The “.cdsapirc” file must contain the following information:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-url: https://cds.climate.copernicus.eu/api/v2
-key: {uid}:{api-key}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The key can be obtained with the user account in the &lt;em&gt;User profile&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;The file can be created in the same way as it has been explained for ERA-Interim.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import python CDS-API
-cdsapi &amp;lt;- import(&amp;#39;cdsapi&amp;#39;)
-
-#for this step there must exist the file .cdsapirc
-server = cdsapi$Client() #start the connection&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;With the syntax of the script from the &lt;em&gt;Show API request&lt;/em&gt; &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;single level&lt;/a&gt;, we can create the query in R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create the query
-query &amp;lt;- r_to_py(list(
-    variable= &amp;quot;2m_temperature&amp;quot;,
-    product_type= &amp;quot;reanalysis&amp;quot;,
-    year= &amp;quot;2018&amp;quot;,
-    month= &amp;quot;07&amp;quot;, #formato: &amp;quot;01&amp;quot;,&amp;quot;01&amp;quot;, etc.
-    day= str_pad(1:31,2,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),   
-    time= str_c(0:23,&amp;quot;00&amp;quot;,sep=&amp;quot;:&amp;quot;)%&amp;gt;%str_pad(5,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),
-    format= &amp;quot;netcdf&amp;quot;,
-    area = &amp;quot;45/-20/35/5&amp;quot; # North, West, South, East
-  ))
-
-#query to get the ncdf
-server$retrieve(&amp;quot;reanalysis-era5-single-levels&amp;quot;,
-                  query,
-                 &amp;quot;era5_ta_2018.nc&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;It is possible that the first time an error message is received, given that the required terms and conditions have not yet been accepted. Simply, the indicated link should be followed.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Error in py_call_impl(callable, dots$args, dots$keywords) : 
-  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &amp;#39;Licence to Use Copernicus Products&amp;#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;From here we can follow the same steps as with ERA-Interim.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#open the connection with the file
-nc &amp;lt;- nc_open(&amp;quot;era5_ta_2018.nc&amp;quot;)
-
-#extract lon, lat
-lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
-lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
-dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 41&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 101&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extract time
-t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
-
-#time unit: hours from 1900-01-01
-ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $units
-## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
-## 
-## $long_name
-## [1] &amp;quot;time&amp;quot;
-## 
-## $calendar
-## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we convert the hours into date+time 
-#as_datetime from lubridate needs seconds
-timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
-
-#temperatures in K from july 2018
-head(timestamp)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2018-07-01 00:00:00 UTC&amp;quot; &amp;quot;2018-07-01 01:00:00 UTC&amp;quot;
-## [3] &amp;quot;2018-07-01 02:00:00 UTC&amp;quot; &amp;quot;2018-07-01 03:00:00 UTC&amp;quot;
-## [5] &amp;quot;2018-07-01 04:00:00 UTC&amp;quot; &amp;quot;2018-07-01 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import temperature data
-data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
-
-#plot 2018-07-01
-filled.contour(data[,,1])&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#time serie plot for a pixel
-plot(data.frame(date=timestamp,
-                ta=data[1,5,]),
-     type=&amp;quot;l&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-18-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#close the conection with the ncdf file
-nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
     </item>
     
   </channel>

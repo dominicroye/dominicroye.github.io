@@ -21,7 +21,7 @@
 
 
 &lt;p&gt;Este año se hicieron muy famosos en todo el mundo los llamados &lt;em&gt;warming stripes&lt;/em&gt;, las tiras del calentamiento global, que fueron creadas por el científico &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins #ShowYourStripes (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;A partir de su idea, creé tiras para ejemplos de España, como el siguiente de Madrid.&lt;/p&gt;
@@ -36,7 +36,7 @@
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 
-#librerías
+#paquetes
 library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
@@ -87,10 +87,10 @@ str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
 ##   .. )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Vemos en las columnas que tenemos valores mensuales y estacionales, y el valor anual. Pero antes de proceder a visualizar la temperatura anual, debemos sustituir los valores ausentes &lt;em&gt;999.9&lt;/em&gt; por &lt;code&gt;NA&lt;/code&gt;, usando la función &lt;code&gt;ifelse( )&lt;/code&gt; que lleva una condición y los argumentos correspondientes a verdadero y falso de la condición dada.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#selecionamos la columna del año y la temperatura anual
-temp_lisboa_yr &amp;lt;- select(temp_lisboa,YEAR,metANN)
+temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
 
 #cambiamos el nombre de la columna 
-temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr,ta=metANN)
+temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr, ta = metANN)
 
 #valores ausentes 999.9
 summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
@@ -101,9 +101,9 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
 ##  Mean   :1949   Mean   : 37.38  
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas del paquete &lt;em&gt;lubridate&lt;/em&gt; y las funciones de apoyo dentro de &lt;em&gt;ggplot2&lt;/em&gt;. La función &lt;code&gt;str_c( )&lt;/code&gt; del paquete &lt;em&gt;stringr&lt;/em&gt;, forma parte de la colección de &lt;em&gt;tidyverse&lt;/em&gt;, es similar a &lt;code&gt;paste( )&lt;/code&gt; de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función &lt;code&gt;ymd( )&lt;/code&gt; (year month day) del paquete &lt;em&gt;lubridate&lt;/em&gt; convierte una fecha en un objeto &lt;em&gt;Date&lt;/em&gt;. Es posible combinar varias funciones haciendo uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&amp;quot;01-01&amp;quot;,sep=&amp;quot;-&amp;quot;)%&amp;gt;%ymd())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;creando-las-tiras&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Creando las tiras&lt;/h2&gt;
@@ -112,15 +112,15 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
                  theme(axis.text.y = element_blank(),
                        axis.line.y = element_blank(),
                        axis.title = element_blank(),
-                       panel.grid.major=element_blank(),
+                       panel.grid.major = element_blank(),
                        legend.title = element_blank(),
-                       axis.text.x=element_text(vjust=3),
-                       panel.grid.minor=element_blank(),
-                       plot.title=element_text(size=14,face=&amp;quot;bold&amp;quot;)
+                       axis.text.x = element_text(vjust = 3),
+                       panel.grid.minor = element_blank(),
+                       plot.title = element_text(size = 14, face = &amp;quot;bold&amp;quot;)
                        )
 
 
-col_strip &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+col_strip &amp;lt;- brewer.pal(11, &amp;quot;RdBu&amp;quot;)
 
 brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
@@ -161,27 +161,27 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 ## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Para el gráfico final usamos la geometría &lt;code&gt;geom_tile( )&lt;/code&gt;. Como los datos no tienen un valor específico para el eje Y, usamos un valor &lt;em&gt;dummy&lt;/em&gt;, aquí es 1. Además, ajusto el ancho de la barra de colores en la leyenda.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1,fill = ta))+
         geom_tile()+
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
-                     expand=c(0,0))+
-           scale_y_continuous(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
-           guides(fill=guide_colorbar(barwidth = 1))+
-           labs(title=&amp;quot;LISBOA 1880-2018&amp;quot;,
-                caption=&amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+                     expand = c(0, 0))+
+           scale_y_continuous(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+           guides(fill = guide_colorbar(barwidth = 1))+
+           labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
              theme_strip&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;En el caso de que quisieramos obtener únicamente las tiras, podemos usar &lt;code&gt;theme_void( )&lt;/code&gt; y el argumento &lt;em&gt;show.legend=FALSE&lt;/em&gt; en &lt;code&gt;geom_tile( )&lt;/code&gt; para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores &lt;code&gt;NA&lt;/code&gt;, incluyendo el argumento &lt;em&gt;na.value=“grey70”&lt;/em&gt; en la función &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile(show.legend = FALSE)+
            scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
                      date_labels = &amp;quot;%Y&amp;quot;,
-                     expand=c(0,0))+
-           scale_y_discrete(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
+                     expand = c(0, 0))+
+           scale_y_discrete(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;

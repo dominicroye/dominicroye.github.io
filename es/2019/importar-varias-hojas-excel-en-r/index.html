@@ -633,7 +633,7 @@ if(!require(&quot;fs&quot;)) install.packages(&quot;fs&quot;)
 if(!require(&quot;readxl&quot;)) install.packages(&quot;readxl&quot;)
 
 
-#librerías
+#paquetes
 library(tidyverse)
 library(fs)
 library(readxl)</code></pre>
@@ -655,7 +655,7 @@ read_excel(&quot;madrid_temp.xlsx&quot;)</code></pre>
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows</code></pre>
 <pre class="r"><code>#importar hoja 3
-read_excel(&quot;madrid_temp.xlsx&quot;,3)</code></pre>
+read_excel(&quot;madrid_temp.xlsx&quot;, 3)</code></pre>
 <pre><code>## # A tibble: 365 x 3
 ##    date                   ta    yr
 ##    &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
@@ -673,17 +673,17 @@ read_excel(&quot;madrid_temp.xlsx&quot;,3)</code></pre>
 <p>La función <code>excel_sheets()</code> permite extraer los nombres de las hojas.</p>
 <pre class="r"><code>path &lt;- &quot;madrid_temp.xlsx&quot;
 
-path%&gt;%
+path %&gt;%
   excel_sheets()</code></pre>
 <pre><code>## [1] &quot;2000&quot; &quot;2001&quot; &quot;2002&quot; &quot;2003&quot; &quot;2004&quot; &quot;2005&quot;</code></pre>
 <p>El resultado nos indica que en cada hoja encontramos un año de los datos desde 2000 a 2005. La función más importante para leer múltiples hojas es <code>map()</code> del paquete <em>{purrr}</em> que forma parte de la colección de paquetes <em>{tidyverse}</em>. <code>map()</code> permite aplicar una función a cada elemento de un vector o lista.</p>
 <pre class="r"><code>path &lt;- &quot;madrid_temp.xlsx&quot;
 
-mad &lt;- path%&gt;%
-        excel_sheets()%&gt;%
-        set_names()%&gt;%
+mad &lt;- path %&gt;%
+        excel_sheets() %&gt;%
+        set_names() %&gt;%
        map(read_excel,
-           path=path)
+           path = path)
         
 str(mad)</code></pre>
 <pre><code>## List of 6
@@ -714,11 +714,11 @@ str(mad)</code></pre>
 <p>El resultado es una lista nombrada con el nombre de cada hoja que contiene el data.frame. Dado que se trata de la misma tabla en todas las hojas, podríamos usar la función <code>bind_rows()</code>, no obstante, existe una variante de <code>map()</code>que directamente nos une todas las tablas por fila: <code>map_df()</code>. Si fuese necesario unir por columna se debería usar <code>map_dfc()</code>.</p>
 <pre class="r"><code>path &lt;- &quot;madrid_temp.xlsx&quot;
 
-mad &lt;- path%&gt;%
-        excel_sheets()%&gt;%
-        set_names()%&gt;%
+mad &lt;- path %&gt;%
+        excel_sheets() %&gt;%
+        set_names() %&gt;%
        map_df(read_excel,
-           path=path)
+           path = path)
 
 mad</code></pre>
 <pre><code>## # A tibble: 2,192 x 3
@@ -738,12 +738,12 @@ mad</code></pre>
 <p>En nuestro caso tenemos una columna en cada hoja (año, pero también la fecha) que diferencia cada tabla. Si no fuera el caso, deberíamos usar el nombre de las hojas como nueva columna al unir todas. En <code>bind_rows()</code> puede hacerse con el argumento <em>.id</em> asignando un nombre para la columna. Lo mismo valdría para <code>map_df()</code>.</p>
 <pre class="r"><code>path &lt;- &quot;madrid_temp.xlsx&quot;
 
-mad &lt;- path%&gt;%
-        excel_sheets()%&gt;%
-        set_names()%&gt;%
+mad &lt;- path %&gt;%
+        excel_sheets() %&gt;%
+        set_names() %&gt;%
        map_df(read_excel,
-           path=path,
-           .id=&quot;yr2&quot;)
+           path = path,
+           .id = &quot;yr2&quot;)
 
 str(mad)</code></pre>
 <pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    2192 obs. of  4 variables:
@@ -757,11 +757,11 @@ str(mad)</code></pre>
 <pre><code>## berlin_temp.xlsx featured.png     index.es.html    index.es.Rmd     
 ## madrid_temp.xlsx</code></pre>
 <pre class="r"><code>#podemos filtrar los archivos que queremos
-dir_ls(regexp=&quot;xlsx&quot;) </code></pre>
+dir_ls(regexp = &quot;xlsx&quot;) </code></pre>
 <pre><code>## berlin_temp.xlsx madrid_temp.xlsx</code></pre>
 <p>Importamos los dos archivos de Excel que tenemos.</p>
 <pre class="r"><code>#sin unir
-dir_ls(regexp=&quot;xlsx&quot;)%&gt;%
+dir_ls(regexp = &quot;xlsx&quot;)%&gt;%
   map(read_excel)</code></pre>
 <pre><code>## $berlin_temp.xlsx
 ## # A tibble: 366 x 3
@@ -795,8 +795,8 @@ dir_ls(regexp=&quot;xlsx&quot;)%&gt;%
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows</code></pre>
 <pre class="r"><code>#uniendo con una nueva columna
-dir_ls(regexp=&quot;xlsx&quot;)%&gt;%
-  map_df(read_excel,.id=&quot;city&quot;)</code></pre>
+dir_ls(regexp = &quot;xlsx&quot;)%&gt;%
+  map_df(read_excel, .id = &quot;city&quot;)</code></pre>
 <pre><code>## # A tibble: 732 x 4
 ##    city             date                   ta    yr
 ##    &lt;chr&gt;            &lt;dttm&gt;              &lt;dbl&gt; &lt;dbl&gt;
@@ -813,14 +813,14 @@ dir_ls(regexp=&quot;xlsx&quot;)%&gt;%
 ## # ... with 722 more rows</code></pre>
 <p>Ahora bien, en este caso sólo importamos la primera hoja de cada archivo Excel. Para resolver este problema, debemos crear nuestra propia función. En esta función hacemos lo que hicimos previamente de forma individual.</p>
 <pre class="r"><code>read_multiple_excel &lt;- function(path) {
-  path%&gt;%
+  path %&gt;%
     excel_sheets() %&gt;% 
     set_names() %&gt;% 
   map_df(read_excel, path = path)
 }</code></pre>
 <p>Aplicamos nuestra función creada para importar múltiples hojas de varios archivos Excel.</p>
 <pre class="r"><code>#por separado
-data &lt;- dir_ls(regexp=&quot;xlsx&quot;) %&gt;% 
+data &lt;- dir_ls(regexp = &quot;xlsx&quot;) %&gt;% 
            map(read_multiple_excel)
 
 str(data)</code></pre>
@@ -834,9 +834,9 @@ str(data)</code></pre>
 ##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
 ##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...</code></pre>
 <pre class="r"><code>#unir todas
-data_df &lt;- dir_ls(regexp=&quot;xlsx&quot;) %&gt;% 
+data_df &lt;- dir_ls(regexp = &quot;xlsx&quot;) %&gt;% 
            map_df(read_multiple_excel,
-                  .id=&quot;city&quot;)
+                  .id = &quot;city&quot;)
 
 str(data_df)</code></pre>
 <pre><code>## Classes &#39;tbl_df&#39;, &#39;tbl&#39; and &#39;data.frame&#39;:    4384 obs. of  4 variables:

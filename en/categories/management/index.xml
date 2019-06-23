@@ -52,7 +52,7 @@ if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
 if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
 
 
-#load libraries
+#load packages
 library(tidyverse)
 library(fs)
 library(readxl)&lt;/code&gt;&lt;/pre&gt;
@@ -74,7 +74,7 @@ read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import third sheet
-read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;, 3)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
 ##    date                   ta    yr
 ##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -92,17 +92,17 @@ read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;,3)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The &lt;code&gt;excel_sheets()&lt;/code&gt; function can extract the names of the sheets.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-path%&amp;gt;%
+path %&amp;gt;%
   excel_sheets()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The results are the sheet names and we find the years from 2000 to 2005. The most important function to read multiple sheets is &lt;code&gt;map()&lt;/code&gt; of the &lt;em&gt;{purrr}&lt;/em&gt; package, which is part of the &lt;em&gt;{tidyverse]&lt;/em&gt; collection. &lt;code&gt;map()&lt;/code&gt; allows you to apply a function to each element of a vector or list.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map(read_excel,
-           path=path)
+           path = path)
         
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 6
@@ -133,11 +133,11 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The result is a named list with the name of each sheet that contains the data.frame. Since it is the same table in all sheets, we could use the function &lt;code&gt;bind_rows()&lt;/code&gt;, however, there is a variant of &lt;code&gt;map()&lt;/code&gt; that directly joins all the tables by row: &lt;code&gt;map_df()&lt;/code&gt;. If it were necessary to join by column, &lt;code&gt;map_dfc()&lt;/code&gt; could be used.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map_df(read_excel,
-           path=path)
+           path = path)
 
 mad&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
@@ -157,12 +157,12 @@ mad&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In our case we have a column in each sheet (year, but also the date) that differentiates each table. If it were not the case, we should use the name of the sheets as a new column when joining all of them. In &lt;code&gt;bind_rows()&lt;/code&gt; it can be done with the &lt;em&gt;.id&lt;/em&gt; argument by assigning a name for the column. The same works for &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
 
-mad &amp;lt;- path%&amp;gt;%
-        excel_sheets()%&amp;gt;%
-        set_names()%&amp;gt;%
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
        map_df(read_excel,
-           path=path,
-           .id=&amp;quot;yr2&amp;quot;)
+           path = path,
+           .id = &amp;quot;yr2&amp;quot;)
 
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
@@ -176,11 +176,11 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.en.html    index.en.Rmd     
 ## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we can filter the files that we want
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We import the two Excel files.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#without joining
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
   map(read_excel)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
 ## # A tibble: 366 x 3
@@ -214,8 +214,8 @@ dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
 ## 10 2000-01-10 00:00:00   4.8  2000
 ## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining with a new id column
-dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
-  map_df(read_excel,.id=&amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
+  map_df(read_excel, .id = &amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
 ##    city             date                   ta    yr
 ##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -232,14 +232,14 @@ dir_ls(regexp=&amp;quot;xlsx&amp;quot;)%&amp;gt;%
 ## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;However, in this case we only import the first sheet of each Excel file. To solve this problem, we must create our own function. In this function we do what we previously did individually.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
-  path%&amp;gt;%
+  path %&amp;gt;%
     excel_sheets() %&amp;gt;% 
     set_names() %&amp;gt;% 
   map_df(read_excel, path = path)
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We apply our created function to import multiple sheets of several Excel files.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#separately
-data &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+data &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
            map(read_multiple_excel)
 
 str(data)&lt;/code&gt;&lt;/pre&gt;
@@ -253,9 +253,9 @@ str(data)&lt;/code&gt;&lt;/pre&gt;
 ##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
 ##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining all data.frames
-data_df &amp;lt;- dir_ls(regexp=&amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+data_df &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
            map_df(read_multiple_excel,
-                  .id=&amp;quot;city&amp;quot;)
+                  .id = &amp;quot;city&amp;quot;)
 
 str(data_df)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:

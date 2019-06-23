@@ -602,7 +602,7 @@
 
 
 <p>This year, the so-called <em>warming stripes</em>, which were created by the scientist <a href="https://twitter.com/ed_hawkins?lang=es">Ed Hawkins</a> of the University of Reading, became very famous all over the world. These graphs represent and communicate climate change in a very illustrative and effective way.</p>
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Visualising global temperature change since records began in 1850. Versions for USA, central England &amp; Toronto available too: <a href="https://t.co/H5Hv9YgZ7v">https://t.co/H5Hv9YgZ7v</a> <a href="https://t.co/YMzdySrr3A">pic.twitter.com/YMzdySrr3A</a></p>&mdash; Ed Hawkins (@ed_hawkins) <a href="https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw">May 23, 2018</a></blockquote>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Visualising global temperature change since records began in 1850. Versions for USA, central England &amp; Toronto available too: <a href="https://t.co/H5Hv9YgZ7v">https://t.co/H5Hv9YgZ7v</a> <a href="https://t.co/YMzdySrr3A">pic.twitter.com/YMzdySrr3A</a></p>&mdash; Ed Hawkins #ShowYourStripes (@ed_hawkins) <a href="https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw">May 23, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
 
 <p>From his idea, I created strips for examples of Spain, like the next one in Madrid.</p>
@@ -617,7 +617,7 @@
 if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
 
-#libraries
+#packages
 library(tidyverse)
 library(lubridate)
 library(RColorBrewer)
@@ -668,10 +668,10 @@ str(temp_lisboa)</code></pre>
 ##   .. )</code></pre>
 <p>We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values <em>999.9</em> with <code>NA</code>, using the <code>ifelse( )</code> function that evaluates a condition and perform the given argument corresponding to true and false.</p>
 <pre class="r"><code>#select only the annual temperature and year column
-temp_lisboa_yr &lt;- select(temp_lisboa,YEAR,metANN)
+temp_lisboa_yr &lt;- select(temp_lisboa, YEAR, metANN)
 
 #rename the temperature column
-temp_lisboa_yr &lt;- rename(temp_lisboa_yr,ta=metANN)
+temp_lisboa_yr &lt;- rename(temp_lisboa_yr, ta = metANN)
 
 #missing values 999.9
 summary(temp_lisboa_yr) </code></pre>
@@ -682,9 +682,9 @@ summary(temp_lisboa_yr) </code></pre>
 ##  Mean   :1949   Mean   : 37.38  
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90</code></pre>
-<pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr,ta=ifelse(ta==999.9,NA,ta))</code></pre>
+<pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))</code></pre>
 <p>When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library <em>lubridate</em> and the support functions inside of <em>ggplot2</em>. The <code>str_c( )</code> function of the library <em>stringr</em>, part of the collection of <em>tidyverse</em>, is similar to <code>paste( )</code> of R Base that allows us to combine characters by specifying a separator (sep = “-”). The <code>ymd( )</code> (year month day) function of the <em>lubridate</em> library converts a date character into a <em>Date</em> object. It is possible to combine several functions using the <em>pipe operator</em> <code>%&gt;%</code> that helps to chain without assigning the result to a new object. Its use is very extended especially with the library <em>tidyverse</em>. If you want to know more about its use, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> you have a tutorial.</p>
-<pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr,date=str_c(YEAR,&quot;01-01&quot;,sep=&quot;-&quot;)%&gt;%ymd())</code></pre>
+<pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &quot;01-01&quot;, sep = &quot;-&quot;) %&gt;% ymd())</code></pre>
 </div>
 <div id="creating-the-strips" class="section level2">
 <h2>Creating the strips</h2>
@@ -693,15 +693,15 @@ summary(temp_lisboa_yr) </code></pre>
                  theme(axis.text.y = element_blank(),
                        axis.line.y = element_blank(),
                        axis.title = element_blank(),
-                       panel.grid.major=element_blank(),
+                       panel.grid.major = element_blank(),
                        legend.title = element_blank(),
-                       axis.text.x=element_text(vjust=3),
-                       panel.grid.minor=element_blank(),
-                        plot.title=element_text(size=14,face=&quot;bold&quot;)
+                       axis.text.x = element_text(vjust = 3),
+                       panel.grid.minor = element_blank(),
+                        plot.title = element_text(size = 14, face = &quot;bold&quot;)
                        )
 
 
-col_strip &lt;- brewer.pal(11,&quot;RdBu&quot;)
+col_strip &lt;- brewer.pal(11, &quot;RdBu&quot;)
 
 brewer.pal.info</code></pre>
 <pre><code>##          maxcolors category colorblind
@@ -742,27 +742,27 @@ brewer.pal.info</code></pre>
 ## YlOrRd           9      seq       TRUE</code></pre>
 <p>For the final graphic we use the geometry <code>geom_tile( )</code>. Since the data does not have a specific value for the Y axis, we need a <em>dummy</em> value, here I used 1. Also, I adjust the width of the color bar in the legend.</p>
 <pre class="r"><code>     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile()+
            scale_x_date(date_breaks = &quot;6 years&quot;,
                      date_labels = &quot;%Y&quot;,
-                     expand=c(0,0))+
-           scale_y_continuous(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
-             guides(fill=guide_colorbar(barwidth = 1))+
-            labs(title=&quot;LISBOA 1880-2018&quot;,
-                caption=&quot;Datos: GISS Surface Temperature Analysis&quot;)+
+                     expand = c(0, 0))+
+           scale_y_continuous(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+             guides(fill = guide_colorbar(barwidth = 1))+
+            labs(title = &quot;LISBOA 1880-2018&quot;,
+                caption = &quot;Datos: GISS Surface Temperature Analysis&quot;)+
               theme_strip</code></pre>
 <p><img src="/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-7-1.png" width="1152" /></p>
 <p>In case we want to get only the strips, we can use <code>theme_void( )</code> and the argument <em>show.legend = FALSE</em> in <code>geom_tile( )</code> to remove all style elements. We can also change the color for the <code>NA</code> values, including the argument <em>na.value = “gray70”</em> in the <code>scale_fill_gradientn( )</code> function.</p>
 <pre class="r"><code>     ggplot(temp_lisboa_yr,
-             aes(x=date,y=1,fill=ta))+
+             aes(x = date, y = 1, fill = ta))+
         geom_tile(show.legend = FALSE)+
            scale_x_date(date_breaks = &quot;6 years&quot;,
                      date_labels = &quot;%Y&quot;,
-                     expand=c(0,0))+
-           scale_y_discrete(expand=c(0,0))+
-           scale_fill_gradientn(colors=rev(col_strip))+
+                     expand = c(0, 0))+
+           scale_y_discrete(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()</code></pre>
 <p><img src="/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png" width="1152" /></p>
 </div>
