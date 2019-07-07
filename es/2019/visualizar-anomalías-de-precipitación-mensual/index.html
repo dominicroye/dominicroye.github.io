@@ -668,7 +668,7 @@ library(lubridate)</code></pre>
 </div>
 <div id="preparar-los-datos" class="section level2">
 <h2>Preparar los datos</h2>
-<p>Primero importamos la precipitación diaria de la estación meteorológica seleccionada (<a href="./files/RR_STAID001394.txt">descarga</a>). Usaremos datos de Santiago de Compostela (España) accesible a través de <a href="eca.knmi.nl">ECA&amp;D</a>.</p>
+<p>Primero importamos la precipitación diaria de la estación meteorológica seleccionada (<a href="/files/RR_STAID001394.txt">descarga</a>). Usaremos datos de Santiago de Compostela (España) accesible a través de <a href="https://eca.knmi.nl">ECA&amp;D</a>.</p>
 <div id="paso-1-importar-los-datos" class="section level3">
 <h3>Paso 1: importar los datos</h3>
 <p>No sólo importamos los datos en formato <em>csv</em>, sino también hacemos los primeros cambios. Saltamos las primeras 21 filas que contienen información sobre la estación meteorológica. Además, convertimos la fecha a clase <code>date</code> y reemplazamos valores ausentes (-9999) por <code>NA</code>. La precipitación está en 0.1 mm, por tanto, debemos dividir los valores por 10. Después seleccionamos las columnas <em>DATE</em> y <em>RR</em>, y las renombramos.</p>

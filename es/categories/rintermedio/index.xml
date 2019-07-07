@@ -68,7 +68,7 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preparar los datos&lt;/h2&gt;
-&lt;p&gt;Primero importamos la precipitación diaria de la estación meteorológica seleccionada (&lt;a href=&#34;./files/RR_STAID001394.txt&#34;&gt;descarga&lt;/a&gt;). Usaremos datos de Santiago de Compostela (España) accesible a través de &lt;a href=&#34;eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Primero importamos la precipitación diaria de la estación meteorológica seleccionada (&lt;a href=&#34;/files/RR_STAID001394.txt&#34;&gt;descarga&lt;/a&gt;). Usaremos datos de Santiago de Compostela (España) accesible a través de &lt;a href=&#34;https://eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
 &lt;p&gt;No sólo importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, sino también hacemos los primeros cambios. Saltamos las primeras 21 filas que contienen información sobre la estación meteorológica. Además, convertimos la fecha a clase &lt;code&gt;date&lt;/code&gt; y reemplazamos valores ausentes (-9999) por &lt;code&gt;NA&lt;/code&gt;. La precipitación está en 0.1 mm, por tanto, debemos dividir los valores por 10. Después seleccionamos las columnas &lt;em&gt;DATE&lt;/em&gt; y &lt;em&gt;RR&lt;/em&gt;, y las renombramos.&lt;/p&gt;

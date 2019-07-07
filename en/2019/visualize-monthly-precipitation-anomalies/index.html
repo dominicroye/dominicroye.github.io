@@ -668,7 +668,7 @@ library(lubridate)</code></pre>
 </div>
 <div id="preparing-the-data" class="section level2">
 <h2>Preparing the data</h2>
-<p>First we import the daily precipitation of the selected weather station (<a href="./files/RR_STAID001394.txt">download</a>). We will use data from Santiago de Compostela (Spain) accessible through <a href="eca.knmi.nl">ECA&amp;D</a>.</p>
+<p>First we import the daily precipitation of the selected weather station (<a href="/files/RR_STAID001394.txt">download</a>). We will use data from Santiago de Compostela (Spain) accessible through <a href="https://eca.knmi.nl">ECA&amp;D</a>.</p>
 <div id="step-1-import-the-data" class="section level3">
 <h3>Step 1: import the data</h3>
 <p>We not only import the data in <em>csv</em> format, but we also make the first changes. We skip the first 21 rows that contain information about the weather station. In addition, we convert the date to the <code>date</code> class and replace missing values (-9999) with <code>NA</code>. The precipitation is given in 0.1 mm, therefore, we must divide the values by 10. Then we select the columns <em>DATE</em> and <em>RR</em>, and rename them.</p>

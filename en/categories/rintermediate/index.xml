@@ -68,7 +68,7 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparing-the-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preparing the data&lt;/h2&gt;
-&lt;p&gt;First we import the daily precipitation of the selected weather station (&lt;a href=&#34;./files/RR_STAID001394.txt&#34;&gt;download&lt;/a&gt;). We will use data from Santiago de Compostela (Spain) accessible through &lt;a href=&#34;eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;First we import the daily precipitation of the selected weather station (&lt;a href=&#34;/files/RR_STAID001394.txt&#34;&gt;download&lt;/a&gt;). We will use data from Santiago de Compostela (Spain) accessible through &lt;a href=&#34;https://eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;step-1-import-the-data&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Step 1: import the data&lt;/h3&gt;
 &lt;p&gt;We not only import the data in &lt;em&gt;csv&lt;/em&gt; format, but we also make the first changes. We skip the first 21 rows that contain information about the weather station. In addition, we convert the date to the &lt;code&gt;date&lt;/code&gt; class and replace missing values (-9999) with &lt;code&gt;NA&lt;/code&gt;. The precipitation is given in 0.1 mm, therefore, we must divide the values by 10. Then we select the columns &lt;em&gt;DATE&lt;/em&gt; and &lt;em&gt;RR&lt;/em&gt;, and rename them.&lt;/p&gt;
