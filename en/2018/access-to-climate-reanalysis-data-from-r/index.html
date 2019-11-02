@@ -763,6 +763,11 @@ ggplot(df)+
 <div id="era-interim" class="section level1">
 <h1><span class="header-section-number">3</span> ERA-Interim</h1>
 <p>The <em>ECMWF</em> offers access to its public databases from a <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. It is required to be registered on the <em>ECMWF</em> website. You can register <a href="https://apps.ecmwf.int/registration/">here</a>. When dealing with another programming language, in R we have to use an interface between both which allows the library <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
+<div class="alert alert-note">
+  <p>Recently a new package called <code>ecmwfr</code> has been published that facilitates accessing the Copernicus and ECMWF APIs. The major advantage is that it is not necessary to install <code>python</code>. More details <a href="https://github.com/khufkens/ecmwfr">here</a>.</p>
+
+</div>
+
 <div id="installation" class="section level2">
 <h2><span class="header-section-number">3.1</span> Installation</h2>
 <pre class="r"><code>if(!require(&quot;reticulate&quot;)) install.packages(&quot;reticulate&quot;)
@@ -774,8 +779,6 @@ library(ncdf4)</code></pre>
 <p>Once we have installed <em>anaconda</em> and the package <em>reticulate</em>, we can install the library <em>python ecmwfapi</em>. We can carry out the installation, or through the Windows CMD using the command <em>conda install -c conda-forge ecmwf-api-client</em>, or with the R function <code>py_install( )</code> from the <em>reticulate</em> package. The same function allows us to install any <em>python</em> library from R.</p>
 <pre class="r"><code>#install the python ECMWF API
 py_install(&quot;ecmwf-api-client&quot;)</code></pre>
-<pre><code>## 
-## Installation complete.</code></pre>
 </div>
 <div id="connection-and-download-with-the-ecmwf-api" class="section level2">
 <h2><span class="header-section-number">3.2</span> Connection and download with the ECMWF API</h2>
@@ -799,14 +802,8 @@ ecmwf &lt;- import(&#39;ecmwfapi&#39;)
 #for this step there must exist the file .ecmwfapirc
 server = ecmwf$ECMWFDataServer() #start the connection</code></pre>
 <p>One we get here, how do we create a query? The easiest thing is to go to the website of <a href="http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/"><em>ECMWF</em></a>, where we choose the database, in this case <em>ERA-Interim</em> surface, to create a script with all the necessary data. More details about the syntax can be found <a href="https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax">here</a>. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in <em>python</em>.</p>
-<div class="figure">
-<img src="/img/erainterim1.png" />
-
-</div>
-<div class="figure">
-<img src="/img/erainterim2.png" />
-
-</div>
+<p><img src="/img/erainterim1.png" /></p>
+<p><img src="/img/erainterim2.png" /></p>
 <p>With the syntax of the script from the <em>MARS Request</em>, we can create the query in R.</p>
 <pre class="r"><code>#we create the query
 query &lt;-r_to_py(list(
@@ -926,7 +923,7 @@ library(tidyverse)
 library(reticulate)
 
 #install the CDS API
-conda_install(&quot;r-reticulate&quot;,&quot;cdsapi&quot;,pip=TRUE)</code></pre>
+conda_install(&quot;r-reticulate&quot;,&quot;cdsapi&quot;, pip=TRUE)</code></pre>
 <p>To be able to access the API, a requirement is to create a file with the user’s information.</p>
 <p>The “.cdsapirc” file must contain the following information:</p>
 <pre><code>

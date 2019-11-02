@@ -617,25 +617,25 @@
 
 <div id="TOC">
 <ul>
-<li><a href="#introduccion"><span class="toc-section-number">1</span> Introducción</a></li>
+<li><a href="#introducción"><span class="toc-section-number">1</span> Introducción</a></li>
 <li><a href="#ncep"><span class="toc-section-number">2</span> NCEP</a><ul>
 <li><a href="#paquetes"><span class="toc-section-number">2.1</span> Paquetes</a></li>
 <li><a href="#descarga-de-datos"><span class="toc-section-number">2.2</span> Descarga de datos</a></li>
 <li><a href="#promedio-mensual"><span class="toc-section-number">2.3</span> Promedio mensual</a></li>
-<li><a href="#visualizacion"><span class="toc-section-number">2.4</span> Visualización</a></li>
+<li><a href="#visualización"><span class="toc-section-number">2.4</span> Visualización</a></li>
 </ul></li>
 <li><a href="#era-interim"><span class="toc-section-number">3</span> ERA-Interim</a><ul>
-<li><a href="#instalacion"><span class="toc-section-number">3.1</span> Instalación</a></li>
-<li><a href="#conexion-y-descarga-con-la-ecmwf-api"><span class="toc-section-number">3.2</span> Conexión y descarga con la ECMWF API</a></li>
+<li><a href="#instalación"><span class="toc-section-number">3.1</span> Instalación</a></li>
+<li><a href="#conexión-y-descarga-con-la-ecmwf-api"><span class="toc-section-number">3.2</span> Conexión y descarga con la ECMWF API</a></li>
 <li><a href="#procesar-ncdf"><span class="toc-section-number">3.3</span> Procesar ncdf</a></li>
 </ul></li>
-<li><a href="#actualizacion-para-acceder-era-5"><span class="toc-section-number">4</span> Actualización para acceder ERA-5</a></li>
+<li><a href="#actualización-para-acceder-era-5"><span class="toc-section-number">4</span> Actualización para acceder ERA-5</a></li>
 </ul>
 </div>
 
 <p><em>Un amigo me propuso que presentara los niveles de aprendizaje de R como categorías. Una idea que ahora introduzco para cada entrada del blog. Hay tres niveles: elemental, intermedio y avanzado. Espero que ayude al lector y al usuario R.</em></p>
 <hr />
-<div id="introduccion" class="section level1">
+<div id="introducción" class="section level1">
 <h1><span class="header-section-number">1</span> Introducción</h1>
 <p>En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son <a href="https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2">NCEP-DO</a> (Reanalysis II) de la <em>NOAA/OAR/ESRL</em>, una versión mejorada de <em>NCEP-NCAR</em> (Reanalysis I), y <em>ERA-Interim</em> del <a href="https://www.ecmwf.int/en/research/climate-reanalysis">ECMWF</a>. Dado que <em>NCEP-DO</em> es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente <em>ERA-Interim</em>. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar <a href="https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses">aquí</a>. Primero vamos a ver cómo acceder a los datos del <em>NCEP</em> a través de un paquete de R en <em>CRAN</em> que facilita la descarga y el manejo de los datos. Después haremos lo mismo con <em>ERA-Interim</em>, no obstante, para acceder a este último dataset de reanálisis es necesario usar <em>python</em> y la correspondiente API del <em>ECMWF</em>.</p>
 </div>
@@ -713,7 +713,7 @@ data_month &lt;- aperm(
 dim(data_month) #temperatura 850haP por mes enero a diciembre</code></pre>
 <pre><code>## [1] 13 33 12</code></pre>
 </div>
-<div id="visualizacion" class="section level2">
+<div id="visualización" class="section level2">
 <h2><span class="header-section-number">2.4</span> Visualización</h2>
 <p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> del paquetes <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
 <pre class="r"><code>#primero creamos todas las combinaciones de lonlat
@@ -763,7 +763,12 @@ ggplot(df)+
 <div id="era-interim" class="section level1">
 <h1><span class="header-section-number">3</span> ERA-Interim</h1>
 <p>El <em>ECMWF</em> ofrece acceso a sus bases de datos públicos a partir de una <a href="https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets"><em>pyhton-API</em></a>. Es necesario estar registrado en la web del <em>ECMWF</em>. Se puede darse de alta <a href="https://apps.ecmwf.int/registration/">aquí</a>. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite el paquete <a href="https://github.com/rstudio/reticulate"><em>reticulate</em></a>. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar <a href="https://www.anaconda.com/download/">anaconda</a>.</p>
-<div id="instalacion" class="section level2">
+<div class="alert alert-note">
+  <p>Recientemente se ha publicado un nuevo paquete <code>ecmwfr</code> que facilita el acceso a los APIs de Copernicus y ECMWF. La gran ventaja es que no hace falta instalar <code>python</code>. Más detalles <a href="https://github.com/khufkens/ecmwfr">aquí</a>.</p>
+
+</div>
+
+<div id="instalación" class="section level2">
 <h2><span class="header-section-number">3.1</span> Instalación</h2>
 <pre class="r"><code>if(!require(&quot;reticulate&quot;)) install.packages(&quot;reticulate&quot;)
 if(!require(&quot;ncdf4&quot;)) install.packages(&quot;ncdf4&quot;) #para manejar formato netCDF
@@ -774,10 +779,8 @@ library(ncdf4)</code></pre>
 <p>Una vez que tenemos instalado <em>anaconda</em> y el paquete <em>reticulate</em>, podemos instalar el paquete <em>python ecmwfapi</em>. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando <em>conda install -c conda-forge ecmwf-api-client</em>, o bien con la función <code>py_install( )</code> del paquete <em>reticulate</em>. La misma función permite instalar cualquier librería <em>python</em> desde R.</p>
 <pre class="r"><code>#instalamos la API ECMWF
 py_install(&quot;ecmwf-api-client&quot;)</code></pre>
-<pre><code>## 
-## Installation complete.</code></pre>
 </div>
-<div id="conexion-y-descarga-con-la-ecmwf-api" class="section level2">
+<div id="conexión-y-descarga-con-la-ecmwf-api" class="section level2">
 <h2><span class="header-section-number">3.2</span> Conexión y descarga con la ECMWF API</h2>
 <p>Para poder acceder a la API es requisito crear un archivo con la información del usuario.</p>
 <p>El archivo “.ecmwfapirc” debe contener la siguiente información:</p>
@@ -799,14 +802,8 @@ ecmwf &lt;- import(&#39;ecmwfapi&#39;)
 #en este paso debe existir el archivo .ecmwfapirc
 server = ecmwf$ECMWFDataServer() #iniciamos la conexión</code></pre>
 <p>Llegados a este punto, ¿cómo creamos una consulta? Lo más fácil es ir a la web del <a href="http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/"><em>ECMWF</em></a> dónde elegimos la base de datos, en este caso <em>ERA-Interim</em> en superficie, para crear un script con todos los datos necesarios. Más detalles sobre la sintaxis podemos encontrar <a href="https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax">aquí</a>. Cuando procedemos en la web sólamente tenemos que hacer click en “View MARS Request”. Este paso nos lleva al script en <em>python</em>.</p>
-<div class="figure">
-<img src="/img/erainterim1.png" />
-
-</div>
-<div class="figure">
-<img src="/img/erainterim2.png" />
-
-</div>
+<p><img src="/img/erainterim1.png" /></p>
+<p><img src="/img/erainterim2.png" /></p>
 <p>Con la sintaxis del script que nos da la <em>MARS Request</em> podemos crear la consulta en R.</p>
 <pre class="r"><code>#creamos la consulta
 query &lt;-r_to_py(list(
@@ -909,7 +906,7 @@ df &lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&gt;%
 <p><img src="/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 </div>
-<div id="actualizacion-para-acceder-era-5" class="section level1">
+<div id="actualización-para-acceder-era-5" class="section level1">
 <h1><span class="header-section-number">4</span> Actualización para acceder ERA-5</h1>
 <p>Recientemente el nuevo reanálisis ERA-5 con <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview"><em>single level</em></a> o <a href="https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview"><em>pressure level</em></a> fue puesto a disposición de los usarios. Es la quinta generación del European Centre for Medium-Range Weather Forecasts (ECMWF) y accesible a través de una nueva API de Copernicus. El nuevo reanálisis ERA-5 tiene una cobertura temporal desde 1950 hasta la actualidad a una resolución horizontal de 30km a nivel mundial, con 137 niveles desde la superficie hasta una altura de 80km. Una diferencia importante con respecto al ERA-Interim anterior es la resolución temporal con datos horarios.</p>
 <p>El acceso cambia a la infrastructura de Climate Data Store (CDS) con su propia API. Es posible descargar directamente desde la página o usando la Python API en una forma similar a la ya presentada en este post. Sin embargo, existen ligeras diferencias que voy a explicar a continuación.</p>

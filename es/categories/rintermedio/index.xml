@@ -639,25 +639,25 @@ str(data_df)&lt;/code&gt;&lt;/pre&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introduccion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#introducción&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#paquetes&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#descarga-de-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#promedio-mensual&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Promedio mensual&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#visualizacion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualización&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#era-interim&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#instalacion&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#conexion-y-descarga-con-la-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#instalación&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#conexión-y-descarga-con-la-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#procesar-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#actualizacion-para-acceder-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#actualización-para-acceder-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;/div&gt;
 
 &lt;p&gt;&lt;em&gt;Un amigo me propuso que presentara los niveles de aprendizaje de R como categorías. Una idea que ahora introduzco para cada entrada del blog. Hay tres niveles: elemental, intermedio y avanzado. Espero que ayude al lector y al usuario R.&lt;/em&gt;&lt;/p&gt;
 &lt;hr /&gt;
-&lt;div id=&#34;introduccion&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;introducción&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/h1&gt;
 &lt;p&gt;En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) de la &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, una versión mejorada de &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), y &lt;em&gt;ERA-Interim&lt;/em&gt; del &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;ECMWF&lt;/a&gt;. Dado que &lt;em&gt;NCEP-DO&lt;/em&gt; es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente &lt;em&gt;ERA-Interim&lt;/em&gt;. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;aquí&lt;/a&gt;. Primero vamos a ver cómo acceder a los datos del &lt;em&gt;NCEP&lt;/em&gt; a través de un paquete de R en &lt;em&gt;CRAN&lt;/em&gt; que facilita la descarga y el manejo de los datos. Después haremos lo mismo con &lt;em&gt;ERA-Interim&lt;/em&gt;, no obstante, para acceder a este último dataset de reanálisis es necesario usar &lt;em&gt;python&lt;/em&gt; y la correspondiente API del &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
 &lt;/div&gt;
@@ -735,7 +735,7 @@ data_month &amp;lt;- aperm(
 dim(data_month) #temperatura 850haP por mes enero a diciembre&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 13 33 12&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;visualizacion&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;visualización&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/h2&gt;
 &lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; del paquetes &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#primero creamos todas las combinaciones de lonlat
@@ -785,7 +785,12 @@ ggplot(df)+
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
 &lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite el paquete &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;instalacion&#34; class=&#34;section level2&#34;&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Recientemente se ha publicado un nuevo paquete &lt;code&gt;ecmwfr&lt;/code&gt; que facilita el acceso a los APIs de Copernicus y ECMWF. La gran ventaja es que no hace falta instalar &lt;code&gt;python&lt;/code&gt;. Más detalles &lt;a href=&#34;https://github.com/khufkens/ecmwfr&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;div id=&#34;instalación&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
 if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quot;) #para manejar formato netCDF
@@ -796,10 +801,8 @@ library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Una vez que tenemos instalado &lt;em&gt;anaconda&lt;/em&gt; y el paquete &lt;em&gt;reticulate&lt;/em&gt;, podemos instalar el paquete &lt;em&gt;python ecmwfapi&lt;/em&gt;. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, o bien con la función &lt;code&gt;py_install( )&lt;/code&gt; del paquete &lt;em&gt;reticulate&lt;/em&gt;. La misma función permite instalar cualquier librería &lt;em&gt;python&lt;/em&gt; desde R.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos la API ECMWF
 py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Installation complete.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;conexion-y-descarga-con-la-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;conexión-y-descarga-con-la-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/h2&gt;
 &lt;p&gt;Para poder acceder a la API es requisito crear un archivo con la información del usuario.&lt;/p&gt;
 &lt;p&gt;El archivo “.ecmwfapirc” debe contener la siguiente información:&lt;/p&gt;
@@ -821,14 +824,8 @@ ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
 #en este paso debe existir el archivo .ecmwfapirc
 server = ecmwf$ECMWFDataServer() #iniciamos la conexión&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Llegados a este punto, ¿cómo creamos una consulta? Lo más fácil es ir a la web del &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt; dónde elegimos la base de datos, en este caso &lt;em&gt;ERA-Interim&lt;/em&gt; en superficie, para crear un script con todos los datos necesarios. Más detalles sobre la sintaxis podemos encontrar &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;aquí&lt;/a&gt;. Cuando procedemos en la web sólamente tenemos que hacer click en “View MARS Request”. Este paso nos lleva al script en &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
-
-&lt;/div&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Con la sintaxis del script que nos da la &lt;em&gt;MARS Request&lt;/em&gt; podemos crear la consulta en R.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos la consulta
 query &amp;lt;-r_to_py(list(
@@ -931,7 +928,7 @@ df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp
 &lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;actualizacion-para-acceder-era-5&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;actualización-para-acceder-era-5&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/h1&gt;
 &lt;p&gt;Recientemente el nuevo reanálisis ERA-5 con &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;&lt;em&gt;single level&lt;/em&gt;&lt;/a&gt; o &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview&#34;&gt;&lt;em&gt;pressure level&lt;/em&gt;&lt;/a&gt; fue puesto a disposición de los usarios. Es la quinta generación del European Centre for Medium-Range Weather Forecasts (ECMWF) y accesible a través de una nueva API de Copernicus. El nuevo reanálisis ERA-5 tiene una cobertura temporal desde 1950 hasta la actualidad a una resolución horizontal de 30km a nivel mundial, con 137 niveles desde la superficie hasta una altura de 80km. Una diferencia importante con respecto al ERA-Interim anterior es la resolución temporal con datos horarios.&lt;/p&gt;
 &lt;p&gt;El acceso cambia a la infrastructura de Climate Data Store (CDS) con su propia API. Es posible descargar directamente desde la página o usando la Python API en una forma similar a la ya presentada en este post. Sin embargo, existen ligeras diferencias que voy a explicar a continuación.&lt;/p&gt;

@@ -788,6 +788,11 @@ ggplot(df)+
 &lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
 &lt;p&gt;The &lt;em&gt;ECMWF&lt;/em&gt; offers access to its public databases from a &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. It is required to be registered on the &lt;em&gt;ECMWF&lt;/em&gt; website. You can register &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;here&lt;/a&gt;. When dealing with another programming language, in R we have to use an interface between both which allows the library &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Recently a new package called &lt;code&gt;ecmwfr&lt;/code&gt; has been published that facilitates accessing the Copernicus and ECMWF APIs. The major advantage is that it is not necessary to install &lt;code&gt;python&lt;/code&gt;. More details &lt;a href=&#34;https://github.com/khufkens/ecmwfr&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+
 &lt;div id=&#34;installation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/h2&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
@@ -799,8 +804,6 @@ library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install( )&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the python ECMWF API
 py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-## Installation complete.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;connection-and-download-with-the-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/h2&gt;
@@ -824,14 +827,8 @@ ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
 #for this step there must exist the file .ecmwfapirc
 server = ecmwf$ECMWFDataServer() #start the connection&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;One we get here, how do we create a query? The easiest thing is to go to the website of &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;, where we choose the database, in this case &lt;em&gt;ERA-Interim&lt;/em&gt; surface, to create a script with all the necessary data. More details about the syntax can be found &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;here&lt;/a&gt;. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;
-
-&lt;/div&gt;
-&lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;
-
-&lt;/div&gt;
+&lt;p&gt;&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;With the syntax of the script from the &lt;em&gt;MARS Request&lt;/em&gt;, we can create the query in R.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create the query
 query &amp;lt;-r_to_py(list(
@@ -951,7 +948,7 @@ library(tidyverse)
 library(reticulate)
 
 #install the CDS API
-conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;,pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
+conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;, pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To be able to access the API, a requirement is to create a file with the user’s information.&lt;/p&gt;
 &lt;p&gt;The “.cdsapirc” file must contain the following information:&lt;/p&gt;
 &lt;pre&gt;&lt;code&gt;
