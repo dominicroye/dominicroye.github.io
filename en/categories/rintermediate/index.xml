@@ -5,7 +5,7 @@
     <link>/en/categories/rintermediate/</link>
     <description>Recent content in R:intermediate on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>&amp;copy; 2018-2019 Dominic Royé. All rights reserved.</copyright>
+    <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sun, 07 Jul 2019 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/rintermediate/index.xml" rel="self" type="application/rss+xml" />
@@ -138,7 +138,7 @@ data &amp;lt;- mutate(data,
                anom = (prs*100/pr_ref)-100, 
                date = str_c(yr, as.numeric(mo), 1, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd(),
                sign= ifelse(anom &amp;gt; 0, &amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We can do a first test graph of anomalies (the classic one), for that we filter the year 2018. In this case we use a bar graph, remember that by default the function &lt;code&gt;geom_bar()&lt;/code&gt; applies the counting of the variable. However, in this case we know &lt;code&gt;y&lt;/code&gt;, hence we indicate with the argument &lt;code&gt;stat = &amp;quot;identity&amp;quot;&lt;/code&gt; that it should use the given value in &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;We can do a first test graph of anomalies (the classic one), for that we filter the year 2018. In this case we use a bar graph, remember that by default the function &lt;code&gt;geom_bar()&lt;/code&gt; applies the counting of the variable. However, in this case we know &lt;code&gt;y&lt;/code&gt;, hence we indicate with the argument &lt;code&gt;stat = &#34;identity&#34;&lt;/code&gt; that it should use the given value in &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(data, yr == 2018) %&amp;gt;%
    ggplot(aes(date, anom, fill = sign)) + 
        geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 

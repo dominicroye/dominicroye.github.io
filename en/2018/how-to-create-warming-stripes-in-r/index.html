@@ -631,7 +631,8 @@
 <p>In this post I will show how you can create these strips in R with the library <em>ggplot2</em>. Although I must say that there are many ways in R that can lead us to the same result or to a similar one, even within <em>ggplot2</em>.</p>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>In this case we will use the annual temperatures of Lisbon <a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a>, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded <a href="/files/temp_lisboa.csv">here</a>. First, we should, as long as we have not done it, install the collection of <em>tidyverse</em> libraries that also include <em>ggplot2</em>. In addition, we will need the library <em>lubridate</em> for the treatment of dates. Then, we import the data of Lisbon in csv format.</p>
+<p>In this case we will use the annual temperatures of Lisbon
+<a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a>, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded <a href="/files/temp_lisboa.csv">here</a>. First, we should, as long as we have not done it, install the collection of <em>tidyverse</em> libraries that also include <em>ggplot2</em>. In addition, we will need the library <em>lubridate</em> for the treatment of dates. Then, we import the data of Lisbon in csv format.</p>
 <pre class="r"><code>#install the lubridate and tidyverse libraries
 if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
@@ -702,12 +703,14 @@ summary(temp_lisboa_yr) </code></pre>
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90</code></pre>
 <pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))</code></pre>
-<p>When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library <em>lubridate</em> and the support functions inside of <em>ggplot2</em>. The <code>str_c( )</code> function of the library <em>stringr</em>, part of the collection of <em>tidyverse</em>, is similar to <code>paste( )</code> of R Base that allows us to combine characters by specifying a separator (sep = “-”). The <code>ymd( )</code> (year month day) function of the <em>lubridate</em> library converts a date character into a <em>Date</em> object. It is possible to combine several functions using the <em>pipe operator</em> <code>%&gt;%</code> that helps to chain without assigning the result to a new object. Its use is very extended especially with the library <em>tidyverse</em>. If you want to know more about its use, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> you have a tutorial.</p>
+<p>When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library <em>lubridate</em> and the support functions inside of <em>ggplot2</em>. The <code>str_c( )</code> function of the library <em>stringr</em>, part of the collection of <em>tidyverse</em>, is similar to <code>paste( )</code> of R Base that allows us to combine characters by specifying a separator (sep = “-”). The <code>ymd( )</code> (year month day) function of the <em>lubridate</em> library converts a date character into a <em>Date</em> object. It is possible to combine several functions
+using the <em>pipe operator</em> <code>%&gt;%</code> that helps to chain without assigning the result to a new object. Its use is very extended especially with the library <em>tidyverse</em>. If you want to know more about its use, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> you have a tutorial.</p>
 <pre class="r"><code>temp_lisboa_yr &lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &quot;01-01&quot;, sep = &quot;-&quot;) %&gt;% ymd())</code></pre>
 </div>
 <div id="creating-the-strips" class="section level2">
 <h2>Creating the strips</h2>
-<p>First, we create the style of the graph, specifying all the arguments of the theme we want to adjust. We start with the default style of <code>theme_minimal( )</code>. In addition, we assign the colors from <em>RColorBrewer</em> to an object <em>col_srip</em>. More information about the colors used <a href="http://colorbrewer2.org">here</a>.</p>
+<p>First, we create the style of the graph, specifying all the arguments of the theme we want to adjust. We start with the default style of <code>theme_minimal( )</code>. In addition, we assign
+the colors from <em>RColorBrewer</em> to an object <em>col_srip</em>. More information about the colors used <a href="http://colorbrewer2.org">here</a>.</p>
 <pre class="r"><code>theme_strip &lt;- theme_minimal()+
                  theme(axis.text.y = element_blank(),
                        axis.line.y = element_blank(),
@@ -948,7 +951,7 @@ brewer.pal.info</code></pre>
   
 
   <p class="powered-by">
-    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

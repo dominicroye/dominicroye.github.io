@@ -738,7 +738,7 @@ data &lt;- mutate(data,
                anom = (prs*100/pr_ref)-100, 
                date = str_c(yr, as.numeric(mo), 1, sep = &quot;-&quot;) %&gt;% ymd(),
                sign= ifelse(anom &gt; 0, &quot;pos&quot;, &quot;neg&quot;))</code></pre>
-<p>We can do a first test graph of anomalies (the classic one), for that we filter the year 2018. In this case we use a bar graph, remember that by default the function <code>geom_bar()</code> applies the counting of the variable. However, in this case we know <code>y</code>, hence we indicate with the argument <code>stat = &quot;identity&quot;</code> that it should use the given value in <code>aes()</code>.</p>
+<p>We can do a first test graph of anomalies (the classic one), for that we filter the year 2018. In this case we use a bar graph, remember that by default the function <code>geom_bar()</code> applies the counting of the variable. However, in this case we know <code>y</code>, hence we indicate with the argument <code>stat = "identity"</code> that it should use the given value in <code>aes()</code>.</p>
 <pre class="r"><code>filter(data, yr == 2018) %&gt;%
    ggplot(aes(date, anom, fill = sign)) + 
        geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) + 
@@ -1118,7 +1118,7 @@ p</code></pre>
   
 
   <p class="powered-by">
-    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

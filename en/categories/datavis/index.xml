@@ -5,7 +5,7 @@
     <link>/en/categories/datavis/</link>
     <description>Recent content in datavis on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>&amp;copy; 2018-2019 Dominic Royé. All rights reserved.</copyright>
+    <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Wed, 05 Dec 2018 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/datavis/index.xml" rel="self" type="application/rss+xml" />
@@ -31,7 +31,8 @@
 &lt;p&gt;In this post I will show how you can create these strips in R with the library &lt;em&gt;ggplot2&lt;/em&gt;. Although I must say that there are many ways in R that can lead us to the same result or to a similar one, even within &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
 &lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data&lt;/h2&gt;
-&lt;p&gt;In this case we will use the annual temperatures of Lisbon &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt;, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;here&lt;/a&gt;. First, we should, as long as we have not done it, install the collection of &lt;em&gt;tidyverse&lt;/em&gt; libraries that also include &lt;em&gt;ggplot2&lt;/em&gt;. In addition, we will need the library &lt;em&gt;lubridate&lt;/em&gt; for the treatment of dates. Then, we import the data of Lisbon in csv format.&lt;/p&gt;
+&lt;p&gt;In this case we will use the annual temperatures of Lisbon
+&lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt;, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;here&lt;/a&gt;. First, we should, as long as we have not done it, install the collection of &lt;em&gt;tidyverse&lt;/em&gt; libraries that also include &lt;em&gt;ggplot2&lt;/em&gt;. In addition, we will need the library &lt;em&gt;lubridate&lt;/em&gt; for the treatment of dates. Then, we import the data of Lisbon in csv format.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the lubridate and tidyverse libraries
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
@@ -102,12 +103,14 @@ summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
 ##  3rd Qu.:1984   3rd Qu.: 16.70  
 ##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library &lt;em&gt;lubridate&lt;/em&gt; and the support functions inside of &lt;em&gt;ggplot2&lt;/em&gt;. The &lt;code&gt;str_c( )&lt;/code&gt; function of the library &lt;em&gt;stringr&lt;/em&gt;, part of the collection of &lt;em&gt;tidyverse&lt;/em&gt;, is similar to &lt;code&gt;paste( )&lt;/code&gt; of R Base that allows us to combine characters by specifying a separator (sep = “-”). The &lt;code&gt;ymd( )&lt;/code&gt; (year month day) function of the &lt;em&gt;lubridate&lt;/em&gt; library converts a date character into a &lt;em&gt;Date&lt;/em&gt; object. It is possible to combine several functions using the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; that helps to chain without assigning the result to a new object. Its use is very extended especially with the library &lt;em&gt;tidyverse&lt;/em&gt;. If you want to know more about its use, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; you have a tutorial.&lt;/p&gt;
+&lt;p&gt;When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library &lt;em&gt;lubridate&lt;/em&gt; and the support functions inside of &lt;em&gt;ggplot2&lt;/em&gt;. The &lt;code&gt;str_c( )&lt;/code&gt; function of the library &lt;em&gt;stringr&lt;/em&gt;, part of the collection of &lt;em&gt;tidyverse&lt;/em&gt;, is similar to &lt;code&gt;paste( )&lt;/code&gt; of R Base that allows us to combine characters by specifying a separator (sep = “-”). The &lt;code&gt;ymd( )&lt;/code&gt; (year month day) function of the &lt;em&gt;lubridate&lt;/em&gt; library converts a date character into a &lt;em&gt;Date&lt;/em&gt; object. It is possible to combine several functions
+using the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; that helps to chain without assigning the result to a new object. Its use is very extended especially with the library &lt;em&gt;tidyverse&lt;/em&gt;. If you want to know more about its use, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; you have a tutorial.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;creating-the-strips&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Creating the strips&lt;/h2&gt;
-&lt;p&gt;First, we create the style of the graph, specifying all the arguments of the theme we want to adjust. We start with the default style of &lt;code&gt;theme_minimal( )&lt;/code&gt;. In addition, we assign the colors from &lt;em&gt;RColorBrewer&lt;/em&gt; to an object &lt;em&gt;col_srip&lt;/em&gt;. More information about the colors used &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;First, we create the style of the graph, specifying all the arguments of the theme we want to adjust. We start with the default style of &lt;code&gt;theme_minimal( )&lt;/code&gt;. In addition, we assign
+the colors from &lt;em&gt;RColorBrewer&lt;/em&gt; to an object &lt;em&gt;col_srip&lt;/em&gt;. More information about the colors used &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_strip &amp;lt;- theme_minimal()+
                  theme(axis.text.y = element_blank(),
                        axis.line.y = element_blank(),
@@ -218,7 +221,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Background&lt;/h2&gt;
 &lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
-&lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;Simkin and Hastie (1987)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
+&lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;(&lt;span class=&#34;citeproc-not-found&#34; data-reference-id=&#34;Simkin1987&#34;&gt;&lt;strong&gt;???&lt;/strong&gt;&lt;/span&gt;)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
 &lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
@@ -376,18 +379,10 @@ title=&amp;quot;&amp;quot;,
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
 )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(Robbins 2013)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;span class=&#34;citeproc-not-found&#34; data-reference-id=&#34;Robbins2013&#34;&gt;&lt;strong&gt;???&lt;/strong&gt;&lt;/span&gt;)&lt;/span&gt;.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;references&#34; class=&#34;section level3 unnumbered&#34;&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;References&lt;/h3&gt;
-&lt;div id=&#34;refs&#34; class=&#34;references&#34;&gt;
-&lt;div id=&#34;ref-Robbins2013&#34;&gt;
-&lt;p&gt;Robbins, Naomi B. 2013. &lt;em&gt;Creating More Effective Graphs. a Succinct and Highly Readable Guide to Creating Effective Graph.&lt;/em&gt; Chart House.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ref-Simkin1987&#34;&gt;
-&lt;p&gt;Simkin, D, and R Hastie. 1987. “An Information-Processing Analysis of Graph Perception.” &lt;em&gt;Journal of the American Statistical Association&lt;/em&gt; 82 (398): 454–65.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

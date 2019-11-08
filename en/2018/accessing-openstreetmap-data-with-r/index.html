@@ -632,7 +632,8 @@
 
 <p>How can you obtain this data?</p>
 <p>Well, in this case I used points of interest (POIs) from the database of <em>Open Street Maps</em> (OSM). Obviously OSM not only contains streets and highways, but also information that can be useful when we use a map such as locations of hospitals or gas stations. To avoid downloading the entire OSM and extracting the required information, you can use an <em>overpass API</em>, which allows us to query the OSM database with our own criteria.</p>
-<p>An easy way to access an <em>overpass API</em> is through <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous web can be found <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">here</a>. However, we have at our disposal a package <em>osmdata</em> that allows us to create and make queries directly from the R environment. Nevertheless, the use of the <em>overpass-turbo.eu</em> can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.</p>
+<p>An easy way to access an <em>overpass API</em> is through <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous web can be found <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">here</a>.
+However, we have at our disposal a package <em>osmdata</em> that allows us to create and make queries directly from the R environment. Nevertheless, the use of the <em>overpass-turbo.eu</em> can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.</p>
 </div>
 <div id="accessing-the-overpass-api-from-r" class="section level2">
 <h2>Accessing the overpass API from R</h2>
@@ -651,14 +652,15 @@ library(ggmap)</code></pre>
 </div>
 <div id="build-a-query" class="section level2">
 <h2>Build a query</h2>
-<p>Before creating a query, we need to know what we can filter. The <code>available_features( )</code> function returns a list of available OSM features that have different tags. More details are available in the OSM <em>wiki</em> <a href="https://wiki.openstreetmap.org/wiki/Map_Features">here</a>. For example, the feature <em>shop</em> contains several tags among others <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
+<p>Before creating a query, we need to know what we can filter. The <code>available_features( )</code> function returns a list of available OSM features that have different tags. More details are available in the OSM <em>wiki</em> <a href="https://wiki.openstreetmap.org/wiki/Map_Features">here</a>.
+For example, the feature <em>shop</em> contains several tags among others <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
 <pre class="r"><code>#the first five features
 head(available_features())</code></pre>
 <pre><code>## [1] &quot;4wd only&quot;  &quot;abandoned&quot; &quot;abutters&quot;  &quot;access&quot;    &quot;addr&quot;      &quot;addr:city&quot;</code></pre>
 <pre class="r"><code>#amenities
 head(available_tags(&quot;amenity&quot;))</code></pre>
-<pre><code>## [1] &quot;animal boarding&quot; &quot;animal shelter&quot;  &quot;archive&quot;         &quot;arts centre&quot;    
-## [5] &quot;atm&quot;             &quot;baby hatch&quot;</code></pre>
+<pre><code>## [1] &quot;animal boarding&quot; &quot;animal shelter&quot;  &quot;arts centre&quot;     &quot;atm&quot;            
+## [5] &quot;baby hatch&quot;      &quot;baking oven&quot;</code></pre>
 <pre class="r"><code>#shops
 head(available_tags(&quot;shop&quot;))</code></pre>
 <pre><code>## [1] &quot;agrarian&quot;  &quot;alcohol&quot;   &quot;anime&quot;     &quot;antiques&quot;  &quot;appliance&quot; &quot;art&quot;</code></pre>
@@ -684,7 +686,7 @@ cinema</code></pre>
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &#39;sf&#39; Simple Features Collection with 195 points
+##            $osm_points : &#39;sf&#39; Simple Features Collection with 196 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
@@ -911,7 +913,7 @@ ggplot(mercadona$osm_points)+
   
 
   <p class="powered-by">
-    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

@@ -718,7 +718,7 @@ iceland</code></pre>
 <pre class="r"><code>#here Iceland
 plot(iceland)</code></pre>
 <p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<p>By default, the <code>plot( )</code> function with the class <em>sf</em> creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name <code>plot(iceland[&quot;admin&quot;])</code> or the limit argument <code>plot(iceland, max.plot = 1)</code>. With the argument <em>max.plot = 1</em> the function uses the first available variable of the map.</p>
+<p>By default, the <code>plot( )</code> function with the class <em>sf</em> creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name <code>plot(iceland["admin"])</code> or the limit argument <code>plot(iceland, max.plot = 1)</code>. With the argument <em>max.plot = 1</em> the function uses the first available variable of the map.</p>
 <p>In addition, we see in the information of the object <em>sf</em> that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections <a href="http://spatialreference.org/ref/epsg/wgs-84/">here</a>. For that purpose, we use the <code>st_transform( )</code> function. We simply indicate the map and the EPSG code.</p>
 <pre class="r"><code>#transform to UTM
 iceland &lt;- st_transform(iceland, 3055)</code></pre>
@@ -782,14 +782,12 @@ ggplot(df, aes(X, Y, fill = dist))+ #variables
 <h2>Export the distance as a raster</h2>
 <p>To be able to export the estimated distance to the sea of Iceland, we need to use the <code>rasterize( )</code> function of the library <em>raster</em>.</p>
 <ol style="list-style-type: decimal">
-<li>First, it is necessary to create an empty raster. In this raster we have to indicate the resolution, in our case it is of 5000m, the projection and the extension of the raster.</li>
-</ol>
+<li><p>First, it is necessary to create an empty raster. In this raster we have to indicate the resolution, in our case it is of 5000m, the projection and the extension of the raster.</p>
 <ol style="list-style-type: lower-alpha">
 <li><p>We can extract the projection from the information of the map of Iceland.</p></li>
 <li><p>The extension can be extracted from our <em>grid</em> points with the function <code>extent( )</code>. However, this last function needs the class <em>sp</em>, so we pass the object <em>grid</em> in <em>sf</em> format, only for this time, to the class <em>sp</em> using the function <code>as( )</code> and the argument “Spatial”.</p></li>
-</ol>
-<ol start="2" style="list-style-type: decimal">
-<li>In addition to the above, the <em>data.frame</em> <strong>df</strong>, that we created earlier, has to be converted into the <em>sf</em> class. Therefore, we apply the function <code>st_as_sf( )</code> with the argument <em>coords</em> indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.</li>
+</ol></li>
+<li><p>In addition to the above, the <em>data.frame</em> <strong>df</strong>, that we created earlier, has to be converted into the <em>sf</em> class. Therefore, we apply the function <code>st_as_sf( )</code> with the argument <em>coords</em> indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.</p></li>
 </ol>
 <pre class="r"><code>#get the extension
 ext &lt;- extent(as(grid, &quot;Spatial&quot;))
@@ -996,7 +994,7 @@ plot(r)</code></pre>
   
 
   <p class="powered-by">
-    &copy; 2018-2019 Dominic Royé. All rights reserved. &middot; 
+    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

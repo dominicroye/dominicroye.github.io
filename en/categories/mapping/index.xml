@@ -5,7 +5,7 @@
     <link>/en/categories/mapping/</link>
     <description>Recent content in mapping on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>&amp;copy; 2018-2019 Dominic Royé. All rights reserved.</copyright>
+    <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sat, 03 Nov 2018 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/mapping/index.xml" rel="self" type="application/rss+xml" />
@@ -28,7 +28,8 @@
 
 &lt;p&gt;How can you obtain this data?&lt;/p&gt;
 &lt;p&gt;Well, in this case I used points of interest (POIs) from the database of &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviously OSM not only contains streets and highways, but also information that can be useful when we use a map such as locations of hospitals or gas stations. To avoid downloading the entire OSM and extracting the required information, you can use an &lt;em&gt;overpass API&lt;/em&gt;, which allows us to query the OSM database with our own criteria.&lt;/p&gt;
-&lt;p&gt;An easy way to access an &lt;em&gt;overpass API&lt;/em&gt; is through &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous web can be found &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;here&lt;/a&gt;. However, we have at our disposal a package &lt;em&gt;osmdata&lt;/em&gt; that allows us to create and make queries directly from the R environment. Nevertheless, the use of the &lt;em&gt;overpass-turbo.eu&lt;/em&gt; can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.&lt;/p&gt;
+&lt;p&gt;An easy way to access an &lt;em&gt;overpass API&lt;/em&gt; is through &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous web can be found &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;here&lt;/a&gt;.
+However, we have at our disposal a package &lt;em&gt;osmdata&lt;/em&gt; that allows us to create and make queries directly from the R environment. Nevertheless, the use of the &lt;em&gt;overpass-turbo.eu&lt;/em&gt; can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;accessing-the-overpass-api-from-r&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Accessing the overpass API from R&lt;/h2&gt;
@@ -47,14 +48,15 @@ library(ggmap)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;build-a-query&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Build a query&lt;/h2&gt;
-&lt;p&gt;Before creating a query, we need to know what we can filter. The &lt;code&gt;available_features( )&lt;/code&gt; function returns a list of available OSM features that have different tags. More details are available in the OSM &lt;em&gt;wiki&lt;/em&gt; &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/Map_Features&#34;&gt;here&lt;/a&gt;. For example, the feature &lt;em&gt;shop&lt;/em&gt; contains several tags among others &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
+&lt;p&gt;Before creating a query, we need to know what we can filter. The &lt;code&gt;available_features( )&lt;/code&gt; function returns a list of available OSM features that have different tags. More details are available in the OSM &lt;em&gt;wiki&lt;/em&gt; &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/Map_Features&#34;&gt;here&lt;/a&gt;.
+For example, the feature &lt;em&gt;shop&lt;/em&gt; contains several tags among others &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#the first five features
 head(available_features())&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#amenities
 head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal boarding&amp;quot; &amp;quot;animal shelter&amp;quot;  &amp;quot;archive&amp;quot;         &amp;quot;arts centre&amp;quot;    
-## [5] &amp;quot;atm&amp;quot;             &amp;quot;baby hatch&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal boarding&amp;quot; &amp;quot;animal shelter&amp;quot;  &amp;quot;arts centre&amp;quot;     &amp;quot;atm&amp;quot;            
+## [5] &amp;quot;baby hatch&amp;quot;      &amp;quot;baking oven&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#shops
 head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
@@ -80,7 +82,7 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 195 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 196 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
