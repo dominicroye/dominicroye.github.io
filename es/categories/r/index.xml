@@ -12,6 +12,275 @@
     
     
     <item>
+      <title>Distancias geográficas</title>
+      <link>/es/2019/distancias-geogr%C3%A1ficas/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2019/distancias-geogr%C3%A1ficas/</guid>
+      <description>
+
+
+&lt;p&gt;El primer post del año 2020, lo dedicaré a una consulta que me hicieron recientemente. Me plantearon la pregunta de cómo se podría calcular la distancia más corta entre diferentes puntos y cómo saber cúal es el punto más próximo. Cuando trabajamos con datos espaciales en R, en la actualidad lo más fácil es usar el paquete &lt;code&gt;sf&lt;/code&gt; en combinación con la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt;. Además usamos el paquete &lt;code&gt;units&lt;/code&gt; que es muy útil para trabajar con unidades de medida.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;units&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona unidades de medida para vectores R: conversión, derivación, simplificación&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;maps&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas geográficos y conjuntos de datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes necesarios
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;units&amp;quot;)) install.packages(&amp;quot;units&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;maps&amp;quot;)) install.packages(&amp;quot;maps&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# cargamos los paquetes
+library(maps)
+library(sf) 
+library(tidyverse)
+library(units)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;unidades-de-medida&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Unidades de medida&lt;/h2&gt;
+&lt;p&gt;El uso de vectores y matrices de clase &lt;code&gt;units&lt;/code&gt; nos permite calcular y transformar unidades de medida.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# longitud
+l &amp;lt;- set_units(1:10, m)
+l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##  [1]  1  2  3  4  5  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a otras unidades
+set_units(l, cm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  100  200  300  400  500  600  700  800  900 1000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sumar diferentes unidades
+set_units(l, cm) + l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  200  400  600  800 1000 1200 1400 1600 1800 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# area
+a &amp;lt;- set_units(355, ha)
+set_units(a, km2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 3.55 [km2]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# velocidad
+vel &amp;lt;- set_units(seq(20, 50, 10), km/h)
+set_units(vel, m/s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m/s]
+## [1]  5.555556  8.333333 11.111111 13.888889&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;capitales-del-mundo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Capitales del mundo&lt;/h2&gt;
+&lt;p&gt;Vamos a usar las capitales de todo el mundo con el objetivo de calcular la distancia a la capital más próxima y indicar el nombre de la ciudad.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# conjunto de ciudades del mundo con coordenadas
+head(world.cities) # proviene del paquete maps&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                 name country.etc   pop   lat  long capital
+## 1 &amp;#39;Abasan al-Jadidah   Palestine  5629 31.31 34.34       0
+## 2 &amp;#39;Abasan al-Kabirah   Palestine 18999 31.32 34.35       0
+## 3       &amp;#39;Abdul Hakim    Pakistan 47788 30.55 72.11       0
+## 4 &amp;#39;Abdullah-as-Salam      Kuwait 21817 29.36 47.98       0
+## 5              &amp;#39;Abud   Palestine  2456 32.03 35.07       0
+## 6            &amp;#39;Abwein   Palestine  3434 32.03 35.20       0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para convertir puntos con longitud y latitud en un objeto espacial de clase &lt;code&gt;sf&lt;/code&gt;, empleamos la función &lt;code&gt;st_as_sf()&lt;/code&gt;, indicando las columnas de las coordenadas y el sistema de referencia de coordenadas (WSG84, epsg:4326).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos los puntos en un objeto sf con CRS WSG84
+cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
+cities&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## First 10 features:
+##                  name  country.etc   pop capital            geometry
+## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
+## 2  &amp;#39;Abasan al-Kabirah    Palestine 18999       0 POINT (34.35 31.32)
+## 3        &amp;#39;Abdul Hakim     Pakistan 47788       0 POINT (72.11 30.55)
+## 4  &amp;#39;Abdullah-as-Salam       Kuwait 21817       0 POINT (47.98 29.36)
+## 5               &amp;#39;Abud    Palestine  2456       0 POINT (35.07 32.03)
+## 6             &amp;#39;Abwein    Palestine  3434       0  POINT (35.2 32.03)
+## 7            &amp;#39;Adadlay      Somalia  9198       0  POINT (44.65 9.77)
+## 8              &amp;#39;Adale      Somalia  5492       0   POINT (46.3 2.75)
+## 9               &amp;#39;Afak         Iraq 22706       0 POINT (45.26 32.07)
+## 10              &amp;#39;Afif Saudi Arabia 41731       0 POINT (42.93 23.92)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el próximo paso, simplemente filtramos por las capitales codificadas en la columna &lt;code&gt;capital&lt;/code&gt; con 1. La ventaja del paquete &lt;code&gt;sf&lt;/code&gt; es la posibilidad de aplicar funciones de la colección &lt;code&gt;tidyverse&lt;/code&gt; para manipular los atributos. Además, añadimos una columna con nuevas etiquetas usando la función &lt;code&gt;str_c()&lt;/code&gt; del paquete &lt;code&gt;stringr&lt;/code&gt;, la cúal es similar a la de &lt;em&gt;R Base&lt;/em&gt; &lt;code&gt;paste()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos por las capitales
+capitals &amp;lt;- filter(cities, capital == 1)
+
+# creamos una nueva etiqueta combinando nombre y país
+capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;quot;, country.etc, &amp;quot;)&amp;quot;))
+
+capitals &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## First 10 features:
+##           name          country.etc     pop capital               geometry
+## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
+## 2    Abu Dhabi United Arab Emirates  619316       1    POINT (54.37 24.48)
+## 3        Abuja              Nigeria  178462       1      POINT (7.17 9.18)
+## 4        Accra                Ghana 2029143       1      POINT (-0.2 5.56)
+## 5    Adamstown             Pitcairn      51       1  POINT (-130.1 -25.05)
+## 6  Addis Abeba             Ethiopia 2823167       1     POINT (38.74 9.03)
+## 7        Agana                 Guam    1041       1   POINT (144.75 13.47)
+## 8      Algiers              Algeria 2029936       1     POINT (3.04 36.77)
+## 9        Alofi                 Niue     627       1 POINT (-169.92 -19.05)
+## 10   Amsterdam          Netherlands  744159       1     POINT (4.89 52.37)
+##                        city_country
+## 1                   &amp;#39;Amman (Jordan)
+## 2  Abu Dhabi (United Arab Emirates)
+## 3                   Abuja (Nigeria)
+## 4                     Accra (Ghana)
+## 5              Adamstown (Pitcairn)
+## 6            Addis Abeba (Ethiopia)
+## 7                      Agana (Guam)
+## 8                 Algiers (Algeria)
+## 9                      Alofi (Niue)
+## 10          Amsterdam (Netherlands)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-distancias&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular distancias&lt;/h2&gt;
+&lt;p&gt;La distancia geográfica (euclidiana o de gran círculo) se calcula con la función &lt;code&gt;st_distance()&lt;/code&gt;, o bien entre dos puntos, entre un punto y otros múltiples o entre todos. En el último caso obtenemos una matriz simétrica de distancias (NxN), tomados por pares de un conjunto. En la diagonal encontramos las combinaciones entre los mismos puntos dando todas nulas.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;299&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;482&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;299&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;276&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;482&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;276&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Cuando queremos saber, por ejemplo, la distancia de Amsterdam a Abu Dhabi, Washington y Tokyo pasamos dos objetos espaciales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calcular la distancia
+dist_amsterdam &amp;lt;- st_distance(slice(capitals, 10), 
+                              slice(capitals, c(2, 220, 205)))
+
+dist_amsterdam # distancia en metros&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##         [,1]    [,2]    [,3]
+## [1,] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una matriz de una fila o de una columna (en función del orden de los objetos) con clase de &lt;code&gt;units&lt;/code&gt;. Así es posible cambiar fácilmente a otra unidad de medida. Si queremos obtener un vector sin clase &lt;code&gt;units&lt;/code&gt;, únicamente aplicamos la función &lt;code&gt;as.vector()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cambiamos de m a km
+set_units(dist_amsterdam, &amp;quot;km&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [km]
+##          [,1]     [,2]    [,3]
+## [1,] 5167.859 6203.802 9316.79&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# units class a vector
+as.vector(dist_amsterdam)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A continuación estimamos la matriz de distancia entre todas las capitales. Es importante convertir los valores nulos a &lt;code&gt;NA&lt;/code&gt; para obtener posteriormente el índice correcto de la matriz.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calcular la distancia
+m_distance &amp;lt;- st_distance(capitals)
+
+# matriz
+dim(m_distance)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 230 230&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cambiamos de m a km
+m_distance_km &amp;lt;- set_units(m_distance, km)
+
+# reemplazamos la distance de 0 con NA
+m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Cuando el resultado es de clase &lt;code&gt;units&lt;/code&gt; es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;p&gt;Con el objetivo de obtener la distancia más corta, además de la posición de la misma, usamos la función &lt;code&gt;apply()&lt;/code&gt; que a su vez nos permite aplicar la función &lt;code&gt;which.min()&lt;/code&gt; y &lt;code&gt;min()&lt;/code&gt; sobre cada fila. También sería posible emplear la función sobre columnas que daría el mismo resulado. Para finalizar, añadimos los resultados como nuevas columnas con la función &lt;code&gt;mutate()&lt;/code&gt;. Las posiciones en &lt;em&gt;pos&lt;/em&gt; nos permiten obtener los nombres de las ciudades más próximas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos la posición de la ciudad y la distancia
+pos &amp;lt;- apply(m_distance_km, 1, which.min)
+dist &amp;lt;- apply(m_distance_km, 1, min, na.rm = TRUE)
+
+# añadimos la distancia y obtenemos el nombre de la ciudad
+capitals &amp;lt;- mutate(capitals, nearest_city =  city_country[pos], 
+                             geometry_nearest = geometry[pos],
+                             distance_city = dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-distancias-a-la-próxima-capital&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa de distancias a la próxima capital&lt;/h2&gt;
+&lt;p&gt;Por último, construimos un mapa representando la distancia en circulos proporcionales. Para ello, usamos la gramática habitual de &lt;code&gt;ggplot()&lt;/code&gt; añadiendo la geometría &lt;code&gt;geom_sf()&lt;/code&gt;, primero para el mapamundi de fondo y después para los circulos de las ciudades. En &lt;code&gt;aes()&lt;/code&gt; indicamos con el argumento &lt;code&gt;size = distance_city&lt;/code&gt; la variable que debe ser mapeado proporcionalmente. La función &lt;code&gt;theme_void()&lt;/code&gt; elimina todos los elementos de estilo. Además, definimos con la función &lt;code&gt;coord_sf()&lt;/code&gt; una nueva proyección indicando el formato &lt;em&gt;proj4&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapamundi
+world &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;)
+
+# mapa 
+ggplot(world) +
+   geom_sf(fill = &amp;quot;black&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+   geom_sf(data = capitals, 
+           aes(size = distance_city),
+           alpha = 0.7,
+           fill = &amp;quot;#bd0026&amp;quot;,
+           shape = 21,
+           show.legend = &amp;#39;point&amp;#39;) +
+   coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
+  labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-01-19-distancia-geografica/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>distancia</category>
+      
+            <category>puntos</category>
+      
+            <category>ciudades</category>
+      
+      
+            <category>análisis espacial</category>
+      
+            <category>R</category>
+      
+            <category>R:principante</category>
+      
+            <category>gis</category>
+      
+    </item>
+    
+    <item>
       <title>Visualizar el crecimiento urbano</title>
       <link>/es/2019/visualizar-el-crecimiento-urbano/</link>
       <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
@@ -652,429 +921,6 @@ p&lt;/code&gt;&lt;/pre&gt;
             <category>R</category>
       
             <category>R:intermedio</category>
-      
-    </item>
-    
-    <item>
-      <title>Resumir tests de correlaciones en R</title>
-      <link>/es/2019/resumir-tests-de-correlaciones-en-r/</link>
-      <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
-      <description>
-
-
-&lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Paquetes&lt;/h2&gt;
-&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;broom&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Convierte resultados de funciones estadísticas (lm, t.test, cor.test, etc.) en bonitas tablas&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
-if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-
-#paquetes
-library(tidyverse)
-library(broom)
-library(fs)
-library(lubridate)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;importar-datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Importar datos&lt;/h2&gt;
-&lt;p&gt;Primero debemos importar la precipitación diaria de las estaciones meteorológicas seleccionadas.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Creamos un vector con todos los archivos de precipitación con la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;em&gt;{fs}&lt;/em&gt;.&lt;/li&gt;
-&lt;li&gt;Importamos los datos con ayuda de la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que aplica otra función a un vector o lista, y los une en una única tabla.&lt;/li&gt;
-&lt;li&gt;&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;Seleccionamos únicamente las columnas que nos interesan, b) Convertimos la fecha en objeto &lt;em&gt;date&lt;/em&gt; con la función &lt;code&gt;ymd()&lt;/code&gt; del paquete &lt;em&gt;{lubridate}&lt;/em&gt;, c) Creamos una nueva columna &lt;em&gt;yr&lt;/em&gt; con el año, d) Dividimos la precipitación entre 10 y reclasificamos valores ausentes -9999 por NA, e) Por último, reclasificamos la ID de cada estación meteorológica, creando un factor con nuevas etiquetas.&lt;/li&gt;
-&lt;/ol&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Más detalles sobre el uso de las funciones &lt;code&gt;dir_ls()&lt;/code&gt; y &lt;code&gt;map_df()&lt;/code&gt; en este último &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#archivos de la precipitación
-files &amp;lt;- dir_ls(regexp = &amp;quot;txt&amp;quot;)
-files&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
-## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
-pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 5
-##    STAID SOUID     DATE    RR  Q_RR
-##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1  1393 20611 19470301     0     0
-##  2  1393 20611 19470302     5     0
-##  3  1393 20611 19470303     0     0
-##  4  1393 20611 19470304    33     0
-##  5  1393 20611 19470305    15     0
-##  6  1393 20611 19470306     0     0
-##  7  1393 20611 19470307    85     0
-##  8  1393 20611 19470308     3     0
-##  9  1393 20611 19470309     0     0
-## 10  1393 20611 19470310     0     0
-## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos los niveles del factor 
-id &amp;lt;- unique(pr$STAID)
-
-#las etiquetas correspondientes
-lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;, &amp;quot;Santiago&amp;quot;, &amp;quot;Barcelona&amp;quot;, &amp;quot;Madrid&amp;quot;, &amp;quot;Valencia&amp;quot;)
-
-#primeros cambios
-pr &amp;lt;- select(pr, STAID, DATE, RR)%&amp;gt;% 
-        mutate(DATE = ymd(DATE), 
-               RR = ifelse(RR == -9999, NA, RR/10), 
-               STAID = factor(STAID, id, lab), 
-               yr = year(DATE)) 
-pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
-##    STAID  DATE          RR    yr
-##    &amp;lt;fct&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 Bilbao 1947-03-01   0    1947
-##  2 Bilbao 1947-03-02   0.5  1947
-##  3 Bilbao 1947-03-03   0    1947
-##  4 Bilbao 1947-03-04   3.3  1947
-##  5 Bilbao 1947-03-05   1.5  1947
-##  6 Bilbao 1947-03-06   0    1947
-##  7 Bilbao 1947-03-07   8.5  1947
-##  8 Bilbao 1947-03-08   0.3  1947
-##  9 Bilbao 1947-03-09   0    1947
-## 10 Bilbao 1947-03-10   0    1947
-## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Lo que todavía nos hace falta es filtrar y calcular la suma anual de precipitación. En principio, no es lo más correcto sumar la precipitación sin tener en cuenta que haya valores ausentes, pero nos sirve igualmente para este ensayo. Después, cambiamos el formato de la tabla con la función &lt;code&gt;spread()&lt;/code&gt;, pasando de una tabla larga a una ancha, es decir, queremos obtener una columna por estación meteorológica.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
-           group_by(STAID, yr) %&amp;gt;%
-             summarise(pr = sum(RR, na.rm = TRUE))
-pr_yr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
-## # Groups:   STAID [5]
-##    STAID     yr    pr
-##    &amp;lt;fct&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 Bilbao  1950 1342 
-##  2 Bilbao  1951 1306.
-##  3 Bilbao  1952 1355.
-##  4 Bilbao  1953 1372.
-##  5 Bilbao  1954 1428.
-##  6 Bilbao  1955 1062.
-##  7 Bilbao  1956 1254.
-##  8 Bilbao  1957  968.
-##  9 Bilbao  1958 1272.
-## 10 Bilbao  1959 1450.
-## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr, STAID, pr)
-pr_yr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
-##       yr Bilbao Santiago Barcelona Madrid Valencia
-##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950  1342     1800.      345     NA        NA
-##  2  1951  1306.    2344.     1072.   798.       NA
-##  3  1952  1355.    1973.      415.   524.       NA
-##  4  1953  1372.     973.      683.   365.       NA
-##  5  1954  1428.    1348.      581.   246.       NA
-##  6  1955  1062.    1769.      530.   473.       NA
-##  7  1956  1254.    1533.      695.   480.       NA
-##  8  1957   968.    1599.      635.   424.       NA
-##  9  1958  1272.    2658.      479.   482.       NA
-## 10  1959  1450.    2847.     1006    665.       NA
-## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
-telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
-## cols(
-##   yr = col_double(),
-##   NAO = col_double(),
-##   WeMO = col_double(),
-##   EA = col_double(),
-##   `POL-EUAS` = col_double(),
-##   `EATL/WRUS` = col_double(),
-##   MO = col_double(),
-##   SCAND = col_double(),
-##   AO = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 9
-##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND       AO
-##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950  0.49  0.555 -0.332     0.0217     -0.0567 0.335  0.301   -1.99e-1
-##  2  1951 -0.07  0.379 -0.372     0.402      -0.419  0.149 -0.00667 -3.65e-1
-##  3  1952 -0.37  0.693 -0.688    -0.0117     -0.711  0.282  0.0642  -6.75e-1
-##  4  1953  0.4  -0.213 -0.727    -0.0567     -0.0508 0.216  0.0233  -1.64e-2
-##  5  1954  0.51  1.20  -0.912     0.142      -0.318  0.386  0.458   -5.83e-4
-##  6  1955 -0.64  0.138 -0.824    -0.0267      0.154  0.134  0.0392  -3.62e-1
-##  7  1956  0.17  0.617 -1.29     -0.197       0.0617 0.256  0.302   -1.63e-1
-##  8  1957 -0.02  0.321 -0.952    -0.638      -0.167  0.322 -0.134   -3.42e-1
-##  9  1958  0.12  0.941 -0.243     0.138       0.661  0.296  0.279   -8.68e-1
-## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
-## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Por último nos falta unir ambas tablas por año.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
-data_all&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
-##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
-##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
-##  1  1950  1342     1800.      345     NA        NA  0.49  0.555 -0.332
-##  2  1951  1306.    2344.     1072.   798.       NA -0.07  0.379 -0.372
-##  3  1952  1355.    1973.      415.   524.       NA -0.37  0.693 -0.688
-##  4  1953  1372.     973.      683.   365.       NA  0.4  -0.213 -0.727
-##  5  1954  1428.    1348.      581.   246.       NA  0.51  1.20  -0.912
-##  6  1955  1062.    1769.      530.   473.       NA -0.64  0.138 -0.824
-##  7  1956  1254.    1533.      695.   480.       NA  0.17  0.617 -1.29 
-##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
-##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
-## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
-## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;test-de-correlacion&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Test de correlación&lt;/h2&gt;
-&lt;p&gt;Un test de correlación lo podemos hacer con la función &lt;code&gt;cor.test()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;. En este caso entre la precipitación anual de Bilbao y el índice de NAO.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
-                        method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
-## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-##  Spearman&amp;#39;s rank correlation rho
-## 
-## data:  data_all$Bilbao and data_all$NAO
-## S = 44372, p-value = 0.2126
-## alternative hypothesis: true rho is not equal to 0
-## sample estimates:
-##       rho 
-## 0.1531149&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## List of 8
-##  $ statistic  : Named num 44372
-##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##  $ parameter  : NULL
-##  $ p.value    : num 0.213
-##  $ estimate   : Named num 0.153
-##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##  $ null.value : Named num 0
-##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##  $ alternative: chr &amp;quot;two.sided&amp;quot;
-##  $ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##  $ data.name  : chr &amp;quot;data_all$Bilbao and data_all$NAO&amp;quot;
-##  - attr(*, &amp;quot;class&amp;quot;)= chr &amp;quot;htest&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Vemos que el resultado está en un formato poco manejable. Nos resume la correlación con todos los parametros estadísticos necesarios para sacar una conclusión sobre la relación. La estructura orginal es una lista de vectores. No obstante, la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt; nos permite convertir el resultado en formato de tabla.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 5
-##   estimate statistic p.value method                          alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;      
-## 1    0.153    44372.   0.213 Spearman&amp;#39;s rank correlation rho two.sided&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;aplicar-el-test-de-correlacion-a-multiples-variables&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Aplicar el test de correlación a múltiples variables&lt;/h2&gt;
-&lt;p&gt;El objetivo es aplicar el test de correlación a todas las estaciones meteorológicas e índices de teleconexión.&lt;/p&gt;
-&lt;p&gt;Primero, debemos pasar la tabla al formato largo, o sea, crear una columna de la ciudad y el valor de la precipitación correspondiente. Después lo repetimos para las teleconexiones.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all, city, pr, Bilbao:Valencia) %&amp;gt;%
-                     gather(telecon, index, NAO:AO)
-data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
-##       yr city      pr telecon index
-##    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;
-##  1  1950 Bilbao 1342  NAO      0.49
-##  2  1951 Bilbao 1306. NAO     -0.07
-##  3  1952 Bilbao 1355. NAO     -0.37
-##  4  1953 Bilbao 1372. NAO      0.4 
-##  5  1954 Bilbao 1428. NAO      0.51
-##  6  1955 Bilbao 1062. NAO     -0.64
-##  7  1956 Bilbao 1254. NAO      0.17
-##  8  1957 Bilbao  968. NAO     -0.02
-##  9  1958 Bilbao 1272. NAO      0.12
-## 10  1959 Bilbao 1450. NAO      0.49
-## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para poder aplicar el test a todas las ciudades, debemos tener las correspondientes agrupaciones. Por ello, usamos la función &lt;code&gt;group_by()&lt;/code&gt; indicando los dos grupos (&lt;em&gt;city&lt;/em&gt; y &lt;em&gt;telecon&lt;/em&gt;), y además, aplicamos la función &lt;code&gt;nest()&lt;/code&gt; del paquete &lt;em&gt;{tidyr}&lt;/em&gt;, colección &lt;em&gt;{tidyverse}&lt;/em&gt;, con el objetivo de crear listas de tablas encajadas por fila. En otras palabras, en cada fila de cada ciudad y teleconexión tendremos una nueva tabla que contiene correspondientemente el año, la precipitación y el valor del índice.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
-data_nest&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
-##    city      telecon data             
-##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
-##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
-##  $ city   : chr &amp;quot;Bilbao&amp;quot;
-##  $ telecon: chr &amp;quot;NAO&amp;quot;
-##  $ data   :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
-##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El siguiente paso es crear una función, en la que definimos el test de correlación y lo pasamos al formato limpio, que aplicamos a cada agrupación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method=&amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ahora sólo nos queda por aplicar nuestra función a la columna que contiene las tablas por cada combinación entre ciudad y teleconexión. Para ello, usamos la función &lt;code&gt;map()&lt;/code&gt; que aplica otra función sobre un vector o lista. Lo que hacemos es crear una nueva columna que contiene el resultado, una tabla del resumen estadístico, por cada fila de cada combinación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
-data_nest&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
-##    city      telecon data              model           
-##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
-##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
-##  $ city   : chr &amp;quot;Bilbao&amp;quot;
-##  $ telecon: chr &amp;quot;NAO&amp;quot;
-##  $ data   :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
-##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##  $ model  :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 1 obs. of  5 variables:
-##   .. ..$ estimate   : num 0.153
-##   .. ..$ statistic  : num 44372
-##   .. ..$ p.value    : num 0.213
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;¿Cómo podemos deshacer la lista de tablas en cada fila de nuestra tabla?&lt;/p&gt;
-&lt;p&gt;Pues bien, primero eliminamos la columna con los datos y después aplicamos simplemente la función &lt;code&gt;unnest()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()
-corr_pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
-##    city    telecon estimate statistic  p.value method           alternative
-##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;      
-##  1 Bilbao  NAO       0.153     44372. 0.213    Spearman&amp;#39;s rank~ two.sided  
-##  2 Santia~ NAO      -0.181     61902. 0.139    Spearman&amp;#39;s rank~ two.sided  
-##  3 Barcel~ NAO      -0.0203    53460. 0.869    Spearman&amp;#39;s rank~ two.sided  
-##  4 Madrid  NAO      -0.291     64692. 0.0169   Spearman&amp;#39;s rank~ two.sided  
-##  5 Valenc~ NAO      -0.113     27600. 0.422    Spearman&amp;#39;s rank~ two.sided  
-##  6 Bilbao  WeMO      0.404     31242. 0.000706 Spearman&amp;#39;s rank~ two.sided  
-##  7 Santia~ WeMO      0.332     35014. 0.00594  Spearman&amp;#39;s rank~ two.sided  
-##  8 Barcel~ WeMO      0.0292    50862  0.813    Spearman&amp;#39;s rank~ two.sided  
-##  9 Madrid  WeMO      0.109     44660  0.380    Spearman&amp;#39;s rank~ two.sided  
-## 10 Valenc~ WeMO     -0.252     31056. 0.0688   Spearman&amp;#39;s rank~ two.sided  
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El resultado es una tabla en la que podemos ver las correlaciones y su significación estadística para cada ciudad y teleconexiones.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;heatmap-de-los-resultados&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Heatmap de los resultados&lt;/h2&gt;
-&lt;p&gt;Finalmente, hacemos un &lt;em&gt;heatmap&lt;/em&gt; del resultado obtenido. Antes creamos una columna que indica si la correlación es significativa con p-valor menor de 0,05.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr, sig = ifelse(p.value &amp;lt; 0.05, &amp;quot;Sig.&amp;quot;, &amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
-  geom_tile(data = corr_pr,
-            aes(city, telecon, fill = estimate),
-            size = 1,
-            colour = &amp;quot;white&amp;quot;)+
-  geom_tile(data = filter(corr_pr, sig == &amp;quot;Sig.&amp;quot;),
-            aes(city, telecon),
-            size = 1,
-            colour = &amp;quot;black&amp;quot;,
-            fill = &amp;quot;transparent&amp;quot;)+
-  geom_text(data = corr_pr,
-            aes(city, telecon, label = round(estimate, 2),
-            fontface = ifelse(sig == &amp;quot;Sig.&amp;quot;, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)))+
-  scale_fill_gradient2(breaks = seq(-1, 1, 0.2))+
-  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;, p.value = &amp;quot;&amp;quot;)+
-  theme_minimal()+
-  theme(panel.grid.major = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank(),
-        axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-04-17-resumir-tests-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>correlación</category>
-      
-            <category>variables</category>
-      
-            <category>resumir</category>
-      
-            <category>tests</category>
-      
-            <category>limpio</category>
-      
-      
-            <category>estadistica</category>
-      
-            <category>R</category>
-      
-            <category>R:avanzado</category>
       
     </item>
     

@@ -715,7 +715,7 @@ dim(data_month) #temperatura 850haP por mes enero a diciembre</code></pre>
 </div>
 <div id="visualización" class="section level2">
 <h2><span class="header-section-number">2.4</span> Visualización</h2>
-<p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> del paquetes <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales (en el futuro haré un post sobre sf and ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
+<p>Ahora, podemos visualizar con <em>ggplot2</em> la temperatura de enero y julio. En este ejemplo, uso <code>geom_sf( )</code> del paquetes <a href="https://github.com/r-spatial/sf"><em>sf</em></a>, que hace el trabajo más fácil para visualizar en <em>ggplot</em> objetos espaciales (en el futuro haré un post sobre sf y ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función <code>expand.grid( )</code>.</p>
 <pre class="r"><code>#primero creamos todas las combinaciones de lonlat
 lonlat &lt;- expand.grid(lon=lon,lat=lat)
 
