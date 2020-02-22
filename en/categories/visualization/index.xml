@@ -701,8 +701,8 @@ head(available_features())&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#amenities
 head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal boarding&amp;quot; &amp;quot;animal shelter&amp;quot;  &amp;quot;arts centre&amp;quot;     &amp;quot;atm&amp;quot;            
-## [5] &amp;quot;baby hatch&amp;quot;      &amp;quot;baking oven&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal_boarding&amp;quot; &amp;quot;animal_shelter&amp;quot;  &amp;quot;arts_centre&amp;quot;     &amp;quot;atm&amp;quot;            
+## [5] &amp;quot;baby_hatch&amp;quot;      &amp;quot;baking_oven&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#shops
 head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
@@ -711,8 +711,8 @@ head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To build the query, we use the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt;, which helps to chain several functions without assigning the result to a new object. Its use is very extended especially within the &lt;em&gt;tidyverse&lt;/em&gt; package collection. If you want to know more about its use, you can find &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; a tutorial.&lt;/p&gt;
 &lt;p&gt;In the first part of the query we need to indicate the place where we want to extract the information. The &lt;code&gt;getbb( )&lt;/code&gt; function creates a boundering box for a given place, looking for the name. The main function is &lt;code&gt;opq( )&lt;/code&gt; which build the final query. We add our filter criteria with the &lt;code&gt;add_osm_feature( )&lt;/code&gt; function. In this first query we will look for cinemas in Madrid. That’s why we use as key &lt;em&gt;amenity&lt;/em&gt; and &lt;em&gt;cinema&lt;/em&gt; as tag. There are several formats to obtain the resulting spatial data of the query. The &lt;code&gt;osmdata_*( )&lt;/code&gt; function sends the query to the server and, depending on the suffix * sf/sp/xml, returns a &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; or &lt;em&gt;XML&lt;/em&gt; format.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#building the query
-q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;)%&amp;gt;%
-      opq()%&amp;gt;%
+q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
+      opq() %&amp;gt;%
        add_osm_feature(&amp;quot;amenity&amp;quot;, &amp;quot;cinema&amp;quot;)
 
 str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
@@ -728,7 +728,7 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 196 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 197 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
@@ -738,46 +738,43 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The advantage of &lt;em&gt;sf&lt;/em&gt; objects is that for &lt;em&gt;ggplot2&lt;/em&gt; already exists a geometry function &lt;code&gt;geom_sf( )&lt;/code&gt;. Furthermore, we can include a background map using &lt;em&gt;ggmap&lt;/em&gt;. The &lt;code&gt;get_map( )&lt;/code&gt; function downloads the map for a given place. Alternatively, it can be an address, latitude/longitude or a bounding box. The &lt;em&gt;maptype&lt;/em&gt; argument allows us to indicate the style or type of map. You can find more details in the help of the &lt;code&gt;?get_map&lt;/code&gt; function.&lt;/p&gt;
 &lt;p&gt;When we build a graph with &lt;em&gt;ggplot&lt;/em&gt; we usually start with &lt;code&gt;ggplot( )&lt;/code&gt;. In this case, we start with &lt;code&gt;ggmap( )&lt;/code&gt; that includes the object with our background map. Then we add with &lt;code&gt;geom_sf( )&lt;/code&gt; the points of the cinemas in Madrid. It is important to indicate with the argument &lt;em&gt;inherit.aes = FALSE&lt;/em&gt; that it has to use the &lt;em&gt;aesthetic mappings&lt;/em&gt; of the spatial object &lt;em&gt;osm_points&lt;/em&gt;. In addition, we change the color, fill, transparency (&lt;em&gt;alpha&lt;/em&gt;), type and size of the circles.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#our background map
-mad_map &amp;lt;- get_map(getbb(&amp;quot;Madrid&amp;quot;),maptype = &amp;quot;toner-background&amp;quot;)
+mad_map &amp;lt;- get_map(getbb(&amp;quot;Madrid&amp;quot;), maptype = &amp;quot;toner-background&amp;quot;)
 
 #final map
 ggmap(mad_map)+
-  geom_sf(data=cinema$osm_points,
-          inherit.aes =FALSE,
-          colour=&amp;quot;#238443&amp;quot;,
-          fill=&amp;quot;#004529&amp;quot;,
-          alpha=.5,
-          size=4,
-          shape=21)+
-  labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+  geom_sf(data = cinema$osm_points,
+          inherit.aes = FALSE,
+          colour = &amp;quot;#238443&amp;quot;,
+          fill = &amp;quot;#004529&amp;quot;,
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-11-03-accessing-osm-data-with-r/index.en_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;where-can-we-find-mercadona-supermarkets&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Where can we find Mercadona supermarkets?&lt;/h3&gt;
-&lt;p&gt;Instead of obtaining a bounding box with the function &lt;em&gt;getbb( )&lt;/em&gt; we can build our own box. To do this, we create a matrix of two columns, the order has to be East/West/South/North. In the query we use two features: &lt;em&gt;name&lt;/em&gt; and &lt;em&gt;shop&lt;/em&gt; to filter supermarkets that are of this particular brand. Depending on the area or volume of the query, it is necessary to extend the waiting time. By default, the limit is set at 25 seconds (&lt;em&gt;timeout&lt;/em&gt;).&lt;/p&gt;
-&lt;p&gt;The map, we create in this case, consists only of the supermarket points. Therefore, we use the usual grammar by adding the geometry &lt;code&gt;geom_sf( )&lt;/code&gt;. The &lt;code&gt;theme_void( )&lt;/code&gt; function removes everything except for the points. By default, the object &lt;em&gt;sf&lt;/em&gt; in &lt;em&gt;ggplot&lt;/em&gt; creates reticles, that can be removed using the &lt;code&gt;coord_sf( )&lt;/code&gt; function with the argument &lt;em&gt;datum = NA&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;Instead of obtaining a bounding box with the function &lt;em&gt;getbb( )&lt;/em&gt; we can build our own box. To do this, we create a vector of four elements, the order has to be West/South/East/North. In the query we use two features: &lt;em&gt;name&lt;/em&gt; and &lt;em&gt;shop&lt;/em&gt; to filter supermarkets that are of this particular brand. Depending on the area or volume of the query, it is necessary to extend the waiting time. By default, the limit is set at 25 seconds (&lt;em&gt;timeout&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;The map, we create in this case, consists only of the supermarket points. Therefore, we use the usual grammar by adding the geometry &lt;code&gt;geom_sf( )&lt;/code&gt;. The &lt;code&gt;theme_void( )&lt;/code&gt; function removes everything except for the points.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#bounding box for the Iberian Peninsula
-m &amp;lt;- matrix(c(-10,5,30,46),ncol=2,byrow=TRUE)
-row.names(m) &amp;lt;- c(&amp;quot;x&amp;quot;,&amp;quot;y&amp;quot;)
-names(m) &amp;lt;- c(&amp;quot;min&amp;quot;,&amp;quot;max&amp;quot;)
+m &amp;lt;- c(-10, 30, 5, 46)
 
 #building the query
 q &amp;lt;- m %&amp;gt;% 
-      opq (timeout=25*100) %&amp;gt;%
-         add_osm_feature(&amp;quot;name&amp;quot;,&amp;quot;Mercadona&amp;quot;)%&amp;gt;%
-         add_osm_feature(&amp;quot;shop&amp;quot;,&amp;quot;supermarket&amp;quot;)
+      opq (timeout = 25*100) %&amp;gt;%
+         add_osm_feature(&amp;quot;name&amp;quot;, &amp;quot;Mercadona&amp;quot;) %&amp;gt;%
+         add_osm_feature(&amp;quot;shop&amp;quot;, &amp;quot;supermarket&amp;quot;)
 
 #query
 mercadona &amp;lt;- osmdata_sf(q)
 
 #final map
 ggplot(mercadona$osm_points)+
-  geom_sf(colour=&amp;quot;#08519c&amp;quot;,
-          fill=&amp;quot;#08306b&amp;quot;,
-          alpha=.5,
-          size=1,
-          shape=21)+
-  coord_sf(datum=NA)+
+  geom_sf(colour = &amp;quot;#08519c&amp;quot;,
+          fill = &amp;quot;#08306b&amp;quot;,
+          alpha = .5,
+          size = 1,
+          shape = 21)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/en/2018-11-03-accessing-osm-data-with-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;

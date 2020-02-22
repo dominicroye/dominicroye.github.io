@@ -632,7 +632,8 @@
 
 <p>¿Cómo se puede obtener estos datos?</p>
 <p>Pues, en este caso usé puntos de interés (PDIs) de la base de datos de <em>Open Street Maps</em> (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una <em>overpass API</em>, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.</p>
-<p>Una forma fácil de acceder a una <em>overpass API</em> es a través de <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">aquí</a>. Sin embargo, tenemos a nuestra disposicón el paquete <em>osmdata</em> que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la <em>overpass-turbo.eu</em> puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.</p>
+<p>Una forma fácil de acceder a una <em>overpass API</em> es a través de <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">aquí</a>.
+Sin embargo, tenemos a nuestra disposicón el paquete <em>osmdata</em> que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la <em>overpass-turbo.eu</em> puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.</p>
 </div>
 <div id="acceso-a-la-overpass-api-desde-r" class="section level2">
 <h2>Acceso a la overpass API desde R</h2>
@@ -651,24 +652,25 @@ library(ggmap)</code></pre>
 </div>
 <div id="construir-una-consulta" class="section level2">
 <h2>Construir una consulta</h2>
-<p>Antes de crear una consulta, debemos conocer qué podemos filtrar. La función <code>available_features( )</code> nos devuelve un listado amplio de las características disponibles en OSM que a su vez tienen diferentes categorías (<em>tags</em>). Están disponibles más detalles en la <em>wiki</em> de OSM <a href="https://wiki.openstreetmap.org/wiki/ES:Caracter%C3%ADsticas_del_mapa">aquí</a>. Por ejemplo, la característica <em>shop</em> contiene como categoría entre otros <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
+<p>Antes de crear una consulta, debemos conocer qué podemos filtrar. La función <code>available_features( )</code> nos devuelve un listado amplio de las características disponibles en OSM que a su vez tienen diferentes categorías (<em>tags</em>). Están disponibles más detalles en la <em>wiki</em> de OSM <a href="https://wiki.openstreetmap.org/wiki/ES:Caracter%C3%ADsticas_del_mapa">aquí</a>.
+Por ejemplo, la característica <em>shop</em> contiene como categoría entre otros <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
 <pre class="r"><code>#las primeras cinco características 
 head(available_features())</code></pre>
 <pre><code>## [1] &quot;4wd only&quot;  &quot;abandoned&quot; &quot;abutters&quot;  &quot;access&quot;    &quot;addr&quot;      &quot;addr:city&quot;</code></pre>
 <pre class="r"><code>#instalaciones y establecimientos públicos
 head(available_tags(&quot;amenity&quot;))</code></pre>
-<pre><code>## [1] &quot;animal boarding&quot; &quot;animal shelter&quot;  &quot;archive&quot;         &quot;arts centre&quot;    
-## [5] &quot;atm&quot;             &quot;baby hatch&quot;</code></pre>
+<pre><code>## [1] &quot;animal_boarding&quot; &quot;animal_shelter&quot;  &quot;arts_centre&quot;     &quot;atm&quot;            
+## [5] &quot;baby_hatch&quot;      &quot;baking_oven&quot;</code></pre>
 <pre class="r"><code>#tiendas
 head(available_tags(&quot;shop&quot;))</code></pre>
 <pre><code>## [1] &quot;agrarian&quot;  &quot;alcohol&quot;   &quot;anime&quot;     &quot;antiques&quot;  &quot;appliance&quot; &quot;art&quot;</code></pre>
-<div id="la-primera-consulta-donde-podemos-encontrar-cines-en-madrid" class="section level3">
+<div id="la-primera-consulta-dónde-podemos-encontrar-cines-en-madrid" class="section level3">
 <h3>La primera consulta: ¿Dónde podemos encontrar cines en Madrid?</h3>
 <p>Para construir la consulta se hace uso del <em>pipe operator</em> <code>%&gt;%</code> que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete <em>tidyverse</em>. Si quieres saber más de su uso, <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">aquí</a> tienes un tutorial.</p>
 <p>En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función <code>getbb( )</code> crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es <code>opq( )</code> que construye la consulta final. Añadimos con la función <code>add_osm_feature( )</code> nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave <em>amenity</em> y como categoría <em>cinema</em>. Existen varios formatos para obtener el resultado de la consulta. La función <code>osmdata_*( )</code> envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato <em>simple feature</em>, <em>spatial</em> o <em>XML</em>.</p>
 <pre class="r"><code>#construcción de la consulta
-q &lt;- getbb(&quot;Madrid&quot;)%&gt;%
-      opq()%&gt;%
+q &lt;- getbb(&quot;Madrid&quot;) %&gt;%
+      opq() %&gt;%
        add_osm_feature(&quot;amenity&quot;, &quot;cinema&quot;)
 
 str(q) #la estructura de la consulta</code></pre>
@@ -684,7 +686,7 @@ cinema</code></pre>
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &#39;sf&#39; Simple Features Collection with 195 points
+##            $osm_points : &#39;sf&#39; Simple Features Collection with 197 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
@@ -694,38 +696,36 @@ cinema</code></pre>
 <p>La ventaja de objetos <em>sf</em> es que para <em>ggplot2</em> existe una geometría propia <code>geom_sf( )</code>. Además, haciendo uso de <em>ggmap</em> podemos incluir un mapa de fondo. La función <code>get_map( )</code> descarga el mapa para un lugar dado. En lugar puede ser una dirección, latitud/longitud o un rectángulo de selección. El argumento <em>maptype</em> nos permite indicar el estilo o tipo de mapa. Podemos consultar más detalles en la ayuda de la función <code>?get_map</code>.</p>
 <p>Cuando construimos un gráfico con <em>ggplot</em> habitualmente empezamos con <code>ggplot( )</code>. En este caso, se empieza por <code>ggmap( )</code> que incluye el objeto con nuestro mapa de fondo. Después añadimos con <code>geom_sf( )</code> los puntos de los cines en Madrid. Es importante indicar con el argumento <em>inherit.aes=FALSE</em> que debe usar <em>aesthetic mappings</em> del objeto espacial <em>osm_points</em>. Además, indicamos el color (<em>colour</em>, <em>fill</em>), transparencia (<em>alpha</em>), tipo y tamaño (<em>size</em>) del círculo.</p>
 <pre class="r"><code>#nuestro mapa de fondo
-mad_map &lt;- get_map(getbb(&quot;Madrid&quot;),maptype = &quot;toner-background&quot;)
+mad_map &lt;- get_map(getbb(&quot;Madrid&quot;), maptype = &quot;toner-background&quot;)
 
 #mapa final
 ggmap(mad_map)+
-  geom_sf(data=cinema$osm_points,
-          inherit.aes =FALSE,
-          colour=&quot;#238443&quot;,
-          fill=&quot;#004529&quot;,
-          alpha=.5,
-          size=4,
-          shape=21)+
-  labs(x=&quot;&quot;,y=&quot;&quot;)</code></pre>
+  geom_sf(data = cinema$osm_points,
+          inherit.aes = FALSE,
+          colour = &quot;#238443&quot;,
+          fill = &quot;#004529&quot;,
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  labs(x = &quot;&quot;, y = &quot;&quot;)</code></pre>
 <p><img src="/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png" width="672" /></p>
 </div>
-<div id="donde-estan-los-supermercados-de-mercadona" class="section level3">
+<div id="dónde-están-los-supermercados-de-mercadona" class="section level3">
 <h3>¿Dónde están los supermercados de Mercadona?</h3>
-<p>En lugar de obtener un rectángulo de selección con la función <code>getbb( )</code> podemos construir nuestro propio. Para ello, creamos una matriz de dos columnas, siendo aquí el orden Este/Oeste/Sur/Norte. En la consulta usamos dos características: <em>name</em> y <em>shop</em> para poder filtrar supermercados que sean de esta marca en concreto. En función del area o bien del volumen que tenga la consulta, es necesario ampliar el tiempo de espera. Por defecto, son 25 segundo (<em>timeout</em>).</p>
-<p>El mapa que creamos en este caso se basa únicamente en los puntos de supermercados. Por eso, usamos la gramática habitual añadiendo la geometría <code>geom_sf( )</code>. La función <code>theme_void( )</code> elimina todo con excepción de los puntos. Por defecto, el objeto <em>sf</em> en <em>ggplot</em> crea retículas que se pueden quitar usando la función <code>coord_sf( )</code> con el argumento <em>datum=NA</em>.</p>
+<p>En lugar de obtener un rectángulo de selección con la función <code>getbb( )</code> podemos construir nuestro propio. Para ello, creamos un vector de cuatro elementos, siendo aquí el orden Oeste/Sur/Este/Norte. En la consulta usamos dos características: <em>name</em> y <em>shop</em> para poder filtrar supermercados que sean de esta marca en concreto. En función del area o bien del volumen que tenga la consulta, es necesario ampliar el tiempo de espera. Por defecto, son 25 segundo (<em>timeout</em>).</p>
+<p>El mapa que creamos en este caso se basa únicamente en los puntos de supermercados. Por eso, usamos la gramática habitual añadiendo la geometría <code>geom_sf( )</code>. La función <code>theme_void( )</code> elimina todo con excepción de los puntos.</p>
 <pre class="r"><code>#rectángulo de selección para la Península Ibérica
-m &lt;- matrix(c(-10,5,30,46),ncol=2,byrow=TRUE)
-row.names(m) &lt;- c(&quot;x&quot;,&quot;y&quot;)
-names(m) &lt;- c(&quot;min&quot;,&quot;max&quot;)
+m &lt;- c(-10, 30, 5, 46)
 
 #construcción de la consulta
 q &lt;- m %&gt;% 
-      opq (timeout=25*100) %&gt;%
-         add_osm_feature(&quot;name&quot;,&quot;Mercadona&quot;)%&gt;%
-         add_osm_feature(&quot;shop&quot;,&quot;supermarket&quot;)
+      opq (timeout = 25*100) %&gt;%
+         add_osm_feature(&quot;name&quot;, &quot;Mercadona&quot;) %&gt;%
+         add_osm_feature(&quot;shop&quot;, &quot;supermarket&quot;)
 
 str(q) #estructura de la consulta</code></pre>
 <pre><code>## List of 4
-##  $ bbox    : chr &quot;5,-10,46,30&quot;
+##  $ bbox    : chr &quot;30,-10,46,5&quot;
 ##  $ prefix  : chr &quot;[out:xml][timeout:2500];\n(\n&quot;
 ##  $ suffix  : chr &quot;);\n(._;&gt;;);\nout body;&quot;
 ##  $ features: chr [1:2] &quot; [\&quot;name\&quot;=\&quot;Mercadona\&quot;]&quot; &quot; [\&quot;shop\&quot;=\&quot;supermarket\&quot;]&quot;
@@ -735,12 +735,11 @@ mercadona &lt;- osmdata_sf(q)
 
 #mapa final del resultado
 ggplot(mercadona$osm_points)+
-  geom_sf(colour=&quot;#08519c&quot;,
-          fill=&quot;#08306b&quot;,
-          alpha=.5,
-          size=1,
-          shape=21)+
-  coord_sf(datum=NA)+
+  geom_sf(colour = &quot;#08519c&quot;,
+          fill = &quot;#08306b&quot;,
+          alpha = .5,
+          size = 1,
+          shape = 21)+
   theme_void()</code></pre>
 <p><img src="/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>

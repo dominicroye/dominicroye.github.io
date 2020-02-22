@@ -659,8 +659,8 @@ head(available_features())</code></pre>
 <pre><code>## [1] &quot;4wd only&quot;  &quot;abandoned&quot; &quot;abutters&quot;  &quot;access&quot;    &quot;addr&quot;      &quot;addr:city&quot;</code></pre>
 <pre class="r"><code>#amenities
 head(available_tags(&quot;amenity&quot;))</code></pre>
-<pre><code>## [1] &quot;animal boarding&quot; &quot;animal shelter&quot;  &quot;arts centre&quot;     &quot;atm&quot;            
-## [5] &quot;baby hatch&quot;      &quot;baking oven&quot;</code></pre>
+<pre><code>## [1] &quot;animal_boarding&quot; &quot;animal_shelter&quot;  &quot;arts_centre&quot;     &quot;atm&quot;            
+## [5] &quot;baby_hatch&quot;      &quot;baking_oven&quot;</code></pre>
 <pre class="r"><code>#shops
 head(available_tags(&quot;shop&quot;))</code></pre>
 <pre><code>## [1] &quot;agrarian&quot;  &quot;alcohol&quot;   &quot;anime&quot;     &quot;antiques&quot;  &quot;appliance&quot; &quot;art&quot;</code></pre>
@@ -669,8 +669,8 @@ head(available_tags(&quot;shop&quot;))</code></pre>
 <p>To build the query, we use the <em>pipe operator</em> <code>%&gt;%</code>, which helps to chain several functions without assigning the result to a new object. Its use is very extended especially within the <em>tidyverse</em> package collection. If you want to know more about its use, you can find <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> a tutorial.</p>
 <p>In the first part of the query we need to indicate the place where we want to extract the information. The <code>getbb( )</code> function creates a boundering box for a given place, looking for the name. The main function is <code>opq( )</code> which build the final query. We add our filter criteria with the <code>add_osm_feature( )</code> function. In this first query we will look for cinemas in Madrid. That’s why we use as key <em>amenity</em> and <em>cinema</em> as tag. There are several formats to obtain the resulting spatial data of the query. The <code>osmdata_*( )</code> function sends the query to the server and, depending on the suffix * sf/sp/xml, returns a <em>simple feature</em>, <em>spatial</em> or <em>XML</em> format.</p>
 <pre class="r"><code>#building the query
-q &lt;- getbb(&quot;Madrid&quot;)%&gt;%
-      opq()%&gt;%
+q &lt;- getbb(&quot;Madrid&quot;) %&gt;%
+      opq() %&gt;%
        add_osm_feature(&quot;amenity&quot;, &quot;cinema&quot;)
 
 str(q) #query structure</code></pre>
@@ -686,7 +686,7 @@ cinema</code></pre>
 ##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &#39;sf&#39; Simple Features Collection with 196 points
+##            $osm_points : &#39;sf&#39; Simple Features Collection with 197 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
@@ -696,46 +696,43 @@ cinema</code></pre>
 <p>The advantage of <em>sf</em> objects is that for <em>ggplot2</em> already exists a geometry function <code>geom_sf( )</code>. Furthermore, we can include a background map using <em>ggmap</em>. The <code>get_map( )</code> function downloads the map for a given place. Alternatively, it can be an address, latitude/longitude or a bounding box. The <em>maptype</em> argument allows us to indicate the style or type of map. You can find more details in the help of the <code>?get_map</code> function.</p>
 <p>When we build a graph with <em>ggplot</em> we usually start with <code>ggplot( )</code>. In this case, we start with <code>ggmap( )</code> that includes the object with our background map. Then we add with <code>geom_sf( )</code> the points of the cinemas in Madrid. It is important to indicate with the argument <em>inherit.aes = FALSE</em> that it has to use the <em>aesthetic mappings</em> of the spatial object <em>osm_points</em>. In addition, we change the color, fill, transparency (<em>alpha</em>), type and size of the circles.</p>
 <pre class="r"><code>#our background map
-mad_map &lt;- get_map(getbb(&quot;Madrid&quot;),maptype = &quot;toner-background&quot;)
+mad_map &lt;- get_map(getbb(&quot;Madrid&quot;), maptype = &quot;toner-background&quot;)
 
 #final map
 ggmap(mad_map)+
-  geom_sf(data=cinema$osm_points,
-          inherit.aes =FALSE,
-          colour=&quot;#238443&quot;,
-          fill=&quot;#004529&quot;,
-          alpha=.5,
-          size=4,
-          shape=21)+
-  labs(x=&quot;&quot;,y=&quot;&quot;)</code></pre>
+  geom_sf(data = cinema$osm_points,
+          inherit.aes = FALSE,
+          colour = &quot;#238443&quot;,
+          fill = &quot;#004529&quot;,
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  labs(x = &quot;&quot;, y = &quot;&quot;)</code></pre>
 <p><img src="/post/en/2018-11-03-accessing-osm-data-with-r/index.en_files/figure-html/fig.width==5-1.png" width="672" /></p>
 </div>
 <div id="where-can-we-find-mercadona-supermarkets" class="section level3">
 <h3>Where can we find Mercadona supermarkets?</h3>
-<p>Instead of obtaining a bounding box with the function <em>getbb( )</em> we can build our own box. To do this, we create a matrix of two columns, the order has to be East/West/South/North. In the query we use two features: <em>name</em> and <em>shop</em> to filter supermarkets that are of this particular brand. Depending on the area or volume of the query, it is necessary to extend the waiting time. By default, the limit is set at 25 seconds (<em>timeout</em>).</p>
-<p>The map, we create in this case, consists only of the supermarket points. Therefore, we use the usual grammar by adding the geometry <code>geom_sf( )</code>. The <code>theme_void( )</code> function removes everything except for the points. By default, the object <em>sf</em> in <em>ggplot</em> creates reticles, that can be removed using the <code>coord_sf( )</code> function with the argument <em>datum = NA</em>.</p>
+<p>Instead of obtaining a bounding box with the function <em>getbb( )</em> we can build our own box. To do this, we create a vector of four elements, the order has to be West/South/East/North. In the query we use two features: <em>name</em> and <em>shop</em> to filter supermarkets that are of this particular brand. Depending on the area or volume of the query, it is necessary to extend the waiting time. By default, the limit is set at 25 seconds (<em>timeout</em>).</p>
+<p>The map, we create in this case, consists only of the supermarket points. Therefore, we use the usual grammar by adding the geometry <code>geom_sf( )</code>. The <code>theme_void( )</code> function removes everything except for the points.</p>
 <pre class="r"><code>#bounding box for the Iberian Peninsula
-m &lt;- matrix(c(-10,5,30,46),ncol=2,byrow=TRUE)
-row.names(m) &lt;- c(&quot;x&quot;,&quot;y&quot;)
-names(m) &lt;- c(&quot;min&quot;,&quot;max&quot;)
+m &lt;- c(-10, 30, 5, 46)
 
 #building the query
 q &lt;- m %&gt;% 
-      opq (timeout=25*100) %&gt;%
-         add_osm_feature(&quot;name&quot;,&quot;Mercadona&quot;)%&gt;%
-         add_osm_feature(&quot;shop&quot;,&quot;supermarket&quot;)
+      opq (timeout = 25*100) %&gt;%
+         add_osm_feature(&quot;name&quot;, &quot;Mercadona&quot;) %&gt;%
+         add_osm_feature(&quot;shop&quot;, &quot;supermarket&quot;)
 
 #query
 mercadona &lt;- osmdata_sf(q)
 
 #final map
 ggplot(mercadona$osm_points)+
-  geom_sf(colour=&quot;#08519c&quot;,
-          fill=&quot;#08306b&quot;,
-          alpha=.5,
-          size=1,
-          shape=21)+
-  coord_sf(datum=NA)+
+  geom_sf(colour = &quot;#08519c&quot;,
+          fill = &quot;#08306b&quot;,
+          alpha = .5,
+          size = 1,
+          shape = 21)+
   theme_void()</code></pre>
 <p><img src="/post/en/2018-11-03-accessing-osm-data-with-r/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
