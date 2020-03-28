@@ -376,28 +376,33 @@ str(prov_enlaces) #estructura es lista&lt;/code&gt;&lt;/pre&gt;
 ##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
 ##  $ updated: POSIXct[1:1], format: &amp;quot;2019-10-26&amp;quot;
 ##  $ items  :&amp;#39;data.frame&amp;#39;: 52 obs. of  4 variables:
-##   ..$ title: chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
-##   ..$ date : POSIXct[1:52], format: &amp;quot;2019-10-26&amp;quot; ...
+##   ..$ title: chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 AlmerÃ­a&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
+##   ..$ date : POSIXct[1:52], format: &amp;quot;2019-10-26&amp;quot; &amp;quot;2019-10-26&amp;quot; ...
 ##   ..$ link : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
 ##   ..$ hash : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos la tabla con los enlaces
 prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items)
 prov_enlaces_tab&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 4
-##    title          date                link                         hash    
-##    &amp;lt;chr&amp;gt;          &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                        &amp;lt;chr&amp;gt;   
-##  1 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ d21ebb7~
-##  2 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ bdba5e1~
-##  3 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ 03bcbcc~
-##  4 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ 8a15420~
-##  5 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ 7d3fd37~
-##  6 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ 9c08741~
-##  7 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ ff722b1~
-##  8 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ b431aa6~
-##  9 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ f79c656~
-## 10 Territorial o~ 2019-10-26 00:00:00 http://www.catastro.minhap.~ d702a6a~
+##    title           date                link                            hash     
+##    &amp;lt;chr&amp;gt;           &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;    
+##  1 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d21ebb79~
+##  2 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ bdba5e14~
+##  3 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 03bcbcc7~
+##  4 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 8a154202~
+##  5 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 7d3fd376~
+##  6 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 9c08741f~
+##  7 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ ff722b15~
+##  8 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ b431aa61~
+##  9 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ f79c6562~
+## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Actualmente la función &lt;code&gt;feed.extract()&lt;/code&gt; no importa correctamente en el &lt;em&gt;encoding&lt;/em&gt; UTF-8. Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para filtrar correctamente debe tenerse en cuenta estos cambios.&lt;br /&gt;&lt;/p&gt;
+
+&lt;/div&gt;
+
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la provincia y obtenemos la url RSS
 val_atom &amp;lt;- filter(prov_enlaces_tab, str_detect(title, &amp;quot;Valencia&amp;quot;)) %&amp;gt;% pull(link)
 
@@ -438,8 +443,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
 ## geometry type:  MULTIPOLYGON
 ## dimension:      XY
 ## bbox:           xmin: 720608 ymin: 4351287 xmax: 734982.5 ymax: 4382906
-## epsg (SRID):    25830
-## proj4string:    +proj=utm +zone=30 +ellps=GRS80 +towgs84=0,0,0,0,0,0,0 +units=m +no_defs&lt;/code&gt;&lt;/pre&gt;
+## CRS:            25830&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparación-de-los-datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preparación de los datos&lt;/h2&gt;
@@ -487,16 +491,16 @@ point_bf &amp;lt;- st_buffer(ciudad_point, 2500)
 
 # obtenemos la intersección entre el buffer y la edificación
 buildings_val25 &amp;lt;- st_intersection(buildings_val, point_bf)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant
-## throughout all geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparar-los-datos-para-el-mapas&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preparar los datos para el mapas&lt;/h2&gt;
 &lt;p&gt;Para poder visualizar bien las diferentes épocas de crecimiento, categorizamos el año en 15 grupos empleando cuartiles.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#encontrar 15 clases
 br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;):
-## var has missing values, omitted in finding classes&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;): var
+## has missing values, omitted in finding classes&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#crear etiquetas
 lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## style: quantile
