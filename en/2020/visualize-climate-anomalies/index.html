@@ -1,0 +1,1116 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.53" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="When we visualize precipitation and temperature anomalies, we simply use time series as bar graph indicating negative and positive values in red and blue. However, in order to have a better overview we need both anomalies in a single graph. In this way we could more easly answer the question of whether a particular season or month was dry-warm or wet-cold, and even compare these anomalies in the context of previous years.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/en/2020/visualize-climate-anomalies/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+  <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Playfair+Display:400,700|Fauna+One">
+  
+
+  <link rel="stylesheet" href="/en/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/en/2020/visualize-climate-anomalies/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/en/2020/visualize-climate-anomalies/">
+  <meta property="og:title" content="Visualize climate anomalies | Dominic Royé">
+  <meta property="og:description" content="When we visualize precipitation and temperature anomalies, we simply use time series as bar graph indicating negative and positive values in red and blue. However, in order to have a better overview we need both anomalies in a single graph. In this way we could more easly answer the question of whether a particular season or month was dry-warm or wet-cold, and even compare these anomalies in the context of previous years."><meta property="og:image" content="/en/2020/visualize-climate-anomalies/featured.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2020-03-29T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2020-03-29T00:00:00&#43;00:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#2962ff",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#2962ff"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "This website uses cookies to ensure you get the best experience on our website.",
+        "dismiss": "Got it!",
+        "link": "Learn more",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>Visualize climate anomalies | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/en"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#">
+            
+            <span>home</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#publications_selected">
+            
+            <span>publications</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#graphs">
+            
+            <span>graphs</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#teaching">
+            
+            <span>more</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/en/#about">
+            
+            <span>me</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="article-header d-xl-none">
+  <div class="featured-image" style="background-image: url('/en/2020/visualize-climate-anomalies/featured_hu0315758f1da31d595a37e4f7e0f1a047_126313_800x0_resize_box_2.png');"></div>
+  
+</div>
+
+
+<div class="container-fluid split-header d-none d-xl-block">
+  <div class="row">
+    <div class="col-6">
+      <div class="split-header-content">
+        <h1 itemprop="name">Visualize climate anomalies</h1>
+
+        
+
+        
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2020-03-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2020-03-29 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2020-03-29
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/en/2020/visualize-climate-anomalies/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/en/categories/visualization/">visualization</a>, 
+    
+    <a href="/en/categories/r/">R</a>, 
+    
+    <a href="/en/categories/rintermediate/">R:intermediate</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+        
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Visualize%20climate%20anomalies&amp;url=%2fen%2f2020%2fvisualize-climate-anomalies%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fen%2f2020%2fvisualize-climate-anomalies%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fen%2f2020%2fvisualize-climate-anomalies%2f&amp;title=Visualize%20climate%20anomalies"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fen%2f2020%2fvisualize-climate-anomalies%2f&amp;title=Visualize%20climate%20anomalies"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Visualize%20climate%20anomalies&amp;body=%2fen%2f2020%2fvisualize-climate-anomalies%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="split-header-image">
+        <img src="/en/2020/visualize-climate-anomalies/featured_hu0315758f1da31d595a37e4f7e0f1a047_126313_680x500_fill_q90_box_smart1_2.png" itemprop="image" alt="">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="article-container d-xl-none">
+  <h1 itemprop="name">Visualize climate anomalies</h1>
+
+  
+
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2020-03-29 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2020-03-29 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2020-03-29
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/en/2020/visualize-climate-anomalies/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/en/categories/visualization/">visualization</a>, 
+    
+    <a href="/en/categories/r/">R</a>, 
+    
+    <a href="/en/categories/rintermediate/">R:intermediate</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Visualize%20climate%20anomalies&amp;url=%2fen%2f2020%2fvisualize-climate-anomalies%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fen%2f2020%2fvisualize-climate-anomalies%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fen%2f2020%2fvisualize-climate-anomalies%2f&amp;title=Visualize%20climate%20anomalies"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fen%2f2020%2fvisualize-climate-anomalies%2f&amp;title=Visualize%20climate%20anomalies"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Visualize%20climate%20anomalies&amp;body=%2fen%2f2020%2fvisualize-climate-anomalies%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+
+<p>When we visualize precipitation and temperature anomalies, we simply use time series as bar graph indicating negative and positive values in red and blue. However, in order to have a better overview we need both anomalies in a single graph. In this way we could more easly answer the question of whether a particular season or month was dry-warm or wet-cold, and even compare these anomalies in the context of previous years.</p>
+<div id="packages" class="section level2">
+<h2>Packages</h2>
+<p>In this post we will use the following packages:</p>
+<table>
+<thead>
+<tr class="header">
+<th align="left">Package</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.</td>
+</tr>
+<tr class="even">
+<td align="left">lubridate</td>
+<td align="left">Easy manipulation of dates and times</td>
+</tr>
+<tr class="odd">
+<td align="left">ggrepel</td>
+<td align="left">Repel overlapping text labels in ggplot2</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#we install the packages if necessary
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;ggrepel&quot;)) install.packages(&quot;ggrepel&quot;)
+if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
+
+#packages
+library(tidyverse)
+library(lubridate)
+library(ggrepel)</code></pre>
+</div>
+<div id="preparing-the-data" class="section level2">
+<h2>Preparing the data</h2>
+<p>First we import the daily precipitation and temperature data from the selected weather station (<a href="/files/meteo_tenerife.csv">download</a>). We will use the data from Tenerife South (Spain) [1981-2020] accessible through <a href="https://opendata.aemet.es/">Open Data AEMET</a>. In R there is a package called <a href="https://vegmod.ctfc.cat/software/meteoland/"><code>meteoland</code></a> that facilitates the download with specific functions to access data from AEMET (Spanish State Meteorological Agency), Meteogalicia (Galician Meteorological Service) and Meteocat (Catalan Meteorological Service).</p>
+<div id="step-1-import-the-data" class="section level3">
+<h3>Step 1: import the data</h3>
+<p>We import the data in <em>csv</em> format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).</p>
+<pre class="r"><code>data &lt;- read_csv(&quot;meteo_tenerife.csv&quot;) </code></pre>
+<pre><code>## Parsed with column specification:
+## cols(
+##   date = col_date(format = &quot;&quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )</code></pre>
+<pre class="r"><code>data</code></pre>
+<pre><code>## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows</code></pre>
+</div>
+<div id="step-2-preparing-the-data" class="section level3">
+<h3>Step 2: preparing the data</h3>
+<p>In the second step we prepare the data to calculate the anomalies. To do this, we create three new columns: the month, the year, and the season of the year. Since our objective is to analyse winter anomalies, we cannot use the calendar year, since winter includes the month of December of one year and the months of January and February of the following. The custom function <code>meteo_yr()</code> extracts the year from a date indicating the starting month. The concept is similar to the hydrological year in which it starts on October 1.</p>
+<pre class="r"><code>meteo_yr &lt;- function(dates, start_month = NULL) {
+  # convert to POSIXlt
+  dates.posix &lt;- as.POSIXlt(dates)
+  # year offset
+  offset &lt;- ifelse(dates.posix$mon &gt;= start_month - 1, 1, 0)
+  # new year
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}</code></pre>
+<p>We will use many functions of the package collection <code>tidyverse</code> (<a href="https://www.tidyverse.org/" class="uri">https://www.tidyverse.org/</a>). The <code>mutate()</code> function helps to add new columns or change existing ones. To define the seasons, we use the <code>case_when()</code> function from the <code>dplyr</code> package, which has many advantages compared to a chain of <code>ifelse()</code>. In <code>case_when()</code> we use two-side formulas, on the one hand the condition and on the other the action when that condition is met. A two-sided formula in R consists of the operator <code>~</code>. The binary operator <code>%in%</code> allows us to filter several values in a greater set.</p>
+<pre class="r"><code>data &lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &quot;Winter&quot;,
+                                  month %in% 3:5 ~ &quot;Spring&quot;,
+                                  month %in% 6:8 ~ &quot;Summer&quot;,
+                                  month %in% 9:11 ~ &quot;Autum&quot;))
+
+data</code></pre>
+<pre><code>## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;chr&gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows</code></pre>
+</div>
+<div id="step-3-estimate-winter-anomalies" class="section level3">
+<h3>Step 3: estimate winter anomalies</h3>
+<p>In the next step we create a subset of the winter months. Then we group by the defined meteorological year and calculate the sum and average for precipitation and temperature, respectively. To facilitate the work, the <code>magrittr</code> package introduces the operator called <em>pipe</em> in the form <code>%&gt;%</code> with the aim of combining several functions without the need to assign the result to a new object. The <em>pipe</em> operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously. The <code>%&gt;%</code> must be understood and pronounced as <em>then</em>.</p>
+<pre class="r"><code>data_inv &lt;- filter(data, 
+                   season == &quot;Winter&quot;) %&gt;% 
+              group_by(winter_yr) %&gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))</code></pre>
+<p>Now we only have to calculate the anomalies of precipitation and temperature. The columns <code>pr_mean</code> and <code>ta_mean</code> will contain the climate average, the reference for the anomalies with respect to the normal period 1981-2010. Therefore, we need to filter the values to the period before 2010, which we will do in the usual way of filtering vectors in R. Once we have the references we estimate the anomalies <code>pr_anom</code> and <code>ta_anom</code>. To facilitate the interpretation, in the case of precipitation we express the anomalies as percentage, with the average set at 0% instead of 100%.</p>
+<p>In addition, we add three required columns with information for the creation of the graph: 1) <code>labyr</code> contains the year of each anomaly as long as it has been greater/less than -+10% or -+0.5ºC, respectively (this is for reducing the number of labels), 2) <code>symb_point</code> is a dummy variable in order to be able to create diferent symbols between the cases of (1), and 3) <code>lab_font</code> for highlighting in bold the year 2020.</p>
+<pre class="r"><code>data_inv &lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &lt; -10 &amp; ta_anom &lt; -.5 ~ winter_yr,
+                                                pr_anom &lt; -10 &amp; ta_anom &gt; .5 ~ winter_yr,
+                                                pr_anom &gt; 10 &amp; ta_anom &lt; -.5 ~ winter_yr,
+                                                pr_anom &gt; 10 &amp; ta_anom &gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &quot;yes&quot;, &quot;no&quot;),
+                              lab_font = ifelse(labyr == 2020, &quot;bold&quot;, &quot;plain&quot;)
+                    )</code></pre>
+</div>
+</div>
+<div id="creating-the-graph" class="section level2">
+<h2>Creating the graph</h2>
+<p>We will build the chart adding layer by layer the distinctive elements: 1) the background with the different grids (Dry-Warm, Dry-Cold, etc.), 2) the points and labels, and 3) the style adjustments.</p>
+<div id="part-1" class="section level3">
+<h3>Part 1</h3>
+<p>The idea is that the points with dry-warm anomalies are located in quadrant I (top-right) and those with wet-cold in quadrant III (bottom-left). Therefore, we must invert the sign in the precipitation anomalies. Then we create a <code>data.frame</code> with the label positions of the four quadrants. For the positions in <em>x</em> and <em>y</em> <code>Inf</code> and <code>-Inf</code> are used, which is equivalent to the maximum panel sides with respect to the data. However, it is necessary to adjust the position towards the extreme points within the panel with the known arguments of <code>ggplot2</code>: <em>hjust</em> and <em>vjust</em>.</p>
+<pre class="r"><code>data_inv_p &lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&quot;Wet-Warm&quot;, &quot;Dry-Warm&quot;,
+                              &quot;Wet-Cold&quot;, &quot;Dry-Cold&quot;))
+
+  
+bglab</code></pre>
+<pre><code>##      x    y hjust vjust      lab
+## 1 -Inf  Inf     1     1 Wet-Warm
+## 2  Inf  Inf     1     0 Dry-Warm
+## 3 -Inf -Inf     0     1 Wet-Cold
+## 4  Inf -Inf     0     0 Dry-Cold</code></pre>
+</div>
+<div id="part-2" class="section level3">
+<h3>Part 2</h3>
+<p>In the second part we can start building the chart by adding all graphical elements. First we create the background with different colors of each quadrant. The function <code>annotate()</code> allows adding geometry layers without the use of variables within <code>data.frames</code>. With the <code>geom_hline()</code> and <code>geom_vline()</code> function we mark the quadrants horizontally and vertically using a dashed line. Finally, we draw the labels of each quadrant, using the function <code>geom_text()</code>. When we use other data sources than the main one used in <code>ggplot()</code>, we must indicate it with the argument <code>data</code> in the corresponding geometry function.</p>
+<pre class="r"><code>g1 &lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&quot;rect&quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &quot;#fc9272&quot;, alpha = .6) + #wet-warm
+         annotate(&quot;rect&quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &quot;#cb181d&quot;, alpha = .6) + #dry-warm
+         annotate(&quot;rect&quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &quot;#2171b5&quot;, alpha = .6) + #wet-cold
+         annotate(&quot;rect&quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &quot;#c6dbef&quot;, alpha = .6) + #dry-cold
+       geom_hline(yintercept = 0,
+                  linetype = &quot;dashed&quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &quot;dashed&quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &quot;italic&quot;, size = 5, 
+                     angle = 90, colour = &quot;white&quot;)
+
+g1</code></pre>
+<p><img src="/post/en/2020-03-29-climate-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png" width="3507" /></p>
+</div>
+<div id="part-3" class="section level3">
+<h3>Part 3</h3>
+<p>In the third part we simply add the points of the anomalies and the labels of the years. The <code>geom_text_repel()</code> function is similar to the one known by default in <code>ggplot2</code>, <code>geom_text()</code>, but it repels overlapping text labels away from each other.</p>
+<pre class="r"><code>g2 &lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2</code></pre>
+<pre><code>## Warning: Removed 25 rows containing missing values (geom_text_repel).</code></pre>
+<p><img src="/post/en/2020-03-29-climate-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png" width="3507" /></p>
+</div>
+<div id="part-4" class="section level3">
+<h3>Part 4</h3>
+<p>In the last part we adjust, in addition to the general style, the axes, the color type and the (sub)title. Remember that we changed the sign on precipitation anomalies. Hence, we must use the arguments <code>breaks</code> and <code>labels</code> in the function <code>scale_x_continouous()</code> to reverse the sign in the labels corresponding to the breaks.</p>
+<pre class="r"><code>g3 &lt;- g2 + scale_x_continuous(&quot;Precipitation anomaly in %&quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&quot;Mean temperature anomaly in ºC&quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&quot;black&quot;, &quot;white&quot;)) +
+           scale_colour_manual(values = rev(c(&quot;black&quot;, &quot;white&quot;))) +
+           labs(title = &quot;Winter anomalies in Tenerife South&quot;, 
+                caption = &quot;Data: AEMET\nNormal period 1981-2010&quot;) +
+           theme_bw()
+
+g3</code></pre>
+<pre><code>## Warning: Removed 25 rows containing missing values (geom_text_repel).</code></pre>
+<p><img src="/post/en/2020-03-29-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png" width="3507" /></p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/en/tags/anomaly/">anomaly</a>
+  
+  <a class="badge badge-light" href="/en/tags/precipitation/">precipitation</a>
+  
+  <a class="badge badge-light" href="/en/tags/temperature/">temperature</a>
+  
+  <a class="badge badge-light" href="/en/tags/climate/">climate</a>
+  
+  <a class="badge badge-light" href="/en/tags/points/">points</a>
+  
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="/en">Dr. Dominic Royé</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+          <i class="fa fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+          <i class="ai ai-researchgate"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/dominicroye" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Related</h3>
+      <ul>
+        
+        <li><a href="/en/2019/visualize-monthly-precipitation-anomalies/">Visualize monthly precipitation anomalies</a></li>
+        
+        <li><a href="/en/graphs/climate/">Climate and Weather</a></li>
+        
+        <li><a href="/en/publication/era5_esp_2020/">Comparison of temperature-mortality associations using observed weather station and reanalysis data in 52 Spanish cities</a></li>
+        
+        <li><a href="/en/2020/geographic-distance/">Geographic distance</a></li>
+        
+        <li><a href="/en/publication/ci_pr_2018/">Spatial Analysis of Daily Precipitation Concentration in Puerto Rico</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Previous</div>
+    <a href="/en/2020/geographic-distance/" rel="prev">Geographic distance</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+

@@ -6,10 +6,242 @@
     <description>Recent content in R:intermedio on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 07 Jul 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 29 Mar 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/es/categories/rintermedio/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Visualizar anomalías climáticas</title>
+      <link>/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</guid>
+      <description>
+
+
+&lt;p&gt;Cuando visualizamos anomalías de precipitación y temperatura, simplemente usamos series temporales en un gráfico de barras indicando con color rojo y azul valores negativos y positivos. No obstante, para tener una imagen global necesitamos ambas anomalías en un único gráfico. Así podríamos responder directamente a la pregunta de si una estación del año o un mes en concreto fue seco-cálido o húmedo-frío, e incluso comparar estas anomalías en el contexto de años anteriores.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggrepel&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Etiquetas sin superposición con ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggrepel&amp;quot;)) install.packages(&amp;quot;ggrepel&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#paquetes
+library(tidyverse)
+library(lubridate)
+library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparar los datos&lt;/h2&gt;
+&lt;p&gt;Primero importamos la precipitación y temperatura diaria de la estación meteorológica seleccionada (&lt;a href=&#34;/files/meteo_tenerife.csv&#34;&gt;descarga&lt;/a&gt;). Usaremos los datos de Tenerife Sur (España) [1981-2020] accesible a través de &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. En R existe un paquete &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; que facilita la descarga con funciones específicas para acceder a los datos de AEMET, Meteogalicia y Meteocat.&lt;/p&gt;
+&lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
+&lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-2-preparar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 2: preparar los datos&lt;/h3&gt;
+&lt;p&gt;En el segundo paso preparamos los datos para calcular las anomalías. Para ello, creamos tres nuevas columnas: el mes, el año y la estación del año. Como nuestro objetivo son las anomalías invernales no podemos usar el año natural, ya que el invierno comprende el mes de diciembre de un año y los meses de enero y febrero del siguiente. La función personalizada &lt;code&gt;meteo_yr()&lt;/code&gt; extrae el año de una fecha indicando el mes inicial. El concepto es similar al año hidrológico en el que se empieza en octubre.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yr &amp;lt;- function(dates, start_month = NULL) {
+  # convertir a POSIXlt
+  dates.posix &amp;lt;- as.POSIXlt(dates)
+  # la compensación
+  offset &amp;lt;- ifelse(dates.posix$mon &amp;gt;= start_month - 1, 1, 0)
+  # nuevo año
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Usaremos las funciones de la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt; (&lt;a href=&#34;https://www.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://www.tidyverse.org/&lt;/a&gt;). La función &lt;code&gt;mutate()&lt;/code&gt; ayuda a añadir nuevas columnas o a cambiar otras existentes. Para definir las estaciones del año, empleamos la función &lt;code&gt;case_when()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; lo que tiene muchas ventajas en comparación con una cadena de &lt;code&gt;ifelse()&lt;/code&gt;. En la función &lt;code&gt;case_when()&lt;/code&gt; usamos fórmulas en dos tiempos, por un lado la condición y por otro la acción cuando se cumpla esa condición. En R una fórmula de dos tiempos o dos lados se consistuye con el operador &lt;code&gt;~&lt;/code&gt;. El operador binario &lt;code&gt;%in%&lt;/code&gt; nos permite filtrar varios valores en un conjunto.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &amp;quot;Winter&amp;quot;,
+                                  month %in% 3:5 ~ &amp;quot;Spring&amp;quot;,
+                                  month %in% 6:8 ~ &amp;quot;Summer&amp;quot;,
+                                  month %in% 9:11 ~ &amp;quot;Autum&amp;quot;))
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-3-estimar-las-anomalías-invernales&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 3: estimar las anomalías invernales&lt;/h3&gt;
+&lt;p&gt;En el siguiente paso creamos un subset del invierno. Después agrupamos por el año meteorológico y calculamos la suma y el promedio para la precipitación y la temperatura, respectivamente. Para facilitar el trabajo el paquete &lt;code&gt;magrittr&lt;/code&gt; introduce el operador llamado &lt;em&gt;pipe&lt;/em&gt; en la forma &lt;code&gt;%&amp;gt;%&lt;/code&gt; con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador &lt;em&gt;pipe&lt;/em&gt; pasa la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. Se debe entender y pronunciar el &lt;code&gt;%&amp;gt;%&lt;/code&gt; como &lt;em&gt;“luego”&lt;/em&gt; (&lt;em&gt;then&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;- filter(data, 
+                   season == &amp;quot;Winter&amp;quot;) %&amp;gt;% 
+              group_by(winter_yr) %&amp;gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sólo nos quedan por calcular las anomalías de precipitación y temperatura. Las columnas &lt;code&gt;pr_mean&lt;/code&gt; y &lt;code&gt;ta_mean&lt;/code&gt; contendrán el promedio climatico, la referencia de las anomalías respecto al periodo normal 1981-2010. Por eso debemos filtrar los valores al periodo antes de 2010, lo que haremos de la forma habitual de filtrado de vectores en R. Una vez que tenemos las referencias estimamos las anomalías &lt;code&gt;pr_anom&lt;/code&gt; y &lt;code&gt;ta_anom&lt;/code&gt;. Para facilitar la interpretación, en el caso de la precipitación lo expresamos en porcentaje, pero poniendo el promedio en 0% en lugar del 100%.&lt;/p&gt;
+&lt;p&gt;Además, añadimmos tres columnas con información necesaria en la creación del gráfico. 1) &lt;code&gt;labyr&lt;/code&gt; contiene el año de cada anomalía siempre y cuando haya sido mayor/menor del -+10% o -+0,5ºC, respectivamente (lo hago para que no haya demasiadas etiquetas), 2) &lt;code&gt;symb_point&lt;/code&gt; una variable dummy para poder crear un simbolo diferencial entre los casos de (1), y 3) &lt;code&gt;lab_font&lt;/code&gt; destacaremos en negrita el año 2020.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &amp;lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &amp;lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;),
+                              lab_font = ifelse(labyr == 2020, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Crear el gráfico&lt;/h2&gt;
+&lt;p&gt;El gráfico lo construiremos añadiendo capa por capa los diferentes elementos: 1) el fondo con las diferentes cuadrículas (Seco-Cálido, Seco-Frío, etc.) 2) los puntos y etiquetas, y 3) los últimos ajustes de estilo.&lt;/p&gt;
+&lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 1&lt;/h3&gt;
+&lt;p&gt;La idea es que tengamos los puntos con anomalías seco-cálido en el cuadrante I (arriba-derecha) y los de húmedo-frío en el cuadrante III (abajo-izquierda). Por eso, debemos invertir el signo en las anomalías de precipitación. Después creamos un &lt;code&gt;data.frame&lt;/code&gt; con las posiciones de las etiquetas de los cuatro cuadrantes. Para las posiciones en &lt;em&gt;x&lt;/em&gt; y &lt;em&gt;y&lt;/em&gt; se usan &lt;code&gt;Inf&lt;/code&gt; y &lt;code&gt;-Inf&lt;/code&gt; lo que equivale al punto máximo dentro del &lt;em&gt;panel&lt;/em&gt;. No obstante, es necesario ajustar la posición hacia los puntos extremos dentro del marco gráfico con los argumentos conocidos de &lt;code&gt;ggplot2&lt;/code&gt;: &lt;em&gt;hjust&lt;/em&gt; y &lt;em&gt;vjust&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv_p &amp;lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &amp;lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&amp;quot;Húmedo-Cálido&amp;quot;, &amp;quot;Seco-Cálido&amp;quot;,
+                              &amp;quot;Húmedo-Frío&amp;quot;, &amp;quot;Seco-Frío&amp;quot;))
+
+  
+bglab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      x    y hjust vjust           lab
+## 1 -Inf  Inf     1     1 Húmedo-Cálido
+## 2  Inf  Inf     1     0   Seco-Cálido
+## 3 -Inf -Inf     0     1   Húmedo-Frío
+## 4  Inf -Inf     0     0     Seco-Frío&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 2&lt;/h3&gt;
+&lt;p&gt;En la segunda podemos empezar a construir el gráfico añadiendo todos los elementos gráficos. En esta parte creamos el fondo con los diferentes colores de cada cuadrante. La función &lt;code&gt;annotate()&lt;/code&gt; permite añadir capas de geometría sin el uso de variables dentro de un &lt;code&gt;data.frame&lt;/code&gt;. Con la función &lt;code&gt;geom_hline()&lt;/code&gt; y &lt;code&gt;geom_vline()&lt;/code&gt; marcamos los cuadrantes en horizontal y vertical usando una linea discontinua. Por último, dibujamos las etiquetas de cada cuadrante, empleando la función &lt;code&gt;geom_text()&lt;/code&gt;. Cuando usamos diferentes fuentes de &lt;code&gt;data.frames&lt;/code&gt;, uno diferente al principal usado en &lt;code&gt;ggplot()&lt;/code&gt;, debemos indicarlo con el argumento &lt;code&gt;data&lt;/code&gt; en la función de geomtría correspondiente.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &amp;quot;#fc9272&amp;quot;, alpha = .6) + #humedo-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &amp;quot;#cb181d&amp;quot;, alpha = .6) + #seco-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &amp;quot;#2171b5&amp;quot;, alpha = .6) + #humedo-frio
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &amp;quot;#c6dbef&amp;quot;, alpha = .6) + #seco-frio
+       geom_hline(yintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &amp;quot;italic&amp;quot;, size = 5, 
+                     angle = 90, colour = &amp;quot;white&amp;quot;)
+
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 3&lt;/h3&gt;
+&lt;p&gt;En la tercera parte simplemente añadimos los puntos de las anomalías y las etiquetas de los años. La función &lt;code&gt;geom_text_repel()&lt;/code&gt; es similar a la que conocemos por defecto en &lt;code&gt;ggplot2&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, pero evita el sobrlapso entre sí.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-4&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 4&lt;/h3&gt;
+&lt;p&gt;En la última parte ajustamos, además del estilo general, los ejes, el tipo de color y el (sub)título. Recuerda que cambiamos el signo en las anomalías de precipitación. Por eso, debemos usar los argumentos &lt;code&gt;breaks&lt;/code&gt; y &lt;code&gt;labels&lt;/code&gt; en la función &lt;code&gt;scale_x_continouous()&lt;/code&gt; para revertir el signo en las etiquetas correspondientes a los cortes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g3 &amp;lt;- g2 + scale_x_continuous(&amp;quot;Anomalía de precipitación en %&amp;quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&amp;quot;Anomalía de temperatura media en ºC&amp;quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;)) +
+           scale_colour_manual(values = rev(c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;))) +
+           labs(title = &amp;quot;Anomalías invernales en Tenerife Sur&amp;quot;, 
+                caption = &amp;quot;Datos: AEMET\nPeriodo normal 1981-2010&amp;quot;) +
+           theme_bw()
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>anomalía</category>
+      
+            <category>precipitación</category>
+      
+            <category>temperatura</category>
+      
+            <category>clima</category>
+      
+            <category>puntos</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
+    </item>
     
     <item>
       <title>Visualizar anomalías de precipitación mensual</title>
@@ -57,7 +289,7 @@
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
-if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;cowplot&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 
 #paquetes
@@ -111,21 +343,21 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
 data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
 ## # Groups:   yr [70]
-##       yr mo         prs
-##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950 &amp;quot;ene\\.&amp;quot;  55.6
-##  2  1950 &amp;quot;feb\\.&amp;quot; 349. 
-##  3  1950 &amp;quot;mar\\.&amp;quot;  85.8
-##  4  1950 &amp;quot;abr\\.&amp;quot;  33.4
-##  5  1950 &amp;quot;may\\.&amp;quot; 272. 
-##  6  1950 &amp;quot;jun\\.&amp;quot; 111. 
-##  7  1950 &amp;quot;jul\\.&amp;quot;  35.4
-##  8  1950 &amp;quot;ago\\.&amp;quot;  76.4
-##  9  1950 &amp;quot;sep\\.&amp;quot;  85  
-## 10  1950 &amp;quot;oct\\.&amp;quot;  53  
+##       yr mo      prs
+##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;
+##  1  1950 ene    55.6
+##  2  1950 feb   349. 
+##  3  1950 mar    85.8
+##  4  1950 abr    33.4
+##  5  1950 may   272. 
+##  6  1950 jun   111. 
+##  7  1950 jul    35.4
+##  8  1950 ago    76.4
+##  9  1950 sep    85  
+## 10  1950 oct    53  
 ## # ... with 823 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;paso-3-estimar-las-anomalias&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;paso-3-estimar-las-anomalías&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Paso 3: estimar las anomalías&lt;/h3&gt;
 &lt;p&gt;Ahora debemos estimar los valores normales de cada mes y unir esta tabla a nuestros datos principales para posteriormente poder calcular la anomalía mensual. Expresamos la anomalía en porcentaje y restamos 100 para fijar el promedio en 0. Además, creamos una variable que nos indica si la anomalía es negativa o positiva, y otra con la fecha.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_ref &amp;lt;- filter(data, yr &amp;gt; 1981, yr &amp;lt;= 2010) %&amp;gt;%
@@ -138,7 +370,7 @@ data &amp;lt;- mutate(data,
                anom = (prs*100/pr_ref)-100, 
                date = str_c(yr, as.numeric(mo), 1, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd(),
                sign= ifelse(anom &amp;gt; 0, &amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función &lt;code&gt;geom_bar()&lt;/code&gt; aplica el conteo a la variable. No obstante, en este caso conocemos &lt;code&gt;y&lt;/code&gt;, por tanto indicamos con el argumento &lt;code&gt;stat = &amp;quot;identity&amp;quot;&lt;/code&gt; que debe usar el valor dado en &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función &lt;code&gt;geom_bar()&lt;/code&gt; aplica el conteo a la variable. No obstante, en este caso conocemos &lt;code&gt;y&lt;/code&gt;, por tanto indicamos con el argumento &lt;code&gt;stat = &#34;identity&#34;&lt;/code&gt; que debe usar el valor dado en &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(data, yr == 2018) %&amp;gt;%
    ggplot(aes(date, anom, fill = sign)) + 
        geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
@@ -149,7 +381,7 @@ data &amp;lt;- mutate(data,
           theme_hc()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;paso-4-calcular-las-medidas-estadisticas&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;paso-4-calcular-las-medidas-estadísticas&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Paso 4: calcular las medidas estadísticas&lt;/h3&gt;
 &lt;p&gt;En este último paso estimamos el valor máximo, mínimo, el cuantil 25%/75% y el rango intercuartil por mes de toda la serie temporal.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_norm &amp;lt;-     group_by(data, mo) %&amp;gt;%
@@ -161,23 +393,23 @@ data &amp;lt;- mutate(data,
 
 data_norm&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 6
-##    mo          mx    min   q25   q75   iqr
-##    &amp;lt;ord&amp;gt;    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 &amp;quot;ene\\.&amp;quot;  193.  -89.6 -43.6 56.3   99.9
-##  2 &amp;quot;feb\\.&amp;quot;  320.  -96.5 -51.2 77.7  129. 
-##  3 &amp;quot;mar\\.&amp;quot;  381. -100   -40.6 88.2  129. 
-##  4 &amp;quot;abr\\.&amp;quot;  198.  -93.6 -51.2 17.1   68.3
-##  5 &amp;quot;may\\.&amp;quot;  141.  -90.1 -45.2 17.0   62.2
-##  6 &amp;quot;jun\\.&amp;quot;  419.  -99.3 -58.2 50.0  108. 
-##  7 &amp;quot;jul\\.&amp;quot;  311.  -98.2 -77.3 27.1  104. 
-##  8 &amp;quot;ago\\.&amp;quot;  264. -100   -68.2 39.8  108. 
-##  9 &amp;quot;sep\\.&amp;quot;  241.  -99.2 -64.9 48.6  113. 
-## 10 &amp;quot;oct\\.&amp;quot;  220.  -99.0 -54.5  4.69  59.2
-## 11 &amp;quot;nov\\.&amp;quot;  137.  -98.8 -44.0 39.7   83.7
-## 12 &amp;quot;dic\\.&amp;quot;  245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
+##    mo       mx    min   q25   q75   iqr
+##    &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 ene    193.  -89.6 -43.6 56.3   99.9
+##  2 feb    320.  -96.5 -51.2 77.7  129. 
+##  3 mar    381. -100   -40.6 88.2  129. 
+##  4 abr    198.  -93.6 -51.2 17.1   68.3
+##  5 may    141.  -90.1 -45.2 17.0   62.2
+##  6 jun    419.  -99.3 -58.2 50.0  108. 
+##  7 jul    311.  -98.2 -77.3 27.1  104. 
+##  8 ago    264. -100   -68.2 39.8  108. 
+##  9 sep    241.  -99.2 -64.9 48.6  113. 
+## 10 oct    220.  -99.0 -54.5  4.69  59.2
+## 11 nov    137.  -98.8 -44.0 39.7   83.7
+## 12 dic    245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;crear-el-grafico&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Crear el gráfico&lt;/h2&gt;
 &lt;p&gt;Para crear el gráfico de anomalías con leyenda es necesario separar el gráfico principal de las leyendas.&lt;/p&gt;
 &lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
@@ -221,7 +453,7 @@ g1&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Parte 2&lt;/h3&gt;
 &lt;p&gt;Todavía nos falta una leyenda. Primero la creamos para los valores normales.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#datos de la leyenda
-legend &amp;lt;- filter(data_norm, mo == &amp;quot;ene\\.&amp;quot;)
+legend &amp;lt;- filter(data_norm, mo == &amp;quot;ene&amp;quot;)
 
 legend_lab &amp;lt;- gather(legend, stat, y, mx:q75) %&amp;gt;%
                  mutate(stat = factor(stat, stat, c(&amp;quot;máximo&amp;quot;,
@@ -247,13 +479,13 @@ g2 &amp;lt;- legend %&amp;gt;% ggplot()+
 g2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Segundo, creamos otra leyenda para las anomalías actuales.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;ene\\.&amp;quot;,&amp;quot;feb\\.&amp;quot;)) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;ene&amp;quot;,&amp;quot;feb&amp;quot;)) %&amp;gt;% 
               ungroup() %&amp;gt;% 
             select(mo, anom, sign)
 
-legend2[2,1] &amp;lt;- &amp;quot;ene\\.&amp;quot;
+legend2[2,1] &amp;lt;- &amp;quot;ene&amp;quot;
 
-legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;ene\\.&amp;quot;, 3), 
+legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;ene&amp;quot;, 3), 
                           anom= c(110, 3, -70), 
                           label = c(&amp;quot;Anomalía positiva&amp;quot;, &amp;quot;Promedio&amp;quot;, &amp;quot;Anomalía negativa&amp;quot;))
 
@@ -285,7 +517,7 @@ p&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomalia2016_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;multiples-facetas&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;múltiples-facetas&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Múltiples facetas&lt;/h2&gt;
 &lt;p&gt;En este apartado haremos el mismo gráfico como en el anterior, pero para varios años.&lt;/p&gt;
 &lt;div id=&#34;parte-1-1&#34; class=&#34;section level3&#34;&gt;
@@ -622,427 +854,6 @@ str(data_df)&lt;/code&gt;&lt;/pre&gt;
       
       
             <category>gestión</category>
-      
-            <category>R</category>
-      
-            <category>R:intermedio</category>
-      
-    </item>
-    
-    <item>
-      <title>Acceso a datos de los reanálisis climáticos desde R</title>
-      <link>/es/2018/acceso-a-datos-de-los-rean%C3%A1lisis-clim%C3%A1ticos-desde-r/</link>
-      <pubDate>Sat, 15 Sep 2018 10:59:44 +0100</pubDate>
-      
-      <guid>/es/2018/acceso-a-datos-de-los-rean%C3%A1lisis-clim%C3%A1ticos-desde-r/</guid>
-      <description>
-
-&lt;div id=&#34;TOC&#34;&gt;
-&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#introducción&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#paquetes&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#descarga-de-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#promedio-mensual&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Promedio mensual&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#visualización&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#era-interim&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/a&gt;&lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#instalación&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#conexión-y-descarga-con-la-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#procesar-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#actualización-para-acceder-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-
-&lt;p&gt;&lt;em&gt;Un amigo me propuso que presentara los niveles de aprendizaje de R como categorías. Una idea que ahora introduzco para cada entrada del blog. Hay tres niveles: elemental, intermedio y avanzado. Espero que ayude al lector y al usuario R.&lt;/em&gt;&lt;/p&gt;
-&lt;hr /&gt;
-&lt;div id=&#34;introducción&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introducción&lt;/h1&gt;
-&lt;p&gt;En este post enseñaré cómo podemos descargar y trabajar directamente con datos provenientes de los reanálisis climáticos en R. Se trata de sistemas de asimilación de datos que combinan modelos de pronóstico meteorológico y observaciones de distintas fuentes de forma objetiva con el fin de sintetizar el estado actual y la evolución de multiples variables de la atmósfera, la superficie de la tierra y los océanos. Los dos reanálisis más usados son &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) de la &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, una versión mejorada de &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), y &lt;em&gt;ERA-Interim&lt;/em&gt; del &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;ECMWF&lt;/a&gt;. Dado que &lt;em&gt;NCEP-DO&lt;/em&gt; es de la primera generacióm, se recomienda usar reanálisis de tercera generación, especialmente &lt;em&gt;ERA-Interim&lt;/em&gt;. Una visión general de los actuales reanálisis atmosféricos la podemos encontrar &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;aquí&lt;/a&gt;. Primero vamos a ver cómo acceder a los datos del &lt;em&gt;NCEP&lt;/em&gt; a través de un paquete de R en &lt;em&gt;CRAN&lt;/em&gt; que facilita la descarga y el manejo de los datos. Después haremos lo mismo con &lt;em&gt;ERA-Interim&lt;/em&gt;, no obstante, para acceder a este último dataset de reanálisis es necesario usar &lt;em&gt;python&lt;/em&gt; y la correspondiente API del &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
-&lt;p&gt;Para acceder a los reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es necesario instalar el paquete correspondiente &lt;em&gt;RNCEP&lt;/em&gt;. La función principal es &lt;code&gt;NCEP.gather( )&lt;/code&gt;. La resolución del reanálisis del &lt;em&gt;NCEP&lt;/em&gt; es de 2,5º X 2,5º.&lt;/p&gt;
-&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Paquetes&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes RNCEP, lubridate y tidyverse
-if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-
-#cargamos las librerías
-library(RNCEP)
-library(lubridate) #la necesitamos para manipular fechas
-library(tidyverse) #para visualizar y manipular 
-library(RColorBrewer) #colores para la visualización
-library(sf) #para importar un shapefile y trabajar con geom_sf&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;descarga-de-datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Descarga de datos&lt;/h2&gt;
-&lt;p&gt;Descargaremos la temperatura del aire a la altura de 850haPa para el año 2016. Las variables y niveles de presión pueden ser consultados en los detalles de la función &lt;code&gt;?NCEP.gather&lt;/code&gt;. El argumento &lt;em&gt;reanalysis2&lt;/em&gt; nos permite descargar tanto la versión I como la versión II, siendo por defecto &lt;em&gt;FALSE&lt;/em&gt;, o sea, se accede al reanálisis I. En todas las consultas obtendremos datos horarios de cada 6 horas (00:00, 06:00, 12:00 y 18:00). Esto supone un total de 1464 valores para el año 2016.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definimos los argumentos necesarios
-month_range &amp;lt;- c(1,12)     #período de meses
-year_range &amp;lt;- c(2016,2016) #período de años
-
-lat_range &amp;lt;- c(30,60)      #rango de latitud
-lon_range &amp;lt;- c(-30,50)     #rango de longitud
- 
-
-data &amp;lt;- NCEP.gather(&amp;quot;air&amp;quot;,    #nombre de la variable
-                    850, #altura 850hPa
-                    month_range,year_range,
-                    lat_range,lon_range,
-                    return.units = TRUE,
-                    reanalysis2=TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] Units of variable &amp;#39;air&amp;#39; are degK
-## [1] Units of variable &amp;#39;air&amp;#39; are degK&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#dimensiones                     
-dim(data) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1]   13   33 1464&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#encontramos en dimnames( ) lon,lat y tiempo
-#fechas y horas 
-date_time &amp;lt;- dimnames(data)[[3]]
-date_time &amp;lt;- ymd_h(date_time)
-head(date_time)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2016-01-01 00:00:00 UTC&amp;quot; &amp;quot;2016-01-01 06:00:00 UTC&amp;quot;
-## [3] &amp;quot;2016-01-01 12:00:00 UTC&amp;quot; &amp;quot;2016-01-01 18:00:00 UTC&amp;quot;
-## [5] &amp;quot;2016-01-02 00:00:00 UTC&amp;quot; &amp;quot;2016-01-02 06:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#longitud y latitud
-lat &amp;lt;- dimnames(data)[[1]]
-lon &amp;lt;- dimnames(data)[[2]]
-head(lon);head(lat)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;-30&amp;quot;   &amp;quot;-27.5&amp;quot; &amp;quot;-25&amp;quot;   &amp;quot;-22.5&amp;quot; &amp;quot;-20&amp;quot;   &amp;quot;-17.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;60&amp;quot;   &amp;quot;57.5&amp;quot; &amp;quot;55&amp;quot;   &amp;quot;52.5&amp;quot; &amp;quot;50&amp;quot;   &amp;quot;47.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;promedio-mensual&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Promedio mensual&lt;/h2&gt;
-&lt;p&gt;Vemos que se trata de un &lt;em&gt;array&lt;/em&gt; de tres dimensiones con [lat,lon,tiempo]. Además, extraemos latitud, longitud y el tiempo. La temperatura está dada en Kelvin. El objetivo aquí será mostrar dos mapas comparando enero y julio de 2016.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos nuestra variable de agrupación 
-group &amp;lt;- month(date_time) 
-
-#estimamos el promedio por mes de la temperatura
-data_month &amp;lt;- aperm(
-  apply(
-    data, #nuestros datos
-    c(1,2), #aplicamos a cada serie temporal 1:fila, 2:columna la función mean( )
-    by, #agrupar por 
-    group, #meses como agrupación
-    function(x)ifelse(all(is.na(x)),NA,mean(x))),
-  c(2,3,1)) #reordenamos para obtener un array como el original
-
-dim(data_month) #temperatura 850haP por mes enero a diciembre&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 13 33 12&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;visualización&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualización&lt;/h2&gt;
-&lt;p&gt;Ahora, podemos visualizar con &lt;em&gt;ggplot2&lt;/em&gt; la temperatura de enero y julio. En este ejemplo, uso &lt;code&gt;geom_sf( )&lt;/code&gt; del paquetes &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, que hace el trabajo más fácil para visualizar en &lt;em&gt;ggplot&lt;/em&gt; objetos espaciales (en el futuro haré un post sobre sf y ggplot). En la dimensión de latitud y longitud vemos que únicamente nos indica para cada fila y columna un valor. Pero necesitamos las coordenadas de todas las celdas de la matriz. Para crear todas las combinaciones entre dos variables usamos la función &lt;code&gt;expand.grid( )&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#primero creamos todas las combinaciones de lonlat
-lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
-
-#lonlat es carácter, ya que fue un nombre, por eso lo convertimos en númerico
-lonlat &amp;lt;- apply(lonlat,2,as.numeric)
-
-#lon y lat no están en el orden como lo esperamos
-#fila=lon; columna=lat
-data_month &amp;lt;- aperm(data_month,c(2,1,3))
-
-#subtraemos 273.15K para convertir K a ºC.
-df &amp;lt;- data.frame(lonlat,
-                 Ta01=as.vector(data_month[,,1])-273.15,
-                 Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Antes de visualizar los datos con &lt;em&gt;ggplot2&lt;/em&gt;, tenemos que adpatar la tabla. El shapefile con los limites de los países se puede descargar &lt;a href=&#34;/files/CNTR_RG_03M_2014.zip&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos la tabla ancha en una larga
-df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
-             mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
-
-#importamos el limite de países
-limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
-## Simple feature collection with 256 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.66068
-## epsg (SRID):    NA
-## proj4string:    +proj=longlat +ellps=GRS80 +no_defs&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#gama de colores
-colbr &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
-
-ggplot(df)+
-      geom_tile(aes(lon,lat,fill=Ta))+ #temperatura
-      geom_sf(data=limit,fill=NA,size=.5)+ #limite
-        scale_fill_gradientn(colours=rev(colbr))+
-          coord_sf(ylim=c(30,60),xlim=c(-30,50))+
-          scale_x_continuous(breaks=seq(-30,50,10),expand=c(0,0))+
-          scale_y_continuous(breaks=seq(30,60,5),expand=c(0,0))+
-          labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
-           facet_grid(month~.)+ #mapa por mes
-             theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
-&lt;p&gt;El &lt;em&gt;ECMWF&lt;/em&gt; ofrece acceso a sus bases de datos públicos a partir de una &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. Es necesario estar registrado en la web del &lt;em&gt;ECMWF&lt;/em&gt;. Se puede darse de alta &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;aquí&lt;/a&gt;. Al tratarse de otro lenguaje de programación, en R debemos usar un interfaz entre ambos lo que nos permite el paquete &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. También debemos que tener instalada una distribución de pyhton (versión 2.x o 3.x). En el caso de Windows podemos usar &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Recientemente se ha publicado un nuevo paquete &lt;code&gt;ecmwfr&lt;/code&gt; que facilita el acceso a los APIs de Copernicus y ECMWF. La gran ventaja es que no hace falta instalar &lt;code&gt;python&lt;/code&gt;. Más detalles &lt;a href=&#34;https://github.com/khufkens/ecmwfr&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-
-&lt;/div&gt;
-
-&lt;div id=&#34;instalación&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Instalación&lt;/h2&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
-if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quot;) #para manejar formato netCDF
-
-#cargamos las librerías
-library(reticulate)
-library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Una vez que tenemos instalado &lt;em&gt;anaconda&lt;/em&gt; y el paquete &lt;em&gt;reticulate&lt;/em&gt;, podemos instalar el paquete &lt;em&gt;python ecmwfapi&lt;/em&gt;. La instalación la podemos llevar a cabo, o bien através del CMD de Windows usando el comando &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, o bien con la función &lt;code&gt;py_install( )&lt;/code&gt; del paquete &lt;em&gt;reticulate&lt;/em&gt;. La misma función permite instalar cualquier librería &lt;em&gt;python&lt;/em&gt; desde R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos la API ECMWF
-py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;conexión-y-descarga-con-la-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Conexión y descarga con la ECMWF API&lt;/h2&gt;
-&lt;p&gt;Para poder acceder a la API es requisito crear un archivo con la información del usuario.&lt;/p&gt;
-&lt;p&gt;El archivo “.ecmwfapirc” debe contener la siguiente información:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;{
-    &amp;quot;url&amp;quot;   : &amp;quot;https://api.ecmwf.int/v1&amp;quot;,
-    &amp;quot;key&amp;quot;   : &amp;quot;XXXXXXXXXXXXXXXXXXXXXX&amp;quot;,
-    &amp;quot;email&amp;quot; : &amp;quot;john.smith@example.com&amp;quot;
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La clave podemos obtenerla con la cuenta de usuario &lt;a href=&#34;https://api.ecmwf.int/v1/key/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;El archivo se puede crear con el bloc de notas de Windows.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Creamos un documento “ecmwfapirc.txt”.&lt;/li&gt;
-&lt;li&gt;Renombramos este archivo a “.ecmwfapirc.”&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;El último punto desaparece de forma automática. Después guardamos este archivo en “C:/USERNAME/.ecmwfapirc” o “C:/USERNAME/Documents/.ecmwfapirc”.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos la librería python ecmwfapi
-ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
-
-#en este paso debe existir el archivo .ecmwfapirc
-server = ecmwf$ECMWFDataServer() #iniciamos la conexión&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Llegados a este punto, ¿cómo creamos una consulta? Lo más fácil es ir a la web del &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt; dónde elegimos la base de datos, en este caso &lt;em&gt;ERA-Interim&lt;/em&gt; en superficie, para crear un script con todos los datos necesarios. Más detalles sobre la sintaxis podemos encontrar &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;aquí&lt;/a&gt;. Cuando procedemos en la web sólamente tenemos que hacer click en “View MARS Request”. Este paso nos lleva al script en &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/erainterim1.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;&lt;img src=&#34;/img/erainterim2.png&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Con la sintaxis del script que nos da la &lt;em&gt;MARS Request&lt;/em&gt; podemos crear la consulta en R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos la consulta
-query &amp;lt;-r_to_py(list(
-  class=&amp;#39;ei&amp;#39;,
-  dataset= &amp;quot;interim&amp;quot;, #base de datos
-  date= &amp;quot;2017-01-01/to/2017-12-31&amp;quot;, #periodo 
-  expver= &amp;quot;1&amp;quot;,
-  grid= &amp;quot;0.125/0.125&amp;quot;, #resolución
-  levtype=&amp;quot;sfc&amp;quot;,
-  param= &amp;quot;167.128&amp;quot;, # temperatura del aire (2m)
-  area=&amp;quot;45/-10/30/5&amp;quot;, #N/W/S/E
-  step= &amp;quot;0&amp;quot;,
-  stream=&amp;quot;oper&amp;quot;,
-  time=&amp;quot;00:00:00/06:00:00/12:00:00/18:00:00&amp;quot;, #paso de tiempo
-  type=&amp;quot;an&amp;quot;,
-  format= &amp;quot;netcdf&amp;quot;, #formato
-  target=&amp;#39;ta2017.nc&amp;#39; #nombre del archivo
-))
-
-server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El resultado es un archivo netCDF que podemos processar con el paquete &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;procesar-ncdf&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Procesar ncdf&lt;/h2&gt;
-&lt;p&gt;A partir de aquí, el objetivo será la extracción de una serie temporal de una coordenada más próxima a una dada. Usaremos las coordenadas de Madrid (40.418889, -3.691944).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cargamos las librerías 
-library(sf)
-library(ncdf4)
-library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#abrimos la conexión con el archivo
-nc &amp;lt;- nc_open(&amp;quot;ta2017.nc&amp;quot;)
-
-#extraemos lon y lat
-lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
-lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
-dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extraemos el tiempo
-t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
-
-#unidad del tiempo: horas desde 1900-01-01
-ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $units
-## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
-## 
-## $long_name
-## [1] &amp;quot;time&amp;quot;
-## 
-## $calendar
-## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos las horas en fecha+hora 
-#as_datetime de lubridate espera segundos
-timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
-
-#importamos los datos
-data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
-
-#cerramos la conexión
-nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Más detalles se pueden consultar en este breve manual sobre cómo trabajar con netCDF &lt;a href=&#34;https://dominicroye.github.io/en/publication/ncdf_2015/&#34;&gt;aqui&lt;/a&gt;. En esta próxima sección hacemos uso del paquete &lt;em&gt;sf&lt;/em&gt; la cuál está sustituyendo las más conocidas &lt;em&gt;sp&lt;/em&gt; y &lt;em&gt;rgdal&lt;/em&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos todas las combinaciones
-lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
-
-#debemos convertir las coordenadas en objeto espacial sf
-#además indicamos el sistema de coordenadas en codigo EPSG
-coord &amp;lt;- st_as_sf(lonlat,coords=c(&amp;quot;lon&amp;quot;,&amp;quot;lat&amp;quot;))%&amp;gt;%
-                    st_set_crs(4326)
-
-#lo mismo hacemos con nuestra coordenada de Madrid
-psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
-                   st_sfc()%&amp;gt;%
-                     st_set_crs(4326)
-
-#plot de los puntos
-plot(st_geometry(coord))
-plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;En los próximos pasos calculamos la distancia de nuestro punto de referencia a todos los puntos del grid. Posteriormente, buscamos aquel con menos distancia.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadimos la distancia a los puntos
-coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
-
-#creamos una matrix de distancia con las mismas dimensiones que nuestros datos
-dist_mat &amp;lt;- matrix(coord$dist,dim(data)[-3])
-
-#la función arrayInd es útil para obtener los índices fila y columna en este caso
-mat_index &amp;lt;- as.vector(arrayInd(which.min(dist_mat), dim(dist_mat)))
-
-#extraemos la serie temporal y cambiamos la unidad de K a ºC
-#convertimos el tiempo en fecha + hora
-df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp;gt;%
-        mutate(ta=ta-273.15,time=ymd_hms(time))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para terminar, visualizamos nuestra serie temporal.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(df,
-       aes(time,ta))+
-    geom_line()+
-    labs(y=&amp;quot;Temperatura (ºC)&amp;quot;,
-             x=&amp;quot;&amp;quot;)+
-    theme_bw()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;actualización-para-acceder-era-5&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Actualización para acceder ERA-5&lt;/h1&gt;
-&lt;p&gt;Recientemente el nuevo reanálisis ERA-5 con &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;&lt;em&gt;single level&lt;/em&gt;&lt;/a&gt; o &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview&#34;&gt;&lt;em&gt;pressure level&lt;/em&gt;&lt;/a&gt; fue puesto a disposición de los usarios. Es la quinta generación del European Centre for Medium-Range Weather Forecasts (ECMWF) y accesible a través de una nueva API de Copernicus. El nuevo reanálisis ERA-5 tiene una cobertura temporal desde 1950 hasta la actualidad a una resolución horizontal de 30km a nivel mundial, con 137 niveles desde la superficie hasta una altura de 80km. Una diferencia importante con respecto al ERA-Interim anterior es la resolución temporal con datos horarios.&lt;/p&gt;
-&lt;p&gt;El acceso cambia a la infrastructura de Climate Data Store (CDS) con su propia API. Es posible descargar directamente desde la página o usando la Python API en una forma similar a la ya presentada en este post. Sin embargo, existen ligeras diferencias que voy a explicar a continuación.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Es necesario tener una cuenta en CDS de Copernicus &lt;a href=&#34;https://cds.climate.copernicus.eu/user/register&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Nuevamente, hace falta una clave &lt;a href=&#34;https://cds.climate.copernicus.eu/api-how-to&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Cambia la librería de Python y algo los argumentos en la consulta.&lt;/li&gt;
-&lt;/ol&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cargamos las librerías 
-library(sf)
-library(ncdf4)
-library(tidyverse)
-library(reticulate)
-
-#instalamos la CDS API
-conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;,pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para poder acceder a la API un requisito es crear un archivo con la información del usuario.&lt;/p&gt;
-&lt;p&gt;El archivo “.cdsapirc” debe contener la siguiente información:&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;
-url: https://cds.climate.copernicus.eu/api/v2
-key: {uid}:{api-key}
-&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La clave la podemos obtener con la cuenta de usuario en el &lt;em&gt;User profile&lt;/em&gt;.&lt;/p&gt;
-&lt;p&gt;El archivo se puede crear con el bloc de notas de Windows del mismo modo como ha sido explicado para ERA-Interim.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos la librería python CDS
-cdsapi &amp;lt;- import(&amp;#39;cdsapi&amp;#39;)
-
-#en este paso debe existir el archivo .cdsapirc
-server = cdsapi$Client() #iniciamos la conexión&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Con la sintaxis del script que nos da la &lt;em&gt;Show API request&lt;/em&gt; podemos crear la consulta en R.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos la consulta
-query &amp;lt;- r_to_py(list(
-    variable= &amp;quot;2m_temperature&amp;quot;,
-    product_type= &amp;quot;reanalysis&amp;quot;,
-    year= &amp;quot;2018&amp;quot;,
-    month= &amp;quot;07&amp;quot;, #formato: &amp;quot;01&amp;quot;,&amp;quot;01&amp;quot;, etc.
-    day= str_pad(1:31,2,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),   
-    time= str_c(0:23,&amp;quot;00&amp;quot;,sep=&amp;quot;:&amp;quot;)%&amp;gt;%str_pad(5,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),
-    format= &amp;quot;netcdf&amp;quot;,
-    area = &amp;quot;45/-20/35/5&amp;quot; # North, West, South, East
-  ))
-
-server$retrieve(&amp;quot;reanalysis-era5-single-levels&amp;quot;,
-                  query,
-                 &amp;quot;era5_ta_2018.nc&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Es posible que la primera vez se reciba un mensaje de error, dado que todavía no se han aceptado los términos y las condiciones requeridas. Únicamente se debe seguir el enlace indicado.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;Error in py_call_impl(callable, dots$args, dots$keywords) : 
-  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &amp;#39;Licence to Use Copernicus Products&amp;#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;A partir de aquí podemos seguir los mismos pasos como los hechos con ERA-Interim.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#abrimos la conexión con el archivo
-nc &amp;lt;- nc_open(&amp;quot;era5_ta_2018.nc&amp;quot;)
-
-#extraemos lon y lat
-lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
-lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
-dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 41&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 101&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extraemos el tiempo
-t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
-
-#unidad del tiempo: horas desde 1900-01-01
-ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $units
-## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
-## 
-## $long_name
-## [1] &amp;quot;time&amp;quot;
-## 
-## $calendar
-## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convertimos las horas en fecha+hora 
-#as_datetime de lubridate espera segundos
-timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
-
-#temperatura en K de julio 2018
-head(timestamp)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2018-07-01 00:00:00 UTC&amp;quot; &amp;quot;2018-07-01 01:00:00 UTC&amp;quot;
-## [3] &amp;quot;2018-07-01 02:00:00 UTC&amp;quot; &amp;quot;2018-07-01 03:00:00 UTC&amp;quot;
-## [5] &amp;quot;2018-07-01 04:00:00 UTC&amp;quot; &amp;quot;2018-07-01 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los datos
-data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
-
-#plot
-filled.contour(data[,,1])&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(data.frame(date=timestamp,ta=data[1,5,]),
-     type=&amp;quot;l&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-09-15-acceso-a-datos-de-los-reanalisis-desde-r/index.es_files/figure-html/unnamed-chunk-18-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#cerramos la conexión
-nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>reanalisis</category>
-      
-            <category>interim</category>
-      
-            <category>NCEP/NCAR</category>
-      
-            <category>era</category>
-      
-            <category>descarga</category>
-      
-            <category>ncdf</category>
-      
-            <category>acceso</category>
-      
-            <category>api</category>
-      
-            <category>python</category>
-      
-            <category>ECMWF</category>
-      
       
             <category>R</category>
       

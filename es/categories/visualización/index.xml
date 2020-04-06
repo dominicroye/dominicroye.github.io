@@ -6,10 +6,242 @@
     <description>Recent content in visualización on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Fri, 01 Nov 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 29 Mar 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/es/categories/visualizaci%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Visualizar anomalías climáticas</title>
+      <link>/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</guid>
+      <description>
+
+
+&lt;p&gt;Cuando visualizamos anomalías de precipitación y temperatura, simplemente usamos series temporales en un gráfico de barras indicando con color rojo y azul valores negativos y positivos. No obstante, para tener una imagen global necesitamos ambas anomalías en un único gráfico. Así podríamos responder directamente a la pregunta de si una estación del año o un mes en concreto fue seco-cálido o húmedo-frío, e incluso comparar estas anomalías en el contexto de años anteriores.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggrepel&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Etiquetas sin superposición con ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggrepel&amp;quot;)) install.packages(&amp;quot;ggrepel&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#paquetes
+library(tidyverse)
+library(lubridate)
+library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparar los datos&lt;/h2&gt;
+&lt;p&gt;Primero importamos la precipitación y temperatura diaria de la estación meteorológica seleccionada (&lt;a href=&#34;/files/meteo_tenerife.csv&#34;&gt;descarga&lt;/a&gt;). Usaremos los datos de Tenerife Sur (España) [1981-2020] accesible a través de &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. En R existe un paquete &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; que facilita la descarga con funciones específicas para acceder a los datos de AEMET, Meteogalicia y Meteocat.&lt;/p&gt;
+&lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
+&lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-2-preparar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 2: preparar los datos&lt;/h3&gt;
+&lt;p&gt;En el segundo paso preparamos los datos para calcular las anomalías. Para ello, creamos tres nuevas columnas: el mes, el año y la estación del año. Como nuestro objetivo son las anomalías invernales no podemos usar el año natural, ya que el invierno comprende el mes de diciembre de un año y los meses de enero y febrero del siguiente. La función personalizada &lt;code&gt;meteo_yr()&lt;/code&gt; extrae el año de una fecha indicando el mes inicial. El concepto es similar al año hidrológico en el que se empieza en octubre.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yr &amp;lt;- function(dates, start_month = NULL) {
+  # convertir a POSIXlt
+  dates.posix &amp;lt;- as.POSIXlt(dates)
+  # la compensación
+  offset &amp;lt;- ifelse(dates.posix$mon &amp;gt;= start_month - 1, 1, 0)
+  # nuevo año
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Usaremos las funciones de la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt; (&lt;a href=&#34;https://www.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://www.tidyverse.org/&lt;/a&gt;). La función &lt;code&gt;mutate()&lt;/code&gt; ayuda a añadir nuevas columnas o a cambiar otras existentes. Para definir las estaciones del año, empleamos la función &lt;code&gt;case_when()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; lo que tiene muchas ventajas en comparación con una cadena de &lt;code&gt;ifelse()&lt;/code&gt;. En la función &lt;code&gt;case_when()&lt;/code&gt; usamos fórmulas en dos tiempos, por un lado la condición y por otro la acción cuando se cumpla esa condición. En R una fórmula de dos tiempos o dos lados se consistuye con el operador &lt;code&gt;~&lt;/code&gt;. El operador binario &lt;code&gt;%in%&lt;/code&gt; nos permite filtrar varios valores en un conjunto.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &amp;quot;Winter&amp;quot;,
+                                  month %in% 3:5 ~ &amp;quot;Spring&amp;quot;,
+                                  month %in% 6:8 ~ &amp;quot;Summer&amp;quot;,
+                                  month %in% 9:11 ~ &amp;quot;Autum&amp;quot;))
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-3-estimar-las-anomalías-invernales&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 3: estimar las anomalías invernales&lt;/h3&gt;
+&lt;p&gt;En el siguiente paso creamos un subset del invierno. Después agrupamos por el año meteorológico y calculamos la suma y el promedio para la precipitación y la temperatura, respectivamente. Para facilitar el trabajo el paquete &lt;code&gt;magrittr&lt;/code&gt; introduce el operador llamado &lt;em&gt;pipe&lt;/em&gt; en la forma &lt;code&gt;%&amp;gt;%&lt;/code&gt; con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador &lt;em&gt;pipe&lt;/em&gt; pasa la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. Se debe entender y pronunciar el &lt;code&gt;%&amp;gt;%&lt;/code&gt; como &lt;em&gt;“luego”&lt;/em&gt; (&lt;em&gt;then&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;- filter(data, 
+                   season == &amp;quot;Winter&amp;quot;) %&amp;gt;% 
+              group_by(winter_yr) %&amp;gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sólo nos quedan por calcular las anomalías de precipitación y temperatura. Las columnas &lt;code&gt;pr_mean&lt;/code&gt; y &lt;code&gt;ta_mean&lt;/code&gt; contendrán el promedio climatico, la referencia de las anomalías respecto al periodo normal 1981-2010. Por eso debemos filtrar los valores al periodo antes de 2010, lo que haremos de la forma habitual de filtrado de vectores en R. Una vez que tenemos las referencias estimamos las anomalías &lt;code&gt;pr_anom&lt;/code&gt; y &lt;code&gt;ta_anom&lt;/code&gt;. Para facilitar la interpretación, en el caso de la precipitación lo expresamos en porcentaje, pero poniendo el promedio en 0% en lugar del 100%.&lt;/p&gt;
+&lt;p&gt;Además, añadimmos tres columnas con información necesaria en la creación del gráfico. 1) &lt;code&gt;labyr&lt;/code&gt; contiene el año de cada anomalía siempre y cuando haya sido mayor/menor del -+10% o -+0,5ºC, respectivamente (lo hago para que no haya demasiadas etiquetas), 2) &lt;code&gt;symb_point&lt;/code&gt; una variable dummy para poder crear un simbolo diferencial entre los casos de (1), y 3) &lt;code&gt;lab_font&lt;/code&gt; destacaremos en negrita el año 2020.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &amp;lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &amp;lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;),
+                              lab_font = ifelse(labyr == 2020, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Crear el gráfico&lt;/h2&gt;
+&lt;p&gt;El gráfico lo construiremos añadiendo capa por capa los diferentes elementos: 1) el fondo con las diferentes cuadrículas (Seco-Cálido, Seco-Frío, etc.) 2) los puntos y etiquetas, y 3) los últimos ajustes de estilo.&lt;/p&gt;
+&lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 1&lt;/h3&gt;
+&lt;p&gt;La idea es que tengamos los puntos con anomalías seco-cálido en el cuadrante I (arriba-derecha) y los de húmedo-frío en el cuadrante III (abajo-izquierda). Por eso, debemos invertir el signo en las anomalías de precipitación. Después creamos un &lt;code&gt;data.frame&lt;/code&gt; con las posiciones de las etiquetas de los cuatro cuadrantes. Para las posiciones en &lt;em&gt;x&lt;/em&gt; y &lt;em&gt;y&lt;/em&gt; se usan &lt;code&gt;Inf&lt;/code&gt; y &lt;code&gt;-Inf&lt;/code&gt; lo que equivale al punto máximo dentro del &lt;em&gt;panel&lt;/em&gt;. No obstante, es necesario ajustar la posición hacia los puntos extremos dentro del marco gráfico con los argumentos conocidos de &lt;code&gt;ggplot2&lt;/code&gt;: &lt;em&gt;hjust&lt;/em&gt; y &lt;em&gt;vjust&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv_p &amp;lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &amp;lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&amp;quot;Húmedo-Cálido&amp;quot;, &amp;quot;Seco-Cálido&amp;quot;,
+                              &amp;quot;Húmedo-Frío&amp;quot;, &amp;quot;Seco-Frío&amp;quot;))
+
+  
+bglab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      x    y hjust vjust           lab
+## 1 -Inf  Inf     1     1 Húmedo-Cálido
+## 2  Inf  Inf     1     0   Seco-Cálido
+## 3 -Inf -Inf     0     1   Húmedo-Frío
+## 4  Inf -Inf     0     0     Seco-Frío&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 2&lt;/h3&gt;
+&lt;p&gt;En la segunda podemos empezar a construir el gráfico añadiendo todos los elementos gráficos. En esta parte creamos el fondo con los diferentes colores de cada cuadrante. La función &lt;code&gt;annotate()&lt;/code&gt; permite añadir capas de geometría sin el uso de variables dentro de un &lt;code&gt;data.frame&lt;/code&gt;. Con la función &lt;code&gt;geom_hline()&lt;/code&gt; y &lt;code&gt;geom_vline()&lt;/code&gt; marcamos los cuadrantes en horizontal y vertical usando una linea discontinua. Por último, dibujamos las etiquetas de cada cuadrante, empleando la función &lt;code&gt;geom_text()&lt;/code&gt;. Cuando usamos diferentes fuentes de &lt;code&gt;data.frames&lt;/code&gt;, uno diferente al principal usado en &lt;code&gt;ggplot()&lt;/code&gt;, debemos indicarlo con el argumento &lt;code&gt;data&lt;/code&gt; en la función de geomtría correspondiente.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &amp;quot;#fc9272&amp;quot;, alpha = .6) + #humedo-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &amp;quot;#cb181d&amp;quot;, alpha = .6) + #seco-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &amp;quot;#2171b5&amp;quot;, alpha = .6) + #humedo-frio
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &amp;quot;#c6dbef&amp;quot;, alpha = .6) + #seco-frio
+       geom_hline(yintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &amp;quot;italic&amp;quot;, size = 5, 
+                     angle = 90, colour = &amp;quot;white&amp;quot;)
+
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 3&lt;/h3&gt;
+&lt;p&gt;En la tercera parte simplemente añadimos los puntos de las anomalías y las etiquetas de los años. La función &lt;code&gt;geom_text_repel()&lt;/code&gt; es similar a la que conocemos por defecto en &lt;code&gt;ggplot2&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, pero evita el sobrlapso entre sí.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-4&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 4&lt;/h3&gt;
+&lt;p&gt;En la última parte ajustamos, además del estilo general, los ejes, el tipo de color y el (sub)título. Recuerda que cambiamos el signo en las anomalías de precipitación. Por eso, debemos usar los argumentos &lt;code&gt;breaks&lt;/code&gt; y &lt;code&gt;labels&lt;/code&gt; en la función &lt;code&gt;scale_x_continouous()&lt;/code&gt; para revertir el signo en las etiquetas correspondientes a los cortes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g3 &amp;lt;- g2 + scale_x_continuous(&amp;quot;Anomalía de precipitación en %&amp;quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&amp;quot;Anomalía de temperatura media en ºC&amp;quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;)) +
+           scale_colour_manual(values = rev(c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;))) +
+           labs(title = &amp;quot;Anomalías invernales en Tenerife Sur&amp;quot;, 
+                caption = &amp;quot;Datos: AEMET\nPeriodo normal 1981-2010&amp;quot;) +
+           theme_bw()
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>anomalía</category>
+      
+            <category>precipitación</category>
+      
+            <category>temperatura</category>
+      
+            <category>clima</category>
+      
+            <category>puntos</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
+    </item>
     
     <item>
       <title>Visualizar el crecimiento urbano</title>
@@ -357,7 +589,7 @@ tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
 if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
-if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;cowplot&amp;quot;)
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 
 #paquetes
@@ -411,21 +643,21 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
 data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
 ## # Groups:   yr [70]
-##       yr mo         prs
-##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950 &amp;quot;ene\\.&amp;quot;  55.6
-##  2  1950 &amp;quot;feb\\.&amp;quot; 349. 
-##  3  1950 &amp;quot;mar\\.&amp;quot;  85.8
-##  4  1950 &amp;quot;abr\\.&amp;quot;  33.4
-##  5  1950 &amp;quot;may\\.&amp;quot; 272. 
-##  6  1950 &amp;quot;jun\\.&amp;quot; 111. 
-##  7  1950 &amp;quot;jul\\.&amp;quot;  35.4
-##  8  1950 &amp;quot;ago\\.&amp;quot;  76.4
-##  9  1950 &amp;quot;sep\\.&amp;quot;  85  
-## 10  1950 &amp;quot;oct\\.&amp;quot;  53  
+##       yr mo      prs
+##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;
+##  1  1950 ene    55.6
+##  2  1950 feb   349. 
+##  3  1950 mar    85.8
+##  4  1950 abr    33.4
+##  5  1950 may   272. 
+##  6  1950 jun   111. 
+##  7  1950 jul    35.4
+##  8  1950 ago    76.4
+##  9  1950 sep    85  
+## 10  1950 oct    53  
 ## # ... with 823 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;paso-3-estimar-las-anomalias&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;paso-3-estimar-las-anomalías&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Paso 3: estimar las anomalías&lt;/h3&gt;
 &lt;p&gt;Ahora debemos estimar los valores normales de cada mes y unir esta tabla a nuestros datos principales para posteriormente poder calcular la anomalía mensual. Expresamos la anomalía en porcentaje y restamos 100 para fijar el promedio en 0. Además, creamos una variable que nos indica si la anomalía es negativa o positiva, y otra con la fecha.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_ref &amp;lt;- filter(data, yr &amp;gt; 1981, yr &amp;lt;= 2010) %&amp;gt;%
@@ -438,7 +670,7 @@ data &amp;lt;- mutate(data,
                anom = (prs*100/pr_ref)-100, 
                date = str_c(yr, as.numeric(mo), 1, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd(),
                sign= ifelse(anom &amp;gt; 0, &amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función &lt;code&gt;geom_bar()&lt;/code&gt; aplica el conteo a la variable. No obstante, en este caso conocemos &lt;code&gt;y&lt;/code&gt;, por tanto indicamos con el argumento &lt;code&gt;stat = &amp;quot;identity&amp;quot;&lt;/code&gt; que debe usar el valor dado en &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función &lt;code&gt;geom_bar()&lt;/code&gt; aplica el conteo a la variable. No obstante, en este caso conocemos &lt;code&gt;y&lt;/code&gt;, por tanto indicamos con el argumento &lt;code&gt;stat = &#34;identity&#34;&lt;/code&gt; que debe usar el valor dado en &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(data, yr == 2018) %&amp;gt;%
    ggplot(aes(date, anom, fill = sign)) + 
        geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
@@ -449,7 +681,7 @@ data &amp;lt;- mutate(data,
           theme_hc()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;paso-4-calcular-las-medidas-estadisticas&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;paso-4-calcular-las-medidas-estadísticas&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Paso 4: calcular las medidas estadísticas&lt;/h3&gt;
 &lt;p&gt;En este último paso estimamos el valor máximo, mínimo, el cuantil 25%/75% y el rango intercuartil por mes de toda la serie temporal.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_norm &amp;lt;-     group_by(data, mo) %&amp;gt;%
@@ -461,23 +693,23 @@ data &amp;lt;- mutate(data,
 
 data_norm&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 6
-##    mo          mx    min   q25   q75   iqr
-##    &amp;lt;ord&amp;gt;    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 &amp;quot;ene\\.&amp;quot;  193.  -89.6 -43.6 56.3   99.9
-##  2 &amp;quot;feb\\.&amp;quot;  320.  -96.5 -51.2 77.7  129. 
-##  3 &amp;quot;mar\\.&amp;quot;  381. -100   -40.6 88.2  129. 
-##  4 &amp;quot;abr\\.&amp;quot;  198.  -93.6 -51.2 17.1   68.3
-##  5 &amp;quot;may\\.&amp;quot;  141.  -90.1 -45.2 17.0   62.2
-##  6 &amp;quot;jun\\.&amp;quot;  419.  -99.3 -58.2 50.0  108. 
-##  7 &amp;quot;jul\\.&amp;quot;  311.  -98.2 -77.3 27.1  104. 
-##  8 &amp;quot;ago\\.&amp;quot;  264. -100   -68.2 39.8  108. 
-##  9 &amp;quot;sep\\.&amp;quot;  241.  -99.2 -64.9 48.6  113. 
-## 10 &amp;quot;oct\\.&amp;quot;  220.  -99.0 -54.5  4.69  59.2
-## 11 &amp;quot;nov\\.&amp;quot;  137.  -98.8 -44.0 39.7   83.7
-## 12 &amp;quot;dic\\.&amp;quot;  245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
+##    mo       mx    min   q25   q75   iqr
+##    &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 ene    193.  -89.6 -43.6 56.3   99.9
+##  2 feb    320.  -96.5 -51.2 77.7  129. 
+##  3 mar    381. -100   -40.6 88.2  129. 
+##  4 abr    198.  -93.6 -51.2 17.1   68.3
+##  5 may    141.  -90.1 -45.2 17.0   62.2
+##  6 jun    419.  -99.3 -58.2 50.0  108. 
+##  7 jul    311.  -98.2 -77.3 27.1  104. 
+##  8 ago    264. -100   -68.2 39.8  108. 
+##  9 sep    241.  -99.2 -64.9 48.6  113. 
+## 10 oct    220.  -99.0 -54.5  4.69  59.2
+## 11 nov    137.  -98.8 -44.0 39.7   83.7
+## 12 dic    245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;crear-el-grafico&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Crear el gráfico&lt;/h2&gt;
 &lt;p&gt;Para crear el gráfico de anomalías con leyenda es necesario separar el gráfico principal de las leyendas.&lt;/p&gt;
 &lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
@@ -521,7 +753,7 @@ g1&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Parte 2&lt;/h3&gt;
 &lt;p&gt;Todavía nos falta una leyenda. Primero la creamos para los valores normales.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#datos de la leyenda
-legend &amp;lt;- filter(data_norm, mo == &amp;quot;ene\\.&amp;quot;)
+legend &amp;lt;- filter(data_norm, mo == &amp;quot;ene&amp;quot;)
 
 legend_lab &amp;lt;- gather(legend, stat, y, mx:q75) %&amp;gt;%
                  mutate(stat = factor(stat, stat, c(&amp;quot;máximo&amp;quot;,
@@ -547,13 +779,13 @@ g2 &amp;lt;- legend %&amp;gt;% ggplot()+
 g2&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Segundo, creamos otra leyenda para las anomalías actuales.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;ene\\.&amp;quot;,&amp;quot;feb\\.&amp;quot;)) %&amp;gt;% 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;ene&amp;quot;,&amp;quot;feb&amp;quot;)) %&amp;gt;% 
               ungroup() %&amp;gt;% 
             select(mo, anom, sign)
 
-legend2[2,1] &amp;lt;- &amp;quot;ene\\.&amp;quot;
+legend2[2,1] &amp;lt;- &amp;quot;ene&amp;quot;
 
-legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;ene\\.&amp;quot;, 3), 
+legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;ene&amp;quot;, 3), 
                           anom= c(110, 3, -70), 
                           label = c(&amp;quot;Anomalía positiva&amp;quot;, &amp;quot;Promedio&amp;quot;, &amp;quot;Anomalía negativa&amp;quot;))
 
@@ -585,7 +817,7 @@ p&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomalia2016_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;multiples-facetas&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;múltiples-facetas&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Múltiples facetas&lt;/h2&gt;
 &lt;p&gt;En este apartado haremos el mismo gráfico como en el anterior, pero para varios años.&lt;/p&gt;
 &lt;div id=&#34;parte-1-1&#34; class=&#34;section level3&#34;&gt;
@@ -656,197 +888,6 @@ p&lt;/code&gt;&lt;/pre&gt;
             <category>R</category>
       
             <category>R:intermedio</category>
-      
-    </item>
-    
-    <item>
-      <title>Cómo crear &#39;Warming Stripes&#39; in R</title>
-      <link>/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</link>
-      <pubDate>Wed, 05 Dec 2018 00:00:00 +0000</pubDate>
-      
-      <guid>/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</guid>
-      <description>
-
-
-&lt;p&gt;Este año se hicieron muy famosos en todo el mundo los llamados &lt;em&gt;warming stripes&lt;/em&gt;, las tiras del calentamiento global, que fueron creadas por el científico &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;A partir de su idea, creé tiras para ejemplos de España, como el siguiente de Madrid.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;es&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/Temperatura?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#Temperatura&lt;/a&gt; anual en &lt;a href=&#34;https://twitter.com/hashtag/MadridRetiro?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#MadridRetiro&lt;/a&gt; desde 1920 a 2017.  &lt;a href=&#34;https://twitter.com/hashtag/CambioClimatico?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#CambioClimatico&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; (idea de &lt;a href=&#34;https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw&#34;&gt;@ed_hawkins&lt;/a&gt; 🙏) &lt;a href=&#34;https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw&#34;&gt;@Divulgameteo&lt;/a&gt; &lt;a href=&#34;https://twitter.com/edupenabad?ref_src=twsrc%5Etfw&#34;&gt;@edupenabad&lt;/a&gt; &lt;a href=&#34;https://twitter.com/climayagua?ref_src=twsrc%5Etfw&#34;&gt;@climayagua&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw&#34;&gt;@ClimaGroupUB&lt;/a&gt; &lt;a href=&#34;https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw&#34;&gt;@4gotas_com&lt;/a&gt; &lt;a href=&#34;https://t.co/wmLb5uczpT&#34;&gt;pic.twitter.com/wmLb5uczpT&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw&#34;&gt;June 2, 2018&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
-&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta el paquete &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes lubridate y tidyverse
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-
-#paquetes
-library(tidyverse)
-library(lubridate)
-library(RColorBrewer)
-
-#importar las temperaturas anuales
-temp_lisboa &amp;lt;- read_csv(&amp;quot;temp_lisboa.csv&amp;quot;)
-
-str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;spec_tbl_df&amp;#39;, &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 139 obs. of  18 variables:
-##  $ YEAR  : num  1880 1881 1882 1883 1884 ...
-##  $ JAN   : num  9.17 11.37 10.07 10.86 11.16 ...
-##  $ FEB   : num  12 11.8 11.9 11.5 10.6 ...
-##  $ MAR   : num  13.6 14.1 13.5 10.5 12.4 ...
-##  $ APR   : num  13.1 14.4 14 13.8 12.2 ...
-##  $ MAY   : num  15.7 17.3 15.6 14.6 16.4 ...
-##  $ JUN   : num  17 19.2 17.9 17.2 19.1 ...
-##  $ JUL   : num  19.1 21.8 20.3 19.5 21.4 ...
-##  $ AUG   : num  20.6 23.5 21 21.6 22.4 ...
-##  $ SEP   : num  20.7 20 18 18.8 19.5 ...
-##  $ OCT   : num  17.9 16.3 16.4 15.8 16.4 ...
-##  $ NOV   : num  12.5 14.7 13.7 13.5 12.5 ...
-##  $ DEC   : num  11.07 9.97 10.66 9.46 10.25 ...
-##  $ D-J-F : num  10.7 11.4 10.6 11 10.4 ...
-##  $ M-A-M : num  14.1 15.2 14.3 12.9 13.6 ...
-##  $ J-J-A : num  18.9 21.5 19.7 19.4 20.9 ...
-##  $ S-O-N : num  17 17 16 16 16.1 ...
-##  $ metANN: num  15.2 16.3 15.2 14.8 15.3 ...
-##  - attr(*, &amp;quot;spec&amp;quot;)=
-##   .. cols(
-##   ..   YEAR = col_double(),
-##   ..   JAN = col_double(),
-##   ..   FEB = col_double(),
-##   ..   MAR = col_double(),
-##   ..   APR = col_double(),
-##   ..   MAY = col_double(),
-##   ..   JUN = col_double(),
-##   ..   JUL = col_double(),
-##   ..   AUG = col_double(),
-##   ..   SEP = col_double(),
-##   ..   OCT = col_double(),
-##   ..   NOV = col_double(),
-##   ..   DEC = col_double(),
-##   ..   `D-J-F` = col_double(),
-##   ..   `M-A-M` = col_double(),
-##   ..   `J-J-A` = col_double(),
-##   ..   `S-O-N` = col_double(),
-##   ..   metANN = col_double()
-##   .. )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Vemos en las columnas que tenemos valores mensuales y estacionales, y el valor anual. Pero antes de proceder a visualizar la temperatura anual, debemos sustituir los valores ausentes &lt;em&gt;999.9&lt;/em&gt; por &lt;code&gt;NA&lt;/code&gt;, usando la función &lt;code&gt;ifelse( )&lt;/code&gt; que lleva una condición y los argumentos correspondientes a verdadero y falso de la condición dada.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#selecionamos la columna del año y la temperatura anual
-temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
-
-#cambiamos el nombre de la columna 
-temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr, ta = metANN)
-
-#valores ausentes 999.9
-summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##       YEAR            ta        
-##  Min.   :1880   Min.   : 14.53  
-##  1st Qu.:1914   1st Qu.: 15.65  
-##  Median :1949   Median : 16.11  
-##  Mean   :1949   Mean   : 37.38  
-##  3rd Qu.:1984   3rd Qu.: 16.70  
-##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas del paquete &lt;em&gt;lubridate&lt;/em&gt; y las funciones de apoyo dentro de &lt;em&gt;ggplot2&lt;/em&gt;. La función &lt;code&gt;str_c( )&lt;/code&gt; del paquete &lt;em&gt;stringr&lt;/em&gt;, forma parte de la colección de &lt;em&gt;tidyverse&lt;/em&gt;, es similar a &lt;code&gt;paste( )&lt;/code&gt; de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función &lt;code&gt;ymd( )&lt;/code&gt; (year month day) del paquete &lt;em&gt;lubridate&lt;/em&gt; convierte una fecha en un objeto &lt;em&gt;Date&lt;/em&gt;. Es posible combinar varias funciones haciendo uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;creando-las-tiras&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Creando las tiras&lt;/h2&gt;
-&lt;p&gt;Primero, creamos el estilo del gráfico, especificando todo los argumentos del aspecto que queremos ajustar. Partimos del estilo por defecto de &lt;code&gt;theme_minimal( )&lt;/code&gt;. Además, asignamos los colores procedientes de &lt;em&gt;RColorBrewer&lt;/em&gt; a un objeto &lt;em&gt;col_srip&lt;/em&gt;. Más información sobre los colores usados &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_strip &amp;lt;- theme_minimal()+
-                 theme(axis.text.y = element_blank(),
-                       axis.line.y = element_blank(),
-                       axis.title = element_blank(),
-                       panel.grid.major = element_blank(),
-                       legend.title = element_blank(),
-                       axis.text.x = element_text(vjust = 3),
-                       panel.grid.minor = element_blank(),
-                       plot.title = element_text(size = 14, face = &amp;quot;bold&amp;quot;)
-                       )
-
-
-col_strip &amp;lt;- brewer.pal(11, &amp;quot;RdBu&amp;quot;)
-
-brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
-## BrBG            11      div       TRUE
-## PiYG            11      div       TRUE
-## PRGn            11      div       TRUE
-## PuOr            11      div       TRUE
-## RdBu            11      div       TRUE
-## RdGy            11      div      FALSE
-## RdYlBu          11      div       TRUE
-## RdYlGn          11      div      FALSE
-## Spectral        11      div      FALSE
-## Accent           8     qual      FALSE
-## Dark2            8     qual       TRUE
-## Paired          12     qual       TRUE
-## Pastel1          9     qual      FALSE
-## Pastel2          8     qual      FALSE
-## Set1             9     qual      FALSE
-## Set2             8     qual       TRUE
-## Set3            12     qual      FALSE
-## Blues            9      seq       TRUE
-## BuGn             9      seq       TRUE
-## BuPu             9      seq       TRUE
-## GnBu             9      seq       TRUE
-## Greens           9      seq       TRUE
-## Greys            9      seq       TRUE
-## Oranges          9      seq       TRUE
-## OrRd             9      seq       TRUE
-## PuBu             9      seq       TRUE
-## PuBuGn           9      seq       TRUE
-## PuRd             9      seq       TRUE
-## Purples          9      seq       TRUE
-## RdPu             9      seq       TRUE
-## Reds             9      seq       TRUE
-## YlGn             9      seq       TRUE
-## YlGnBu           9      seq       TRUE
-## YlOrBr           9      seq       TRUE
-## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para el gráfico final usamos la geometría &lt;code&gt;geom_tile( )&lt;/code&gt;. Como los datos no tienen un valor específico para el eje Y, usamos un valor &lt;em&gt;dummy&lt;/em&gt;, aquí es 1. Además, ajusto el ancho de la barra de colores en la leyenda.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x = date, y = 1,fill = ta))+
-        geom_tile()+
-           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
-                     date_labels = &amp;quot;%Y&amp;quot;,
-                     expand = c(0, 0))+
-           scale_y_continuous(expand = c(0, 0))+
-           scale_fill_gradientn(colors = rev(col_strip))+
-           guides(fill = guide_colorbar(barwidth = 1))+
-           labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
-                caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
-             theme_strip&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;En el caso de que quisieramos obtener únicamente las tiras, podemos usar &lt;code&gt;theme_void( )&lt;/code&gt; y el argumento &lt;em&gt;show.legend=FALSE&lt;/em&gt; en &lt;code&gt;geom_tile( )&lt;/code&gt; para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores &lt;code&gt;NA&lt;/code&gt;, incluyendo el argumento &lt;em&gt;na.value=“grey70”&lt;/em&gt; en la función &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
-             aes(x = date, y = 1, fill = ta))+
-        geom_tile(show.legend = FALSE)+
-           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
-                     date_labels = &amp;quot;%Y&amp;quot;,
-                     expand = c(0, 0))+
-           scale_y_discrete(expand = c(0, 0))+
-           scale_fill_gradientn(colors = rev(col_strip))+
-             theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>ggplot2</category>
-      
-            <category>warming stripes</category>
-      
-            <category>calentamiento global</category>
-      
-      
-            <category>visualización</category>
-      
-            <category>R</category>
-      
-            <category>R:elemental</category>
       
     </item>
     

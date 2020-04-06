@@ -657,7 +657,7 @@
 <pre class="r"><code>#instalamos los paquetes si hace falta
 if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
 if(!require(&quot;ggthemes&quot;)) install.packages(&quot;broom&quot;)
-if(!require(&quot;cowplot&quot;)) install.packages(&quot;fs&quot;)
+if(!require(&quot;cowplot&quot;)) install.packages(&quot;cowplot&quot;)
 if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
 
 #paquetes
@@ -711,21 +711,21 @@ library(lubridate)</code></pre>
 data</code></pre>
 <pre><code>## # A tibble: 833 x 3
 ## # Groups:   yr [70]
-##       yr mo         prs
-##    &lt;dbl&gt; &lt;ord&gt;    &lt;dbl&gt;
-##  1  1950 &quot;ene\\.&quot;  55.6
-##  2  1950 &quot;feb\\.&quot; 349. 
-##  3  1950 &quot;mar\\.&quot;  85.8
-##  4  1950 &quot;abr\\.&quot;  33.4
-##  5  1950 &quot;may\\.&quot; 272. 
-##  6  1950 &quot;jun\\.&quot; 111. 
-##  7  1950 &quot;jul\\.&quot;  35.4
-##  8  1950 &quot;ago\\.&quot;  76.4
-##  9  1950 &quot;sep\\.&quot;  85  
-## 10  1950 &quot;oct\\.&quot;  53  
+##       yr mo      prs
+##    &lt;dbl&gt; &lt;ord&gt; &lt;dbl&gt;
+##  1  1950 ene    55.6
+##  2  1950 feb   349. 
+##  3  1950 mar    85.8
+##  4  1950 abr    33.4
+##  5  1950 may   272. 
+##  6  1950 jun   111. 
+##  7  1950 jul    35.4
+##  8  1950 ago    76.4
+##  9  1950 sep    85  
+## 10  1950 oct    53  
 ## # ... with 823 more rows</code></pre>
 </div>
-<div id="paso-3-estimar-las-anomalias" class="section level3">
+<div id="paso-3-estimar-las-anomalías" class="section level3">
 <h3>Paso 3: estimar las anomalías</h3>
 <p>Ahora debemos estimar los valores normales de cada mes y unir esta tabla a nuestros datos principales para posteriormente poder calcular la anomalía mensual. Expresamos la anomalía en porcentaje y restamos 100 para fijar el promedio en 0. Además, creamos una variable que nos indica si la anomalía es negativa o positiva, y otra con la fecha.</p>
 <pre class="r"><code>pr_ref &lt;- filter(data, yr &gt; 1981, yr &lt;= 2010) %&gt;%
@@ -738,7 +738,7 @@ data &lt;- mutate(data,
                anom = (prs*100/pr_ref)-100, 
                date = str_c(yr, as.numeric(mo), 1, sep = &quot;-&quot;) %&gt;% ymd(),
                sign= ifelse(anom &gt; 0, &quot;pos&quot;, &quot;neg&quot;))</code></pre>
-<p>Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función <code>geom_bar()</code> aplica el conteo a la variable. No obstante, en este caso conocemos <code>y</code>, por tanto indicamos con el argumento <code>stat = &quot;identity&quot;</code> que debe usar el valor dado en <code>aes()</code>.</p>
+<p>Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función <code>geom_bar()</code> aplica el conteo a la variable. No obstante, en este caso conocemos <code>y</code>, por tanto indicamos con el argumento <code>stat = "identity"</code> que debe usar el valor dado en <code>aes()</code>.</p>
 <pre class="r"><code>filter(data, yr == 2018) %&gt;%
    ggplot(aes(date, anom, fill = sign)) + 
        geom_bar(stat = &quot;identity&quot;, show.legend = FALSE) + 
@@ -749,7 +749,7 @@ data &lt;- mutate(data,
           theme_hc()</code></pre>
 <p><img src="/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
-<div id="paso-4-calcular-las-medidas-estadisticas" class="section level3">
+<div id="paso-4-calcular-las-medidas-estadísticas" class="section level3">
 <h3>Paso 4: calcular las medidas estadísticas</h3>
 <p>En este último paso estimamos el valor máximo, mínimo, el cuantil 25%/75% y el rango intercuartil por mes de toda la serie temporal.</p>
 <pre class="r"><code>data_norm &lt;-     group_by(data, mo) %&gt;%
@@ -761,23 +761,23 @@ data &lt;- mutate(data,
 
 data_norm</code></pre>
 <pre><code>## # A tibble: 12 x 6
-##    mo          mx    min   q25   q75   iqr
-##    &lt;ord&gt;    &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
-##  1 &quot;ene\\.&quot;  193.  -89.6 -43.6 56.3   99.9
-##  2 &quot;feb\\.&quot;  320.  -96.5 -51.2 77.7  129. 
-##  3 &quot;mar\\.&quot;  381. -100   -40.6 88.2  129. 
-##  4 &quot;abr\\.&quot;  198.  -93.6 -51.2 17.1   68.3
-##  5 &quot;may\\.&quot;  141.  -90.1 -45.2 17.0   62.2
-##  6 &quot;jun\\.&quot;  419.  -99.3 -58.2 50.0  108. 
-##  7 &quot;jul\\.&quot;  311.  -98.2 -77.3 27.1  104. 
-##  8 &quot;ago\\.&quot;  264. -100   -68.2 39.8  108. 
-##  9 &quot;sep\\.&quot;  241.  -99.2 -64.9 48.6  113. 
-## 10 &quot;oct\\.&quot;  220.  -99.0 -54.5  4.69  59.2
-## 11 &quot;nov\\.&quot;  137.  -98.8 -44.0 39.7   83.7
-## 12 &quot;dic\\.&quot;  245.  -91.8 -49.8 36.0   85.8</code></pre>
+##    mo       mx    min   q25   q75   iqr
+##    &lt;ord&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 ene    193.  -89.6 -43.6 56.3   99.9
+##  2 feb    320.  -96.5 -51.2 77.7  129. 
+##  3 mar    381. -100   -40.6 88.2  129. 
+##  4 abr    198.  -93.6 -51.2 17.1   68.3
+##  5 may    141.  -90.1 -45.2 17.0   62.2
+##  6 jun    419.  -99.3 -58.2 50.0  108. 
+##  7 jul    311.  -98.2 -77.3 27.1  104. 
+##  8 ago    264. -100   -68.2 39.8  108. 
+##  9 sep    241.  -99.2 -64.9 48.6  113. 
+## 10 oct    220.  -99.0 -54.5  4.69  59.2
+## 11 nov    137.  -98.8 -44.0 39.7   83.7
+## 12 dic    245.  -91.8 -49.8 36.0   85.8</code></pre>
 </div>
 </div>
-<div id="crear-el-grafico" class="section level2">
+<div id="crear-el-gráfico" class="section level2">
 <h2>Crear el gráfico</h2>
 <p>Para crear el gráfico de anomalías con leyenda es necesario separar el gráfico principal de las leyendas.</p>
 <div id="parte-1" class="section level3">
@@ -821,7 +821,7 @@ g1</code></pre>
 <h3>Parte 2</h3>
 <p>Todavía nos falta una leyenda. Primero la creamos para los valores normales.</p>
 <pre class="r"><code>#datos de la leyenda
-legend &lt;- filter(data_norm, mo == &quot;ene\\.&quot;)
+legend &lt;- filter(data_norm, mo == &quot;ene&quot;)
 
 legend_lab &lt;- gather(legend, stat, y, mx:q75) %&gt;%
                  mutate(stat = factor(stat, stat, c(&quot;máximo&quot;,
@@ -847,13 +847,13 @@ g2 &lt;- legend %&gt;% ggplot()+
 g2</code></pre>
 <p><img src="/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Segundo, creamos otra leyenda para las anomalías actuales.</p>
-<pre class="r"><code>legend2 &lt;- filter(data, yr == 1950, mo %in% c(&quot;ene\\.&quot;,&quot;feb\\.&quot;)) %&gt;% 
+<pre class="r"><code>legend2 &lt;- filter(data, yr == 1950, mo %in% c(&quot;ene&quot;,&quot;feb&quot;)) %&gt;% 
               ungroup() %&gt;% 
             select(mo, anom, sign)
 
-legend2[2,1] &lt;- &quot;ene\\.&quot;
+legend2[2,1] &lt;- &quot;ene&quot;
 
-legend_lab2 &lt;- data.frame(mo = rep(&quot;ene\\.&quot;, 3), 
+legend_lab2 &lt;- data.frame(mo = rep(&quot;ene&quot;, 3), 
                           anom= c(110, 3, -70), 
                           label = c(&quot;Anomalía positiva&quot;, &quot;Promedio&quot;, &quot;Anomalía negativa&quot;))
 
@@ -885,7 +885,7 @@ p</code></pre>
 <pre class="r"><code>save_plot(&quot;pr_anomalia2016_scq.png&quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)</code></pre>
 </div>
 </div>
-<div id="multiples-facetas" class="section level2">
+<div id="múltiples-facetas" class="section level2">
 <h2>Múltiples facetas</h2>
 <p>En este apartado haremos el mismo gráfico como en el anterior, pero para varios años.</p>
 <div id="parte-1-1" class="section level3">
