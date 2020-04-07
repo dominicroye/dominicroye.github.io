@@ -687,7 +687,7 @@ library(ggrepel)</code></pre>
 </div>
 <div id="step-2-preparing-the-data" class="section level3">
 <h3>Step 2: preparing the data</h3>
-<p>In the second step we prepare the data to calculate the anomalies. To do this, we create three new columns: the month, the year, and the season of the year. Since our objective is to analyse winter anomalies, we cannot use the calendar year, since winter includes the month of December of one year and the months of January and February of the following. The custom function <code>meteo_yr()</code> extracts the year from a date indicating the starting month. The concept is similar to the hydrological year in which it starts on October 1.</p>
+<p>In the second step we prepare the data to calculate the anomalies. To do this, we create three new columns: the month, the year, and the season of the year. Since our objective is to analyse winter anomalies, we cannot use the calendar year, because winter includes the month of December of one year and the months of January and February of the following. The custom function <code>meteo_yr()</code> extracts the year from a date indicating the starting month. The concept is similar to the hydrological year in which it starts on October 1.</p>
 <pre class="r"><code>meteo_yr &lt;- function(dates, start_month = NULL) {
   # convert to POSIXlt
   dates.posix &lt;- as.POSIXlt(dates)
@@ -731,7 +731,7 @@ data</code></pre>
                   summarise(pr = sum(pr, na.rm = TRUE),
                             ta = mean(ta, na.rm = TRUE))</code></pre>
 <p>Now we only have to calculate the anomalies of precipitation and temperature. The columns <code>pr_mean</code> and <code>ta_mean</code> will contain the climate average, the reference for the anomalies with respect to the normal period 1981-2010. Therefore, we need to filter the values to the period before 2010, which we will do in the usual way of filtering vectors in R. Once we have the references we estimate the anomalies <code>pr_anom</code> and <code>ta_anom</code>. To facilitate the interpretation, in the case of precipitation we express the anomalies as percentage, with the average set at 0% instead of 100%.</p>
-<p>In addition, we add three required columns with information for the creation of the graph: 1) <code>labyr</code> contains the year of each anomaly as long as it has been greater/less than -+10% or -+0.5ºC, respectively (this is for reducing the number of labels), 2) <code>symb_point</code> is a dummy variable in order to be able to create diferent symbols between the cases of (1), and 3) <code>lab_font</code> for highlighting in bold the year 2020.</p>
+<p>In addition, we add three required columns with information for the creation of the graph: 1) <code>labyr</code> contains the year of each anomaly as long as it has been greater/less than -+10% or -+0.5ºC, respectively (this is for reducing the number of labels), 2) <code>symb_point</code> is a dummy variable in order to be able to create different symbols between the cases of (1), and 3) <code>lab_font</code> for highlighting in bold the year 2020.</p>
 <pre class="r"><code>data_inv &lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &lt;= 2010]), 
                               ta_mean = mean(ta[winter_yr &lt;= 2010]),
                               pr_anom = (pr*100/pr_mean)-100, 
