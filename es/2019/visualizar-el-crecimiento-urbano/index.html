@@ -688,6 +688,7 @@ if(!require(&quot;tmap&quot;)) install.packages(&quot;tmap&quot;)
 if(!require(&quot;classInt&quot;)) install.packages(&quot;classInt&quot;)
 if(!require(&quot;showtext&quot;)) install.packages(&quot;showtext&quot;)
 if(!require(&quot;sysfonts&quot;)) install.packages(&quot;sysfonts&quot;)
+if(!require(&quot;rvest&quot;)) install.packages(&quot;rvest&quot;)
 
 # cargamos los paquetes
 library(feedeR)
@@ -696,7 +697,8 @@ library(fs)
 library(tidyverse)
 library(lubridate)
 library(classInt)
-library(tmap)</code></pre>
+library(tmap)
+library(rvest)</code></pre>
 </div>
 <div id="enlaces-de-descarga" class="section level2">
 <h2>Enlaces de descarga</h2>
@@ -716,8 +718,10 @@ str(prov_enlaces) #estructura es lista</code></pre>
 ##   ..$ link : chr [1:52] &quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&quot; &quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&quot; &quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&quot; &quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&quot; ...
 ##   ..$ hash : chr [1:52] &quot;d21ebb7975e59937&quot; &quot;bdba5e149f09e9d8&quot; &quot;03bcbcc7c5be2e17&quot; &quot;8a154202dd778143&quot; ...</code></pre>
 <pre class="r"><code># extraemos la tabla con los enlaces
-prov_enlaces_tab &lt;- as_tibble(prov_enlaces$items)
-prov_enlaces_tab</code></pre>
+prov_enlaces_tab &lt;- as_tibble(prov_enlaces$items) %&gt;% 
+                       mutate(title = repair_encoding(title))</code></pre>
+<pre><code>## Best guess: UTF-8 (100% confident)</code></pre>
+<pre class="r"><code>prov_enlaces_tab</code></pre>
 <pre><code>## # A tibble: 52 x 4
 ##    title           date                link                            hash     
 ##    &lt;chr&gt;           &lt;dttm&gt;              &lt;chr&gt;                           &lt;chr&gt;    
@@ -734,7 +738,7 @@ prov_enlaces_tab</code></pre>
 ## # ... with 42 more rows</code></pre>
 <p>Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función <code>filter()</code> del paquete <code>dplyr</code> buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función <code>str_detect()</code> de <code>stringr</code>. La función <code>pull()</code> nos permite extraer una columna de un <code>data.frame</code>.</p>
 <div class="alert alert-note">
-  <p>Actualmente la función <code>feed.extract()</code> no importa correctamente en el <em>encoding</em> UTF-8. Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para filtrar correctamente debe tenerse en cuenta estos cambios.<br /></p>
+  <p>Actualmente la función <code>feed.extract()</code> no importa correctamente en el <em>encoding</em> UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función <code>repair_encoding()</code> del paquete <code>rvest</code>.</p>
 
 </div>
 
@@ -746,8 +750,11 @@ val_enlaces &lt;- feed.extract(val_atom)
 
 # obtenemos la tabla con los enlaces de descarga
 val_enlaces_tab &lt;- val_enlaces$items
-
-# filtramos la tabla con el nombre de la ciudad
+val_enlaces_tab &lt;- mutate(val_enlaces_tab, title = repair_encoding(title),
+                          link = repair_encoding(link)) </code></pre>
+<pre><code>## Best guess: UTF-8 (100% confident)
+## Best guess: UTF-8 (100% confident)</code></pre>
+<pre class="r"><code># filtramos la tabla con el nombre de la ciudad
 val_link &lt;- filter(val_enlaces_tab, str_detect(title, &quot;VALENCIA&quot;)) %&gt;% pull(link)
 val_link</code></pre>
 <pre><code>## [1] &quot;http://www.catastro.minhap.es/INSPIRE/Buildings/46/46900-VALENCIA/A.ES.SDGC.BU.46900.zip&quot;</code></pre>
