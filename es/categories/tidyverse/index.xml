@@ -1,0 +1,1068 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>tidyverse on Dominic Royé</title>
+    <link>/es/categories/tidyverse/</link>
+    <description>Recent content in tidyverse on Dominic Royé</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Sat, 06 Jun 2020 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="/es/categories/tidyverse/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Una muy breve introducción a Tidyverse</title>
+      <link>/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/</link>
+      <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#tiyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Tiyverse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#guía-de-estilo&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Guía de estilo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#pipe&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#paquetes-de-tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Paquetes de Tidyverse&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#lectura-y-escritura&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.1&lt;/span&gt; Lectura y escritura&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#manipulación-de-caracteres&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.2&lt;/span&gt; Manipulación de caracteres&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#manejo-de-fechas-y-horas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.3&lt;/span&gt; Manejo de fechas y horas&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#manipulación-de-tablas-y-vectores&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4&lt;/span&gt; Manipulación de tablas y vectores&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#selecionar-y-renombrar&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.1&lt;/span&gt; Selecionar y renombrar&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#filtrar-y-ordenar&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.2&lt;/span&gt; Filtrar y ordenar&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#agrupar-y-resumir&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.3&lt;/span&gt; Agrupar y resumir&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#unir-tablas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.4&lt;/span&gt; Unir tablas&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tablas-largas-y-anchas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.5&lt;/span&gt; Tablas largas y anchas&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualizar-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5&lt;/span&gt; Visualizar datos&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#gráfico-de-linea-y-puntos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.1&lt;/span&gt; Gráfico de linea y puntos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#boxplot&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#heatmap&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#aplicar-funciones-sobre-vectores-o-listas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.6&lt;/span&gt; Aplicar funciones sobre vectores o listas&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;div id=&#34;tiyverse&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Tiyverse&lt;/h1&gt;
+&lt;p&gt;El universo de los paquetes de &lt;code&gt;tidyverse&lt;/code&gt;, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de &lt;code&gt;tidyverse&lt;/code&gt;. Por ejemplo, el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;simple feature&lt;/a&gt;) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete &lt;code&gt;dplyr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;El núcleo de la colección lo constituyen los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Gramática para la creación de gráficos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;purre&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Programación funcional de R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tibble&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Sistema moderno y efectivo de tablas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;dplyr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Gramatica para la manipulación de datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de funciones para ordenar datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;stringr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de funciones para trabajar con caracteres&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Una forma fácil y rápida para importar datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;forcats&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Herramientas y funciones para trabajar fácilmente con factores&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Además de los paquetes menciondos, también se usa muy frecuentemente &lt;code&gt;lubridate&lt;/code&gt; para trabajar con fechas y horas, y también &lt;code&gt;readxl&lt;/code&gt; que nos permite importar archivos en formato Excel. Para conocer todos los paquetes disponibles podemos emplear la función &lt;code&gt;tidyverse_packages()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;broom&amp;quot;      &amp;quot;cli&amp;quot;        &amp;quot;crayon&amp;quot;     &amp;quot;dbplyr&amp;quot;     &amp;quot;dplyr&amp;quot;     
+##  [6] &amp;quot;forcats&amp;quot;    &amp;quot;ggplot2&amp;quot;    &amp;quot;haven&amp;quot;      &amp;quot;hms&amp;quot;        &amp;quot;httr&amp;quot;      
+## [11] &amp;quot;jsonlite&amp;quot;   &amp;quot;lubridate&amp;quot;  &amp;quot;magrittr&amp;quot;   &amp;quot;modelr&amp;quot;     &amp;quot;pillar&amp;quot;    
+## [16] &amp;quot;purrr&amp;quot;      &amp;quot;readr&amp;quot;      &amp;quot;readxl&amp;quot;     &amp;quot;reprex&amp;quot;     &amp;quot;rlang&amp;quot;     
+## [21] &amp;quot;rstudioapi&amp;quot; &amp;quot;rvest&amp;quot;      &amp;quot;stringr&amp;quot;    &amp;quot;tibble&amp;quot;     &amp;quot;tidyr&amp;quot;     
+## [26] &amp;quot;xml2&amp;quot;       &amp;quot;tidyverse&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Es muy fácil encontrarnos con conflicos de funciones, o sea, que el mismo nombre de función exista en varios paquetes. Para evitarlo, podemos escribir el nombre del paquete delante de la función que queremos usar, separados por el símbolo de dos puntos escrito dos veces (&lt;code&gt;package_name::function_name&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Antes de empezar con los paquetes, espero que sea verdaderamente una breve introducción, algunos comentarios sobre el estilo al programar en R.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;guía-de-estilo&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Guía de estilo&lt;/h1&gt;
+&lt;p&gt;En R no existe una guía de estilo universal, o sea, en la sintaxis de R no es necesario seguir normas concretas para nuestros scripts. Es recomendable trabajar de forma homogénea y clara a la hora de escribir con un estilo uniforme y legible. La colección de &lt;code&gt;tidyverse&lt;/code&gt; tiene una guia propia (&lt;a href=&#34;https://style.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://style.tidyverse.org/&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;Las recomendaciones más importes son:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Evitar usar más de 80 caracteres por línea para permitir leer el código completo.&lt;/li&gt;
+&lt;li&gt;Usar siempre un espacio después de una coma, nunca antes.&lt;/li&gt;
+&lt;li&gt;Los operadores (==, +, -, &amp;lt;-, %&amp;gt;%, etc.) deben tener un espacio antes y después.&lt;/li&gt;
+&lt;li&gt;No hay espacio entre el nombre de una función y el primer paréntesis, ni entre el último arguemento y el paréntesis final de una función.&lt;/li&gt;
+&lt;li&gt;Evitar reutilizar nombres de funciones y variables comunes (&lt;code&gt;c &amp;lt;- 5&lt;/code&gt; vs. &lt;code&gt;c()&lt;/code&gt;)&lt;/li&gt;
+&lt;li&gt;Ordenar el script separando las partes con la forma de comentario &lt;code&gt;# Importar datos -----&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;Se deben evitar tildes o símbolos especiales en nombres, archivos, rutas, etc.&lt;/li&gt;
+&lt;li&gt;Nombres de los objetos deben seguir una estructura constante: &lt;code&gt;day_one&lt;/code&gt;, &lt;code&gt;day_1&lt;/code&gt;.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Es aconsejable usar una correcta &lt;em&gt;indentación&lt;/em&gt; para multiples argumentos de una función o funciones encadenadas por el operador &lt;code&gt;pipe&lt;/code&gt; (&lt;code&gt;%&amp;gt;%&lt;/code&gt;).&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;pipe&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/h1&gt;
+&lt;p&gt;Para facilitar el trabajo en la gestión, manipulación y visualización de datos, el paquete &lt;code&gt;magrittr&lt;/code&gt; introduce el operador llamado &lt;em&gt;pipe&lt;/em&gt; en la forma &lt;code&gt;%&amp;gt;%&lt;/code&gt; con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador &lt;em&gt;pipe&lt;/em&gt; pasa a la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. En el siguiente ejemplo, muy sencillo, pasamos el vector &lt;code&gt;1:5&lt;/code&gt; a la función &lt;code&gt;mean()&lt;/code&gt; para calcular el promedio.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1:5 %&amp;gt;% mean()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 3&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paquetes-de-tidyverse&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Paquetes de Tidyverse&lt;/h1&gt;
+&lt;div id=&#34;lectura-y-escritura&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.1&lt;/span&gt; Lectura y escritura&lt;/h2&gt;
+&lt;p&gt;El paquete &lt;code&gt;readr&lt;/code&gt; facilita la lectura o escritura de múltiples formatos de archivo usando funciones que comienzan por &lt;code&gt;read_*&lt;/code&gt; o &lt;code&gt;write_*&lt;/code&gt;.
+En comparación con &lt;em&gt;R Base&lt;/em&gt; las funciones son más rápidas, ayudan a limpiar los nombres de las columnas y las fechas son convertidas automáticamente. Las tablas importadas son de clase &lt;code&gt;tibble&lt;/code&gt; (&lt;strong&gt;tbl_df&lt;/strong&gt;), una versión moderna de &lt;code&gt;data.frame&lt;/code&gt; del paquete &lt;code&gt;tibble&lt;/code&gt;. En el mismo sentido se puede usar la función &lt;code&gt;read_excel()&lt;/code&gt; del paquete &lt;code&gt;readxl&lt;/code&gt; para importar datos de hojas de Excel (más detalles también en esta &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;entrada de mi blog&lt;/a&gt;). En el siguiente ejemplo importamos los datos de la movilidad registrada por Google (&lt;a href=&#34;https://www.google.com/covid19/mobility/&#34;&gt;enlace&lt;/a&gt;) durante los últimos meses a causa de la pandemia COVID-19 (&lt;a href=&#34;./files/Global_Mobility_Report.csv&#34;&gt;descarga&lt;/a&gt;).&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Función lectura&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;read_csv() o read_csv2()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;coma o punto-coma (CSV)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;read_delim()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;separador general&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;read_table()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;espacio blanco&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cargar el paquete
+library(tidyverse)
+
+google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   country_region_code = col_character(),
+##   country_region = col_character(),
+##   sub_region_1 = col_character(),
+##   sub_region_2 = col_logical(),
+##   iso_3166_2_code = col_character(),
+##   census_fips_code = col_logical(),
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   retail_and_recreation_percent_change_from_baseline = col_double(),
+##   grocery_and_pharmacy_percent_change_from_baseline = col_double(),
+##   parks_percent_change_from_baseline = col_double(),
+##   transit_stations_percent_change_from_baseline = col_double(),
+##   workplaces_percent_change_from_baseline = col_double(),
+##   residential_percent_change_from_baseline = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 597554 parsing failures.
+##    row              col           expected         actual                         file
+## 200119 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200119 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200120 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200120 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## ...... ................ .................. .............. ............................
+## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 516,697 x 13
+##    country_region_~ country_region sub_region_1 sub_region_2 iso_3166_2_code
+##    &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;        &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  2 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  3 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  4 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  5 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  6 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  7 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  8 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  9 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+## 10 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+## # ... with 516,687 more rows, and 8 more variables: census_fips_code &amp;lt;lgl&amp;gt;,
+## #   date &amp;lt;date&amp;gt;, retail_and_recreation_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
+## #   grocery_and_pharmacy_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
+## #   parks_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
+## #   transit_stations_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
+## #   workplaces_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
+## #   residential_percent_change_from_baseline &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Debemos prestar atención a los nombres de los argumentos, ya que cambian en las funciones de &lt;code&gt;readr&lt;/code&gt;. Por ejemplo, el argumento conocido &lt;code&gt;header = TRUE&lt;/code&gt; de &lt;code&gt;read.csv()&lt;/code&gt; es en este caso &lt;code&gt;col_names = TRUE&lt;/code&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;readr&lt;/code&gt; .&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;manipulación-de-caracteres&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.2&lt;/span&gt; Manipulación de caracteres&lt;/h2&gt;
+&lt;p&gt;Cuando se requiere manipular cadenas de texto usamos el paquete &lt;code&gt;stringr&lt;/code&gt;, cuyas funciones siempre empiezan por &lt;code&gt;str_*&lt;/code&gt; seguidas por un verbo y el primer argumento.&lt;/p&gt;
+&lt;p&gt;Algunas de estas funciones son las siguientes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Función&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;str_replace()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;reemplazar patrones&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;str_c()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;combinar characteres&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;str_detect()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;detectar patrones&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;str_extract()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;extraer patrones&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;str_sub()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;extraer por posición&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;str_length()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;longitud de la cadena de caracteres&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Se suelen usar expresiones regulares para patrones de caracteres. Por ejemplo, la expresión regular &lt;code&gt;[aeiou]&lt;/code&gt; coincide con cualquier caracter único que sea una vocal. El uso de corchetes &lt;code&gt;[]&lt;/code&gt; corresponde a clases de caracteres. Por ejemplo, &lt;code&gt;[abc]&lt;/code&gt; corresponde a cada letra independientemente de la posición. &lt;code&gt;[a-z]&lt;/code&gt; o &lt;code&gt;[A-Z]&lt;/code&gt; o &lt;code&gt;[0-9]&lt;/code&gt; cada uno entre a y z ó 0 y 9. Y por último, &lt;code&gt;[:punct:]&lt;/code&gt; puntuación, etc. Con llaves “{}” podemos indicar el número del elemento anterior &lt;code&gt;{2}&lt;/code&gt; sería dos veces, {1,2} entre una y dos, etc. Además con &lt;code&gt;$&lt;/code&gt;o &lt;code&gt;^&lt;/code&gt; podemos indicar si el patrón empieza al principio o termina al final. Podemos encontrar más detalles y patrones en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/strings.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;stringr&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# reemplazamos &amp;#39;er&amp;#39; al final por vacío
+
+str_replace(month.name, &amp;quot;er$&amp;quot;, &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;January&amp;quot;  &amp;quot;February&amp;quot; &amp;quot;March&amp;quot;    &amp;quot;April&amp;quot;    &amp;quot;May&amp;quot;      &amp;quot;June&amp;quot;    
+##  [7] &amp;quot;July&amp;quot;     &amp;quot;August&amp;quot;   &amp;quot;Septemb&amp;quot;  &amp;quot;Octob&amp;quot;    &amp;quot;Novemb&amp;quot;   &amp;quot;Decemb&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str_replace(month.name, &amp;quot;^Ma&amp;quot;, &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;January&amp;quot;   &amp;quot;February&amp;quot;  &amp;quot;rch&amp;quot;       &amp;quot;April&amp;quot;     &amp;quot;y&amp;quot;         &amp;quot;June&amp;quot;     
+##  [7] &amp;quot;July&amp;quot;      &amp;quot;August&amp;quot;    &amp;quot;September&amp;quot; &amp;quot;October&amp;quot;   &amp;quot;November&amp;quot;  &amp;quot;December&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# combinar caracteres
+
+a &amp;lt;- str_c(month.name, 1:12, sep = &amp;quot;_&amp;quot;)
+a&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;January_1&amp;quot;   &amp;quot;February_2&amp;quot;  &amp;quot;March_3&amp;quot;     &amp;quot;April_4&amp;quot;     &amp;quot;May_5&amp;quot;      
+##  [6] &amp;quot;June_6&amp;quot;      &amp;quot;July_7&amp;quot;      &amp;quot;August_8&amp;quot;    &amp;quot;September_9&amp;quot; &amp;quot;October_10&amp;quot; 
+## [11] &amp;quot;November_11&amp;quot; &amp;quot;December_12&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# colapsar combinación
+
+str_c(month.name, collapse = &amp;quot;, &amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;January, February, March, April, May, June, July, August, September, October, November, December&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# dedectamos patrones
+
+str_detect(a, &amp;quot;_[1-5]{1}&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1]  TRUE  TRUE  TRUE  TRUE  TRUE FALSE FALSE FALSE FALSE  TRUE  TRUE  TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos patrones
+
+str_extract(a, &amp;quot;_[1-9]{1,2}&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;_1&amp;quot;  &amp;quot;_2&amp;quot;  &amp;quot;_3&amp;quot;  &amp;quot;_4&amp;quot;  &amp;quot;_5&amp;quot;  &amp;quot;_6&amp;quot;  &amp;quot;_7&amp;quot;  &amp;quot;_8&amp;quot;  &amp;quot;_9&amp;quot;  &amp;quot;_1&amp;quot;  &amp;quot;_11&amp;quot; &amp;quot;_12&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraermos los caracteres en las posiciones entre 1 y 2
+
+str_sub(month.name, 1, 2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;Ja&amp;quot; &amp;quot;Fe&amp;quot; &amp;quot;Ma&amp;quot; &amp;quot;Ap&amp;quot; &amp;quot;Ma&amp;quot; &amp;quot;Ju&amp;quot; &amp;quot;Ju&amp;quot; &amp;quot;Au&amp;quot; &amp;quot;Se&amp;quot; &amp;quot;Oc&amp;quot; &amp;quot;No&amp;quot; &amp;quot;De&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# longitud de cada mes
+
+str_length(month.name)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] 7 8 5 5 3 4 4 6 9 7 8 8&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# con pipe, el &amp;#39;.&amp;#39; representa al objeto que pasa el operador %&amp;gt;%
+str_length(month.name) %&amp;gt;% 
+   str_c(month.name, ., sep = &amp;quot;.&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;January.7&amp;quot;   &amp;quot;February.8&amp;quot;  &amp;quot;March.5&amp;quot;     &amp;quot;April.5&amp;quot;     &amp;quot;May.3&amp;quot;      
+##  [6] &amp;quot;June.4&amp;quot;      &amp;quot;July.4&amp;quot;      &amp;quot;August.6&amp;quot;    &amp;quot;September.9&amp;quot; &amp;quot;October.7&amp;quot;  
+## [11] &amp;quot;November.8&amp;quot;  &amp;quot;December.8&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Una función muy útil es &lt;code&gt;str_glue()&lt;/code&gt; para interpolar caracteres.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;name &amp;lt;- c(&amp;quot;Juan&amp;quot;, &amp;quot;Michael&amp;quot;)
+age &amp;lt;- c(50, 80) 
+date_today &amp;lt;- Sys.Date()
+
+str_glue(
+  &amp;quot;My name is {name}, &amp;quot;,
+  &amp;quot;I&amp;#39;am {age}, &amp;quot;,
+  &amp;quot;and my birth year is {format(date_today-age*365, &amp;#39;%Y&amp;#39;)}.&amp;quot;
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## My name is Juan, I&amp;#39;am 50, and my birth year is 1970.
+## My name is Michael, I&amp;#39;am 80, and my birth year is 1940.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;manejo-de-fechas-y-horas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.3&lt;/span&gt; Manejo de fechas y horas&lt;/h2&gt;
+&lt;p&gt;El paquete &lt;code&gt;lubridate&lt;/code&gt; ayuda en el manejo de fechas y horas. Nos permite crear los objetos reconocidos por R con funciones (como &lt;code&gt;ymd()&lt;/code&gt; ó &lt;code&gt;ymd_hms()&lt;/code&gt;) y hacer cálculos.&lt;/p&gt;
+&lt;p&gt;Debemos conocer las siguientes abreviaturas:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;code&gt;ymd&lt;/code&gt;: representa &lt;code&gt;y:year&lt;/code&gt;, &lt;code&gt;m:month&lt;/code&gt;, &lt;code&gt;d:day&lt;/code&gt;&lt;/li&gt;
+&lt;li&gt;&lt;code&gt;hms&lt;/code&gt;: representa &lt;code&gt;h:hour&lt;/code&gt;, &lt;code&gt;m:minutes&lt;/code&gt;, &lt;code&gt;s:seconds&lt;/code&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# paquete
+library(lubridate)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## Attaching package: &amp;#39;lubridate&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## The following objects are masked from &amp;#39;package:base&amp;#39;:
+## 
+##     date, intersect, setdiff, union&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# vector de fechas
+dat &amp;lt;- c(&amp;quot;1999/12/31&amp;quot;, &amp;quot;2000/01/07&amp;quot;, &amp;quot;2005/05/20&amp;quot;,&amp;quot;2010/03/25&amp;quot;)
+
+# vector de fechas y horas
+dat_time &amp;lt;- c(&amp;quot;1988-08-01 05:00&amp;quot;, &amp;quot;2000-02-01 22:00&amp;quot;)
+
+# convertir a clase date
+dat &amp;lt;- ymd(dat) 
+dat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;1999-12-31&amp;quot; &amp;quot;2000-01-07&amp;quot; &amp;quot;2005-05-20&amp;quot; &amp;quot;2010-03-25&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# otras formatos
+dmy(&amp;quot;05-02-2000&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000-02-05&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ymd(&amp;quot;20000506&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000-05-06&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a POSIXct
+dat_time &amp;lt;- ymd_hm(dat_time)
+dat_time&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;1988-08-01 05:00:00 UTC&amp;quot; &amp;quot;2000-02-01 22:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# diferentes formatos en un vector 
+dat_mix &amp;lt;- c(&amp;quot;1999/12/05&amp;quot;, &amp;quot;05-09-2008&amp;quot;, &amp;quot;2000/08/09&amp;quot;, &amp;quot;25-10-2019&amp;quot;)
+
+# indicar formato con la convención conocida en ?strptime
+parse_date_time(dat_mix, order = c(&amp;quot;%Y/%m/%d&amp;quot;, &amp;quot;%d-%m-%Y&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;1999-12-05 UTC&amp;quot; &amp;quot;2008-09-05 UTC&amp;quot; &amp;quot;2000-08-09 UTC&amp;quot; &amp;quot;2019-10-25 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Más funciones útiles:&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraer el año
+year(dat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 1999 2000 2005 2010&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# el mes
+month(dat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 12  1  5  3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;month(dat, label = TRUE) # como etiqueta&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] dic ene may mar
+## 12 Levels: ene &amp;lt; feb &amp;lt; mar &amp;lt; abr &amp;lt; may &amp;lt; jun &amp;lt; jul &amp;lt; ago &amp;lt; sep &amp;lt; ... &amp;lt; dic&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# el día de la semana
+wday(dat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 6 6 6 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wday(dat, label = TRUE) # como etiqueta&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] vi vi vi ju
+## Levels: do &amp;lt; lu &amp;lt; ma &amp;lt; mi &amp;lt; ju &amp;lt; vi &amp;lt; sá&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# la hora
+hour(dat_time)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  5 22&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sumar 10 días
+dat + days(10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000-01-10&amp;quot; &amp;quot;2000-01-17&amp;quot; &amp;quot;2005-05-30&amp;quot; &amp;quot;2010-04-04&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sumar 1 mes
+dat + months(1)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000-01-31&amp;quot; &amp;quot;2000-02-07&amp;quot; &amp;quot;2005-06-20&amp;quot; &amp;quot;2010-04-25&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último, la función &lt;code&gt;make_date()&lt;/code&gt; es muy útil en crear fechas a partir de diferentes partes de las mismas como puede ser el año, mes, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# crear fecha a partir de sus elementos, aquí con año y mes
+make_date(2000, 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000-05-01&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# crear fecha con hora 
+make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2005-05-23 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;lubridate&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;manipulación-de-tablas-y-vectores&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4&lt;/span&gt; Manipulación de tablas y vectores&lt;/h2&gt;
+&lt;p&gt;El paquete &lt;code&gt;dplyr&lt;/code&gt; nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Función&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;mutate()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;añadir nuevas variables o modificar existentes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;select()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;seleccionar variables&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;filter()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;filtrar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;summarise()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;resumir/reducir&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;arrange()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ordenar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;group_by()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;agrupar&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rename()&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;renombrar columnas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;En caso de que no lo hayas hecho antes, importamos los datos de movilidad.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   country_region_code = col_character(),
+##   country_region = col_character(),
+##   sub_region_1 = col_character(),
+##   sub_region_2 = col_logical(),
+##   iso_3166_2_code = col_character(),
+##   census_fips_code = col_logical(),
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   retail_and_recreation_percent_change_from_baseline = col_double(),
+##   grocery_and_pharmacy_percent_change_from_baseline = col_double(),
+##   parks_percent_change_from_baseline = col_double(),
+##   transit_stations_percent_change_from_baseline = col_double(),
+##   workplaces_percent_change_from_baseline = col_double(),
+##   residential_percent_change_from_baseline = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 597554 parsing failures.
+##    row              col           expected         actual                         file
+## 200119 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200119 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200120 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200120 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
+## ...... ................ .................. .............. ............................
+## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;selecionar-y-renombrar&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.1&lt;/span&gt; Selecionar y renombrar&lt;/h3&gt;
+&lt;p&gt;Podemos selecionar o eliminar columnas con la función &lt;code&gt;select()&lt;/code&gt;, usando el nombre o índice de la(s) columna(s). Para suprimir columnas hacemos uso del signo negativo. La función &lt;code&gt;rename&lt;/code&gt; ayuda en renombrar columnas o bien con el mismo nombre o con su índice.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;residential_mobility &amp;lt;- select(google_mobility, 
+                               country_region_code:sub_region_1, 
+                               date, 
+                               residential_percent_change_from_baseline) %&amp;gt;% 
+                        rename(resi = 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;filtrar-y-ordenar&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.2&lt;/span&gt; Filtrar y ordenar&lt;/h3&gt;
+&lt;p&gt;Para filtrar datos, empleamos &lt;code&gt;filter()&lt;/code&gt; con operadores lógicos (&lt;code&gt;|&lt;/code&gt;, &lt;code&gt;==&lt;/code&gt;, &lt;code&gt;&amp;gt;&lt;/code&gt;, etc) o funciones que devuelven un valor lógico (&lt;code&gt;str_detect()&lt;/code&gt;, &lt;code&gt;is.na()&lt;/code&gt;, etc.). La función &lt;code&gt;arrange()&lt;/code&gt; ordena de menor a mayor por una o múltiples variables (con el signo negativo &lt;code&gt;-&lt;/code&gt; se invierte el orden de mayor a menor).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(residential_mobility, 
+       country_region_code == &amp;quot;US&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 304,648 x 5
+##    country_region_code country_region sub_region_1 date        resi
+##    &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;        &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 US                  United States  &amp;lt;NA&amp;gt;         2020-02-15    -1
+##  2 US                  United States  &amp;lt;NA&amp;gt;         2020-02-16    -1
+##  3 US                  United States  &amp;lt;NA&amp;gt;         2020-02-17     5
+##  4 US                  United States  &amp;lt;NA&amp;gt;         2020-02-18     1
+##  5 US                  United States  &amp;lt;NA&amp;gt;         2020-02-19     0
+##  6 US                  United States  &amp;lt;NA&amp;gt;         2020-02-20     1
+##  7 US                  United States  &amp;lt;NA&amp;gt;         2020-02-21     0
+##  8 US                  United States  &amp;lt;NA&amp;gt;         2020-02-22    -1
+##  9 US                  United States  &amp;lt;NA&amp;gt;         2020-02-23    -1
+## 10 US                  United States  &amp;lt;NA&amp;gt;         2020-02-24     0
+## # ... with 304,638 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(residential_mobility, 
+       country_region_code == &amp;quot;US&amp;quot;, 
+       sub_region_1 == &amp;quot;New York&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 7,068 x 5
+##    country_region_code country_region sub_region_1 date        resi
+##    &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;        &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 US                  United States  New York     2020-02-15     0
+##  2 US                  United States  New York     2020-02-16    -1
+##  3 US                  United States  New York     2020-02-17     9
+##  4 US                  United States  New York     2020-02-18     3
+##  5 US                  United States  New York     2020-02-19     2
+##  6 US                  United States  New York     2020-02-20     2
+##  7 US                  United States  New York     2020-02-21     3
+##  8 US                  United States  New York     2020-02-22    -1
+##  9 US                  United States  New York     2020-02-23    -1
+## 10 US                  United States  New York     2020-02-24     0
+## # ... with 7,058 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(residential_mobility, 
+       resi &amp;gt; 50) %&amp;gt;% 
+          arrange(-resi)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 32 x 5
+##    country_region_co~ country_region sub_region_1               date        resi
+##    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                      &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-14    56
+##  2 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-21    55
+##  3 SG                 Singapore      &amp;lt;NA&amp;gt;                       2020-05-01    55
+##  4 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-28    54
+##  5 PE                 Peru           Metropolitan Municipality~ 2020-04-10    54
+##  6 EC                 Ecuador        Pichincha                  2020-03-27    53
+##  7 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-11    53
+##  8 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-13    53
+##  9 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-20    53
+## 10 SG                 Singapore      &amp;lt;NA&amp;gt;                       2020-04-10    53
+## # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;agrupar-y-resumir&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.3&lt;/span&gt; Agrupar y resumir&lt;/h3&gt;
+&lt;p&gt;¿Dónde encontramos mayor variabilidad entre regiones en cada país el día 1 de abril de 2020?&lt;/p&gt;
+&lt;p&gt;Para responder a esta pregunta, primero filtramos los datos y después agrupamos por la columna de país. Cuando empleamos la función &lt;code&gt;summarise()&lt;/code&gt; posterior a la agrupación, nos permite resumir por estos grupos. Incluso, la combinación del &lt;code&gt;group_by()&lt;/code&gt; con la función &lt;code&gt;mutate()&lt;/code&gt; permite modificar columnas por grupos. En &lt;code&gt;summarise()&lt;/code&gt; calculamos el valor máximo, mínimo y la diferencia entre ambos extremos creando nuevas columnas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;resi_variability &amp;lt;- residential_mobility %&amp;gt;% 
+                        filter(date == ymd(&amp;quot;2020-04-01&amp;quot;),
+                               !is.na(sub_region_1)) %&amp;gt;% 
+                          group_by(country_region) %&amp;gt;% 
+                       summarise(mx = max(resi, na.rm = TRUE), 
+                                 min = min(resi, na.rm = TRUE),
+                                 range = abs(mx)-abs(min))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in max(resi, na.rm = TRUE): ningun argumento finito para max; retornando
+## -Inf
+
+## Warning in max(resi, na.rm = TRUE): ningun argumento finito para max; retornando
+## -Inf
+
+## Warning in max(resi, na.rm = TRUE): ningun argumento finito para max; retornando
+## -Inf
+
+## Warning in max(resi, na.rm = TRUE): ningun argumento finito para max; retornando
+## -Inf
+
+## Warning in max(resi, na.rm = TRUE): ningun argumento finito para max; retornando
+## -Inf
+
+## Warning in max(resi, na.rm = TRUE): ningun argumento finito para max; retornando
+## -Inf&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
+## Inf
+
+## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
+## Inf
+
+## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
+## Inf
+
+## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
+## Inf
+
+## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
+## Inf
+
+## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
+## Inf&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;arrange(resi_variability, -range)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 94 x 4
+##    country_region    mx   min range
+##    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Nigeria           43     6    37
+##  2 United States     35     6    29
+##  3 India             36    15    21
+##  4 Malaysia          45    26    19
+##  5 Philippines       40    21    19
+##  6 Vietnam           28     9    19
+##  7 Colombia          41    24    17
+##  8 Ecuador           44    27    17
+##  9 Argentina         35    19    16
+## 10 Chile             30    14    16
+## # ... with 84 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;unir-tablas&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.4&lt;/span&gt; Unir tablas&lt;/h3&gt;
+&lt;p&gt;¿Cómo podemos filtrar los datos para obtener un subconjunto de Europa?&lt;/p&gt;
+&lt;p&gt;Para ello, importamos datos espaciales con el código de país y una columna de las regiones. Explicaciones detalladas sobre el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;em&gt;simple feature&lt;/em&gt;) para trabajar con datos vectoriales, lo dejaremos para otro post.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(rnaturalearth) # paquete de datos vectoriales
+
+# datos de países
+wld &amp;lt;- ne_countries(returnclass = &amp;quot;sf&amp;quot;)
+
+# filtramos los países con código y seleccionamos las dos columnas de interés
+wld &amp;lt;- filter(wld, !is.na(iso_a2)) %&amp;gt;% select(iso_a2, subregion)
+
+# plot
+plot(wld)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Otras funciones de &lt;code&gt;dplyr&lt;/code&gt; nos permiten unir tablas: &lt;code&gt;*_join()&lt;/code&gt;. Según hacia qué tabla (izquierda o derecha) se quiere unir, cambia la función : &lt;code&gt;left_join()&lt;/code&gt;, &lt;code&gt;right_join()&lt;/code&gt; o incluso &lt;code&gt;full_join()&lt;/code&gt;. El argumento &lt;code&gt;by&lt;/code&gt; no es necesario siempre y cuando ambas tablas tienen una columna en común. No obstante, en este caso la columna de fusión es diferente, por eso, usamos el modo &lt;code&gt;c(&#34;country_region_code&#34;=&#34;iso_a2&#34;)&lt;/code&gt;. El paquete &lt;code&gt;forcats&lt;/code&gt; de &lt;code&gt;tidyverse&lt;/code&gt; tiene muchas funciones útiles para manejar variables categóricas (&lt;code&gt;factors&lt;/code&gt;), variables que tienen un conjunto fijo y conocido de valores posibles. Todas las funciones de &lt;code&gt;forcats&lt;/code&gt; tienen el prefijo &lt;code&gt;fct_*&lt;/code&gt;. Por ejemplo, en este caso usamos &lt;code&gt;fct_reorder()&lt;/code&gt; para reordenar las etiquetas de los países en orden de la máxima basada en los registros de movibilidad residencial. Finalmente, creamos una nueva columna ‘resi_real’ para cambiar el valor de referencia, el promedio (&lt;em&gt;baseline&lt;/em&gt;), fijado en 0 a 100.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;subset_europe &amp;lt;- filter(residential_mobility, 
+                        is.na(sub_region_1),
+                        !is.na(resi)) %&amp;gt;%
+                 left_join(wld, by = c(&amp;quot;country_region_code&amp;quot;=&amp;quot;iso_a2&amp;quot;)) %&amp;gt;% 
+                 filter(subregion %in% c(&amp;quot;Northern Europe&amp;quot;,
+                                         &amp;quot;Southern Europe&amp;quot;,
+                                          &amp;quot;Western Europe&amp;quot;,
+                                          &amp;quot;Eastern Europe&amp;quot;)) %&amp;gt;%
+                 mutate(resi_real = resi + 100,
+                        region = fct_reorder(country_region, 
+                                             resi, 
+                                            .fun = &amp;quot;max&amp;quot;, 
+                                            .desc = FALSE)) %&amp;gt;% 
+                select(-geometry, -sub_region_1)
+
+str(subset_europe)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## tibble [3,988 x 7] (S3: tbl_df/tbl/data.frame)
+##  $ country_region_code: chr [1:3988] &amp;quot;AT&amp;quot; &amp;quot;AT&amp;quot; &amp;quot;AT&amp;quot; &amp;quot;AT&amp;quot; ...
+##  $ country_region     : chr [1:3988] &amp;quot;Austria&amp;quot; &amp;quot;Austria&amp;quot; &amp;quot;Austria&amp;quot; &amp;quot;Austria&amp;quot; ...
+##  $ date               : Date[1:3988], format: &amp;quot;2020-02-15&amp;quot; &amp;quot;2020-02-16&amp;quot; ...
+##  $ resi               : num [1:3988] -2 -2 0 0 1 0 1 -2 0 -1 ...
+##  $ subregion          : chr [1:3988] &amp;quot;Western Europe&amp;quot; &amp;quot;Western Europe&amp;quot; &amp;quot;Western Europe&amp;quot; &amp;quot;Western Europe&amp;quot; ...
+##  $ resi_real          : num [1:3988] 98 98 100 100 101 100 101 98 100 99 ...
+##  $ region             : Factor w/ 35 levels &amp;quot;Belarus&amp;quot;,&amp;quot;Ukraine&amp;quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
+##  - attr(*, &amp;quot;problems&amp;quot;)= tibble [597,554 x 5] (S3: tbl_df/tbl/data.frame)
+##   ..$ row     : int [1:597554] 200119 200119 200120 200120 200121 200121 200122 200122 200123 200123 ...
+##   ..$ col     : chr [1:597554] &amp;quot;sub_region_2&amp;quot; &amp;quot;census_fips_code&amp;quot; &amp;quot;sub_region_2&amp;quot; &amp;quot;census_fips_code&amp;quot; ...
+##   ..$ expected: chr [1:597554] &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; ...
+##   ..$ actual  : chr [1:597554] &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; ...
+##   ..$ file    : chr [1:597554] &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;tablas-largas-y-anchas&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.5&lt;/span&gt; Tablas largas y anchas&lt;/h3&gt;
+&lt;p&gt;Antes de pasar a la visualización con &lt;code&gt;ggplot2&lt;/code&gt;. Es muy habitual modificar la tabla entre dos formatos principales. Una tabla es &lt;em&gt;tidy&lt;/em&gt; cuando 1) cada variable es una columna 2) cada observación/caso es una fila y 3) cada tipo de unidad observacional forma una tabla.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subconjunto 
+mobility_selection &amp;lt;- select(subset_europe, country_region_code, date:resi)
+mobility_selection&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3,988 x 3
+##    country_region_code date        resi
+##    &amp;lt;chr&amp;gt;               &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 AT                  2020-02-15    -2
+##  2 AT                  2020-02-16    -2
+##  3 AT                  2020-02-17     0
+##  4 AT                  2020-02-18     0
+##  5 AT                  2020-02-19     1
+##  6 AT                  2020-02-20     0
+##  7 AT                  2020-02-21     1
+##  8 AT                  2020-02-22    -2
+##  9 AT                  2020-02-23     0
+## 10 AT                  2020-02-24    -1
+## # ... with 3,978 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# tabla ancha
+mobi_wide &amp;lt;- pivot_wider(mobility_selection, 
+                         names_from = country_region_code,
+                         values_from = resi)
+mobi_wide&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 114 x 36
+##    date          AT    BA    BE    BG    BY    CH    CZ    DE    DK    EE    ES
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2020-02-15    -2    -1    -1     0    -1    -1    -2    -1     0     0    -2
+##  2 2020-02-16    -2    -1     1    -3     0    -1    -1     0     1     0    -2
+##  3 2020-02-17     0    -1     0    -2     0     1     0     0     1     1    -1
+##  4 2020-02-18     0    -1     0    -2     0     1     0     1     1     1     0
+##  5 2020-02-19     1    -1     0    -1    -1     1     0     1     1     0    -1
+##  6 2020-02-20     0    -1     0     0    -1     0     0     1     1     0    -1
+##  7 2020-02-21     1    -2     0    -1    -1     1     0     2     1     1    -2
+##  8 2020-02-22    -2    -1     0     0    -2    -2    -3     0     1     0    -2
+##  9 2020-02-23     0    -1     0    -3    -1    -1     0     0     0    -2    -3
+## 10 2020-02-24    -1    -1     4    -1     0     0     0     4     0    16     0
+## # ... with 104 more rows, and 24 more variables: FI &amp;lt;dbl&amp;gt;, FR &amp;lt;dbl&amp;gt;, GB &amp;lt;dbl&amp;gt;,
+## #   GR &amp;lt;dbl&amp;gt;, HR &amp;lt;dbl&amp;gt;, HU &amp;lt;dbl&amp;gt;, IE &amp;lt;dbl&amp;gt;, IT &amp;lt;dbl&amp;gt;, LT &amp;lt;dbl&amp;gt;, LU &amp;lt;dbl&amp;gt;,
+## #   LV &amp;lt;dbl&amp;gt;, MD &amp;lt;dbl&amp;gt;, MK &amp;lt;dbl&amp;gt;, NL &amp;lt;dbl&amp;gt;, NO &amp;lt;dbl&amp;gt;, PL &amp;lt;dbl&amp;gt;, PT &amp;lt;dbl&amp;gt;,
+## #   RO &amp;lt;dbl&amp;gt;, RS &amp;lt;dbl&amp;gt;, RU &amp;lt;dbl&amp;gt;, SE &amp;lt;dbl&amp;gt;, SI &amp;lt;dbl&amp;gt;, SK &amp;lt;dbl&amp;gt;, UA &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# tabla larga
+pivot_longer(mobi_wide,
+             2:36,
+             names_to = &amp;quot;country_code&amp;quot;,
+             values_to = &amp;quot;resi&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3,990 x 3
+##    date       country_code  resi
+##    &amp;lt;date&amp;gt;     &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;
+##  1 2020-02-15 AT              -2
+##  2 2020-02-15 BA              -1
+##  3 2020-02-15 BE              -1
+##  4 2020-02-15 BG               0
+##  5 2020-02-15 BY              -1
+##  6 2020-02-15 CH              -1
+##  7 2020-02-15 CZ              -2
+##  8 2020-02-15 DE              -1
+##  9 2020-02-15 DK               0
+## 10 2020-02-15 EE               0
+## # ... with 3,980 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Otro grupo de funciones a las que deberías echar un vistazo son: &lt;code&gt;separate()&lt;/code&gt;, &lt;code&gt;case_when()&lt;/code&gt;, &lt;code&gt;complete()&lt;/code&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;dplyr&lt;/code&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualizar-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5&lt;/span&gt; Visualizar datos&lt;/h2&gt;
+&lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; es un sistema moderno, y con una enorme variedad de opciones, para visualización de datos. A diferencia del sistema gráfico de &lt;em&gt;R Base&lt;/em&gt; se utiliza una gramática diferente.
+La gramática de los gráficos (&lt;em&gt;grammar of graphics&lt;/em&gt;, de allí “gg”) consiste en la suma de varias capas u objetos independientes que se combinan usando &lt;code&gt;+&lt;/code&gt; para construir el gráfico final. &lt;code&gt;ggplot&lt;/code&gt; diferencia entre los datos, lo que se visualiza y la forma en que se visualiza.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;data&lt;/em&gt;: nuestro conjunto de datos (&lt;code&gt;data.frame&lt;/code&gt; o &lt;code&gt;tibble&lt;/code&gt;)&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;aesthetics&lt;/em&gt;: con la función &lt;code&gt;aes()&lt;/code&gt; indicamos las variables que corresponden a los ejes x, y, z,… o, cuando se pretende aplicar parámetros gráficos (&lt;em&gt;color&lt;/em&gt;, &lt;em&gt;size&lt;/em&gt;, &lt;em&gt;shape&lt;/em&gt;) según una variable. Es posible incluir &lt;code&gt;aes()&lt;/code&gt; en &lt;code&gt;ggplot()&lt;/code&gt; o en la función correspondiente a una geometría &lt;code&gt;geom_*&lt;/code&gt;.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;geometries&lt;/em&gt;: son objetos &lt;code&gt;geom_*&lt;/code&gt; que indican la geometría a usar, (p. ej.: &lt;code&gt;geom_point()&lt;/code&gt;, &lt;code&gt;geom_line()&lt;/code&gt;, &lt;code&gt;geom_boxplot()&lt;/code&gt;, etc.).&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;scales&lt;/em&gt;: son objetos de tipo &lt;code&gt;scales_*&lt;/code&gt; (p. ej.: &lt;code&gt;scale_x_continous()&lt;/code&gt;, &lt;code&gt;scale_colour_manual()&lt;/code&gt;) para manipular las ejes, definir colores, etc.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;&lt;em&gt;statistics&lt;/em&gt;: son objetos &lt;code&gt;stat_*&lt;/code&gt; (p.ej.: &lt;code&gt;stat_density()&lt;/code&gt;) que permiten aplicar transformaciones estadísticas.&lt;/p&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p&gt;Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;ggplot2&lt;/code&gt;&lt;/p&gt;
+&lt;div id=&#34;gráfico-de-linea-y-puntos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.1&lt;/span&gt; Gráfico de linea y puntos&lt;/h3&gt;
+&lt;p&gt;Creamos un subconjunto de nuestros datos de movilidad para residencias y parques, filtrando los registros de regiones italianas. Además, dividimos los valores de movilidad en porcentaje por 100 para obtener la fracción, ya que &lt;code&gt;ggplot2&lt;/code&gt; nos permite indicar la unidad de porcentaje en el argumento de las etiquetas (último gráfico de esta sección).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos el subconjunto
+it &amp;lt;- filter(google_mobility, 
+             country_region == &amp;quot;Italy&amp;quot;, 
+             is.na(sub_region_1)) %&amp;gt;% 
+      mutate(resi = residential_percent_change_from_baseline/100,   
+             parks = parks_percent_change_from_baseline/100)
+
+
+# gráfico de línea 
+ggplot(it, 
+       aes(date, resi)) + 
+  geom_line()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# gráfico de dispersión con línea de correlación
+ggplot(it, 
+       aes(parks, resi)) + 
+  geom_point() +
+  geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Para modificar los ejes, empleamos las diferentes funciones de &lt;code&gt;scale_*&lt;/code&gt; que debemos adpatar a las escalas de medición (&lt;em&gt;date&lt;/em&gt;, &lt;em&gt;discrete&lt;/em&gt;, &lt;em&gt;continuous&lt;/em&gt;, etc.). La función &lt;code&gt;labs()&lt;/code&gt; nos ayuda en definir los títulos de ejes, del gráfico y de la leyenda. Por último, añadimos con &lt;code&gt;theme_light()&lt;/code&gt; el estilo del gráfico (otros son &lt;code&gt;theme_bw()&lt;/code&gt;, &lt;code&gt;theme_minimal()&lt;/code&gt;, etc.). También podríamos hacer cambios de todos los elementos gráficos a través de &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time serie plot
+ggplot(it, 
+       aes(date, resi)) + 
+  geom_line(colour = &amp;quot;#560A86&amp;quot;, size = 0.8) +
+  scale_x_date(date_breaks = &amp;quot;10 days&amp;quot;, 
+               date_labels = &amp;quot;%d %b&amp;quot;) +
+  scale_y_continuous(breaks = seq(-0.1, 1, 0.1), 
+                     labels = scales::percent) +
+  labs(x = &amp;quot;&amp;quot;, 
+       y = &amp;quot;Residential mobility&amp;quot;,
+       title = &amp;quot;Mobility during COVID-19&amp;quot;) +
+  theme_light()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
+ggplot(it, 
+       aes(parks, resi)) + 
+  geom_point(alpha = .4, size = 2) +
+  geom_smooth(method = &amp;quot;lm&amp;quot;) +
+  scale_x_continuous(breaks = seq(-1, 1.4, 0.2), 
+                     labels = scales::percent) +
+  scale_y_continuous(breaks = seq(-1, 1, 0.1), 
+                     labels = scales::percent) +
+  labs(x = &amp;quot;Park mobility&amp;quot;, 
+       y = &amp;quot;Residential mobility&amp;quot;,
+       title = &amp;quot;Mobility during COVID-19&amp;quot;) +
+  theme_light()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/h3&gt;
+&lt;p&gt;Podemos visualizar diferentes aspectos de los datos de movilidad con otras geometrías. Aquí creamos &lt;em&gt;boxplots&lt;/em&gt; por cada país europeo representando la variabilidad de movilidad entre y en los países durante la pandemia del COVID-19.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subconjunto
+subset_europe_reg &amp;lt;- filter(residential_mobility, 
+                           !is.na(sub_region_1),
+                           !is.na(resi)) %&amp;gt;%
+                     left_join(wld, by = c(&amp;quot;country_region_code&amp;quot;=&amp;quot;iso_a2&amp;quot;)) %&amp;gt;% 
+                     filter(subregion %in% c(&amp;quot;Northern Europe&amp;quot;,
+                                         &amp;quot;Southern Europe&amp;quot;,
+                                          &amp;quot;Western Europe&amp;quot;,
+                                          &amp;quot;Eastern Europe&amp;quot;)) %&amp;gt;% 
+                     mutate(resi = resi/100, 
+                            country_region = fct_reorder(country_region, resi))
+
+# boxplot
+ggplot(subset_europe_reg, 
+       aes(country_region, resi, fill = subregion)) + 
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq(-0.1, 1, 0.1), labels = scales::percent) +
+  scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;) +
+  coord_flip() +
+   labs(x = &amp;quot;&amp;quot;, 
+       y = &amp;quot;Residential mobility&amp;quot;,
+       title = &amp;quot;Mobility during COVID-19&amp;quot;, 
+       fill = &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/h3&gt;
+&lt;p&gt;Para visualizar la tendencia de todos los países europeos es recomendable usar un &lt;em&gt;heatmap&lt;/em&gt; en lugar de un bulto de líneas. Antes de constuir el gráfico, creamos un vector de fechas para las etiquetas con los domingos en el período de registros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# secuencia de fechas
+df &amp;lt;- data.frame(d = seq(ymd(&amp;quot;2020-02-15&amp;quot;), ymd(&amp;quot;2020-06-07&amp;quot;), &amp;quot;day&amp;quot;))
+
+# filtramos los domingos creando el día de la semana
+sundays &amp;lt;- df %&amp;gt;% 
+            mutate(wd = wday(d, week_start = 1)) %&amp;gt;% 
+             filter(wd == 7) %&amp;gt;% 
+              pull(d)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Si queremos usar etiquetas en otras lenguas, es necesario cambiar la configuración regional del sistema.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Sys.setlocale(&amp;quot;LC_TIME&amp;quot;, &amp;quot;English&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;English_United States.1252&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El relleno de color para los boxplots lo dibujamos por cada región de los países europeos. Podemos fijar el tipo de color con &lt;code&gt;scale_fill_*&lt;/code&gt;, en este caso, de las gamas &lt;em&gt;viridis&lt;/em&gt;.&lt;br /&gt;
+Además, la función &lt;code&gt;guides()&lt;/code&gt; nos permite modificar la barra de color de la leyenda. Por último, aquí vemos el uso de &lt;code&gt;theme()&lt;/code&gt; con cambios adicionales a &lt;code&gt;theme_minimal()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# headmap
+ggplot(subset_europe, 
+       aes(date, region, fill = resi_real)) +
+  geom_tile() +
+  scale_x_date(breaks = sundays,
+               date_labels = &amp;quot;%d %b&amp;quot;) +
+  scale_fill_viridis_c(option = &amp;quot;A&amp;quot;, 
+                       breaks = c(91, 146),
+                       labels = c(&amp;quot;Less&amp;quot;, &amp;quot;More&amp;quot;), 
+                       direction = -1) +
+  theme_minimal() +
+  theme(legend.position = &amp;quot;top&amp;quot;, 
+        title = element_text(size = 14),
+        panel.grid.major.x = element_line(colour = &amp;quot;white&amp;quot;, linetype = &amp;quot;dashed&amp;quot;),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.ontop = TRUE,
+        plot.margin = margin(r = 1, unit = &amp;quot;cm&amp;quot;)) +
+  labs(y = &amp;quot;&amp;quot;, 
+       x = &amp;quot;&amp;quot;, 
+       fill = &amp;quot;&amp;quot;, 
+       title = &amp;quot;Mobility trends for places of residence&amp;quot;,
+       caption = &amp;quot;Data: google.com/covid19/mobility/&amp;quot;) +
+  guides(fill = guide_colorbar(barwidth = 10, 
+                               barheight = .5,
+                               label.position = &amp;quot;top&amp;quot;, 
+                               ticks = FALSE)) +
+  coord_cartesian(expand = FALSE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aplicar-funciones-sobre-vectores-o-listas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.6&lt;/span&gt; Aplicar funciones sobre vectores o listas&lt;/h2&gt;
+&lt;p&gt;El paquete &lt;code&gt;purrr&lt;/code&gt; contiene un conjunto de funciones avanzadas de programación funcional para trabajar con funciones y vectores. La familia de funciones &lt;code&gt;lapply()&lt;/code&gt; conocido de &lt;code&gt;R Base&lt;/code&gt;corresponde a las funciones de &lt;code&gt;map()&lt;/code&gt; en este paquete. Una de las mayores ventajas es poder reducir el uso de bucles (&lt;code&gt;for&lt;/code&gt;, etc.).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# lista con dos vectores
+vec_list &amp;lt;- list(x = 1:10, y = 50:70)
+
+# calculamos el promedio para cada uno
+map(vec_list, mean)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $x
+## [1] 5.5
+## 
+## $y
+## [1] 60&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# podemos cambiar tipo de salida map_* (dbl, chr, lgl, etc.)
+map_dbl(vec_list, mean)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    x    y 
+##  5.5 60.0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Un ejemplo más complejo. Calculamos el coeficiente de correlación entre la movilidad residencial y la de los parques en todos los países europeos. Para obtener un resumen &lt;em&gt;tidy&lt;/em&gt; de un modelo o un test usamos la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;code&gt;broom&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;library(broom) # tidy outputs
+
+# función adaptada 
+cor_test &amp;lt;- function(x, formula) { 
+  
+df &amp;lt;- cor.test(as.formula(formula), data = x) %&amp;gt;% tidy()
+
+return(df)
+  
+}
+
+# preparamos los datos
+europe_reg &amp;lt;- filter(google_mobility, 
+                           !is.na(sub_region_1),
+                           !is.na(residential_percent_change_from_baseline)) %&amp;gt;%
+                     left_join(wld, by = c(&amp;quot;country_region_code&amp;quot;=&amp;quot;iso_a2&amp;quot;)) %&amp;gt;% 
+                     filter(subregion %in% c(&amp;quot;Northern Europe&amp;quot;,
+                                         &amp;quot;Southern Europe&amp;quot;,
+                                          &amp;quot;Western Europe&amp;quot;,
+                                          &amp;quot;Eastern Europe&amp;quot;))
+# aplicamos la función a cada país creando una lista
+europe_reg %&amp;gt;%
+  split(.$country_region_code) %&amp;gt;% 
+  map(cor_test, formula = &amp;quot;~ residential_percent_change_from_baseline + parks_percent_change_from_baseline&amp;quot;)  &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $AT
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.360     -12.3 2.68e-32      1009   -0.413    -0.305 Pearson&amp;#39;~ two.sided  
+## 
+## $BE
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&amp;#39;~ two.sided  
+## 
+## $BG
+## # A tibble: 1 x 8
+##   estimate statistic   p.value parameter conf.low conf.high method   alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
+## 1   -0.677     -37.8 1.47e-227      1694   -0.702    -0.650 Pearson~ two.sided  
+## 
+## $CH
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1  -0.0786     -2.91 0.00370      1360   -0.131   -0.0256 Pearson&amp;#39;s~ two.sided  
+## 
+## $CZ
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1  -0.0837     -3.35 0.000824      1593   -0.132   -0.0347 Pearson&amp;#39;~ two.sided  
+## 
+## $DE
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1  0.00239     0.102   0.919      1814  -0.0436    0.0484 Pearson&amp;#39;s~ two.sided  
+## 
+## $DK
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1    0.237      5.81  1.04e-8       567    0.158     0.313 Pearson&amp;#39;~ two.sided  
+## 
+## $EE
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1   -0.235     -2.88 0.00462       142   -0.384   -0.0740 Pearson&amp;#39;s~ two.sided  
+## 
+## $ES
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1   -0.825     -65.4       0      2005   -0.839    -0.811 Pearson&amp;#39;s~ two.sided  
+## 
+## $FI
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1   0.0427      1.42   0.155      1106  -0.0162     0.101 Pearson&amp;#39;s~ two.sided  
+## 
+## $FR
+## # A tibble: 1 x 8
+##   estimate statistic   p.value parameter conf.low conf.high method   alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
+## 1   -0.698     -37.4 3.29e-216      1474   -0.723    -0.671 Pearson~ two.sided  
+## 
+## $GB
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.105     -11.0 9.19e-28     10712   -0.124   -0.0865 Pearson&amp;#39;~ two.sided  
+## 
+## $GR
+## # A tibble: 1 x 8
+##   estimate statistic   p.value parameter conf.low conf.high method   alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
+## 1   -0.692     -27.0 1.03e-114       796   -0.726    -0.654 Pearson~ two.sided  
+## 
+## $HR
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.579     -21.9 9.32e-87       954   -0.620    -0.536 Pearson&amp;#39;~ two.sided  
+## 
+## $HU
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.342     -15.6 6.71e-52      1843   -0.382    -0.301 Pearson&amp;#39;~ two.sided  
+## 
+## $IE
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.222     -8.45 7.49e-17      1378   -0.271    -0.171 Pearson&amp;#39;~ two.sided  
+## 
+## $IT
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1   -0.831     -71.0       0      2250   -0.844    -0.818 Pearson&amp;#39;s~ two.sided  
+## 
+## $LT
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.204     -5.45  7.17e-8       686   -0.274    -0.131 Pearson&amp;#39;~ two.sided  
+## 
+## $LV
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.544     -6.87 3.84e-10       112   -0.662    -0.401 Pearson&amp;#39;~ two.sided  
+## 
+## $NL
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1    0.143      5.31  1.25e-7      1356   0.0903     0.195 Pearson&amp;#39;~ two.sided  
+## 
+## $NO
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1   0.0483      1.69  0.0911      1221 -0.00774     0.104 Pearson&amp;#39;s~ two.sided  
+## 
+## $PL
+## # A tibble: 1 x 8
+##   estimate statistic   p.value parameter conf.low conf.high method   alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
+## 1   -0.531     -26.7 6.08e-133      1815   -0.564    -0.498 Pearson~ two.sided  
+## 
+## $PT
+## # A tibble: 1 x 8
+##   estimate statistic   p.value parameter conf.low conf.high method   alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      
+## 1   -0.729     -46.9 2.12e-321      1938   -0.749    -0.707 Pearson~ two.sided  
+## 
+## $RO
+## # A tibble: 1 x 8
+##   estimate statistic p.value parameter conf.low conf.high method     alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;chr&amp;gt;      
+## 1   -0.640     -56.0       0      4517   -0.657    -0.623 Pearson&amp;#39;s~ two.sided  
+## 
+## $SE
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1    0.106      3.93  9.09e-5      1367   0.0529     0.158 Pearson&amp;#39;~ two.sided  
+## 
+## $SI
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.627     -11.4 1.98e-23       200   -0.704    -0.535 Pearson&amp;#39;~ two.sided  
+## 
+## $SK
+## # A tibble: 1 x 8
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
+## 1   -0.196     -5.70  1.65e-8       810   -0.262    -0.129 Pearson&amp;#39;~ two.sided&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Como ya hemos visto anteriormente, existen subfunciones de &lt;code&gt;map_*&lt;/code&gt; para obtener en lugar de una lista un objeto de otra clase, aquí de &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_mobility &amp;lt;- europe_reg %&amp;gt;%
+                  split(.$country_region_code) %&amp;gt;% 
+                     map_df(cor_test, 
+                            formula = &amp;quot;~ residential_percent_change_from_baseline + parks_percent_change_from_baseline&amp;quot;, 
+                            .id = &amp;quot;country_code&amp;quot;)
+
+arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 27 x 9
+##    country_code estimate statistic   p.value parameter conf.low conf.high method
+##    &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 IT             -0.831    -71.0  0.             2250   -0.844    -0.818 Pears~
+##  2 ES             -0.825    -65.4  0.             2005   -0.839    -0.811 Pears~
+##  3 PT             -0.729    -46.9  2.12e-321      1938   -0.749    -0.707 Pears~
+##  4 FR             -0.698    -37.4  3.29e-216      1474   -0.723    -0.671 Pears~
+##  5 GR             -0.692    -27.0  1.03e-114       796   -0.726    -0.654 Pears~
+##  6 BG             -0.677    -37.8  1.47e-227      1694   -0.702    -0.650 Pears~
+##  7 RO             -0.640    -56.0  0.             4517   -0.657    -0.623 Pears~
+##  8 SI             -0.627    -11.4  1.98e- 23       200   -0.704    -0.535 Pears~
+##  9 HR             -0.579    -21.9  9.32e- 87       954   -0.620    -0.536 Pears~
+## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
+## # ... with 17 more rows, and 1 more variable: alternative &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Otros ejemplos prácticos aquí en este &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt; or este &lt;a href=&#34;https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/&#34;&gt;otro&lt;/a&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>introducción</category>
+      
+            <category>visualización</category>
+      
+            <category>gestión</category>
+      
+            <category>datos</category>
+      
+            <category>COVID-19</category>
+      
+      
+            <category>tidyverse</category>
+      
+            <category>R</category>
+      
+            <category>R:principante</category>
+      
+    </item>
+    
+  </channel>
+</rss>
