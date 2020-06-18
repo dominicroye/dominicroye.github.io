@@ -15,7 +15,7 @@
   
     
   
-  <meta name="description" content="The ``tidyverse`` universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse.">
+  <meta name="description" content="The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse.">
 
   
   <link rel="alternate" hreflang="en-us" href="/en/2020/a-very-short-introduction-to-tidyverse/">
@@ -119,7 +119,7 @@
   <meta property="og:site_name" content="Dominic Royé">
   <meta property="og:url" content="/en/2020/a-very-short-introduction-to-tidyverse/">
   <meta property="og:title" content="A very short introduction to Tidyverse | Dominic Royé">
-  <meta property="og:description" content="The ``tidyverse`` universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse."><meta property="og:image" content="/en/2020/a-very-short-introduction-to-tidyverse/featured.png">
+  <meta property="og:description" content="The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse."><meta property="og:image" content="/en/2020/a-very-short-introduction-to-tidyverse/featured.png">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2020-06-06T00:00:00&#43;00:00">
@@ -719,7 +719,7 @@
 </div>
 <div id="pipe" class="section level1">
 <h1><span class="header-section-number">3</span> Pipe %&gt;%</h1>
-<p>To facilitate working in data management, manipulation and visualization, the <code>magrittr</code> package introduces the famous operator <em>pipe</em> in the form <code>%&gt;%</code> with the aim of combining various functions without the need to assign the result to a new object. The <em>pipe</em> operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously, to perform sequential tasks. In the very simple example below, we pass the vector <code>1:5</code> to the <code>mean()</code> function to calculate the average. You should know that there are a couple of other pipe operators in the same package.</p>
+<p>To facilitate working in data management, manipulation and visualization, the <code>magrittr</code> package introduces the famous <em>pipe</em> operator in the form <code>%&gt;%</code> with the aim of combining various functions without the need to assign the result to a new object. The <em>pipe</em> operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously, to perform sequential tasks. In the very simple example below, we pass the vector <code>1:5</code> to the <code>mean()</code> function to calculate the average. You should know that there are a couple of other pipe operators in the same package.</p>
 <pre class="r"><code>1:5 %&gt;% mean()</code></pre>
 <pre><code>## [1] 3</code></pre>
 </div>
@@ -728,7 +728,7 @@
 <div id="read-and-write-data" class="section level2">
 <h2><span class="header-section-number">4.1</span> Read and write data</h2>
 <p>The <code>readr</code> package makes it easy to read or write multiple file formats using functions that start with <code>read_*</code> or <code>write_*</code>.
-In comparison to R Base <code>readr</code> functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class <code>tibble</code> (<em>tbl_df</em>), a modern version of <code>data.frame</code> from the <code>tibble</code> package. In the same sense, you can use the <code>read_excel()</code> function of the <code>readxl</code> package to import data from Excel sheets (more details also in this <a href="https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/">blog post</a>). In the following example, we import the mobility data registered by Google (<a href="https://www.google.com/covid19/mobility/">link</a>) during the last months of the COVID-19 pandemic (<a href="/files/Global_Mobility_Report.csv">download</a>).</p>
+In comparison to R Base, <code>readr</code> functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class <code>tibble</code> (<em>tbl_df</em>), a modern version of <code>data.frame</code> from the <code>tibble</code> package. In the same sense, you can use the <code>read_excel()</code> function of the <code>readxl</code> package to import data from Excel sheets (more details also in this <a href="https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/">blog post</a>). In the following example, we import the mobility data registered by Google (<a href="https://www.google.com/covid19/mobility/">link</a>) during the last months of the COVID-19 pandemic (<a href="/files/Global_Mobility_Report.csv">download</a>).</p>
 <table>
 <thead>
 <tr class="header">
@@ -841,7 +841,7 @@ google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></p
 </tr>
 </tbody>
 </table>
-<p>Regular expressions are often used for character patterns. For example, the regular expression <code>[aeiou]</code> matches any single character that is a vowel. The use of square brackets <code>[]</code> corresponds to character classes. For example, <code>[abc]</code> corresponds to each letter regardless of its position. <code>[a-z]</code>, <code>[A-Z]</code> or <code>[0-9]</code> each between a and z or 0 and 9. And finally, <code>[:punct:]</code> punctuation, etc. With curly braces “{}” we can indicate the number of the previous element <code>{2}</code> would be twice, {1,2} between one and two, etc. Also with <code>$</code> or <code>^</code> we can indicate if the pattern starts at the beginning or ends at the end. More details and patterns can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/strings.pdf">Cheat-Sheet</a> of <code>stringr</code>.</p>
+<p>Regular expressions are often used for character patterns. For example, the regular expression <code>[aeiou]</code> matches any single character that is a vowel. The use of square brackets <code>[]</code> corresponds to character classes. For example, <code>[abc]</code> corresponds to each letter regardless of its position. <code>[a-z]</code>, <code>[A-Z]</code> or <code>[0-9]</code> each between a and z or 0 and 9. And finally, <code>[:punct:]</code> punctuation, etc. With curly braces “{}” we can indicate the number of the previous element, <code>{2}</code> would be twice, {1,2} between one and two, etc. Also with <code>$</code> or <code>^</code> we can indicate if the pattern starts at the beginning or ends at the end. More details and patterns can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/strings.pdf">Cheat-Sheet</a> of <code>stringr</code>.</p>
 <pre class="r"><code># replace &#39;er&#39; at the end with empty space
 
 str_replace(month.name, &quot;er$&quot;, &quot;&quot;)</code></pre>
@@ -972,7 +972,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 </div>
 <div id="table-and-vector-manipulation" class="section level2">
 <h2><span class="header-section-number">4.4</span> Table and vector manipulation</h2>
-<p>The <code>dplyr</code> package provides us with a data manipulation grammar, a set of useful verbs to solve common problems. The most important functions are:</p>
+<p>The <code>dplyr</code> and <code>tidyr</code> packages provide us with a data manipulation grammar, a set of useful verbs to solve common problems. The most important functions are:</p>
 <table>
 <thead>
 <tr class="header">
@@ -1250,7 +1250,7 @@ pivot_longer(mobi_wide,
 <li><p><em>scales</em>: are objects of type <code>scales_ *</code> (eg, <code>scale_x_continous()</code>, <code>scale_colour_manual()</code>) to manipulate axes, define colors, etc.</p></li>
 <li><p><em>statistics</em>: are <code>stat_ *</code> objects (eg, <code>stat_density()</code>) that allow to apply statistical transformations.</p></li>
 </ul>
-<p>More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">Cheat-Sheet</a> of <code>ggplot2</code>.</p>
+<p>More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">Cheat-Sheet</a> of <code>ggplot2</code>. <code>ggplot</code> is constantly supplemented by extensions for geometries or other graphical options (see <a href="https://exts.ggplot2.tidyverse.org/ggiraph.html" class="uri">https://exts.ggplot2.tidyverse.org/ggiraph.html</a>), for graphical ideas have a look a the R Graph Gallery (<a href="https://www.r-graph-gallery.com/" class="uri">https://www.r-graph-gallery.com/</a>).</p>
 <div id="line-and-scatter-plot" class="section level3">
 <h3><span class="header-section-number">4.5.1</span> Line and scatter plot</h3>
 <p>We create a subset of our mobility data for residences and parks, filtering the records for Italian regions. In addition, we divide the mobility values in percentage by 100 to obtain the fraction, since <code>ggplot2</code> allows us to indicate the unit of percentage in the label argument (see last plot in this section).</p>

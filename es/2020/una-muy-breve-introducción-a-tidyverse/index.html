@@ -15,7 +15,7 @@
   
     
   
-  <meta name="description" content="El universo de los paquetes de ``tidyverse``, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de ``tidyverse``.">
+  <meta name="description" content="El universo de los paquetes de tidyverse, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de tidyverse.">
 
   
   <link rel="alternate" hreflang="en-us" href="/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/">
@@ -119,7 +119,7 @@
   <meta property="og:site_name" content="Dominic Royé">
   <meta property="og:url" content="/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/">
   <meta property="og:title" content="Una muy breve introducción a Tidyverse | Dominic Royé">
-  <meta property="og:description" content="El universo de los paquetes de ``tidyverse``, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de ``tidyverse``."><meta property="og:image" content="/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/featured.png">
+  <meta property="og:description" content="El universo de los paquetes de tidyverse, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de tidyverse."><meta property="og:image" content="/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/featured.png">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2020-06-06T00:00:00&#43;00:00">
@@ -972,7 +972,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 </div>
 <div id="manipulación-de-tablas-y-vectores" class="section level2">
 <h2><span class="header-section-number">4.4</span> Manipulación de tablas y vectores</h2>
-<p>El paquete <code>dplyr</code> nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:</p>
+<p>Los paquetes <code>dplyr</code> y <code>tidyr</code> nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:</p>
 <table>
 <thead>
 <tr class="header">
@@ -1285,7 +1285,7 @@ La gramática de los gráficos (<em>grammar of graphics</em>, de allí “gg”)
 <li><p><em>scales</em>: son objetos de tipo <code>scales_*</code> (p. ej.: <code>scale_x_continous()</code>, <code>scale_colour_manual()</code>) para manipular las ejes, definir colores, etc.</p></li>
 <li><p><em>statistics</em>: son objetos <code>stat_*</code> (p.ej.: <code>stat_density()</code>) que permiten aplicar transformaciones estadísticas.</p></li>
 </ul>
-<p>Podemos encontrar más detalles en el <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">Cheat-Sheet</a> de <code>ggplot2</code></p>
+<p>Podemos encontrar más detalles en el <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">Cheat-Sheet</a> de <code>ggplot2</code>. <code>ggplot</code> es complementado constantemente con extensiones para geometrías u otras opciones gráficas (<a href="https://exts.ggplot2.tidyverse.org/ggiraph.html" class="uri">https://exts.ggplot2.tidyverse.org/ggiraph.html</a>), para obtener ideas gráficas, debes echarle un vistazo a la Galería de Gráficos R (<a href="https://www.r-graph-gallery.com/" class="uri">https://www.r-graph-gallery.com/</a>).</p>
 <div id="gráfico-de-linea-y-puntos" class="section level3">
 <h3><span class="header-section-number">4.5.1</span> Gráfico de linea y puntos</h3>
 <p>Creamos un subconjunto de nuestros datos de movilidad para residencias y parques, filtrando los registros de regiones italianas. Además, dividimos los valores de movilidad en porcentaje por 100 para obtener la fracción, ya que <code>ggplot2</code> nos permite indicar la unidad de porcentaje en el argumento de las etiquetas (último gráfico de esta sección).</p>
@@ -1762,11 +1762,11 @@ arrange(cor_mobility, estimate)</code></pre>
         
         <li><a href="/es/publication/manual_rgis_2019/">Introducción a los SIG con R</a></li>
         
-        <li><a href="/es/graphs/geography/">Geografía</a></li>
-        
-        <li><a href="/es/graphs/health/">Salud</a></li>
+        <li><a href="/es/graphs/environment/">Medio ambiente</a></li>
         
         <li><a href="/es/graphs/climate/">Clima y tiempo</a></li>
+        
+        <li><a href="/es/graphs/health/">Salud</a></li>
         
       </ul>
     </div>

@@ -372,7 +372,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;manipulación-de-tablas-y-vectores&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4&lt;/span&gt; Manipulación de tablas y vectores&lt;/h2&gt;
-&lt;p&gt;El paquete &lt;code&gt;dplyr&lt;/code&gt; nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:&lt;/p&gt;
+&lt;p&gt;Los paquetes &lt;code&gt;dplyr&lt;/code&gt; y &lt;code&gt;tidyr&lt;/code&gt; nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
@@ -685,7 +685,7 @@ La gramática de los gráficos (&lt;em&gt;grammar of graphics&lt;/em&gt;, de all
 &lt;li&gt;&lt;p&gt;&lt;em&gt;scales&lt;/em&gt;: son objetos de tipo &lt;code&gt;scales_*&lt;/code&gt; (p. ej.: &lt;code&gt;scale_x_continous()&lt;/code&gt;, &lt;code&gt;scale_colour_manual()&lt;/code&gt;) para manipular las ejes, definir colores, etc.&lt;/p&gt;&lt;/li&gt;
 &lt;li&gt;&lt;p&gt;&lt;em&gt;statistics&lt;/em&gt;: son objetos &lt;code&gt;stat_*&lt;/code&gt; (p.ej.: &lt;code&gt;stat_density()&lt;/code&gt;) que permiten aplicar transformaciones estadísticas.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
-&lt;p&gt;Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;ggplot2&lt;/code&gt;&lt;/p&gt;
+&lt;p&gt;Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;ggplot2&lt;/code&gt;. &lt;code&gt;ggplot&lt;/code&gt; es complementado constantemente con extensiones para geometrías u otras opciones gráficas (&lt;a href=&#34;https://exts.ggplot2.tidyverse.org/ggiraph.html&#34; class=&#34;uri&#34;&gt;https://exts.ggplot2.tidyverse.org/ggiraph.html&lt;/a&gt;), para obtener ideas gráficas, debes echarle un vistazo a la Galería de Gráficos R (&lt;a href=&#34;https://www.r-graph-gallery.com/&#34; class=&#34;uri&#34;&gt;https://www.r-graph-gallery.com/&lt;/a&gt;).&lt;/p&gt;
 &lt;div id=&#34;gráfico-de-linea-y-puntos&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.1&lt;/span&gt; Gráfico de linea y puntos&lt;/h3&gt;
 &lt;p&gt;Creamos un subconjunto de nuestros datos de movilidad para residencias y parques, filtrando los registros de regiones italianas. Además, dividimos los valores de movilidad en porcentaje por 100 para obtener la fracción, ya que &lt;code&gt;ggplot2&lt;/code&gt; nos permite indicar la unidad de porcentaje en el argumento de las etiquetas (último gráfico de esta sección).&lt;/p&gt;

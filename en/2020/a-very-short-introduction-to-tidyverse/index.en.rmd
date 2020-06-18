@@ -12,7 +12,7 @@ header:
   caption: ''
   image: 'mobility_residence.png'
 lang: en
-summary: "The ``tidyverse`` universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse."
+summary: "The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse."
 ---
 
 
@@ -71,7 +71,7 @@ It is advisable to use a correct indentation for multiple arguments of a functio
 
 # Pipe %>%
 
-To facilitate working in data management, manipulation and visualization, the `magrittr` package introduces the famous operator *pipe* in the form `%>%` with the aim of combining various functions without the need to assign the result to a new object. The *pipe* operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously, to perform sequential tasks. In the very simple example below, we pass the vector `1:5` to the `mean()` function to calculate the average. You should know that there are a couple of other pipe operators in the same package. 
+To facilitate working in data management, manipulation and visualization, the `magrittr` package introduces the famous *pipe* operator in the form `%>%` with the aim of combining various functions without the need to assign the result to a new object. The *pipe* operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously, to perform sequential tasks. In the very simple example below, we pass the vector `1:5` to the `mean()` function to calculate the average. You should know that there are a couple of other pipe operators in the same package. 
 
 ```{r}
 1:5 %>% mean()
@@ -82,7 +82,7 @@ To facilitate working in data management, manipulation and visualization, the `m
 ## Read and write data
 
 The `readr` package makes it easy to read or write multiple file formats using functions that start with `read_*` or `write_*`.
-In comparison to R Base `readr` functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class `tibble` (*tbl_df*), a modern version of `data.frame` from the `tibble` package. In the same sense, you can use the `read_excel()` function of the ``readxl`` package to import data from Excel sheets (more details also in this [blog post](https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/)). In the following example, we import the mobility data registered by Google ([link](https://www.google.com/covid19/mobility/)) during the last months of the COVID-19 pandemic ([download](/files/Global_Mobility_Report.csv)).
+In comparison to R Base, `readr` functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class `tibble` (*tbl_df*), a modern version of `data.frame` from the `tibble` package. In the same sense, you can use the `read_excel()` function of the ``readxl`` package to import data from Excel sheets (more details also in this [blog post](https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/)). In the following example, we import the mobility data registered by Google ([link](https://www.google.com/covid19/mobility/)) during the last months of the COVID-19 pandemic ([download](/files/Global_Mobility_Report.csv)).
 
 ```{r echo=FALSE}
 library(knitr)
@@ -131,7 +131,7 @@ kable(df,booktabs = TRUE,col.names=c("Function","Description"))
 
 ```
 
-Regular expressions are often used for character patterns. For example, the regular expression `[aeiou]` matches any single character that is a vowel. The use of square brackets `[]` corresponds to character classes. For example, `[abc]` corresponds to each letter regardless of its position. `[a-z]`, `[A-Z]` or `[0-9]` each between a and z or 0 and 9. And finally, `[:punct:]` punctuation, etc. With curly braces "{}" we can indicate the number of the previous element `{2}` would be twice, {1,2} between one and two, etc. Also with `$` or `^` we can indicate if the pattern starts at the beginning or ends at the end. More details and patterns can be found in the [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf) of `stringr`. 
+Regular expressions are often used for character patterns. For example, the regular expression `[aeiou]` matches any single character that is a vowel. The use of square brackets `[]` corresponds to character classes. For example, `[abc]` corresponds to each letter regardless of its position. `[a-z]`, `[A-Z]` or `[0-9]` each between a and z or 0 and 9. And finally, `[:punct:]` punctuation, etc. With curly braces "{}" we can indicate the number of the previous element, `{2}` would be twice, {1,2} between one and two, etc. Also with `$` or `^` we can indicate if the pattern starts at the beginning or ends at the end. More details and patterns can be found in the [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf) of `stringr`. 
 
 ```{r}
 # replace 'er' at the end with empty space
@@ -265,7 +265,7 @@ More details can be found in the [Cheat-Sheet](https://github.com/rstudio/cheats
 
 ## Table and vector manipulation
 
-The `dplyr` package provides us with a data manipulation grammar, a set of useful verbs to solve common problems. The most important functions are:
+The `dplyr` and `tidyr` packages provide us with a data manipulation grammar, a set of useful verbs to solve common problems. The most important functions are:
 
 ```{r echo=FALSE}
 library(knitr)
@@ -414,7 +414,7 @@ Another group of functions you should take a look at are: `separate()`, `case_wh
 
 * *statistics*: are `stat_ *` objects (eg, `stat_density()`) that allow to apply statistical transformations.
 
-More details can be found in the [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf) of `ggplot2`.
+More details can be found in the [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf) of `ggplot2`. `ggplot` is constantly supplemented by extensions for geometries or other graphical options (see https://exts.ggplot2.tidyverse.org/ggiraph.html), for graphical ideas have a look a the R Graph Gallery (https://www.r-graph-gallery.com/). 
 
 ### Line and scatter plot
 
