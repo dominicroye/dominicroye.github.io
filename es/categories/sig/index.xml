@@ -6,10 +6,385 @@
     <description>Recent content in sig on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Tue, 08 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jul 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/es/categories/sig/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Direcciones del flujo fluvial</title>
+      <link>/es/2020/direcciones-del-flujo-fluvial/</link>
+      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2020/direcciones-del-flujo-fluvial/</guid>
+      <description>
+
+
+&lt;p&gt;Recientemente creé un una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;remotes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Instalación desde repositorios remotos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RQGIS3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Interfaz entre R y QGIS3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Soporte para la representación de texto mejorado con ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes en R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;circular&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Funciones para trabajar con datos circulares&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;geosphere&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Trigonometría esférica para aplicaciones geográficas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;En el caso del paquete &lt;code&gt;RQGIS3&lt;/code&gt; es necesario instalar QGIS en OSGeo4W &lt;a href=&#34;https://www.qgis.org/es/site/forusers/download.html&#34;&gt;aquí&lt;/a&gt;. Más adelante explicaré la razón del uso de QGIS.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;remotes&amp;quot;)) install.packages(&amp;quot;remotes&amp;quot;)
+if(!require(&amp;quot;RQGIS3&amp;quot;)) remotes::install_github(&amp;quot;jannes-m/RQGIS3&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggtext&amp;quot;)) install.packages(&amp;quot;ggtext&amp;quot;)
+if(!require(&amp;quot;circular&amp;quot;)) install.packages(&amp;quot;circular&amp;quot;)
+if(!require(&amp;quot;geosphere&amp;quot;)) install.packages(&amp;quot;geosphere&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(sf)
+library(tidyverse)
+library(ggtext)
+library(circular)
+library(geosphere)
+library(RQGIS3)
+library(showtext)
+library(sysfonts)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;consideraciones-iniciales&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Consideraciones iniciales&lt;/h1&gt;
+&lt;p&gt;Los ángulos en líneas vectoriales se basan en el ángulo entre dos vértices, y el número de vértices depende de la complejidad, y en consecuencia de la resolución, de los datos vectoriales. Por tanto, puede haber diferencias en usar distintas resoluciones de una línea vectorial, sea de la costa o del río como en este ejemplo. Una línea recta simplemente se construye con dos puntos de longitud y latitud.&lt;/p&gt;
+&lt;p&gt;Relacionado con ello está la fractalidad, una estructura aparentemente irregular pero que se repite a diferentes escalas, de la línea de costa o también del río. La característica más paradójica es que la longitud de una línea costera depende de la escala de medida, cuanto menor es el incremento de medida, la longitud medida se incrementa.&lt;/p&gt;
+&lt;p&gt;Existen dos posibiliades de obtener los ángulos de los vértices. En la primera calculamos el ángulo entre todos los vértices consecutivos.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, imaginémonos dos puntos, Madrid (-3.71, 40.43) y Barcelona (2.14, 41.4).&lt;/p&gt;
+&lt;p&gt;¿Cuál es el ángulo de su línea recta?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos que es el de 77º, o sea, dirección noreste. Pero, ¿y si voy de Barcelona a Madrid?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El angúlo es diferente porque nos &lt;em&gt;movemos&lt;/em&gt; desde el noreste al suroeste. Podemos invertir fácilmente el ángulo para obtener el &lt;em&gt;movimiento&lt;/em&gt; contrario.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ángulo contrario de Barcelona -&amp;gt; Madrid
+bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43)) - 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ángulo contrario de Madrid -&amp;gt; Barcelona
+bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La dirección en la que calculamos los ángulos es importante. En el caso de los ríos se espera que sea la dirección de flujo de origen a la desembocadura, ahora bien, un problema puede ser que los vértices, que construyen las líneas, no estén ordenados geográficamente en la tabla de atributos. Otro problema puede ser que los vértices empiecen en la desembocadura lo que daría al angúlo inverso como lo hemos visto antes.&lt;/p&gt;
+&lt;p&gt;Sin embargo, hay una forma más fácil. Podemos aprovechar los atributos de los sistemas de coordenadas proyectados (proyección Robinson, etc) que incluyen el ángulo entre los vértices. Este último enfoque lo vamos usar en este post. Aún así, debemos prestar mucha atención a los resultados según lo dicho anteriormente.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Descargamos las líneas centrales de los ríos más grandes del mundo (&lt;a href=&#34;/files/RiverHRCenterlinesCombo.zip&#34;&gt;descarga&lt;/a&gt;), accesible también en &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-y-proyectar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar y proyectar&lt;/h2&gt;
+&lt;p&gt;Lo primero que hacemos es importar, proyectar y eliminar la tercera dimensión &lt;em&gt;Z&lt;/em&gt;, usando el encadenamiento de las siguientes functions: &lt;code&gt;st_read()&lt;/code&gt; nos ayuda a importar cualquier formato vectorial, &lt;code&gt;st_zm()&lt;/code&gt; elimina la dimensión Z o M de una geometría vectorial y &lt;code&gt;st_transform()&lt;/code&gt; proyecta los datos vectoriales a la nueva proyección en formato &lt;em&gt;proj4&lt;/em&gt;. La combinación de las funciones la realizamos con el famoso &lt;em&gt;pipe&lt;/em&gt; (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) que facilita la aplicación de una secuencia de funciones sobre un conjunto de datos, más detalles en este &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;. Todas las funciones del paquete &lt;code&gt;sf&lt;/code&gt; comienzan por &lt;code&gt;st_*&lt;/code&gt; haciendo referencia al carácter espacial de su aplicación, similar a &lt;em&gt;PostGIS.&lt;/em&gt; Igualmente, y al mismo estilo que &lt;em&gt;PostGIS&lt;/em&gt;, se usan verbos como nombres de función.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;proj_rob &amp;lt;- &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m no_defs&amp;quot;
+
+river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
+                 st_zm() %&amp;gt;% 
+                    st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 78 features and 6 fields
+## geometry type:  MULTILINESTRING
+## dimension:      XYZ
+## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:        zmin: 0 zmax: 0
+## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extraer-los-ángulos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Extraer los ángulos&lt;/h2&gt;
+&lt;p&gt;En el siguiente paso debemos extraer los ángulos de los vértices. Desgraciadamente, hasta donde sepa, no es posible extraer los atributos con alguna función del paquete &lt;code&gt;sf&lt;/code&gt;. Aunque la función &lt;code&gt;st_coordinates()&lt;/code&gt; nos devuelve las coordenadas, no incluye otros atributos. Por eso, debemos usar otra forma, y es que el open software Quantum GIS extrae todos los atributos de los vértices. Podríamos importar los datos vectoriales en QGIS Desktop y exportar los vértices desde allí, pero también es posible acceder a las funciones de QGIS desde R directamente.&lt;/p&gt;
+&lt;p&gt;Para ello, tenemos que tener instalado QGIS en OSGeo4W. El paquete &lt;code&gt;RQGIS3&lt;/code&gt; nos permite de forma muy fácil usar las funciones del programa en R. Primero empleamos la función &lt;code&gt;set_env()&lt;/code&gt; para definir todas las rutas necesarias de QGIS e inciamos la API con &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a QGIS
+set_env()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $root
+## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
+## 
+## $qgis_prefix_path
+## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
+## 
+## $python_plugins
+## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
+## 
+## $platform
+## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# inicio de QGIS Python
+open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La función &lt;code&gt;find_algorithms()&lt;/code&gt; nos ayuda a buscar diferentes herramientas de QGIS. Además la función &lt;code&gt;get_usage()&lt;/code&gt; especifica la forma de uso con todos los argumentos requeridos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
+find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [2] &amp;quot;native:extractvertices&amp;quot;                 
+## [3] &amp;quot;native:filterverticesbym&amp;quot;               
+## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
+get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
+## 
+## This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
+## 
+## Additional fields are added to the point indicating the vertex index (beginning at 0)
+## the vertex’s part and its index within the part (as well as its ring for polygons)
+## distance along original geometry and bisector angle of vertex for original geometry.
+## 
+## 
+## ----------------
+## Input parameters
+## ----------------
+## 
+## INPUT: Input layer
+## 
+##  Parameter type: QgsProcessingParameterFeatureSource
+## 
+##  Accepted data types:
+##      - str: layer ID
+##      - str: layer name
+##      - str: layer source
+##      - QgsProcessingFeatureSourceDefinition
+##      - QgsProperty
+##      - QgsVectorLayer
+## 
+## OUTPUT: Vertices
+## 
+##  Parameter type: QgsProcessingParameterFeatureSink
+## 
+##  Accepted data types:
+##      - str: destination vector file
+## e.g. d:/test.shp
+##      - str: memory: to store result in temporary memory layer
+##      - str: using vector provider ID prefix and destination URI
+## e.g. postgres:… to store result in PostGIS table
+##      - QgsProcessingOutputLayerDefinition
+##      - QgsProperty
+## 
+## ----------------
+## Outputs
+## ----------------
+## 
+## OUTPUT:  &amp;lt;QgsProcessingOutputVectorLayer&amp;gt;
+##  Vertices&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En nuestro caso la herramienta para extraer los vértices es simple y sólo lleva una entrada y una salida. La función &lt;code&gt;run_qgis()&lt;/code&gt; ejecuta una herramienta de QGIS indicando el algoritmo y sus argumentos. La ventaja de usar el algoritmo directamente desde R es que podemos pasar objetos de clase &lt;code&gt;sf&lt;/code&gt; (o &lt;code&gt;sp&lt;/code&gt;) y &lt;code&gt;raster&lt;/code&gt; que tenemos importados o creados en R. Como salida creamos un &lt;code&gt;geojson&lt;/code&gt;, también podría ser de otro formato vectorial, y lo guardamos en una carpeta temporal. Al mismo tiempo le indicamos que importe el resultado directamente a R (&lt;code&gt;load_output = TRUE&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- run_qgis(alg = &amp;quot;native:extractvertices&amp;quot;,
+               INPUT = river_line,
+               OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
+               load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $OUTPUT
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpaanOyQ/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;selección&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Selección&lt;/h2&gt;
+&lt;p&gt;Antes de seguir con la estimación de la distribución de los ángulos, filtramos algunos ríos de interés. Las funciones de la colección &lt;code&gt;tidyverse&lt;/code&gt; son compatibles con el paquete &lt;code&gt;sf&lt;/code&gt;. En el último post hice una introducción a &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;-  filter(river_vertices, 
+                          NAME %in% c(&amp;quot;Mississippi&amp;quot;, &amp;quot;Colorado&amp;quot;, 
+                                      &amp;quot;Amazon&amp;quot;, &amp;quot;Nile&amp;quot;, &amp;quot;Orange&amp;quot;, 
+                                      &amp;quot;Ganges&amp;quot;, &amp;quot;Yangtze&amp;quot;, &amp;quot;Danube&amp;quot;,
+                                      &amp;quot;Mackenzie&amp;quot;, &amp;quot;Lena&amp;quot;, &amp;quot;Murray&amp;quot;, 
+                                      &amp;quot;Niger&amp;quot;)
+                          ) 
+
+river_vertices &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
+## for longlat data
+
+## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
+## for longlat data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 94,702 x 12
+##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
+##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
+##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
+##  2 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            1           0
+##  3 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            2           0
+##  4 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            3           0
+##  5 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            4           0
+##  6 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            5           0
+##  7 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            6           0
+##  8 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            7           0
+##  9 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            8           0
+## 10 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            9           0
+## # ... with 94,692 more rows, and 4 more variables: vertex_part_index &amp;lt;int&amp;gt;,
+## #   distance &amp;lt;dbl&amp;gt;, angle &amp;lt;dbl&amp;gt;, geometry &amp;lt;POINT [°]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimar-la-distribución&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Estimar la distribución&lt;/h1&gt;
+&lt;p&gt;Para visualizar la distribución podemos usar, o bien un histograma o un gráfico de densidad. Pero en el caso de estimar la función de densidad de probabilidad nos encontramos con un problema matemático a la hora de aplicarlo a datos circulares. No debemos usar la función estandar de R &lt;code&gt;density()&lt;/code&gt; dado que en nuestros datos una dirección de 360º es la misma a 0º, lo que provocaría errores en este rango de valores. Es un problema general para diferentes métricas estadísticas. Más detalles estadísticos se explican en el paquete &lt;code&gt;circular&lt;/code&gt;. Este paquete permite definir las características de los datos circulares (unidad, tipo de datos, rotación, etc.) como una clase de objeto en R.&lt;/p&gt;
+&lt;p&gt;Por tanto, lo que hacemos es construir una función que estime la densidad y devuelva una tabla con los ángulos (x) y las estimaciones de densidad (y). Dado que los ríos tienen diferentes longitudes, y queremos ver diferencias independientemente de ello, normalizamos las estimaciones usando el valor máximo. A diferencia de la función &lt;code&gt;density()&lt;/code&gt;, en la que el ancho de banda de suavizado &lt;code&gt;bw&lt;/code&gt; es optimizado, aquí es requerido indicarlo. Es similar a definir el ancho de barra en un histograma.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_circ &amp;lt;- function(x){
+  
+  dens &amp;lt;- density.circular(circular(x$angle, units = &amp;quot;degrees&amp;quot;),
+                                     bw = 70, kernel = &amp;quot;vonmises&amp;quot;,
+                                     control.circular = list(units = &amp;quot;degrees&amp;quot;))
+  
+  df &amp;lt;- data.frame(x = dens$x, y = dens$y/max(dens$y))
+  
+  return(df)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para finalizar, estimamos la densidad de cada río de nuestra selección. Empleamos la función &lt;code&gt;split()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt; para obtener una tabla de cada río en una lista. Después aplicamos con la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;code&gt;purrr&lt;/code&gt; nuestra función de estimación de densidad a la lista. El sufijo &lt;code&gt;_df&lt;/code&gt; permite que obtengamos una tabla unida, en lugar de una lista con los resultados de cada río. No obstante, es necesario indicar el nombre de la columna con el argumento &lt;code&gt;.id&lt;/code&gt;, la que contendrá el nombre de cada río. En caso contrario no sabríamos diferenciar los resultados. También aquí recomiendo leer más detalles en el último post sobre &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_river &amp;lt;- split(river_vertices, river_vertices$NAME) %&amp;gt;% 
+                  map_df(dens_circ, .id = &amp;quot;river&amp;quot;)
+
+# resultado
+head(dens_river)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    river        x         y
+## 1 Amazon 0.000000 0.2399907
+## 2 Amazon 0.704501 0.2492548
+## 3 Amazon 1.409002 0.2585758
+## 4 Amazon 2.113503 0.2679779
+## 5 Amazon 2.818004 0.2774859
+## 6 Amazon 3.522505 0.2871232&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualización&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualización&lt;/h1&gt;
+&lt;p&gt;Ahora ya sólo nos queda la visualización mediante el famoso paquete &lt;code&gt;ggplot&lt;/code&gt;. Primero añadimos una nueva fuente &lt;em&gt;Montserrat&lt;/em&gt; para usarla en este gráfico.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# descarga de fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# usar showtext para fuentes
+showtext_opts(dpi = 200)
+showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso creamos dos objetos con el título y con una nota de pie. En el título estamos usando un código html para dar color a una parte de texto en sustitución de una leyenda. Se puede usar html de forma muy fácil con el paquete &lt;code&gt;ggtext&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# título con html 
+title &amp;lt;- &amp;quot;Relative distribution of river &amp;lt;span style=&amp;#39;color:#011FFD;&amp;#39;&amp;gt;&amp;lt;strong&amp;gt;flow direction&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt; in the world&amp;quot;
+
+
+caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La cuadrícula de fondo que crea &lt;code&gt;ggplot&lt;/code&gt; por defecto para coordenadas polares no me convenció, por eso creamos una tabla con las líneas de fondo del eje x.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(0, 360 - 22.5, by = 22.5), 
+                 y = rep(0, 16), 
+                 xend = seq(0, 360 - 22.5, by = 22.5), 
+                 yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A continuación definimos todos los estilos del gráfico. Lo más importante en este paso es la función &lt;code&gt;element_textbox()&lt;/code&gt; del paquete &lt;code&gt;ggtext&lt;/code&gt; para poder interpretar nuestro código html incorporado al título.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- theme_minimal() +
+               theme(axis.title.y = element_blank(),
+                     axis.text.y = element_blank(),
+                     legend.title = element_blank(),
+                     plot.title = element_textbox(family = &amp;quot;Montserrat&amp;quot;, 
+                                                   hjust = 0.5, 
+                                                   colour = &amp;quot;white&amp;quot;, 
+                                                   size = 15),
+                     plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     axis.text.x = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                               colour = &amp;quot;white&amp;quot;, 
+                                               face = &amp;quot;bold&amp;quot;),
+                     panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     panel.grid = element_blank()
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para terminar construimos el gráfico: 1) Usamos la función &lt;code&gt;geom_hline()&lt;/code&gt; con diferentes puntos de intersección en &lt;em&gt;y&lt;/em&gt; para crear la cuadrícula de fondo. La función &lt;code&gt;geom_segment()&lt;/code&gt; crea la cuadrícula en &lt;em&gt;x&lt;/em&gt;. 2) El área de densidad la creamos usando la función &lt;code&gt;geom_area()&lt;/code&gt;. 3) En &lt;code&gt;scale_x_continous()&lt;/code&gt; definimos un límite inferior
+negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho direcciones principales las indicamos en la función &lt;code&gt;scale_y_continous()&lt;/code&gt;, y 4) Por último, cambiamos a un sistema de coordenadas polar y fijamos la variable para crear facetas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
+  geom_segment(data = grid_x , 
+               aes(x = x, y = y, xend = xend, yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
+  geom_area(data = dens_river, 
+            aes(x = x, y = y, ymin = 0, ymax = y), 
+            alpha = .7, 
+            colour = NA, 
+            show.legend = FALSE,
+            fill = &amp;quot;#011FFD&amp;quot;) + 
+  scale_y_continuous(limits = c(-.2, 1), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 360), 
+                     breaks = seq(0, 360 - 22.5, by = 22.5),
+                     minor_breaks = NULL,
+                     labels = c(&amp;quot;N&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NE&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;E&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SE&amp;quot;, &amp;quot;&amp;quot;,
+                                &amp;quot;S&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SW&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;W&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NW&amp;quot;, &amp;quot;&amp;quot;)) +
+  coord_polar() + 
+  facet_wrap(river ~ ., ncol = 4) +
+  labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
+  theme_polar&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>direcciones</category>
+      
+            <category>rios</category>
+      
+            <category>fluvial</category>
+      
+            <category>orientación</category>
+      
+            <category>distribución</category>
+      
+      
+            <category>sig</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+    </item>
     
     <item>
       <title>Calcular la distancia al mar en R</title>

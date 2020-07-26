@@ -6,10 +6,384 @@
     <description>Recent content in R on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sat, 06 Jun 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Fri, 24 Jul 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>River flow directions</title>
+      <link>/en/2020/river-flow-directions/</link>
+      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/en/2020/river-flow-directions/</guid>
+      <description>
+
+
+&lt;p&gt;I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks (&lt;a href=&#34;%5Btweet%5D(https://twitter.com/dr_xeo/status/1277978724034465798?s=20)&#34;&gt;here&lt;/a&gt;), I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex. I did the same for a selection of European rivers here in this &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. However, originally I started with the orientation of the European coasts.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Packages&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;remotes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Installation from remote repositories&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RQGIS3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Interface between R and QGIS3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Improved text rendering support for ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Load fonts in R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Use fonts more easily in R graphs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;circular&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Functions for working with circular data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;geosphere&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Spherical trigonometry for geographic applications&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In the case of the &lt;code&gt;RQGIS3&lt;/code&gt; package, it is necessary to install QGIS in OSGeo4W &lt;a href=&#34;https://www.qgis.org/es/site/forusers/download.html&#34;&gt;here&lt;/a&gt;. I will explain the reason for using QGIS later.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;remotes&amp;quot;)) install.packages(&amp;quot;remotes&amp;quot;)
+if(!require(&amp;quot;RQGIS3&amp;quot;)) remotes::install_github(&amp;quot;jannes-m/RQGIS3&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggtext&amp;quot;)) install.packages(&amp;quot;ggtext&amp;quot;)
+if(!require(&amp;quot;circular&amp;quot;)) install.packages(&amp;quot;circular&amp;quot;)
+if(!require(&amp;quot;geosphere&amp;quot;)) install.packages(&amp;quot;geosphere&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# packages
+library(sf)
+library(tidyverse)
+library(ggtext)
+library(circular)
+library(geosphere)
+library(RQGIS3)
+library(showtext)
+library(sysfonts)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Initial considerations&lt;/h1&gt;
+&lt;p&gt;Angles in vectorial lines are based on the angle between two vertices, and the number of vertices depends on the complexity, and therefore the resolution, of the vector data. Consequently, there can be differences in using different resolutions of a spatial line, either from the coast or from the river as in this example. A straight line is simply constructed with two points of longitude and latitude.&lt;/p&gt;
+&lt;p&gt;Related to this is fractality, an apparently irregular structure but that is repeated at different scales, known from coastlines or also from river. The most paradoxical feature is that the length of a coastline depends on the measurement scale, the smaller the measurement increment, the longer is the measured coastline.&lt;/p&gt;
+&lt;p&gt;There are two possibilities of obtaining the vertice angles. In the first one we calculate the angle between all consecutive vertices.&lt;/p&gt;
+&lt;p&gt;For example, imagine two points, Madrid (-3.71, 40.43) and Barcelona (2.14, 41.4).&lt;/p&gt;
+&lt;p&gt;What is the angle of a straight line between both cities?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see that it is 77º, that is, northeast direction. But what if we go from Barcelona to Madrid?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The angle is different because we &lt;em&gt;move&lt;/em&gt; from the northeast to the southwest. We can easily invert the direction to get the opposite angle.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# opposite angle of Barcelona -&amp;gt; Madrid
+bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43)) - 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# opposite angle of Madrid -&amp;gt; Barcelona
+bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The direction in which we calculate the angles is important. In the case of rivers, it is expected to be the direction of flow from origin to the mouth, however, a problem may be that the vertices, which build the lines, are not geographically ordered in the attribute table. Another problem may be that the vertices start at the mouth which would give the reverse angle as we have seen before.&lt;/p&gt;
+&lt;p&gt;However, there is an easier way. We can take advantage of the attributes of projected coordinate systems (Robinson projection, etc.) that include the angle between the vertices. We will use this last approach in this post. Still, we must pay close attention to the results as stated above.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;We download the central lines of the largest rivers in the world (&lt;a href=&#34;/files/RiverHRCenterlinesCombo.zip&#34;&gt;here&lt;/a&gt;), also accessible in &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import-and-project&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import and project&lt;/h2&gt;
+&lt;p&gt;The first thing we do is to import, project the spatial lines and delete the third dimension &lt;em&gt;Z&lt;/em&gt;, chaining the following functions: &lt;code&gt;st_read()&lt;/code&gt; helps us import any vector format, &lt;code&gt;st_zm()&lt;/code&gt; delete the dimension Z or M of a geometry and &lt;code&gt;st_transform()&lt;/code&gt; projects the vector data to the new projection in &lt;em&gt;proj4&lt;/em&gt; format. We combine the functions with the famous pipe (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) that facilitates the application of a sequence of functions on a data set, more details in this &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;. All functions in the &lt;code&gt;sf&lt;/code&gt; package start with &lt;code&gt;st_*&lt;/code&gt; with reference to the spatial character, similar to &lt;em&gt;PostGIS&lt;/em&gt;. In the same style as &lt;em&gt;PostGIS&lt;/em&gt;, verbs are used as function names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;proj_rob &amp;lt;- &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m no_defs&amp;quot;
+
+river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
+                 st_zm() %&amp;gt;% 
+                    st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 78 features and 6 fields
+## geometry type:  MULTILINESTRING
+## dimension:      XYZ
+## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:        zmin: 0 zmax: 0
+## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extract-the-angles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Extract the angles&lt;/h2&gt;
+&lt;p&gt;In the next step we have to extract the vertice angles. Unfortunately, as far as I know, it is not possible to extract the attributes with some function from the &lt;code&gt;sf&lt;/code&gt; package. Although the function &lt;code&gt;st_coordinates()&lt;/code&gt; returns the coordinates, it does not include other attributes. Therefore, we must use another way, and that is the open software Quantum GIS in which we can find a tool to extract all the vertice attributes. We could import the vector data into QGIS Desktop and export the vertices from there, but it is also possible to access the QGIS tools from R directly.&lt;/p&gt;
+&lt;p&gt;For this, we need to have QGIS installed in OSGeo4W. The &lt;code&gt;RQGIS3&lt;/code&gt; package allows us to use very easily all the tools of the software in R. First we use the &lt;code&gt;set_env()&lt;/code&gt; function to define all the necessary QGIS paths and start the API with &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# paths to QGIS
+set_env()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $root
+## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
+## 
+## $qgis_prefix_path
+## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
+## 
+## $python_plugins
+## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
+## 
+## $platform
+## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# start of QGIS Python
+open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;find_algorithms()&lt;/code&gt; function helps us to search for different QGIS tools. In addition the &lt;code&gt;get_usage()&lt;/code&gt; function specifies the way of usage with all the required parameters.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# search tools
+find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [2] &amp;quot;native:extractvertices&amp;quot;                 
+## [3] &amp;quot;native:filterverticesbym&amp;quot;               
+## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# usage of tool
+get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
+## 
+## This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
+## 
+## Additional fields are added to the point indicating the vertex index (beginning at 0)
+## the vertex’s part and its index within the part (as well as its ring for polygons)
+## distance along original geometry and bisector angle of vertex for original geometry.
+## 
+## 
+## ----------------
+## Input parameters
+## ----------------
+## 
+## INPUT: Input layer
+## 
+##  Parameter type: QgsProcessingParameterFeatureSource
+## 
+##  Accepted data types:
+##      - str: layer ID
+##      - str: layer name
+##      - str: layer source
+##      - QgsProcessingFeatureSourceDefinition
+##      - QgsProperty
+##      - QgsVectorLayer
+## 
+## OUTPUT: Vertices
+## 
+##  Parameter type: QgsProcessingParameterFeatureSink
+## 
+##  Accepted data types:
+##      - str: destination vector file
+## e.g. d:/test.shp
+##      - str: memory: to store result in temporary memory layer
+##      - str: using vector provider ID prefix and destination URI
+## e.g. postgres:… to store result in PostGIS table
+##      - QgsProcessingOutputLayerDefinition
+##      - QgsProperty
+## 
+## ----------------
+## Outputs
+## ----------------
+## 
+## OUTPUT:  &amp;lt;QgsProcessingOutputVectorLayer&amp;gt;
+##  Vertices&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In our case the tool to extract the vertices is simple and only has one input and one output. The function &lt;code&gt;run_qgis()&lt;/code&gt; executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class &lt;code&gt;sf&lt;/code&gt; (or &lt;code&gt;sp&lt;/code&gt;) and &lt;code&gt;raster&lt;/code&gt; that we have imported or created in R. As output we create a &lt;code&gt;geojson&lt;/code&gt;, it could also be of another vector format, and we save it in a temporary folder. At the same time we indicate to import the result directly into R (&lt;code&gt;load_output = TRUE&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- run_qgis(alg = &amp;quot;native:extractvertices&amp;quot;,
+               INPUT = river_line,
+               OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
+               load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $OUTPUT
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpa4DrCj/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Currently on Windows there seem to be problems with the &lt;em&gt;proj&lt;/em&gt; library. In principle, if the function ends up creating the &lt;code&gt;river_vertices&lt;/code&gt; object, you should not worry. Otherwise, I recommend looking at the discussion in the issue opened at &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;/div&gt;
+&lt;div id=&#34;selection&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Selection&lt;/h2&gt;
+&lt;p&gt;Before continuing with the distribution estimation of the angles, we filter some rivers of interest. The functions of the &lt;code&gt;tidyverse&lt;/code&gt; collection are compatible with the &lt;code&gt;sf&lt;/code&gt; package. In the last post I made an introduction to &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;-  filter(river_vertices, 
+                          NAME %in% c(&amp;quot;Mississippi&amp;quot;, &amp;quot;Colorado&amp;quot;, 
+                                      &amp;quot;Amazon&amp;quot;, &amp;quot;Nile&amp;quot;, &amp;quot;Orange&amp;quot;, 
+                                      &amp;quot;Ganges&amp;quot;, &amp;quot;Yangtze&amp;quot;, &amp;quot;Danube&amp;quot;,
+                                      &amp;quot;Mackenzie&amp;quot;, &amp;quot;Lena&amp;quot;, &amp;quot;Murray&amp;quot;, 
+                                      &amp;quot;Niger&amp;quot;)
+                          ) 
+
+river_vertices &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
+## geometry type:  POINT
+## dimension:      XY
+## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
+## for longlat data
+
+## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
+## for longlat data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 94,702 x 12
+##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
+##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
+##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
+##  2 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            1           0
+##  3 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            2           0
+##  4 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            3           0
+##  5 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            4           0
+##  6 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            5           0
+##  7 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            6           0
+##  8 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            7           0
+##  9 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            8           0
+## 10 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            9           0
+## # ... with 94,692 more rows, and 4 more variables: vertex_part_index &amp;lt;int&amp;gt;,
+## #   distance &amp;lt;dbl&amp;gt;, angle &amp;lt;dbl&amp;gt;, geometry &amp;lt;POINT [°]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimate-the-distribution&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Estimate the distribution&lt;/h1&gt;
+&lt;p&gt;To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the &lt;code&gt;density()&lt;/code&gt; standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the &lt;code&gt;circular&lt;/code&gt; package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.&lt;/p&gt;
+&lt;p&gt;So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the &lt;code&gt;density()&lt;/code&gt; function, in which the smoothing bandwidth &lt;code&gt;bw&lt;/code&gt; is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_circ &amp;lt;- function(x){
+  
+  dens &amp;lt;- density.circular(circular(x$angle, units = &amp;quot;degrees&amp;quot;),
+                                     bw = 70, kernel = &amp;quot;vonmises&amp;quot;,
+                                     control.circular = list(units = &amp;quot;degrees&amp;quot;))
+  
+  df &amp;lt;- data.frame(x = dens$x, y = dens$y/max(dens$y))
+  
+  return(df)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we estimate the density of each river in our selection. We use the &lt;code&gt;split()&lt;/code&gt; function of R Base to get a table of each river in a list object. Then we apply our density estimation function to the list with the function &lt;code&gt;map_df()&lt;/code&gt; from the &lt;code&gt;purrr&lt;/code&gt; package. The suffix &lt;code&gt;_df&lt;/code&gt; allows us to get a joined table, instead of a list with the results of each river. However, it is necessary to indicate the name of the column with the argument &lt;code&gt;.id&lt;/code&gt;, which will contain the name of each river. Otherwise we would not know how to differentiate the results. Also here I recommend reading more details in the last post about &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_river &amp;lt;- split(river_vertices, river_vertices$NAME) %&amp;gt;% 
+                  map_df(dens_circ, .id = &amp;quot;river&amp;quot;)
+
+# results
+head(dens_river)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    river        x         y
+## 1 Amazon 0.000000 0.2399907
+## 2 Amazon 0.704501 0.2492548
+## 3 Amazon 1.409002 0.2585758
+## 4 Amazon 2.113503 0.2679779
+## 5 Amazon 2.818004 0.2774859
+## 6 Amazon 3.522505 0.2871232&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualization&lt;/h1&gt;
+&lt;p&gt;Now we only have to make the graph through the famous &lt;code&gt;ggplot&lt;/code&gt; package. First we add a new font &lt;em&gt;Montserrat&lt;/em&gt; for it use in this plot.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# font download
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# use of showtext
+showtext_opts(dpi = 200)
+showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we create two objects with the title and the plot caption. In the title we are using an html code to color part of the text instead of a legend. You can use html very easily with the &lt;code&gt;ggtext&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# title with html
+title &amp;lt;- &amp;quot;Relative distribution of river &amp;lt;span style=&amp;#39;color:#011FFD;&amp;#39;&amp;gt;&amp;lt;strong&amp;gt;flow direction&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt; in the world&amp;quot;
+
+
+caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The background grid that creates &lt;code&gt;ggplot&lt;/code&gt; by default for polar coordinates did not convince me, so we create a table with x axis background lines.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(0, 360 - 22.5, by = 22.5), 
+                 y = rep(0, 16), 
+                 xend = seq(0, 360 - 22.5, by = 22.5), 
+                 yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next we define all the styles of the graph. The most important thing in this step is the &lt;code&gt;element_textbox()&lt;/code&gt; function of the &lt;code&gt;ggtext&lt;/code&gt; package to be able to interpret our html code incorporated into the title.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- theme_minimal() +
+               theme(axis.title.y = element_blank(),
+                     axis.text.y = element_blank(),
+                     legend.title = element_blank(),
+                     plot.title = element_textbox(family = &amp;quot;Montserrat&amp;quot;, 
+                                                   hjust = 0.5, 
+                                                   colour = &amp;quot;white&amp;quot;, 
+                                                   size = 15),
+                     plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     axis.text.x = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                               colour = &amp;quot;white&amp;quot;, 
+                                               face = &amp;quot;bold&amp;quot;),
+                     panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     panel.grid = element_blank()
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally we build the graph: 1) We use the &lt;code&gt;geom_hline()&lt;/code&gt; function with different y intersection points to create the background grid. The &lt;code&gt;geom_segment()&lt;/code&gt; function creates the x grid. 2) We create the density area using the &lt;code&gt;geom_area()&lt;/code&gt; function. 3) In &lt;code&gt;scale_x_continous()&lt;/code&gt; we define a negative lower limit so that it does not collapse at a small point. The labels of the eight main directions are indicated in the &lt;code&gt;scale_y_continous()&lt;/code&gt; function, and 4) Finally, we change to a polar coordinate system and set the variable to create facets.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
+  geom_segment(data = grid_x , 
+               aes(x = x, y = y, xend = xend, yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
+  geom_area(data = dens_river, 
+            aes(x = x, y = y, ymin = 0, ymax = y), 
+            alpha = .7, 
+            colour = NA, 
+            show.legend = FALSE,
+            fill = &amp;quot;#011FFD&amp;quot;) + 
+  scale_y_continuous(limits = c(-.2, 1), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 360), 
+                     breaks = seq(0, 360 - 22.5, by = 22.5),
+                     minor_breaks = NULL,
+                     labels = c(&amp;quot;N&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NE&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;E&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SE&amp;quot;, &amp;quot;&amp;quot;,
+                                &amp;quot;S&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SW&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;W&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NW&amp;quot;, &amp;quot;&amp;quot;)) +
+  coord_polar() + 
+  facet_wrap(river ~ ., ncol = 4) +
+  labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
+  theme_polar&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/en/2020-07-24-river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>directions</category>
+      
+            <category>river</category>
+      
+            <category>fluvial</category>
+      
+            <category>orientation</category>
+      
+            <category>distribution</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:advanced</category>
+      
+    </item>
     
     <item>
       <title>A very short introduction to Tidyverse</title>
@@ -350,8 +724,8 @@ month(dat)&lt;/code&gt;&lt;/pre&gt;
 wday(dat)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 6 6 6 5&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wday(dat, label = TRUE) # as label&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] vi vi vi ju
-## Levels: do &amp;lt; lu &amp;lt; ma &amp;lt; mi &amp;lt; ju &amp;lt; vi &amp;lt; sá&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] vi\\. vi\\. vi\\. ju\\.
+## Levels: do\\. &amp;lt; lu\\. &amp;lt; ma\\. &amp;lt; mi\\. &amp;lt; ju\\. &amp;lt; vi\\. &amp;lt; sá\\.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# the hour
 hour(dat_time)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1]  5 22&lt;/code&gt;&lt;/pre&gt;
@@ -1125,273 +1499,6 @@ g3&lt;/code&gt;&lt;/pre&gt;
             <category>R</category>
       
             <category>R:intermediate</category>
-      
-    </item>
-    
-    <item>
-      <title>Geographic distance</title>
-      <link>/en/2020/geographic-distance/</link>
-      <pubDate>Sun, 19 Jan 2020 00:00:00 +0000</pubDate>
-      
-      <guid>/en/2020/geographic-distance/</guid>
-      <description>
-
-
-&lt;p&gt;The first post of this year 2020, I will dedicate to a question that I was recently asked. The question was how to calculate the shortest distance between different points and how to know which is the closest point. When we work with spatial data in R, currently the easiest thing is to use the &lt;code&gt;sf&lt;/code&gt; package in combination with the &lt;code&gt;tidyverse&lt;/code&gt; collection of packages. We also use the &lt;code&gt;units&lt;/code&gt; package which is very useful for working with units of measurement.&lt;/p&gt;
-&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Packages&lt;/h2&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;units&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Support for measurement units in R vectors, matrices and arrays: propagation, conversion, derivation&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;maps&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Draw geographical maps&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Hold and facilitate interaction with Natural Earth map data&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the necessary packages
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;units&amp;quot;)) install.packages(&amp;quot;units&amp;quot;)
-if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-if(!require(&amp;quot;maps&amp;quot;)) install.packages(&amp;quot;maps&amp;quot;)
-if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
-
-# load packages
-library(maps)
-library(sf) 
-library(tidyverse)
-library(units)
-library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;measurement-units&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Measurement units&lt;/h2&gt;
-&lt;p&gt;The use of vectors and matrices with the &lt;code&gt;units&lt;/code&gt; class allows us to calculate and transform units of measurement.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# length
-l &amp;lt;- set_units(1:10, m)
-l&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Units: [m]
-##  [1]  1  2  3  4  5  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert units
-set_units(l, cm)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Units: [cm]
-##  [1]  100  200  300  400  500  600  700  800  900 1000&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sum different units
-set_units(l, cm) + l&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Units: [cm]
-##  [1]  200  400  600  800 1000 1200 1400 1600 1800 2000&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# area
-a &amp;lt;- set_units(355, ha)
-set_units(a, km2)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 3.55 [km2]&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# velocity
-vel &amp;lt;- set_units(seq(20, 50, 10), km/h)
-set_units(vel, m/s)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Units: [m/s]
-## [1]  5.555556  8.333333 11.111111 13.888889&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;capital-cities-of-the-world&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Capital cities of the world&lt;/h2&gt;
-&lt;p&gt;We will use the capital cities of the whole world with the objective of calculating the distance to the nearest capital city and indicating the name/country.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# set of world cities with coordinates
-head(world.cities) # from the maps package&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##                 name country.etc   pop   lat  long capital
-## 1 &amp;#39;Abasan al-Jadidah   Palestine  5629 31.31 34.34       0
-## 2 &amp;#39;Abasan al-Kabirah   Palestine 18999 31.32 34.35       0
-## 3       &amp;#39;Abdul Hakim    Pakistan 47788 30.55 72.11       0
-## 4 &amp;#39;Abdullah-as-Salam      Kuwait 21817 29.36 47.98       0
-## 5              &amp;#39;Abud   Palestine  2456 32.03 35.07       0
-## 6            &amp;#39;Abwein   Palestine  3434 32.03 35.20       0&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To convert points with longitude and latitude into a spatial object of class &lt;code&gt;sf&lt;/code&gt;, we use the function &lt;code&gt;st_as_sf()&lt;/code&gt;, indicating the coordinate columns and the coordinate reference system (WSG84, epsg: 4326).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the points into an sf object with CRS WSG84
-cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
-cities&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
-## CRS:            EPSG:4326
-## First 10 features:
-##                  name  country.etc   pop capital            geometry
-## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
-## 2  &amp;#39;Abasan al-Kabirah    Palestine 18999       0 POINT (34.35 31.32)
-## 3        &amp;#39;Abdul Hakim     Pakistan 47788       0 POINT (72.11 30.55)
-## 4  &amp;#39;Abdullah-as-Salam       Kuwait 21817       0 POINT (47.98 29.36)
-## 5               &amp;#39;Abud    Palestine  2456       0 POINT (35.07 32.03)
-## 6             &amp;#39;Abwein    Palestine  3434       0  POINT (35.2 32.03)
-## 7            &amp;#39;Adadlay      Somalia  9198       0  POINT (44.65 9.77)
-## 8              &amp;#39;Adale      Somalia  5492       0   POINT (46.3 2.75)
-## 9               &amp;#39;Afak         Iraq 22706       0 POINT (45.26 32.07)
-## 10              &amp;#39;Afif Saudi Arabia 41731       0 POINT (42.93 23.92)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the next step, we filter by the capital cities encoded in the column &lt;em&gt;capital&lt;/em&gt; with 1. The advantage of the &lt;code&gt;sf&lt;/code&gt; package is the possibility of applying functions of the &lt;code&gt;tidyverse&lt;/code&gt; collection to manipulate the attributes. In addition, we add a column with new labels using the &lt;code&gt;str_c()&lt;/code&gt; function of the &lt;code&gt;stringr&lt;/code&gt; package, which is similar to that of &lt;em&gt;R Base&lt;/em&gt; &lt;code&gt;paste()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the capital cities
-capitals &amp;lt;- filter(cities, capital == 1)
-
-# create a new label combining name and country
-capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;quot;, country.etc, &amp;quot;)&amp;quot;))
-
-capitals &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
-## CRS:            EPSG:4326
-## First 10 features:
-##           name          country.etc     pop capital               geometry
-## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
-## 2    Abu Dhabi United Arab Emirates  619316       1    POINT (54.37 24.48)
-## 3        Abuja              Nigeria  178462       1      POINT (7.17 9.18)
-## 4        Accra                Ghana 2029143       1      POINT (-0.2 5.56)
-## 5    Adamstown             Pitcairn      51       1  POINT (-130.1 -25.05)
-## 6  Addis Abeba             Ethiopia 2823167       1     POINT (38.74 9.03)
-## 7        Agana                 Guam    1041       1   POINT (144.75 13.47)
-## 8      Algiers              Algeria 2029936       1     POINT (3.04 36.77)
-## 9        Alofi                 Niue     627       1 POINT (-169.92 -19.05)
-## 10   Amsterdam          Netherlands  744159       1     POINT (4.89 52.37)
-##                        city_country
-## 1                   &amp;#39;Amman (Jordan)
-## 2  Abu Dhabi (United Arab Emirates)
-## 3                   Abuja (Nigeria)
-## 4                     Accra (Ghana)
-## 5              Adamstown (Pitcairn)
-## 6            Addis Abeba (Ethiopia)
-## 7                      Agana (Guam)
-## 8                 Algiers (Algeria)
-## 9                      Alofi (Niue)
-## 10          Amsterdam (Netherlands)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;calculate-distances&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Calculate distances&lt;/h2&gt;
-&lt;p&gt;Geographical distance (Euclidean or greater circle) is calculated with the &lt;code&gt;st_distance()&lt;/code&gt; function, either between two points, between one point and others or between all points. In the latter case we obtain a symmetric matrix of distances (NxN), taken pairwise between the elements of the capital city set. In the diagonal we find the combinations between the same points giving all null values.&lt;/p&gt;
-&lt;table&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;A&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;235&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;478&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;235&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;287&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;C&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;478&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;287&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;For instance, when we want to know the distance from Amsterdam to Abu Dhabi, Washington and Tokyo we pass two spatial objects.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculate distance
-dist_amsterdam &amp;lt;- st_distance(slice(capitals, 10), 
-                              slice(capitals, c(2, 220, 205)))
-
-dist_amsterdam # distance in meters&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Units: [m]
-##         [,1]    [,2]    [,3]
-## [1,] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The result is a matrix with a single row or column (depending on the order of the spatial objects) with a class of &lt;code&gt;units&lt;/code&gt;. Thus it is possible to convert easily to another unit of measure. If we want to obtain a vector without class &lt;code&gt;units&lt;/code&gt;, we only have to apply the function &lt;code&gt;as.vector()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change from m to km
-set_units(dist_amsterdam, &amp;quot;km&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Units: [km]
-##          [,1]     [,2]    [,3]
-## [1,] 5167.859 6203.802 9316.79&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# units class to vector
-as.vector(dist_amsterdam)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the second step, we estimate the distance matrix between all the capital cities. It is important to convert the null values to &lt;code&gt;NA&lt;/code&gt; to subsequently obtain the correct matrix index.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculate distance
-m_distance &amp;lt;- st_distance(capitals)
-
-# matrix
-dim(m_distance)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 230 230&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change m to km
-m_distance_km &amp;lt;- set_units(m_distance, km)
-
-# replace the distance of 0 m with NA
-m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.&lt;/p&gt;
-
-&lt;/div&gt;
-
-&lt;p&gt;To obtain the shortest distance, in addition to its position, we use the &lt;code&gt;apply ()&lt;/code&gt; function which in turn allows us to apply the function &lt;code&gt;which.min()&lt;/code&gt; and &lt;code&gt;min()&lt;/code&gt; on each row. It would also be possible to use the function on columns giving the same result. Finally, we add the results as new columns with the &lt;code&gt;mutate()&lt;/code&gt; function. The indices in &lt;em&gt;pos&lt;/em&gt; allow us to obtain the names of the nearest cities.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the index (position) of the city and the distance
-pos &amp;lt;- apply(m_distance_km, 1, which.min)
-dist &amp;lt;- apply(m_distance_km, 1, min, na.rm = TRUE)
-
-# add the distance and get the name of the city
-capitals &amp;lt;- mutate(capitals, nearest_city =  city_country[pos], 
-                             geometry_nearest = geometry[pos],
-                             distance_city = dist)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;map-of-distances-to-the-next-capital-city&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Map of distances to the next capital city&lt;/h2&gt;
-&lt;p&gt;Finally, we build a map representing the distance in proportional circles. To do this, we use the usual grammar of &lt;code&gt;ggplot()&lt;/code&gt; by adding the geometry &lt;code&gt;geom_sf()&lt;/code&gt;, first for the world map as background and then for the cities. In &lt;code&gt;aes()&lt;/code&gt; we indicate, with the argument &lt;code&gt;size = distance_city&lt;/code&gt;, the variable which we want to map proportionally. The &lt;code&gt;theme_void()&lt;/code&gt; function removes all style elements. In addition, we define with the function &lt;code&gt;coord_sf()&lt;/code&gt; a new projection indicating the &lt;em&gt;proj4&lt;/em&gt; format.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# world map
-world &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;)
-
-# map
-ggplot(world) +
-   geom_sf(fill = &amp;quot;black&amp;quot;, colour = &amp;quot;white&amp;quot;) +
-   geom_sf(data = capitals, 
-           aes(size = distance_city),
-           alpha = 0.7,
-           fill = &amp;quot;#bd0026&amp;quot;,
-           shape = 21,
-           show.legend = &amp;#39;point&amp;#39;) +
-   coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
-  labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital city&amp;quot;) +
-  theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-01-19-geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>distance</category>
-      
-            <category>points</category>
-      
-            <category>cities</category>
-      
-      
-            <category>spatial analysis</category>
-      
-            <category>R</category>
-      
-            <category>R:elementary</category>
-      
-            <category>gis</category>
       
     </item>
     
