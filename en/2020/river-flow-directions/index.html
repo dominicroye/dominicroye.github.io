@@ -842,7 +842,7 @@ get_usage(alg = &quot;native:extractvertices&quot;)</code></pre>
                OUTPUT = file.path(tempdir(), &quot;rivers_world_vertices.geojson&quot;),
                load_output = TRUE)</code></pre>
 <pre><code>## $OUTPUT
-## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpa4DrCj/rivers_world_vertices.geojson&quot;</code></pre>
+## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/RtmpYb53tP/rivers_world_vertices.geojson&quot;</code></pre>
 <div class="alert alert-note">
   <p>Currently on Windows there seem to be problems with the <em>proj</em> library. In principle, if the function ends up creating the <code>river_vertices</code> object, you should not worry. Otherwise, I recommend looking at the discussion in the issue opened at <a href="https://github.com/r-spatial/RQGIS3/issues/20">gitbub</a>.</p>
 
@@ -891,7 +891,7 @@ river_vertices </code></pre>
 <div id="estimate-the-distribution" class="section level1">
 <h1>Estimate the distribution</h1>
 <p>To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the <code>density()</code> standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the <code>circular</code> package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.</p>
-<p>So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the <code>density()</code> function, in which the smoothing bandwidth <code>bw</code> is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram.</p>
+<p>So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the <code>density()</code> function, in which the smoothing bandwidth <code>bw</code> is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, <code>bw.nrd.circular()</code> that could be used here.</p>
 <pre class="r"><code>dens_circ &lt;- function(x){
   
   dens &lt;- density.circular(circular(x$angle, units = &quot;degrees&quot;),
