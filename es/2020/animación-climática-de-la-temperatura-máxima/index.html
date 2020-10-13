@@ -1,0 +1,1231 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.53" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+
+  <link rel="stylesheet" href="/es/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/">
+  <meta property="og:title" content="Animación climática de la temperatura máxima | Dominic Royé">
+  <meta property="og:description" content="En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular."><meta property="og:image" content="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/featured.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2020-10-11T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2020-10-11T00:00:00&#43;00:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#2962ff",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#2962ff"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "Este sitio web utiliza cookies para garantizarle una mejor experiencia.",
+        "dismiss": "Entendido!",
+        "link": "Más información",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>Animación climática de la temperatura máxima | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/es"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Barra de navegación">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#">
+            
+            <span>inicio</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#publications_selected">
+            
+            <span>publicaciones</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#graphs">
+            
+            <span>gráficos</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#about">
+            
+            <span>mí</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#teaching">
+            
+            <span>más</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="article-header d-xl-none">
+  <div class="featured-image" style="background-image: url('/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/featured_hu489609a00b49c5a99012c5d8dcb18b2c_246222_800x0_resize_box_2.png');"></div>
+  
+</div>
+
+
+<div class="container-fluid split-header d-none d-xl-block">
+  <div class="row">
+    <div class="col-6">
+      <div class="split-header-content">
+        <h1 itemprop="name">Animación climática de la temperatura máxima</h1>
+
+        
+
+        
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2020-10-11 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2020-10-11 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2020-10-11
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/visualizaci%C3%B3n/">visualización</a>, 
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="/es/categories/ravanzado/">R:avanzado</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+        
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima&amp;url=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f&amp;title=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f&amp;title=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima&amp;body=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="split-header-image">
+        <img src="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/featured_hu489609a00b49c5a99012c5d8dcb18b2c_246222_680x500_fill_q90_box_smart1_2.png" itemprop="image" alt="">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="article-container d-xl-none">
+  <h1 itemprop="name">Animación climática de la temperatura máxima</h1>
+
+  
+
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2020-10-11 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2020-10-11 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2020-10-11
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/visualizaci%C3%B3n/">visualización</a>, 
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="/es/categories/ravanzado/">R:avanzado</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima&amp;url=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f&amp;title=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f&amp;title=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=Animaci%c3%b3n%20clim%c3%a1tica%20de%20la%20temperatura%20m%c3%a1xima&amp;body=%2fes%2f2020%2fanimaci%25C3%25B3n-clim%25C3%25A1tica-de-la-temperatura-m%25C3%25A1xima%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+
+
+<p>En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de <a href="https://dominicroye.github.io/es/graphs/climate/">gráficos</a> de este mismo blog.</p>
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">I couldn&#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/climate?src=hash&amp;ref_src=twsrc%5Etfw">#climate</a> <a href="https://t.co/ZC9L0vh3vR">pic.twitter.com/ZC9L0vh3vR</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw">May 9, 2020</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<div id="paquetes" class="section level2">
+<h2>Paquetes</h2>
+<p>En este post usaremos los siguientes paquetes:</p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="86%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.</td>
+</tr>
+<tr class="even">
+<td align="left">rnaturalearth</td>
+<td align="left">Mapas vectoriales del mundo ‘Natural Earth’</td>
+</tr>
+<tr class="odd">
+<td align="left">lubridate</td>
+<td align="left">Fácil manipulación de fechas y tiempos</td>
+</tr>
+<tr class="even">
+<td align="left">sf</td>
+<td align="left">Simple Feature: importar, exportar y manipular datos vectoriales</td>
+</tr>
+<tr class="odd">
+<td align="left">raster</td>
+<td align="left">Importar, exportar y manipular raster</td>
+</tr>
+<tr class="even">
+<td align="left">ggthemes</td>
+<td align="left">Estilos para ggplot2</td>
+</tr>
+<tr class="odd">
+<td align="left">gifski</td>
+<td align="left">Crear gifs</td>
+</tr>
+<tr class="even">
+<td align="left">showtext</td>
+<td align="left">Usar fuentes más fácilmente en gráficos R</td>
+</tr>
+<tr class="odd">
+<td align="left">sysfonts</td>
+<td align="left">Cargar fuentes del sistema y fuentes de Google</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># instalamos los paquetes si hace falta
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;rnaturalearth&quot;)) install.packages(&quot;rnaturalearth&quot;)
+if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;ggthemes&quot;)) install.packages(&quot;ggthemes&quot;)
+if(!require(&quot;gifski&quot;)) install.packages(&quot;gifski&quot;)
+if(!require(&quot;raster&quot;)) install.packages(&quot;raster&quot;)
+if(!require(&quot;sysfonts&quot;)) install.packages(&quot;sysfonts&quot;)
+if(!require(&quot;showtext&quot;)) install.packages(&quot;showtext&quot;)
+
+# paquetes
+library(raster)
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(sf)
+library(rnaturalearth)
+library(extrafont)
+library(showtext)
+library(RColorBrewer)
+library(gifski)</code></pre>
+<p>Para aquellos con menos experiencia con <code>tidyverse</code>, recomiendo la breve introducción en este blog <a href="https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/">post</a>.</p>
+</div>
+<div id="preparación" class="section level1">
+<h1>Preparación</h1>
+<div id="datos" class="section level2">
+<h2>Datos</h2>
+<p>Descargamos los datos STEAD de la temperatura máxima (<em>tmax_pen.nc</em>) en formato <em>netCDF</em> desde el repositario del CSIC <a href="https://digital.csic.es/handle/10261/177655">aquí</a> (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos <em>netCDF</em>, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (<em>array</em>) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.</p>
+<div class="figure">
+<img src="/img/3d_ncdf.es.png" alt="" />
+<p class="caption">Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37</p>
+</div>
+</div>
+<div id="importar-los-datos" class="section level2">
+<h2>Importar los datos</h2>
+<p>El formato <em>netCDF</em> con extensión <em>.nc</em> lo podemos importar vía dos paquetes principales: 1) <code>ncdf4</code> y 2) <code>raster</code>. Aunque el paquete <code>raster</code> realmente lo que hace es usar el primer paquete para importar los datos. En este post usaremos el paquete <code>raster</code> dado que es algo más fácil, con algunas funciones muy útiles y más universales para todo tipo de formato <em>raster</em>. Las funciones principales de importación son: <code>raster()</code>, <code>stack()</code> y <code>brick()</code>. La primera función sólo permite importar una única capa, en cambio, las últimas dos funciones se emplean para datos multidimensionales. En nuestro caso sólo tenemos una variable, por tanto no sería necesario hacer uso del argumento <code>varname</code>.</p>
+<pre class="r"><code># importamos los datos ncdf
+tmx &lt;- brick(&quot;tmax_pen.nc&quot;, varname = &quot;tx&quot;)</code></pre>
+<pre><code>## Loading required namespace: ncdf4</code></pre>
+<pre class="r"><code>tmx # metadatos</code></pre>
+<pre><code>## class      : RasterBrick 
+## dimensions : 190, 230, 43700, 41638  (nrow, ncol, ncell, nlayers)
+## resolution : 0.0585, 0.045  (x, y)
+## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : C:/Users/xeo19/Documents/GitHub/blogR_update/content/post/es/2020-10-11-animacion-climatica-temperatura-maxima/tmax_pen.nc 
+## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
+## Time (days since 1901-01-01): 1, 41638 (min, max)
+## varname    : tx</code></pre>
+<p>En la estructura del objeto <code>RasterBrick</code> vemos todos los metadatos necesarios: desde la resolución, las dimensiones o el tipo de proyección, hasta el nombre de la variable. Además nos indica que únicamente apunta a los datos (<em>source</em>) y no los ha importado a la memoria RAM lo que facilita el trabajo con grandes conjuntos de datos.</p>
+<p>Para acceder a cualquier capa hacemos uso de <code>[[ ]]</code> con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.</p>
+<pre class="r"><code># mapear cualquier día
+plot(tmx[[200]], col = rev(heat.colors(7)))</code></pre>
+<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="calcular-el-promedio-de-la-temperatura" class="section level2">
+<h2>Calcular el promedio de la temperatura</h2>
+<p>En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete <code>raster</code> disponemos de la función <code>stackApply()</code> que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.</p>
+<p>Empezamos con las funciones <code>beginClusterr()</code> y <code>endCluster()</code> que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función <code>clusterR</code> permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función <code>stackApply()</code>, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento <code>progress = 'text'</code> se muestra una barra de progreso del cálculo.</p>
+<div class="alert alert-note">
+  <p>Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de <a href="https://earthengine.google.com/">Google Earth Engine</a> lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.</p>
+
+</div>
+
+<pre class="r"><code># convertimos las fechas entre 1901 y 2014 a días del año
+time_days &lt;- yday(seq(as_date(&quot;1901-01-01&quot;), as_date(&quot;2014-12-31&quot;), &quot;day&quot;))
+
+# calculamos el promedio 
+beginCluster(4)
+tmx_mean &lt;- clusterR(tmx, stackApply, args = list(indices = time_days, fun = mean))
+endCluster()</code></pre>
+</div>
+<div id="suavizar-la-variabilidad-de-las-temperaturas" class="section level2">
+<h2>Suavizar la variabilidad de las temperaturas</h2>
+<p>Antes de pasar a suavizar las series temporales de nuestro <em>RasterBrick</em>, un ejemplo del por qué lo hacemos. Extraemos un píxel de nuestro conjunto de datos en las coordenadas -1º de longitud y 40º de latitud usando la función <code>extract()</code>. Dado que la función con el mismo nombre aparece en varios paquetes, debemos cambiar a la forma <code>nombre_paquete::nombre_función</code>. El resultado es una matriz con una fila correspondiente al píxel y 366 columnas de los días del año. El siguiente paso es la creación de un <em>data.frame</em> con una fecha <em>dummy</em> y la temperatura máxima extraída.</p>
+<pre class="r"><code># extraemos un píxel
+point_ts &lt;- raster::extract(tmx_mean, matrix(c(-1, 40), nrow = 1))
+dim(point_ts) # dimensiones </code></pre>
+<pre><code>## [1]   1 366</code></pre>
+<pre class="r"><code># creamos un data.frame
+df &lt;- data.frame(date = seq(as_date(&quot;2000-01-01&quot;), as_date(&quot;2000-12-31&quot;), &quot;day&quot;),
+                 tmx = point_ts[1,])
+
+# visualizamos la temperatura máxima 
+ggplot(df, 
+       aes(date, tmx)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &quot;month&quot;, date_labels = &quot;%b&quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  labs(y = &quot;Temperatura máxima&quot;, x = &quot;&quot;, colour =  &quot;&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función <code>loess()</code>. El argumento más importante es <code>span</code> que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.</p>
+<pre class="r"><code>daily_smooth &lt;- function(x, span = 0.5){
+  
+  if(all(is.na(x))){
+   
+    return(x) 
+   
+  } else {
+    
+  df &lt;- data.frame(yd = 1:366, ta = x)
+  m &lt;- loess(ta ~ yd, span = span, data = df)
+  est &lt;- predict(m, 1:366)
+
+  return(est)
+  
+  }
+}</code></pre>
+<p>Aplicamos nuestra nueva función de suavizado a la serie temporal extraída y hacemos algunos cambios para poder visualizar la diferencia entre los datos originales y suavizados.</p>
+<pre class="r"><code># suavizamos la temperatura
+df &lt;- mutate(df, tmx_smoothed = daily_smooth(tmx)) %&gt;% 
+          pivot_longer(2:3, names_to = &quot;var&quot;, values_to = &quot;temp&quot;)
+
+# visualizamos la diferencia 
+ggplot(df, 
+       aes(date, temp, 
+           colour = var)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &quot;month&quot;, date_labels = &quot;%b&quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  scale_colour_manual(values = c(&quot;#f4a582&quot;, &quot;#b2182b&quot;)) +
+  labs(y = &quot;Temperatura máxima&quot;, x = &quot;&quot;, colour =  &quot;&quot;) +
+  theme_minimal()</code></pre>
+<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p>Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el <em>RasterBrick</em> usando la función <code>calc()</code>. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.</p>
+<pre class="r"><code># suavizar el RasterBrick
+tmx_smooth &lt;- calc(tmx_mean, fun = daily_smooth)</code></pre>
+</div>
+</div>
+<div id="visualización" class="section level1">
+<h1>Visualización</h1>
+<div id="preparación-1" class="section level2">
+<h2>Preparación</h2>
+<p>Para visualizar las temperaturas máximas durante todo el año, primero, convertimos el <em>RasterBrick</em> a un <em>data.frame</em>, incluyendo longitud y latitud, pero eliminando todas las series temporales sin valores (<code>NA</code>).</p>
+<pre class="r"><code># convertir a data.frame
+tmx_mat &lt;- as.data.frame(tmx_smooth, xy = TRUE, na.rm = TRUE)
+
+# renombrar las columnas
+tmx_mat &lt;- set_names(tmx_mat, c(&quot;lon&quot;, &quot;lat&quot;, str_c(&quot;D&quot;, 1:366)))
+str(tmx_mat[, 1:10])</code></pre>
+<pre><code>## &#39;data.frame&#39;:    20676 obs. of  10 variables:
+##  $ lon: num  -8.03 -7.98 -7.92 -7.86 -7.8 ...
+##  $ lat: num  43.8 43.8 43.8 43.8 43.8 ...
+##  $ D1 : num  10.5 10.3 10 10.9 11.5 ...
+##  $ D2 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D3 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D4 : num  10.6 10.4 10.1 10.9 11.5 ...
+##  $ D5 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D6 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D7 : num  10.6 10.4 10.2 11 11.6 ...
+##  $ D8 : num  10.6 10.4 10.2 11 11.6 ...</code></pre>
+<p>Segundo, importamos los límites administrativos con la función <code>ne_countries()</code> del paquete <code>rnaturalearth</code> limitando la extensión a la región de la Península Ibérica, el sur de Francia y el norte de África.</p>
+<pre class="r"><code># importamos los límites globales
+map &lt;- ne_countries(scale = 10, returnclass = &quot;sf&quot;) %&gt;% st_cast(&quot;MULTILINESTRING&quot;)
+
+# limitamos la extensión
+map &lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) </code></pre>
+<pre><code>## although coordinates are longitude/latitude, st_intersection assumes that they are planar</code></pre>
+<pre><code>## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries</code></pre>
+<pre class="r"><code># mapa de los límites
+plot(map)</code></pre>
+<pre><code>## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
+## all</code></pre>
+<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p>Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.</p>
+<p>Cuarto, aplicamos la función <code>cut()</code> con los cortes a todas las columnas con las temperaturas de cada día del año.</p>
+<pre class="r"><code># etiquetas de los días del año
+lab &lt;- as_date(0:365, &quot;2000-01-01&quot;) %&gt;% format(&quot;%d %B&quot;)
+
+# cortes para la temperatura
+ct &lt;- c(-5, 0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 40, 45)
+
+# datos categorizados con los cortes fijados
+tmx_mat_cat &lt;- mutate_at(tmx_mat, 3:368, cut, breaks = ct)</code></pre>
+<p>Quinto, descargamos la fuente Montserrat y definimos los colores correspondientes a las clases creadas.</p>
+<pre class="r"><code># descarga de la fuente
+font_add_google(&quot;Montserrat&quot;, &quot;Montserrat&quot;)
+
+# uso de showtext con DPI 300
+showtext_opts(dpi = 300)
+showtext_auto()
+
+# definimos una rampa de colores
+col_spec &lt;- colorRampPalette(rev(brewer.pal(11, &quot;Spectral&quot;)))</code></pre>
+</div>
+<div id="mapa-estático" class="section level2">
+<h2>Mapa estático</h2>
+<p>En esta primera visualización hacemos un mapa del 29 de mayo (día 150). No voy a explicar todos los detalles de la construcción con <code>ggplot2</code>, no obstante, es importante destacar que hago uso de la función <code>aes_string()</code> en lugar de <code>aes()</code> para poder usar los nombres de las columnas en formato de carácter. Con la función <code>geom_raster()</code> añadimos los datos en rejilla de temperatura como primera capa del gráfico y con <code>geom_sf()</code> los límites de clase <code>sf</code>. Por último, la función <code>guide_colorsteps()</code> permite crear una bonita leyenda basada en las clases creadas por la función <code>cut()</code>.</p>
+<pre class="r"><code>ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&quot;lon&quot;, &quot;lat&quot;, fill = &quot;D150&quot;)) +
+         geom_sf(data = map,
+                 colour = &quot;grey50&quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &quot;right&quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &quot;top&quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &quot;Montserrat&quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &quot;pt&quot;)),                
+      plot.title = element_text(family = &quot;Montserrat&quot;, 
+                                size = 16, face = &quot;bold&quot;, 
+                                margin = margin(b = 2, t = 5, unit = &quot;pt&quot;)),
+     legend.text = element_text(family = &quot;Montserrat&quot;),
+     plot.subtitle = element_text(family = &quot;Montserrat&quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &quot;pt&quot;))) +
+   labs(title = &quot;Promedio de la temperatura máxima durante el año en España&quot;, 
+     subtitle = lab[150], 
+     caption = &quot;Período de referencia 1901-2014. Datos: STEAD&quot;,
+     fill = &quot;ºC&quot;)</code></pre>
+<p><img src="/img/fig_1.es.png" /></p>
+</div>
+<div id="animación-de-todo-el-año" class="section level2">
+<h2>Animación de todo el año</h2>
+<p>La animación final consiste en crear un gif a partir de todas las imágenes de los 366 días, en principio, se podría usar el paquete <code>gganimate</code>, pero en mi experiencia es más lento, dado que requiere un <code>data.frame</code> en formato largo. En este ejemplo una tabla larga tendría más de siete millones de filas, por eso, lo que hacemos es usar un bucle sobre las columnas y unir todas las imágenes creadas con el paquete <code>gifski</code> que también usa <code>gganimate</code> para la reproducción en formato gif.</p>
+<p>Antes del bucle creamos un vector con los pasos temporales o nombres de las columnas y otro vector con el nombre de las imágenes, incluida el nombre de la carpeta. Con el objetivo de obtener una lista de imágenes ordenadas por su número debemos mantener tres cifras rellenando las posiciones a la izquierda con ceros.</p>
+<pre class="r"><code>time_step &lt;- str_c(&quot;D&quot;, 1:366)
+
+files &lt;- str_c(&quot;./ta_anima/D&quot;, str_pad(1:366, 3, &quot;left&quot;, &quot;0&quot;), &quot;.png&quot;)</code></pre>
+<p>Por último, incluimos la construcción anterior del gráfico en un bucle <em>for</em>.</p>
+<pre class="r"><code>for(i in 1:366){
+
+ ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&quot;lon&quot;, &quot;lat&quot;, fill = time_step[i])) +
+         geom_sf(data = map,
+                 colour = &quot;grey50&quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &quot;right&quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &quot;top&quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &quot;Montserrat&quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &quot;pt&quot;)),                
+      plot.title = element_text(family = &quot;Montserrat&quot;, 
+                                size = 16, face = &quot;bold&quot;, 
+                                margin = margin(b = 2, t = 5, unit = &quot;pt&quot;)),
+     legend.text = element_text(family = &quot;Montserrat&quot;),
+     plot.subtitle = element_text(family = &quot;Montserrat&quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &quot;pt&quot;))) +
+   labs(title = &quot;Promedio de la temperatura máxima durante el año en España&quot;, 
+     subtitle = lab[i], 
+     caption = &quot;Período de referencia 1901-2014. Datos: STEAD&quot;,
+     fill = &quot;ºC&quot;)
+  
+  ggsave(files[i], width = 8.28, height = 7.33, type = &quot;cairo&quot;)
+  
+}</code></pre>
+<p>Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.</p>
+<pre class="r"><code>gifski(files, &quot;tmx_spain.gif&quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)</code></pre>
+<p><img src="/img/tmx_spain.es.gif" /></p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/es/tags/animaci%C3%B3n/">animación</a>
+  
+  <a class="badge badge-light" href="/es/tags/temperatura/">temperatura</a>
+  
+  <a class="badge badge-light" href="/es/tags/clima/">clima</a>
+  
+  <a class="badge badge-light" href="/es/tags/sig/">SIG</a>
+  
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="/es">Dr. Dominic Royé</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+          <i class="fa fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+          <i class="ai ai-researchgate"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/dominicroye" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Relacionado</h3>
+      <ul>
+        
+        <li><a href="/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/">Visualizar anomalías climáticas</a></li>
+        
+        <li><a href="/es/graphs/climate/">Clima y tiempo</a></li>
+        
+        <li><a href="/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/">Visualizar anomalías de precipitación mensual</a></li>
+        
+        <li><a href="/es/publication/os_tempos_2019/">Os tempos e o clima de Galicia</a></li>
+        
+        <li><a href="/es/publication/ncdf_2015/">El uso de bases de datos climáticos netCDF con estructura matricial en el entorno de R</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Anterior</div>
+    <a href="/es/2020/direcciones-del-flujo-fluvial/" rel="prev">Direcciones del flujo fluvial</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+

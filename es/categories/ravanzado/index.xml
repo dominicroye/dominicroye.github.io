@@ -6,27 +6,22 @@
     <description>Recent content in R:avanzado on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Fri, 24 Jul 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/es/categories/ravanzado/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
-      <title>Direcciones del flujo fluvial</title>
-      <link>/es/2020/direcciones-del-flujo-fluvial/</link>
-      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      <title>Animación climática de la temperatura máxima</title>
+      <link>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
+      <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/es/2020/direcciones-del-flujo-fluvial/</guid>
+      <guid>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
       <description>
 
 
-&lt;p&gt;Recientemente creé un una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;More river flow direction in the world&lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/bGqylu3Wnr&#34;&gt;pic.twitter.com/bGqylu3Wnr&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?ref_src=twsrc%5Etfw&#34;&gt;June 30, 2020&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;p&gt;Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;.&lt;/p&gt;
-&lt;p&gt;No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de &lt;a href=&#34;https://dominicroye.github.io/es/graphs/climate/&#34;&gt;gráficos&lt;/a&gt; de este mismo blog.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
@@ -34,8 +29,8 @@
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
 &lt;colgroup&gt;
-&lt;col width=&#34;10%&#34; /&gt;
-&lt;col width=&#34;89%&#34; /&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
 &lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
@@ -49,310 +44,315 @@
 &lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;remotes&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Instalación desde repositorios remotos&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;RQGIS3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Rnterfaz entre R y QGIS3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;ggtext&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Soporte para la representación de texto mejorado con ggplot2&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Cargar fuentes en R&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Estilos para ggplot2&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;gifski&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Crear gifs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;circular&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Funciones para trabajar con datos circulares&lt;/td&gt;
-&lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;geosphere&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Trigonometría esférica para aplicaciones geográficas&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes del sistema y fuentes de Google&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
-&lt;p&gt;En el caso del paquete &lt;code&gt;RQGIS3&lt;/code&gt; es necesario instalar QGIS en OSGeo4W &lt;a href=&#34;https://www.qgis.org/es/site/forusers/download.html&#34;&gt;aquí&lt;/a&gt;. Más adelante explicaré la razón del uso de QGIS.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;remotes&amp;quot;)) install.packages(&amp;quot;remotes&amp;quot;)
-if(!require(&amp;quot;RQGIS3&amp;quot;)) remotes::install_github(&amp;quot;jannes-m/RQGIS3&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-if(!require(&amp;quot;ggtext&amp;quot;)) install.packages(&amp;quot;ggtext&amp;quot;)
-if(!require(&amp;quot;circular&amp;quot;)) install.packages(&amp;quot;circular&amp;quot;)
-if(!require(&amp;quot;geosphere&amp;quot;)) install.packages(&amp;quot;geosphere&amp;quot;)
+if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;ggthemes&amp;quot;)
+if(!require(&amp;quot;gifski&amp;quot;)) install.packages(&amp;quot;gifski&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
 if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
 if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
 
-#paquetes
-library(sf)
+# paquetes
+library(raster)
 library(tidyverse)
-library(ggtext)
-library(circular)
-library(geosphere)
-library(RQGIS3)
+library(lubridate)
+library(ggthemes)
+library(sf)
+library(rnaturalearth)
+library(extrafont)
 library(showtext)
-library(sysfonts)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;consideraciones-iniciales&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Consideraciones iniciales&lt;/h1&gt;
-&lt;p&gt;Los ángulos en líneas vectoriales se basan en el ángulo entre dos vértices. El número de vértices depende de la complejidad, y en consecuencia de la resolución, de los datos vectoriales. Por tanto, puede haber diferencias en usar distintas resoluciones de una línea vectorial, sea de la costa o del río como en este ejemplo. Una línea recta simplemente se construye con dos puntos de longitud y latitud.&lt;/p&gt;
-&lt;p&gt;Relacionado con ello está la fractalidad, una estructura aparentemente irregular pero que se repite a diferentes escalas, de la línea de costa o también del río. La característica más paradojica es que la longitud de una línea costera depende de la escala de medida, cuanto menor es el incremento de medida, la longitud medida se incrementa.&lt;/p&gt;
-&lt;p&gt;Existen dos posibiliades de obtener los ángulos de los vértices. En la primera calculamos el ángulo entre todos los vértices consecutivos.&lt;/p&gt;
-&lt;p&gt;Por ejemplo, imaginémonos dos puntos, Madrid (-3.71, 40.43) y Barcelona (2.14, 41.4).&lt;/p&gt;
-&lt;p&gt;¿Cuál es el ángulo de su línea recta?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Vemos que es el de 77º, o sea, dirección noreste. Pero, ¿y si voy de Barcelona a Madrid?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El angúlo es diferente porque nos &lt;em&gt;movemos&lt;/em&gt; desde el noreste al suroeste. Podemos invertir fácilmente el ángulo para obtener el &lt;em&gt;movimiento&lt;/em&gt; contrario.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ángulo contrario de Barcelona -&amp;gt; Madrid
-bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43)) - 180&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ángulo contrario de Madrid -&amp;gt; Barcelona
-bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La dirección en la que calculamos los ángulos es importante. En el caso de los ríos se espera que sea la dirección de flujo de origen a la desembocadura, ahora bien, un problema puede ser que los vértices, que construyen las líneas, no estén ordenados geográficamente en la tabla de atributos. Otro problema puede ser que los vértices empiecen en la desembocadura lo que daría al angúlo inverso como lo hemos visto antes.&lt;/p&gt;
-&lt;p&gt;Sin embargo, hay una forma más fácil. Podemos aprovechar los atributos de los sistemas de coordenadas proyectados (proyección Robinson, etc) que incluyen el ángulo entre los vértices. Este último enfoque lo vamos usar en este post. Aún así, debemos prestar mucha atención a los resultados según lo dicho anteriormente.&lt;/p&gt;
+library(RColorBrewer)
+library(gifski)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para aquellos con menos experiencia con &lt;code&gt;tidyverse&lt;/code&gt;, recomiendo la breve introducción en este blog &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Preparación&lt;/h1&gt;
 &lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;Debemos descargar las líneas centrales de los ríos más grandes del mundo (&lt;a href=&#34;/files/RiverHRCenterlinesCombo.zip&#34;&gt;descarga&lt;/a&gt;), accesible también en &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Descargamos los datos STEAD de la temperatura máxima (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) en formato &lt;em&gt;netCDF&lt;/em&gt; desde el repositario del CSIC &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;aquí&lt;/a&gt; (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos &lt;em&gt;netCDF&lt;/em&gt;, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (&lt;em&gt;array&lt;/em&gt;) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;importar-y-proyectar&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Importar y proyectar&lt;/h2&gt;
-&lt;p&gt;Lo primero que hacemos es importar, proyectar y eliminar la tercera dimensión &lt;em&gt;Z&lt;/em&gt;, usando el encadenamiento de las siguientes functions: &lt;code&gt;st_read()&lt;/code&gt; nos ayuda a importar cualquier formato vectorial, &lt;code&gt;st_zm()&lt;/code&gt; elimina la dimensión Z o M de una geometría vectorial y &lt;code&gt;st_transform()&lt;/code&gt; proyecta los datos vectoriales a la nueva proyección en formato &lt;em&gt;proj4&lt;/em&gt;. La combinación de las funciones la realizamos con el famoso pipe (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) que facilita la aplicación de una secuencia de funciones sobre un conjunto de datos, más detalles en este &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;. Todas las funciones del paquete &lt;code&gt;sf&lt;/code&gt; comienzan por &lt;code&gt;st_*&lt;/code&gt; haciendo referencia al carácter espacial de su aplicación, similar a &lt;em&gt;PostGIS.&lt;/em&gt; Igualmente, y al mismo estilo que &lt;em&gt;PostGIS&lt;/em&gt;, se usan verbos como nombres de función.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;proj_rob &amp;lt;- &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m no_defs&amp;quot;
-
-river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
-                 st_zm() %&amp;gt;% 
-                    st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
-## Simple feature collection with 78 features and 6 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XYZ
-## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
-## z_range:        zmin: 0 zmax: 0
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;extraer-los-ángulos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Extraer los ángulos&lt;/h2&gt;
-&lt;p&gt;En el siguiente paso debemos extraer los ángulos de los vértices. Desgraciadamente, hasta donde sepa, no es posible extraer los atributos con alguna función del paquete &lt;code&gt;sf&lt;/code&gt;. Aunque la función &lt;code&gt;st_coordinates()&lt;/code&gt; nos devuelve las coordenadas, no incluye otros atributos. Por eso, debemos usar otra forma, y es que el open software Quantum GIS extrae todos los atributos de los vértices. Podríamos importar los datos vectoriales en QGIS Desktop y exportar los vértices desde allí, pero también es posible acceder a las funciones de QGIS desde R directamente.&lt;/p&gt;
-&lt;p&gt;Para ello, debemos tener instalado QGIS en OSGeo4W. El paquete &lt;code&gt;RQGIS3&lt;/code&gt; nos permite de forma muy fácil usar las funciones del programa en R. Primero empleamos la función &lt;code&gt;set_env()&lt;/code&gt; para definir todos las rutas necesarias de QGIS e inciamos la API con ``open_app().&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a QGIS
-set_env()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $root
-## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
-## 
-## $qgis_prefix_path
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
-## 
-## $python_plugins
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
-## 
-## $platform
-## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# inicio de QGIS Python
-open_app()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La función &lt;code&gt;find_algorithms()&lt;/code&gt; nos ayuda a buscar diferentes herramientas de QGIS. Además la función &lt;code&gt;get_usage()&lt;/code&gt; especifica la forma de uso con todos los argumentos requeridos.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
-find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
-## [2] &amp;quot;native:extractvertices&amp;quot;                 
-## [3] &amp;quot;native:filterverticesbym&amp;quot;               
-## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
-## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
-## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
-get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
-## 
-## This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
-## 
-## Additional fields are added to the point indicating the vertex index (beginning at 0)
-## the vertex’s part and its index within the part (as well as its ring for polygons)
-## distance along original geometry and bisector angle of vertex for original geometry.
-## 
-## 
-## ----------------
-## Input parameters
-## ----------------
-## 
-## INPUT: Input layer
-## 
-##  Parameter type: QgsProcessingParameterFeatureSource
-## 
-##  Accepted data types:
-##      - str: layer ID
-##      - str: layer name
-##      - str: layer source
-##      - QgsProcessingFeatureSourceDefinition
-##      - QgsProperty
-##      - QgsVectorLayer
-## 
-## OUTPUT: Vertices
-## 
-##  Parameter type: QgsProcessingParameterFeatureSink
-## 
-##  Accepted data types:
-##      - str: destination vector file
-## e.g. d:/test.shp
-##      - str: memory: to store result in temporary memory layer
-##      - str: using vector provider ID prefix and destination URI
-## e.g. postgres:… to store result in PostGIS table
-##      - QgsProcessingOutputLayerDefinition
-##      - QgsProperty
-## 
-## ----------------
-## Outputs
-## ----------------
-## 
-## OUTPUT:  &amp;lt;QgsProcessingOutputVectorLayer&amp;gt;
-##  Vertices&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En nuestro caso la herramienta para extraer los vértices es simple y sólo lleva una entrada y una salida. La función &lt;code&gt;run_qgis()&lt;/code&gt; ejecuta una herramienta de QGIS indicando el algoritmo y sus argumentos. La ventaja de usar el algoritmo directamente desde R es que podemos pasar objetos de clase &lt;code&gt;sf&lt;/code&gt; (o &lt;code&gt;sp&lt;/code&gt;) y &lt;code&gt;raster&lt;/code&gt; que tenemos importados o creados en R. Como salida creamos un &lt;code&gt;geojson&lt;/code&gt;, también podría ser de otro formato vectorial, y lo guardamos en una carpeta temporal. Al mismo tiempo le indicamos que importe el resultado directamente a R (&lt;code&gt;load_output = TRUE&lt;/code&gt;).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- run_qgis(alg = &amp;quot;native:extractvertices&amp;quot;,
-               INPUT = river_line,
-               OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
-               load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpojWVYM/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;importar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar los datos&lt;/h2&gt;
+&lt;p&gt;El formato &lt;em&gt;netCDF&lt;/em&gt; con extensión &lt;em&gt;.nc&lt;/em&gt; lo podemos importar vía dos paquetes principales: 1) &lt;code&gt;ncdf4&lt;/code&gt; y 2) &lt;code&gt;raster&lt;/code&gt;. Aunque el paquete &lt;code&gt;raster&lt;/code&gt; realmente lo que hace es usar el primer paquete para importar los datos. En este post usaremos el paquete &lt;code&gt;raster&lt;/code&gt; dado que es algo más fácil, con algunas funciones muy útiles y más universales para todo tipo de formato &lt;em&gt;raster&lt;/em&gt;. Las funciones principales de importación son: &lt;code&gt;raster()&lt;/code&gt;, &lt;code&gt;stack()&lt;/code&gt; y &lt;code&gt;brick()&lt;/code&gt;. La primera función sólo permite importar una única capa, en cambio, las últimas dos funciones se emplean para datos multidimensionales. En nuestro caso sólo tenemos una variable, por tanto no sería necesario hacer uso del argumento &lt;code&gt;varname&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los datos ncdf
+tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required namespace: ncdf4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tmx # metadatos&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterBrick 
+## dimensions : 190, 230, 43700, 41638  (nrow, ncol, ncell, nlayers)
+## resolution : 0.0585, 0.045  (x, y)
+## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : C:/Users/xeo19/Documents/GitHub/blogR_update/content/post/es/2020-10-11-animacion-climatica-temperatura-maxima/tmax_pen.nc 
+## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
+## Time (days since 1901-01-01): 1, 41638 (min, max)
+## varname    : tx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En la estructura del objeto &lt;code&gt;RasterBrick&lt;/code&gt; vemos todos los metadatos necesarios: desde la resolución, las dimensiones o el tipo de proyección, hasta el nombre de la variable. Además nos indica que únicamente apunta a los datos (&lt;em&gt;source&lt;/em&gt;) y no los ha importado a la memoria RAM lo que facilita el trabajo con grandes conjuntos de datos.&lt;/p&gt;
+&lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
+plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
+&lt;p&gt;En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete &lt;code&gt;raster&lt;/code&gt; disponemos de la función &lt;code&gt;stackApply()&lt;/code&gt; que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.&lt;/p&gt;
+&lt;p&gt;Empezamos con las funciones &lt;code&gt;beginClusterr()&lt;/code&gt; y &lt;code&gt;endCluster()&lt;/code&gt; que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función &lt;code&gt;clusterR&lt;/code&gt; permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función &lt;code&gt;stackApply()&lt;/code&gt;, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento &lt;code&gt;progress = &#39;text&#39;&lt;/code&gt; se muestra una barra de progreso del cálculo.&lt;/p&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.&lt;/p&gt;
+  &lt;p&gt;Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de &lt;a href=&#34;https://earthengine.google.com/&#34;&gt;Google Earth Engine&lt;/a&gt; lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.&lt;/p&gt;
 
 &lt;/div&gt;
 
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos las fechas entre 1901 y 2014 a días del año
+time_days &amp;lt;- yday(seq(as_date(&amp;quot;1901-01-01&amp;quot;), as_date(&amp;quot;2014-12-31&amp;quot;), &amp;quot;day&amp;quot;))
+
+# calculamos el promedio 
+beginCluster(4)
+tmx_mean &amp;lt;- clusterR(tmx, stackApply, args = list(indices = time_days, fun = mean))
+endCluster()&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;selección&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Selección&lt;/h2&gt;
-&lt;p&gt;Antes de seguir con la estimación de la distribución de los ángulos, filtramos algunos ríos de interés. Las funciones de la colección &lt;code&gt;tidyverse&lt;/code&gt; son compatibles con el paquete &lt;code&gt;sf&lt;/code&gt;. En el último post hice una introducción a &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;-  filter(river_vertices, 
-                          NAME %in% c(&amp;quot;Mississippi&amp;quot;, &amp;quot;Colorado&amp;quot;, 
-                                      &amp;quot;Amazon&amp;quot;, &amp;quot;Nile&amp;quot;, &amp;quot;Orange&amp;quot;, 
-                                      &amp;quot;Ganges&amp;quot;, &amp;quot;Yangtze&amp;quot;, &amp;quot;Danube&amp;quot;,
-                                      &amp;quot;Mackenzie&amp;quot;, &amp;quot;Lena&amp;quot;, &amp;quot;Murray&amp;quot;, 
-                                      &amp;quot;Niger&amp;quot;)
-                          ) &lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;estimar-la-distribución&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Estimar la distribución&lt;/h1&gt;
-&lt;p&gt;Para visualizar la distribución podemos usar, o bien un histograma o un gráfico de densidad. Pero en el caso de estimar la función de densidad de probabilidad nos encontramos con un problema matemático a la hora de aplicarlo a datos circulares. No debemos usar la función estandar de R &lt;code&gt;density()&lt;/code&gt; dado que en nuestros datos una dirección de 360º es la misma a 0º, lo que provocaría errores en este rango de valores. Es un problema general para diferentes métricas estadísticas. Más detalles estadísticos se explican en el paquete &lt;code&gt;circular&lt;/code&gt;. Este paquete permite definir las características de los datos circulares (unidad, tipo de datos, rotación, etc.) como una clase de objeto en R.&lt;/p&gt;
-&lt;p&gt;Por tanto, lo que hacemos es construir una función que estime la densidad y devuelva una tabla con los ángulos (x) y las estimaciones de densidad (y). Dado que los ríos tienen diferentes longitudes, y queremos ver diferencias independientemente de ello, normalizamos las estimaciones usando el valor máximo. A diferencia de la función &lt;code&gt;density()&lt;/code&gt;, en la que el ancho de banda de suavizado &lt;code&gt;bw&lt;/code&gt; es optimizado, aquí es requerido indicarlo. Es similar a definir el ancho de barra en un histograma.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_circ &amp;lt;- function(x){
+&lt;div id=&#34;suavizar-la-variabilidad-de-las-temperaturas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Suavizar la variabilidad de las temperaturas&lt;/h2&gt;
+&lt;p&gt;Antes de pasar a suavizar las series temporales de nuestro &lt;em&gt;RasterBrick&lt;/em&gt;, un ejemplo del por qué lo hacemos. Extraemos un píxel de nuestro conjunto de datos en las coordenadas -1º de longitud y 40º de latitud usando la función &lt;code&gt;extract()&lt;/code&gt;. Dado que la función con el mismo nombre aparece en varios paquetes, debemos cambiar a la forma &lt;code&gt;nombre_paquete::nombre_función&lt;/code&gt;. El resultado es una matriz con una fila correspondiente al píxel y 366 columnas de los días del año. El siguiente paso es la creación de un &lt;em&gt;data.frame&lt;/em&gt; con una fecha &lt;em&gt;dummy&lt;/em&gt; y la temperatura máxima extraída.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos un píxel
+point_ts &amp;lt;- raster::extract(tmx_mean, matrix(c(-1, 40), nrow = 1))
+dim(point_ts) # dimensiones &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   1 366&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos un data.frame
+df &amp;lt;- data.frame(date = seq(as_date(&amp;quot;2000-01-01&amp;quot;), as_date(&amp;quot;2000-12-31&amp;quot;), &amp;quot;day&amp;quot;),
+                 tmx = point_ts[1,])
+
+# visualizamos la temperatura máxima 
+ggplot(df, 
+       aes(date, tmx)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
   
-  dens &amp;lt;- density.circular(circular(x$angle, units = &amp;quot;degrees&amp;quot;),
-                                     bw = 70, kernel = &amp;quot;vonmises&amp;quot;,
-                                     control.circular = list(units = &amp;quot;degrees&amp;quot;))
+  if(all(is.na(x))){
+   
+    return(x) 
+   
+  } else {
+    
+  df &amp;lt;- data.frame(yd = 1:366, ta = x)
+  m &amp;lt;- loess(ta ~ yd, span = span, data = df)
+  est &amp;lt;- predict(m, 1:366)
+
+  return(est)
   
-  df &amp;lt;- data.frame(x = dens$x, y = dens$y/max(dens$y))
-  
-  return(df)
-  
+  }
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para finalizar, estimamos la densidad de cada río de nuestra selección. Empleamos la función &lt;code&gt;split()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt; para obtener una tabla de cada río en una lista. Después aplicamos con la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;code&gt;purrr&lt;/code&gt; nuestra función de estimación de densidad a la lista. El sufijo &lt;code&gt;map_*&lt;/code&gt; permite que obtengamos una tabla resumida, en lugar de una lista con los resultados de cada río. No obstante, es necesario indicar el nombre de la columna con el argumento &lt;code&gt;.id&lt;/code&gt;, la que contendrá el nombre de cada río. En caso contrario no sabríamos diferenciar los resultados. También aquí recomiendo leer más detalles en el último post sobre &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_river &amp;lt;- split(river_vertices, river_vertices$NAME) %&amp;gt;% 
-                  map_df(dens_circ, .id = &amp;quot;river&amp;quot;)
+&lt;p&gt;Aplicamos nuestra nueva función de suavizado a la serie temporal extraída y hacemos algunos cambios para poder visualizar la diferencia entre los datos originales y suavizados.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizamos la temperatura
+df &amp;lt;- mutate(df, tmx_smoothed = daily_smooth(tmx)) %&amp;gt;% 
+          pivot_longer(2:3, names_to = &amp;quot;var&amp;quot;, values_to = &amp;quot;temp&amp;quot;)
 
-#resultado
-head(dens_river)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##    river        x         y
-## 1 Amazon 0.000000 0.2399907
-## 2 Amazon 0.704501 0.2492548
-## 3 Amazon 1.409002 0.2585758
-## 4 Amazon 2.113503 0.2679779
-## 5 Amazon 2.818004 0.2774859
-## 6 Amazon 3.522505 0.2871232&lt;/code&gt;&lt;/pre&gt;
+# visualizamos la diferencia 
+ggplot(df, 
+       aes(date, temp, 
+           colour = var)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
+tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;visualización&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Visualización&lt;/h1&gt;
-&lt;p&gt;Ahora ya sólo nos queda la visualización mediante el famoso paquete &lt;code&gt;ggplot&lt;/code&gt;. Primero añadimos una nueva fuente &lt;em&gt;Montserrat&lt;/em&gt; para usarla en este gráfico.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#descarga de fuente
+&lt;div id=&#34;preparación-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación&lt;/h2&gt;
+&lt;p&gt;Para visualizar las temperaturas máximas durante todo el año, primero, convertimos el &lt;em&gt;RasterBrick&lt;/em&gt; a un &lt;em&gt;data.frame&lt;/em&gt;, incluyendo longitud y latitud, pero eliminando todas las series temporales sin valores (&lt;code&gt;NA&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a data.frame
+tmx_mat &amp;lt;- as.data.frame(tmx_smooth, xy = TRUE, na.rm = TRUE)
+
+# renombrar las columnas
+tmx_mat &amp;lt;- set_names(tmx_mat, c(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, str_c(&amp;quot;D&amp;quot;, 1:366)))
+str(tmx_mat[, 1:10])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    20676 obs. of  10 variables:
+##  $ lon: num  -8.03 -7.98 -7.92 -7.86 -7.8 ...
+##  $ lat: num  43.8 43.8 43.8 43.8 43.8 ...
+##  $ D1 : num  10.5 10.3 10 10.9 11.5 ...
+##  $ D2 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D3 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D4 : num  10.6 10.4 10.1 10.9 11.5 ...
+##  $ D5 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D6 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D7 : num  10.6 10.4 10.2 11 11.6 ...
+##  $ D8 : num  10.6 10.4 10.2 11 11.6 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Segundo, importamos los límites administrativos con la función &lt;code&gt;ne_countries()&lt;/code&gt; del paquete &lt;code&gt;rnaturalearth&lt;/code&gt; limitando la extensión a la región de la Península Ibérica, el sur de Francia y el norte de África.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los límites globales
+map &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;) %&amp;gt;% st_cast(&amp;quot;MULTILINESTRING&amp;quot;)
+
+# limitamos la extensión
+map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## although coordinates are longitude/latitude, st_intersection assumes that they are planar&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapa de los límites
+plot(map)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
+## all&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
+&lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
+lab &amp;lt;- as_date(0:365, &amp;quot;2000-01-01&amp;quot;) %&amp;gt;% format(&amp;quot;%d %B&amp;quot;)
+
+# cortes para la temperatura
+ct &amp;lt;- c(-5, 0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 40, 45)
+
+# datos categorizados con los cortes fijados
+tmx_mat_cat &amp;lt;- mutate_at(tmx_mat, 3:368, cut, breaks = ct)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Quinto, descargamos la fuente Montserrat y definimos los colores correspondientes a las clases creadas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# descarga de la fuente
 font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
 
-#usar showtext para fuentes
-showtext_opts(dpi = 200)
-showtext_auto() &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En el siguiente paso creamos dos objetos con el título y con una nota de pie. En el título estamos usando un código html para dar color a una parte de texto en sustitución de una leyenda. Se puede usar html de forma muy fácil con el paquete &lt;code&gt;ggtext&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# título con html 
-title &amp;lt;- &amp;quot;Relative distribution of river &amp;lt;span style=&amp;#39;color:#011FFD;&amp;#39;&amp;gt;&amp;lt;strong&amp;gt;flow direction&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt; in the world&amp;quot;
+# uso de showtext con DPI 300
+showtext_opts(dpi = 300)
+showtext_auto()
 
+# definimos una rampa de colores
+col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-estático&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa estático&lt;/h2&gt;
+&lt;p&gt;En esta primera visualización hacemos un mapa del 29 de mayo (día 150). No voy a explicar todos los detalles de la construcción con &lt;code&gt;ggplot2&lt;/code&gt;, no obstante, es importante destacar que hago uso de la función &lt;code&gt;aes_string()&lt;/code&gt; en lugar de &lt;code&gt;aes()&lt;/code&gt; para poder usar los nombres de las columnas en formato de carácter. Con la función &lt;code&gt;geom_raster()&lt;/code&gt; añadimos los datos en rejilla de temperatura como primera capa del gráfico y con &lt;code&gt;geom_sf()&lt;/code&gt; los límites de clase &lt;code&gt;sf&lt;/code&gt;. Por último, la función &lt;code&gt;guide_colorsteps()&lt;/code&gt; permite crear una bonita leyenda basada en las clases creadas por la función &lt;code&gt;cut()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = &amp;quot;D150&amp;quot;)) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[150], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animación-de-todo-el-año&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Animación de todo el año&lt;/h2&gt;
+&lt;p&gt;La animación final consiste en crear un gif a partir de todas las imágenes de los 366 días, en principio, se podría usar el paquete &lt;code&gt;gganimate&lt;/code&gt;, pero en mi experiencia es más lento, dado que requiere un &lt;code&gt;data.frame&lt;/code&gt; en formato largo. En este ejemplo una tabla larga tendría más de siete millones de filas, por eso, lo que hacemos es usar un bucle sobre las columnas y unir todas las imágenes creadas con el paquete &lt;code&gt;gifski&lt;/code&gt; que también usa &lt;code&gt;gganimate&lt;/code&gt; para la reproducción en formato gif.&lt;/p&gt;
+&lt;p&gt;Antes del bucle creamos un vector con los pasos temporales o nombres de las columnas y otro vector con el nombre de las imágenes, incluida el nombre de la carpeta. Con el objetivo de obtener una lista de imágenes ordenadas por su número debemos mantener tres cifras rellenando las posiciones a la izquierda con ceros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;time_step &amp;lt;- str_c(&amp;quot;D&amp;quot;, 1:366)
 
-caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;La cuadrícula de fondo que crea &lt;code&gt;ggplot&lt;/code&gt; por defecto no me convenció, por eso creamos una tabla para crear las líneas de fondo del eje x.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(0, 360 - 22.5, by = 22.5), y = rep(0, 16), xend = seq(0, 360 - 22.5, by = 22.5), yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;A continuación definimos todos los estilos del gráfico. Lo más importante en este paso es la función &lt;code&gt;element_textbox()&lt;/code&gt; del paquete &lt;code&gt;ggtext&lt;/code&gt; para poder interpretar nuestro código html incorporado al título.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- theme_minimal() +
-               theme(axis.title.y = element_blank(),
-                     axis.text.y = element_blank(),
-                     legend.title = element_blank(),
-                     plot.title = element_textbox(family = &amp;quot;Montserrat&amp;quot;, 
-                                                   hjust = 0.5, 
-                                                   colour = &amp;quot;white&amp;quot;, 
-                                                   size = 15),
-                     plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
-                                                 colour = &amp;quot;white&amp;quot;),
-                     axis.text.x = element_text(family = &amp;quot;Montserrat&amp;quot;, 
-                                                 colour = &amp;quot;white&amp;quot;),
-                     strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, 
-                                               colour = &amp;quot;white&amp;quot;, 
-                                               face = &amp;quot;bold&amp;quot;),
-                     panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
-                     plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
-                     panel.grid = element_blank()
-                    )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para terminar construimos el gráfico: 1) Usamos la función &lt;code&gt;geom_hline()&lt;/code&gt; con diferentes puntos de intersección en &lt;em&gt;y&lt;/em&gt; para crear la cuadrícula de fondo. La función &lt;code&gt;geom_segment()&lt;/code&gt; crea la cuadrícula en &lt;em&gt;x&lt;/em&gt;. 2) El área de densidad la creamos usando la función &lt;code&gt;geom_area()&lt;/code&gt;. 3) En &lt;code&gt;scale_x_continous()&lt;/code&gt; definimos un límite negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho direcciones principales las indicamos en la función &lt;code&gt;scale_y_continous()&lt;/code&gt;. 4) Por último, cambiamos a un sistema de coordenadas polar y fijamos la variable para crear facetas.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
-  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
-  geom_segment(data = grid_x , 
-               aes(x = x, y = y, xend = xend, yend = yend), 
-               linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
-  geom_area(data = dens_river, 
-            aes(x = x, y = y, ymin = 0, ymax = y), 
-            alpha = .7, 
-            colour = NA, 
-            show.legend = FALSE,
-            fill = &amp;quot;#011FFD&amp;quot;) + 
-  scale_y_continuous(limits = c(-.2, 1), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 360), 
-                     breaks = seq(0, 360 - 22.5, by = 22.5),
-                     minor_breaks = NULL,
-                     labels = c(&amp;quot;N&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NE&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;E&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SE&amp;quot;, &amp;quot;&amp;quot;,
-                                &amp;quot;S&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SW&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;W&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NW&amp;quot;, &amp;quot;&amp;quot;)) +
-  coord_polar() + 
-  facet_wrap(river ~ ., ncol = 4) +
-  labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
-  theme_polar&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;quot;left&amp;quot;, &amp;quot;0&amp;quot;), &amp;quot;.png&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último, incluimos la construcción anterior del gráfico en un bucle &lt;em&gt;for&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in 1:366){
+
+ ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = time_step[i])) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[i], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)
+  
+  ggsave(files[i], width = 8.28, height = 7.33, type = &amp;quot;cairo&amp;quot;)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
 &lt;/div&gt;
 </description>
       
-            <category>direcciones</category>
+            <category>animación</category>
       
-            <category>rios</category>
+            <category>temperatura</category>
       
-            <category>fluvial</category>
+            <category>clima</category>
       
-            <category>orientación</category>
-      
-            <category>distribución</category>
+            <category>SIG</category>
       
       
-            <category>sig</category>
+            <category>visualización</category>
       
             <category>R</category>
       
@@ -369,7 +369,7 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
       <description>
 
 
-&lt;p&gt;Recientemente creé un una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
+&lt;p&gt;Recientemente creé una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
 &lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
@@ -573,7 +573,7 @@ get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
                load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpeCPBO6/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpGurVm9/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;div class=&#34;alert alert-note&#34;&gt;
   &lt;p&gt;Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.&lt;/p&gt;
 

@@ -6,10 +6,359 @@
     <description>Recent content in visualización on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 29 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="/es/categories/visualizaci%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Animación climática de la temperatura máxima</title>
+      <link>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
+      <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
+      <description>
+
+
+&lt;p&gt;En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de &lt;a href=&#34;https://dominicroye.github.io/es/graphs/climate/&#34;&gt;gráficos&lt;/a&gt; de este mismo blog.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Estilos para ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;gifski&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Crear gifs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes del sistema y fuentes de Google&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;ggthemes&amp;quot;)
+if(!require(&amp;quot;gifski&amp;quot;)) install.packages(&amp;quot;gifski&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(raster)
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(sf)
+library(rnaturalearth)
+library(extrafont)
+library(showtext)
+library(RColorBrewer)
+library(gifski)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para aquellos con menos experiencia con &lt;code&gt;tidyverse&lt;/code&gt;, recomiendo la breve introducción en este blog &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Descargamos los datos STEAD de la temperatura máxima (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) en formato &lt;em&gt;netCDF&lt;/em&gt; desde el repositario del CSIC &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;aquí&lt;/a&gt; (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos &lt;em&gt;netCDF&lt;/em&gt;, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (&lt;em&gt;array&lt;/em&gt;) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar los datos&lt;/h2&gt;
+&lt;p&gt;El formato &lt;em&gt;netCDF&lt;/em&gt; con extensión &lt;em&gt;.nc&lt;/em&gt; lo podemos importar vía dos paquetes principales: 1) &lt;code&gt;ncdf4&lt;/code&gt; y 2) &lt;code&gt;raster&lt;/code&gt;. Aunque el paquete &lt;code&gt;raster&lt;/code&gt; realmente lo que hace es usar el primer paquete para importar los datos. En este post usaremos el paquete &lt;code&gt;raster&lt;/code&gt; dado que es algo más fácil, con algunas funciones muy útiles y más universales para todo tipo de formato &lt;em&gt;raster&lt;/em&gt;. Las funciones principales de importación son: &lt;code&gt;raster()&lt;/code&gt;, &lt;code&gt;stack()&lt;/code&gt; y &lt;code&gt;brick()&lt;/code&gt;. La primera función sólo permite importar una única capa, en cambio, las últimas dos funciones se emplean para datos multidimensionales. En nuestro caso sólo tenemos una variable, por tanto no sería necesario hacer uso del argumento &lt;code&gt;varname&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los datos ncdf
+tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required namespace: ncdf4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tmx # metadatos&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterBrick 
+## dimensions : 190, 230, 43700, 41638  (nrow, ncol, ncell, nlayers)
+## resolution : 0.0585, 0.045  (x, y)
+## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : C:/Users/xeo19/Documents/GitHub/blogR_update/content/post/es/2020-10-11-animacion-climatica-temperatura-maxima/tmax_pen.nc 
+## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
+## Time (days since 1901-01-01): 1, 41638 (min, max)
+## varname    : tx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En la estructura del objeto &lt;code&gt;RasterBrick&lt;/code&gt; vemos todos los metadatos necesarios: desde la resolución, las dimensiones o el tipo de proyección, hasta el nombre de la variable. Además nos indica que únicamente apunta a los datos (&lt;em&gt;source&lt;/em&gt;) y no los ha importado a la memoria RAM lo que facilita el trabajo con grandes conjuntos de datos.&lt;/p&gt;
+&lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
+plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
+&lt;p&gt;En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete &lt;code&gt;raster&lt;/code&gt; disponemos de la función &lt;code&gt;stackApply()&lt;/code&gt; que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.&lt;/p&gt;
+&lt;p&gt;Empezamos con las funciones &lt;code&gt;beginClusterr()&lt;/code&gt; y &lt;code&gt;endCluster()&lt;/code&gt; que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función &lt;code&gt;clusterR&lt;/code&gt; permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función &lt;code&gt;stackApply()&lt;/code&gt;, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento &lt;code&gt;progress = &#39;text&#39;&lt;/code&gt; se muestra una barra de progreso del cálculo.&lt;/p&gt;
+&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;p&gt;Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de &lt;a href=&#34;https://earthengine.google.com/&#34;&gt;Google Earth Engine&lt;/a&gt; lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.&lt;/p&gt;
+
+&lt;/div&gt;
+
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos las fechas entre 1901 y 2014 a días del año
+time_days &amp;lt;- yday(seq(as_date(&amp;quot;1901-01-01&amp;quot;), as_date(&amp;quot;2014-12-31&amp;quot;), &amp;quot;day&amp;quot;))
+
+# calculamos el promedio 
+beginCluster(4)
+tmx_mean &amp;lt;- clusterR(tmx, stackApply, args = list(indices = time_days, fun = mean))
+endCluster()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;suavizar-la-variabilidad-de-las-temperaturas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Suavizar la variabilidad de las temperaturas&lt;/h2&gt;
+&lt;p&gt;Antes de pasar a suavizar las series temporales de nuestro &lt;em&gt;RasterBrick&lt;/em&gt;, un ejemplo del por qué lo hacemos. Extraemos un píxel de nuestro conjunto de datos en las coordenadas -1º de longitud y 40º de latitud usando la función &lt;code&gt;extract()&lt;/code&gt;. Dado que la función con el mismo nombre aparece en varios paquetes, debemos cambiar a la forma &lt;code&gt;nombre_paquete::nombre_función&lt;/code&gt;. El resultado es una matriz con una fila correspondiente al píxel y 366 columnas de los días del año. El siguiente paso es la creación de un &lt;em&gt;data.frame&lt;/em&gt; con una fecha &lt;em&gt;dummy&lt;/em&gt; y la temperatura máxima extraída.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos un píxel
+point_ts &amp;lt;- raster::extract(tmx_mean, matrix(c(-1, 40), nrow = 1))
+dim(point_ts) # dimensiones &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   1 366&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos un data.frame
+df &amp;lt;- data.frame(date = seq(as_date(&amp;quot;2000-01-01&amp;quot;), as_date(&amp;quot;2000-12-31&amp;quot;), &amp;quot;day&amp;quot;),
+                 tmx = point_ts[1,])
+
+# visualizamos la temperatura máxima 
+ggplot(df, 
+       aes(date, tmx)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
+  
+  if(all(is.na(x))){
+   
+    return(x) 
+   
+  } else {
+    
+  df &amp;lt;- data.frame(yd = 1:366, ta = x)
+  m &amp;lt;- loess(ta ~ yd, span = span, data = df)
+  est &amp;lt;- predict(m, 1:366)
+
+  return(est)
+  
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aplicamos nuestra nueva función de suavizado a la serie temporal extraída y hacemos algunos cambios para poder visualizar la diferencia entre los datos originales y suavizados.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizamos la temperatura
+df &amp;lt;- mutate(df, tmx_smoothed = daily_smooth(tmx)) %&amp;gt;% 
+          pivot_longer(2:3, names_to = &amp;quot;var&amp;quot;, values_to = &amp;quot;temp&amp;quot;)
+
+# visualizamos la diferencia 
+ggplot(df, 
+       aes(date, temp, 
+           colour = var)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
+tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualización&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualización&lt;/h1&gt;
+&lt;div id=&#34;preparación-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación&lt;/h2&gt;
+&lt;p&gt;Para visualizar las temperaturas máximas durante todo el año, primero, convertimos el &lt;em&gt;RasterBrick&lt;/em&gt; a un &lt;em&gt;data.frame&lt;/em&gt;, incluyendo longitud y latitud, pero eliminando todas las series temporales sin valores (&lt;code&gt;NA&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a data.frame
+tmx_mat &amp;lt;- as.data.frame(tmx_smooth, xy = TRUE, na.rm = TRUE)
+
+# renombrar las columnas
+tmx_mat &amp;lt;- set_names(tmx_mat, c(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, str_c(&amp;quot;D&amp;quot;, 1:366)))
+str(tmx_mat[, 1:10])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    20676 obs. of  10 variables:
+##  $ lon: num  -8.03 -7.98 -7.92 -7.86 -7.8 ...
+##  $ lat: num  43.8 43.8 43.8 43.8 43.8 ...
+##  $ D1 : num  10.5 10.3 10 10.9 11.5 ...
+##  $ D2 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D3 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D4 : num  10.6 10.4 10.1 10.9 11.5 ...
+##  $ D5 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D6 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D7 : num  10.6 10.4 10.2 11 11.6 ...
+##  $ D8 : num  10.6 10.4 10.2 11 11.6 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Segundo, importamos los límites administrativos con la función &lt;code&gt;ne_countries()&lt;/code&gt; del paquete &lt;code&gt;rnaturalearth&lt;/code&gt; limitando la extensión a la región de la Península Ibérica, el sur de Francia y el norte de África.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los límites globales
+map &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;) %&amp;gt;% st_cast(&amp;quot;MULTILINESTRING&amp;quot;)
+
+# limitamos la extensión
+map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## although coordinates are longitude/latitude, st_intersection assumes that they are planar&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapa de los límites
+plot(map)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
+## all&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
+&lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
+lab &amp;lt;- as_date(0:365, &amp;quot;2000-01-01&amp;quot;) %&amp;gt;% format(&amp;quot;%d %B&amp;quot;)
+
+# cortes para la temperatura
+ct &amp;lt;- c(-5, 0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 40, 45)
+
+# datos categorizados con los cortes fijados
+tmx_mat_cat &amp;lt;- mutate_at(tmx_mat, 3:368, cut, breaks = ct)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Quinto, descargamos la fuente Montserrat y definimos los colores correspondientes a las clases creadas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# descarga de la fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# uso de showtext con DPI 300
+showtext_opts(dpi = 300)
+showtext_auto()
+
+# definimos una rampa de colores
+col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-estático&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa estático&lt;/h2&gt;
+&lt;p&gt;En esta primera visualización hacemos un mapa del 29 de mayo (día 150). No voy a explicar todos los detalles de la construcción con &lt;code&gt;ggplot2&lt;/code&gt;, no obstante, es importante destacar que hago uso de la función &lt;code&gt;aes_string()&lt;/code&gt; en lugar de &lt;code&gt;aes()&lt;/code&gt; para poder usar los nombres de las columnas en formato de carácter. Con la función &lt;code&gt;geom_raster()&lt;/code&gt; añadimos los datos en rejilla de temperatura como primera capa del gráfico y con &lt;code&gt;geom_sf()&lt;/code&gt; los límites de clase &lt;code&gt;sf&lt;/code&gt;. Por último, la función &lt;code&gt;guide_colorsteps()&lt;/code&gt; permite crear una bonita leyenda basada en las clases creadas por la función &lt;code&gt;cut()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = &amp;quot;D150&amp;quot;)) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[150], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animación-de-todo-el-año&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Animación de todo el año&lt;/h2&gt;
+&lt;p&gt;La animación final consiste en crear un gif a partir de todas las imágenes de los 366 días, en principio, se podría usar el paquete &lt;code&gt;gganimate&lt;/code&gt;, pero en mi experiencia es más lento, dado que requiere un &lt;code&gt;data.frame&lt;/code&gt; en formato largo. En este ejemplo una tabla larga tendría más de siete millones de filas, por eso, lo que hacemos es usar un bucle sobre las columnas y unir todas las imágenes creadas con el paquete &lt;code&gt;gifski&lt;/code&gt; que también usa &lt;code&gt;gganimate&lt;/code&gt; para la reproducción en formato gif.&lt;/p&gt;
+&lt;p&gt;Antes del bucle creamos un vector con los pasos temporales o nombres de las columnas y otro vector con el nombre de las imágenes, incluida el nombre de la carpeta. Con el objetivo de obtener una lista de imágenes ordenadas por su número debemos mantener tres cifras rellenando las posiciones a la izquierda con ceros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;time_step &amp;lt;- str_c(&amp;quot;D&amp;quot;, 1:366)
+
+files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;quot;left&amp;quot;, &amp;quot;0&amp;quot;), &amp;quot;.png&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último, incluimos la construcción anterior del gráfico en un bucle &lt;em&gt;for&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in 1:366){
+
+ ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = time_step[i])) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[i], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)
+  
+  ggsave(files[i], width = 8.28, height = 7.33, type = &amp;quot;cairo&amp;quot;)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>animación</category>
+      
+            <category>temperatura</category>
+      
+            <category>clima</category>
+      
+            <category>SIG</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+    </item>
     
     <item>
       <title>Visualizar anomalías climáticas</title>
@@ -547,354 +896,6 @@ tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
             <category>R:principante</category>
       
             <category>gis</category>
-      
-    </item>
-    
-    <item>
-      <title>Visualizar anomalías de precipitación mensual</title>
-      <link>/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/</link>
-      <pubDate>Sun, 07 Jul 2019 00:00:00 +0000</pubDate>
-      
-      <guid>/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/</guid>
-      <description>
-
-
-&lt;p&gt;Normalmente cuando visualizamos anomalías de precipitación mensual, simplemente usamos un gráfico de barras indicando con color rojo y azul valores negativos y positivos. No obstante, no nos explica el contexto general de estas mismas anomalías. Por ejemplo, ¿cuál fue la anomalía más alta o más baja en cada mes? En principio, podríamos usar un &lt;em&gt;boxplot&lt;/em&gt; para visualizar la distribución de las anomalías, pero en este caso concreto no encajarían bien estéticamente, por lo que debemos buscar una alternativa. Aquí os presento una forma gráfica muy útil.&lt;/p&gt;
-&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Paquetes&lt;/h2&gt;
-&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;readr&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Importar datos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Estilos para ggplot2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;cowplot&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Fácil creación de múltiples gráficos con ggplot2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
-if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;cowplot&amp;quot;)
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-
-#paquetes
-library(tidyverse) #contiene readr
-library(ggthemes)
-library(cowplot)
-library(lubridate)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Preparar los datos&lt;/h2&gt;
-&lt;p&gt;Primero importamos la precipitación diaria de la estación meteorológica seleccionada (&lt;a href=&#34;/files/RR_STAID001394.txt&#34;&gt;descarga&lt;/a&gt;). Usaremos datos de Santiago de Compostela (España) accesible a través de &lt;a href=&#34;https://eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
-&lt;p&gt;No sólo importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, sino también hacemos los primeros cambios. Saltamos las primeras 21 filas que contienen información sobre la estación meteorológica. Además, convertimos la fecha a clase &lt;code&gt;date&lt;/code&gt; y reemplazamos valores ausentes (-9999) por &lt;code&gt;NA&lt;/code&gt;. La precipitación está en 0.1 mm, por tanto, debemos dividir los valores por 10. Después seleccionamos las columnas &lt;em&gt;DATE&lt;/em&gt; y &lt;em&gt;RR&lt;/em&gt;, y las renombramos.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;RR_STAID001394.txt&amp;quot;, skip = 21) %&amp;gt;%
-             mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
-               select(DATE:RR) %&amp;gt;% 
-             rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 27,606 x 2
-##    date          pr
-##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
-##  1 1943-11-01   0.6
-##  2 1943-11-02   0  
-##  3 1943-11-03   0  
-##  4 1943-11-04   0  
-##  5 1943-11-05   0  
-##  6 1943-11-06   0  
-##  7 1943-11-07   0  
-##  8 1943-11-08   0  
-##  9 1943-11-09   0  
-## 10 1943-11-10   0  
-## # ... with 27,596 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;paso-2-crear-valores-menusales&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Paso 2: crear valores menusales&lt;/h3&gt;
-&lt;p&gt;En el segundo paso calculamos las cantidades mensuales de precipitación. Para ello, a) limitamos el período a los años posteriores a 1950, b) añadimos como variable el mes con etiqueta y el año.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, mo = month(date, label = TRUE), yr = year(date)) %&amp;gt;%
-            filter(date &amp;gt;= &amp;quot;1950-01-01&amp;quot;) %&amp;gt;%
-                group_by(yr, mo) %&amp;gt;% 
-                   summarise(prs = sum(pr, na.rm = TRUE))
-
-data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
-## # Groups:   yr [70]
-##       yr mo      prs
-##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;
-##  1  1950 ene    55.6
-##  2  1950 feb   349. 
-##  3  1950 mar    85.8
-##  4  1950 abr    33.4
-##  5  1950 may   272. 
-##  6  1950 jun   111. 
-##  7  1950 jul    35.4
-##  8  1950 ago    76.4
-##  9  1950 sep    85  
-## 10  1950 oct    53  
-## # ... with 823 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;paso-3-estimar-las-anomalías&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Paso 3: estimar las anomalías&lt;/h3&gt;
-&lt;p&gt;Ahora debemos estimar los valores normales de cada mes y unir esta tabla a nuestros datos principales para posteriormente poder calcular la anomalía mensual. Expresamos la anomalía en porcentaje y restamos 100 para fijar el promedio en 0. Además, creamos una variable que nos indica si la anomalía es negativa o positiva, y otra con la fecha.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_ref &amp;lt;- filter(data, yr &amp;gt; 1981, yr &amp;lt;= 2010) %&amp;gt;%
-                   group_by(mo) %&amp;gt;%
-                      summarise(pr_ref = mean(prs))
-
-data &amp;lt;- left_join(data, pr_ref, by = &amp;quot;mo&amp;quot;)
-
-data &amp;lt;- mutate(data, 
-               anom = (prs*100/pr_ref)-100, 
-               date = str_c(yr, as.numeric(mo), 1, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd(),
-               sign= ifelse(anom &amp;gt; 0, &amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ya podemos hacer un primer ensayo de un gráfico de anomalías (la versión clásica), para ello filtramos el año 2018. En este caso usamos la geometría de barras, recuerda que por defecto la función &lt;code&gt;geom_bar()&lt;/code&gt; aplica el conteo a la variable. No obstante, en este caso conocemos &lt;code&gt;y&lt;/code&gt;, por tanto indicamos con el argumento &lt;code&gt;stat = &#34;identity&#34;&lt;/code&gt; que debe usar el valor dado en &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(data, yr == 2018) %&amp;gt;%
-   ggplot(aes(date, anom, fill = sign)) + 
-       geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
-    scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
-    scale_y_continuous(breaks = seq(-100, 100, 20)) +
-    scale_fill_manual(values = c(&amp;quot;#99000d&amp;quot;, &amp;quot;#034e7b&amp;quot;)) +
-         labs(y = &amp;quot;Anomalía de precipitación (%)&amp;quot;, x = &amp;quot;&amp;quot;) +
-          theme_hc()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;paso-4-calcular-las-medidas-estadísticas&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Paso 4: calcular las medidas estadísticas&lt;/h3&gt;
-&lt;p&gt;En este último paso estimamos el valor máximo, mínimo, el cuantil 25%/75% y el rango intercuartil por mes de toda la serie temporal.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_norm &amp;lt;-     group_by(data, mo) %&amp;gt;%
-                     summarise(mx = max(anom),
-                               min = min(anom),
-                               q25 = quantile(anom, .25),
-                               q75 = quantile(anom, .75),
-                               iqr = q75-q25)
-
-data_norm&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 6
-##    mo       mx    min   q25   q75   iqr
-##    &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 ene    193.  -89.6 -43.6 56.3   99.9
-##  2 feb    320.  -96.5 -51.2 77.7  129. 
-##  3 mar    381. -100   -40.6 88.2  129. 
-##  4 abr    198.  -93.6 -51.2 17.1   68.3
-##  5 may    141.  -90.1 -45.2 17.0   62.2
-##  6 jun    419.  -99.3 -58.2 50.0  108. 
-##  7 jul    311.  -98.2 -77.3 27.1  104. 
-##  8 ago    264. -100   -68.2 39.8  108. 
-##  9 sep    241.  -99.2 -64.9 48.6  113. 
-## 10 oct    220.  -99.0 -54.5  4.69  59.2
-## 11 nov    137.  -98.8 -44.0 39.7   83.7
-## 12 dic    245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Crear el gráfico&lt;/h2&gt;
-&lt;p&gt;Para crear el gráfico de anomalías con leyenda es necesario separar el gráfico principal de las leyendas.&lt;/p&gt;
-&lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Parte 1&lt;/h3&gt;
-&lt;p&gt;En esta primera parte vamos añadiendo capa por capa los diferentes elementos: 1) el rango de anomalías máximo-mínimo 2) el rango intercuartil 3) las anomalías del año 2018.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#rango de anomalías máximo-mínimo 
-g1.1 &amp;lt;- ggplot(data_norm)+
-           geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
-                        fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;)
-
-g1.1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadinos el rango intercuartil
-g1.2 &amp;lt;- g1.1 + geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
-                              fatten = 0, fill = &amp;quot;grey70&amp;quot;)
-
-g1.2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-8-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadimos las anomalías del año 2018
-
-g1.3 &amp;lt;- g1.2 + geom_crossbar(data = filter(data, yr == 2018),
-                aes(x = mo, y = 0, ymin = 0, ymax = anom, fill = sign),
-                fatten = 0, width = 0.7, alpha = .7, colour = &amp;quot;NA&amp;quot;,
-                show.legend = FALSE)
-g1.3&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-8-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Finalmente añadimos unos últimos ajustes de estilo.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- g1.3 + geom_hline(yintercept = 0)+
-               scale_fill_manual(values=c(&amp;quot;#99000d&amp;quot;,&amp;quot;#034e7b&amp;quot;))+
-               scale_y_continuous(&amp;quot;Anomalía de precipitación (%)&amp;quot;,
-                                   breaks = seq(-100, 500, 25),
-                                   expand = c(0, 5))+
-            labs(x = &amp;quot;&amp;quot;,
-                 title = &amp;quot;Anomalía de precipitación en Santiago de Compostela 2018&amp;quot;,
-                 caption=&amp;quot;Dominic Royé (@dr_xeo) | Datos: eca.knmi.nl&amp;quot;)+
-            theme_hc()
-g1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;parte-2&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Parte 2&lt;/h3&gt;
-&lt;p&gt;Todavía nos falta una leyenda. Primero la creamos para los valores normales.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#datos de la leyenda
-legend &amp;lt;- filter(data_norm, mo == &amp;quot;ene&amp;quot;)
-
-legend_lab &amp;lt;- gather(legend, stat, y, mx:q75) %&amp;gt;%
-                 mutate(stat = factor(stat, stat, c(&amp;quot;máximo&amp;quot;,
-                                                   &amp;quot;mínimo&amp;quot;,
-                                                   &amp;quot;Cuantil 25%&amp;quot;,
-                                                   &amp;quot;Cuantil 75%&amp;quot;)) %&amp;gt;%
-                                            as.character())
-
-#gráfico de la leyenda
-g2 &amp;lt;- legend %&amp;gt;% ggplot()+
-                  geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
-                                fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;, width = 0.2) +
-                  geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
-                                fatten = 0, fill = &amp;quot;grey70&amp;quot;, width = 0.2) +
-                  geom_text(data = legend_lab, 
-                            aes(x = mo, y = y+c(12,-8,-10,12), label = stat), 
-                            fontface = &amp;quot;bold&amp;quot;, size = 2) +
-                   annotate(&amp;quot;text&amp;quot;, x = 1.18, y = 40, 
-                            label = &amp;quot;Período 1950-2018&amp;quot;, angle = 90, size = 3) +
-              theme_void() + 
-                theme(plot.margin = unit(c(0, 0, 0, 0), &amp;quot;cm&amp;quot;))
-
-g2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Segundo, creamos otra leyenda para las anomalías actuales.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;ene&amp;quot;,&amp;quot;feb&amp;quot;)) %&amp;gt;% 
-              ungroup() %&amp;gt;% 
-            select(mo, anom, sign)
-
-legend2[2,1] &amp;lt;- &amp;quot;ene&amp;quot;
-
-legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;ene&amp;quot;, 3), 
-                          anom= c(110, 3, -70), 
-                          label = c(&amp;quot;Anomalía positiva&amp;quot;, &amp;quot;Promedio&amp;quot;, &amp;quot;Anomalía negativa&amp;quot;))
-
-g3 &amp;lt;-  ggplot() + 
-         geom_bar(data = legend2,
-                aes(x = mo, y = anom, fill = sign),
-                   alpha = .6, colour = &amp;quot;NA&amp;quot;, stat = &amp;quot;identity&amp;quot;, show.legend = FALSE, width = 0.2) +
-         geom_segment(aes(x = .85, y = 0, xend = 1.15, yend = 0), linetype = &amp;quot;dashed&amp;quot;) +
-         geom_text(data = legend_lab2, aes(x = mo, y = anom+c(10,5,-13), label = label), fontface = &amp;quot;bold&amp;quot;, size = 2) +
-         annotate(&amp;quot;text&amp;quot;, x = 1.25, y = 20, 
-                  label =&amp;quot;Referencia 1971-2010&amp;quot;, angle = 90, size = 3) +
-         scale_fill_manual(values = c(&amp;quot;#99000d&amp;quot;, &amp;quot;#034e7b&amp;quot;)) +
-        theme_void() +
-         theme(plot.margin = unit(c(0, 0, 0, 0), &amp;quot;cm&amp;quot;))
-
-g3&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;parte-3&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Parte 3&lt;/h3&gt;
-&lt;p&gt;Para finalizar sólo debemos unir el gráfico y las leyendas con ayuda del paquete &lt;code&gt;cowplot&lt;/code&gt;. La función princial de &lt;code&gt;cowplot&lt;/code&gt; es &lt;code&gt;plot_grid()&lt;/code&gt; que ayuda en combinar diferentes gráficos. No obstante, en este caso se hace necesario usar unas funciones más flexibles para crear formatos menos habituales. La función &lt;code&gt;ggdraw()&lt;/code&gt; configura la capa básica del gráfico, y las funciones que están destinadas a operar en esta capa comienzan con &lt;code&gt;draw_*&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggdraw() +
-       draw_plot(g1, x = 0, y = .3, width = 1, height = 0.6) +
-       draw_plot(g2, x = 0, y = .15, width = .2, height = .15) +
-       draw_plot(g3, x = 0.08, y = .15, width = .2, height = .15)
-
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomalia2016_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;múltiples-facetas&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Múltiples facetas&lt;/h2&gt;
-&lt;p&gt;En este apartado haremos el mismo gráfico como en el anterior, pero para varios años.&lt;/p&gt;
-&lt;div id=&#34;parte-1-1&#34; class=&#34;section level3&#34;&gt;
-&lt;h3&gt;Parte 1&lt;/h3&gt;
-&lt;p&gt;Únicamente debemos filtrar por un conjunto de años, en este caso de 2016 a 2018, usando el operador &lt;code&gt;%in%&lt;/code&gt;, además añadimos la función &lt;code&gt;facet_grid()&lt;/code&gt; a &lt;code&gt;ggplot&lt;/code&gt;, lo que nos permite plotear los gráficos según una variable. La formula usada para la función de facetas es similar al uso en modelos: &lt;code&gt;variable_por_fila ~ variable_por_columna&lt;/code&gt;. Cuando no tenemos una variable en columna debemos usar el &lt;code&gt;.&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#rango de anomalias maximo-minimo 
-g1.1 &amp;lt;- ggplot(data_norm)+
-           geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
-                        fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;)
-
-g1.1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadinos el rango intercuartil
-g1.2 &amp;lt;- g1.1 + geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
-                              fatten = 0, fill = &amp;quot;grey70&amp;quot;)
-
-g1.2&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-13-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#añadimos las anomalías del año 2016-2018
-
-g1.3 &amp;lt;- g1.2 + geom_crossbar(data = filter(data, yr %in% 2016:2018),
-                aes(x = mo, y = 0, ymin = 0, ymax = anom, fill = sign),
-                fatten = 0, width = 0.7, alpha = .7, colour = &amp;quot;NA&amp;quot;,
-                show.legend = FALSE) +
-               facet_grid(yr ~ .)
-g1.3&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-13-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Finalmente, añadimos unos últimos ajustes de estilo.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- g1.3 + geom_hline(yintercept = 0)+
-               scale_fill_manual(values=c(&amp;quot;#99000d&amp;quot;,&amp;quot;#034e7b&amp;quot;))+
-               scale_y_continuous(&amp;quot;Anomalía de precipitación (%)&amp;quot;,
-                                   breaks = seq(-100, 500, 50),
-                                   expand = c(0, 5))+
-            labs(x = &amp;quot;&amp;quot;,
-                 title = &amp;quot;Anomalía de precipitación en Santiago de Compostela&amp;quot;,
-                 caption=&amp;quot;Dominic Royé (@dr_xeo) | Datos: eca.knmi.nl&amp;quot;)+
-            theme_hc()
-g1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Usamos la misma leyenda universal creada para el gráfico anterior.&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;parte-2-1&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Parte 2&lt;/h2&gt;
-&lt;p&gt;Para finalizar, sólo unimos el gráfico y las leyendas con ayuda del paquete &lt;code&gt;cowplot&lt;/code&gt;. Lo único que debemos ajustar aquí son los argumentos en la función &lt;code&gt;draw_plot()&lt;/code&gt; para colocar correctamente las diferentes partes.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggdraw() +
-       draw_plot(g1, x = 0, y = .18, width = 1, height = 0.8) +
-       draw_plot(g2, x = 0, y = .08, width = .2, height = .15) +
-       draw_plot(g3, x = 0.08, y = .08, width = .2, height = .15)
-
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-07-07-visualizar-anomalias-precipitacion-mensual/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomalia20162018_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>anomalía</category>
-      
-            <category>precipitación</category>
-      
-            <category>clima</category>
-      
-            <category>boxplot</category>
-      
-      
-            <category>visualización</category>
-      
-            <category>R</category>
-      
-            <category>R:intermedio</category>
       
     </item>
     

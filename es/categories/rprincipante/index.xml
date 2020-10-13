@@ -21,7 +21,7 @@
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
-&lt;li&gt;&lt;a href=&#34;#tiyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Tiyverse&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Tidyverse&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#guía-de-estilo&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Guía de estilo&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#pipe&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#paquetes-de-tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Paquetes de Tidyverse&lt;/a&gt;&lt;ul&gt;
@@ -45,8 +45,8 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div id=&#34;tiyverse&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Tiyverse&lt;/h1&gt;
+&lt;div id=&#34;tidyverse&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Tidyverse&lt;/h1&gt;
 &lt;p&gt;El universo de los paquetes de &lt;code&gt;tidyverse&lt;/code&gt;, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de &lt;code&gt;tidyverse&lt;/code&gt;. Por ejemplo, el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;simple feature&lt;/a&gt;) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete &lt;code&gt;dplyr&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;El núcleo de la colección lo constituyen los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
@@ -350,8 +350,8 @@ month(dat)&lt;/code&gt;&lt;/pre&gt;
 wday(dat)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 6 6 6 5&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;wday(dat, label = TRUE) # como etiqueta&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] vi vi vi ju
-## Levels: do &amp;lt; lu &amp;lt; ma &amp;lt; mi &amp;lt; ju &amp;lt; vi &amp;lt; sá&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] vi\\. vi\\. vi\\. ju\\.
+## Levels: do\\. &amp;lt; lu\\. &amp;lt; ma\\. &amp;lt; mi\\. &amp;lt; ju\\. &amp;lt; vi\\. &amp;lt; sá\\.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# la hora
 hour(dat_time)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1]  5 22&lt;/code&gt;&lt;/pre&gt;
