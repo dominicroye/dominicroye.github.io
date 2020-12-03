@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R:elemental on Dominic Royé</title>
-    <link>/es/categories/relemental/</link>
+    <link>https://dominicroye.github.io/es/categories/relemental/</link>
     <description>Recent content in R:elemental on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Tue, 08 Jan 2019 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/es/categories/relemental/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://dominicroye.github.io/es/categories/relemental/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Calcular la distancia al mar en R</title>
-      <link>/es/2019/calcular-la-distancia-al-mar-en-r/</link>
+      <link>https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/</link>
       <pubDate>Tue, 08 Jan 2019 00:00:00 +0000</pubDate>
       
-      <guid>/es/2019/calcular-la-distancia-al-mar-en-r/</guid>
+      <guid>https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/</guid>
       <description>
 
 
@@ -73,7 +73,7 @@ library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #mapamundi con 50m de resolución
 
 plot(world) #tiene clase sp por defecto&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los límites de Islandia 
 iceland &amp;lt;- ne_countries(scale = 10,country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
 
@@ -117,7 +117,7 @@ iceland&lt;/code&gt;&lt;/pre&gt;
 ## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#aquí Islandia
 plot(iceland)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Por defecto, la función &lt;code&gt;plot( )&lt;/code&gt; con la clase &lt;em&gt;sf&lt;/em&gt; nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; o el argumento &lt;em&gt;max.plot&lt;/em&gt; &lt;code&gt;plot(iceland,max.plot=1)&lt;/code&gt;. Con el argumento &lt;em&gt;max.plot=1&lt;/em&gt; la función usa la primera variable disponible del mapa.&lt;/p&gt;
 &lt;p&gt;Además, vemos en la información del objeto &lt;em&gt;sf&lt;/em&gt; que la proyección es WGS84 con grados decimales (código EPSG:4326). Para el cálculo de distancias es más conveniente usar metros en lugar de grados. Debido a ello, lo primero que hacemos es transformar el mapa de Islandia a UTM Zona 27 (código EPSG:3055). Más información sobre EPSG y proyecciones &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;aquí&lt;/a&gt;. Con ese objetivo, usamos la función &lt;code&gt;st_transform( )&lt;/code&gt;. Simplemente indicamos el mapa y el código EPSG.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transformamos a UTM
@@ -131,13 +131,13 @@ grid &amp;lt;- st_make_grid(iceland,cellsize = 5000, what = &amp;quot;centers&am
 
 #nuestra red sobre la extensión de Islandia
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exraemos sólamente los puntos en los límites de Islandia
 grid &amp;lt;- st_intersection(grid, iceland)   
 
 #nuestra red ahora
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-la-distancia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular la distancia&lt;/h2&gt;
@@ -176,7 +176,7 @@ ggplot(df, aes(X, Y,fill = dist))+ #variables
              labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #nombre de la leyenda
              theme_void()+ #estilo del mapa
               theme(legend.position = &amp;quot;bottom&amp;quot;) #posición de la leyenda&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;exportar-la-distancia-como-raster&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Exportar la distancia como raster&lt;/h2&gt;
@@ -221,14 +221,14 @@ dist_raster&lt;/code&gt;&lt;/pre&gt;
 ## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plotear el raster
 plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exportamos el raster
 writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función &lt;code&gt;rasterize( )&lt;/code&gt; está pensada para crear rasters a partir de un grid irregular. En caso que tengamos un grid regular, como este mismo, podemos usar una alternativa más fácil. La función &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; convierte un &lt;em&gt;data.frame&lt;/em&gt; con longitud, latitud y la variable &lt;em&gt;Z&lt;/em&gt; en un raster. Es importante que el orden debe ser longitud, latitud, variables.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Con el cálculo de la distancia podemos llegar crear &lt;em&gt;arte&lt;/em&gt;, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;aquí más&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
 </description>
@@ -252,10 +252,10 @@ plot(r)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Cómo crear &#39;Warming Stripes&#39; in R</title>
-      <link>/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</link>
+      <link>https://dominicroye.github.io/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</link>
       <pubDate>Wed, 05 Dec 2018 00:00:00 +0000</pubDate>
       
-      <guid>/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</guid>
+      <guid>https://dominicroye.github.io/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</guid>
       <description>
 
 
@@ -270,7 +270,7 @@ plot(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
 &lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta el paquete &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
+&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;https://dominicroye.github.io/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta el paquete &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes lubridate y tidyverse
 if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
 if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
@@ -411,7 +411,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
                 caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
              theme_strip&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;En el caso de que quisieramos obtener únicamente las tiras, podemos usar &lt;code&gt;theme_void( )&lt;/code&gt; y el argumento &lt;em&gt;show.legend=FALSE&lt;/em&gt; en &lt;code&gt;geom_tile( )&lt;/code&gt; para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores &lt;code&gt;NA&lt;/code&gt;, incluyendo el argumento &lt;em&gt;na.value=“grey70”&lt;/em&gt; en la función &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
              aes(x = date, y = 1, fill = ta))+
@@ -422,7 +422,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            scale_y_discrete(expand = c(0, 0))+
            scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
@@ -443,17 +443,17 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Acceso a la base de datos de OpenStreetMaps desde R</title>
-      <link>/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</link>
+      <link>https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</link>
       <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
       
-      <guid>/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</guid>
+      <guid>https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</guid>
       <description>
 
 
 &lt;div id=&#34;la-base-de-datos-de-open-street-maps&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;La base de datos de Open Street Maps&lt;/h2&gt;
 &lt;p&gt;Recientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; @mipazos &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
 
 &lt;p&gt;¿Cómo se puede obtener estos datos?&lt;/p&gt;
@@ -534,7 +534,7 @@ ggmap(mad_map)+
           size = 4,
           shape = 21)+
   labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;dónde-están-los-supermercados-de-mercadona&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;¿Dónde están los supermercados de Mercadona?&lt;/h3&gt;
@@ -567,7 +567,7 @@ ggplot(mercadona$osm_points)+
           size = 1,
           shape = 21)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R:advanced on Dominic Royé</title>
-    <link>/en/categories/radvanced/</link>
+    <link>https://dominicroye.github.io/en/categories/radvanced/</link>
     <description>Recent content in R:advanced on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/en/categories/radvanced/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://dominicroye.github.io/en/categories/radvanced/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Climate animation of maximum temperatures</title>
-      <link>/en/2020/climate-animation-of-maximum-temperatures/</link>
+      <link>https://dominicroye.github.io/en/2020/climate-animation-of-maximum-temperatures/</link>
       <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/en/2020/climate-animation-of-maximum-temperatures/</guid>
+      <guid>https://dominicroye.github.io/en/2020/climate-animation-of-maximum-temperatures/</guid>
       <description>
 
 
@@ -107,7 +107,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Data&lt;/h2&gt;
 &lt;p&gt;First, we need to download the STEAD dataset of the maximum temperature (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) in &lt;em&gt;netCDF&lt;/em&gt; format from the CSIC repository &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;here&lt;/a&gt; (the size of the data is 2 GB). It is a set of data with a spatial resolution of 5 km and includes daily maximum temperatures from 1901 to 2014. In climatology and meteorology, a widely used format is that of &lt;em&gt;netCDF&lt;/em&gt; databases, which allow to obtain a multidimensional structure and to exchange data independently of the usued operating system. It is a space-time format with a regular or irregular grid. The multidimensional structure in the form of arrays or cubes can handle not only spatio-temporal data but also multivariate ones. In our dataset we will have an array of three dimensions: longitude, latitude and time of the maximum temperature.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/3d_ncdf.en.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;https://dominicroye.github.io/img/3d_ncdf.en.png&#34; alt=&#34;&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -131,7 +131,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 &lt;p&gt;To access any layer we use &lt;code&gt;[[ ]]&lt;/code&gt; with the corresponding index. So we can easily plot any day of the 41,638 days we have.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# map any day
 plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calculate-the-average-temperature&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calculate the average temperature&lt;/h2&gt;
@@ -169,7 +169,7 @@ ggplot(df,
   scale_y_continuous(breaks = seq(5, 28, 2)) +
   labs(y = &amp;quot;maximum temperature&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The graph clearly shows the still existing variability, which would cause an animation to fluctuate quite a bit. Therefore, we create a smoothing function based on a local polynomial regression fit (LOESS), more details can be found in the help of the &lt;code&gt;loess()&lt;/code&gt; function. The most important argument is &lt;code&gt;span&lt;/code&gt;, which determines the degree of smoothing, the smaller the value the less smooth the curve will be. I found the best result showed a value of 0.5.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
   
@@ -202,7 +202,7 @@ ggplot(df,
   scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
   labs(y = &amp;quot;maximum temperature&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;As we see in the graph, the smoothed curve follows the original curve very well. In the next step we apply our function to the &lt;em&gt;RasterBrick&lt;/em&gt; with the &lt;code&gt;calc()&lt;/code&gt; function. The function returns as many layers as those returned by the function used for each of the time series.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# smooth the RasterBrick
 tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
@@ -243,7 +243,7 @@ map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code
 plot(map)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
 ## all&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-10-11-climate-animation-maximum-temperature/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Third, we create a vector with the day of the year as labels in order to include them later in the animation. In addition, we define the break points for the maximum temperature, adapted to the distribution of our data, to obtain a categorization with a total of 20 classes.&lt;/p&gt;
 &lt;p&gt;Fourth, we apply the &lt;code&gt;cut()&lt;/code&gt; function with the breaks to all the columns with temperature data of each day of the year.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# labels of day of the year
@@ -294,7 +294,7 @@ col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;qu
      subtitle = lab[150], 
      caption = &amp;quot;Reference period 1901-2014. Data: STEAD&amp;quot;,
      fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/fig_1.en.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/fig_1.en.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animation-of-the-whole-year&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Animation of the whole year&lt;/h2&gt;
@@ -338,7 +338,7 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After having created images for each day of the year, we only have to create the gif.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/tmx_spain.en.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.en.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -362,10 +362,10 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
     
     <item>
       <title>River flow directions</title>
-      <link>/en/2020/river-flow-directions/</link>
+      <link>https://dominicroye.github.io/en/2020/river-flow-directions/</link>
       <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/en/2020/river-flow-directions/</guid>
+      <guid>https://dominicroye.github.io/en/2020/river-flow-directions/</guid>
       <description>
 
 
@@ -474,7 +474,7 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
 &lt;h1&gt;Preparation&lt;/h1&gt;
 &lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data&lt;/h2&gt;
-&lt;p&gt;We download the central lines of the largest rivers in the world (&lt;a href=&#34;/files/RiverHRCenterlinesCombo.zip&#34;&gt;here&lt;/a&gt;), also accessible in &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We download the central lines of the largest rivers in the world (&lt;a href=&#34;https://dominicroye.github.io/files/RiverHRCenterlinesCombo.zip&#34;&gt;here&lt;/a&gt;), also accessible in &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;import-and-project&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Import and project&lt;/h2&gt;
@@ -711,7 +711,7 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
   labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
   theme_polar&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-07-24-river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-07-24-river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
@@ -736,14 +736,14 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
     
     <item>
       <title>Tidy correlation tests in R</title>
-      <link>/en/2019/tidy-correlation-tests-in-r/</link>
+      <link>https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/</link>
       <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>/en/2019/tidy-correlation-tests-in-r/</guid>
+      <guid>https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/</guid>
       <description>
 
 
-&lt;p&gt;When we try to estimate the correlation coefficient between multiple variables, the task is more complicated in order to obtain a simple and tidy result. A simple solution is to use the &lt;code&gt;tidy()&lt;/code&gt; function from the &lt;em&gt;{broom}&lt;/em&gt; package. In this post we are going to estimate the correlation coefficients between the annual precipitation of several Spanish cities and climate teleconnections indices: &lt;a href=&#34;/files/teleconnections_indices.zip&#34;&gt;download&lt;/a&gt;. The data of the teleconnections are preprocessed, but can be downloaded directly from &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. The daily precipitation data comes from &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;When we try to estimate the correlation coefficient between multiple variables, the task is more complicated in order to obtain a simple and tidy result. A simple solution is to use the &lt;code&gt;tidy()&lt;/code&gt; function from the &lt;em&gt;{broom}&lt;/em&gt; package. In this post we are going to estimate the correlation coefficients between the annual precipitation of several Spanish cities and climate teleconnections indices: &lt;a href=&#34;https://dominicroye.github.io/files/teleconnections_indices.zip&#34;&gt;download&lt;/a&gt;. The data of the teleconnections are preprocessed, but can be downloaded directly from &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. The daily precipitation data comes from &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Packages&lt;/h2&gt;
 &lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
@@ -1783,7 +1783,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
         panel.border = element_blank(),
         panel.background = element_blank(),
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2019-04-17-tidy-correlation-tests-in-r/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-04-17-tidy-correlation-tests-in-r/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       

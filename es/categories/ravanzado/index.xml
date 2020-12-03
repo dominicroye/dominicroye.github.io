@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R:avanzado on Dominic Royé</title>
-    <link>/es/categories/ravanzado/</link>
+    <link>https://dominicroye.github.io/es/categories/ravanzado/</link>
     <description>Recent content in R:avanzado on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/es/categories/ravanzado/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://dominicroye.github.io/es/categories/ravanzado/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Animación climática de la temperatura máxima</title>
-      <link>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
+      <link>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
       <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
+      <guid>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
       <description>
 
 
@@ -107,7 +107,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Datos&lt;/h2&gt;
 &lt;p&gt;Descargamos los datos STEAD de la temperatura máxima (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) en formato &lt;em&gt;netCDF&lt;/em&gt; desde el repositario del CSIC &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;aquí&lt;/a&gt; (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos &lt;em&gt;netCDF&lt;/em&gt;, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (&lt;em&gt;array&lt;/em&gt;) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;https://dominicroye.github.io/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -131,7 +131,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 &lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
 plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
@@ -169,7 +169,7 @@ ggplot(df,
   scale_y_continuous(breaks = seq(5, 28, 2)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
   
@@ -202,7 +202,7 @@ ggplot(df,
   scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
 tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
@@ -243,7 +243,7 @@ map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code
 plot(map)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
 ## all&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
 &lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
@@ -294,7 +294,7 @@ col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;qu
      subtitle = lab[150], 
      caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
      fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animación-de-todo-el-año&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Animación de todo el año&lt;/h2&gt;
@@ -338,7 +338,7 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -362,10 +362,10 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
     
     <item>
       <title>Direcciones del flujo fluvial</title>
-      <link>/es/2020/direcciones-del-flujo-fluvial/</link>
+      <link>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</link>
       <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
       
-      <guid>/es/2020/direcciones-del-flujo-fluvial/</guid>
+      <guid>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</guid>
       <description>
 
 
@@ -474,7 +474,7 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
 &lt;h1&gt;Preparación&lt;/h1&gt;
 &lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;Descargamos las líneas centrales de los ríos más grandes del mundo (&lt;a href=&#34;/files/RiverHRCenterlinesCombo.zip&#34;&gt;descarga&lt;/a&gt;), accesible también en &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Descargamos las líneas centrales de los ríos más grandes del mundo (&lt;a href=&#34;https://dominicroye.github.io/files/RiverHRCenterlinesCombo.zip&#34;&gt;descarga&lt;/a&gt;), accesible también en &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;importar-y-proyectar&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Importar y proyectar&lt;/h2&gt;
@@ -712,7 +712,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
   theme_polar&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
@@ -737,14 +737,14 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
     
     <item>
       <title>Resumir tests de correlaciones en R</title>
-      <link>/es/2019/resumir-tests-de-correlaciones-en-r/</link>
+      <link>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</link>
       <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
       
-      <guid>/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
+      <guid>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
       <description>
 
 
-&lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;https://dominicroye.github.io/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
@@ -1135,7 +1135,7 @@ corr_pr&lt;/code&gt;&lt;/pre&gt;
         panel.border = element_blank(),
         panel.background = element_blank(),
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-04-17-resumir-tests-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-04-17-resumir-tests-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       

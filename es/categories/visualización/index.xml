@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>visualización on Dominic Royé</title>
-    <link>/es/categories/visualizaci%C3%B3n/</link>
+    <link>https://dominicroye.github.io/es/categories/visualizaci%C3%B3n/</link>
     <description>Recent content in visualización on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/es/categories/visualizaci%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://dominicroye.github.io/es/categories/visualizaci%C3%B3n/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>Animación climática de la temperatura máxima</title>
-      <link>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
+      <link>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
       <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
       
-      <guid>/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
+      <guid>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
       <description>
 
 
@@ -107,7 +107,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Datos&lt;/h2&gt;
 &lt;p&gt;Descargamos los datos STEAD de la temperatura máxima (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) en formato &lt;em&gt;netCDF&lt;/em&gt; desde el repositario del CSIC &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;aquí&lt;/a&gt; (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos &lt;em&gt;netCDF&lt;/em&gt;, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (&lt;em&gt;array&lt;/em&gt;) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.&lt;/p&gt;
 &lt;div class=&#34;figure&#34;&gt;
-&lt;img src=&#34;/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
+&lt;img src=&#34;https://dominicroye.github.io/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
 &lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
@@ -131,7 +131,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 &lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
 plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
@@ -169,7 +169,7 @@ ggplot(df,
   scale_y_continuous(breaks = seq(5, 28, 2)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
   
@@ -202,7 +202,7 @@ ggplot(df,
   scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
 tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
@@ -243,7 +243,7 @@ map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code
 plot(map)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
 ## all&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
 &lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
@@ -294,7 +294,7 @@ col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;qu
      subtitle = lab[150], 
      caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
      fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animación-de-todo-el-año&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Animación de todo el año&lt;/h2&gt;
@@ -338,7 +338,7 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
 }&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -362,10 +362,10 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
     
     <item>
       <title>Visualizar anomalías climáticas</title>
-      <link>/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</link>
+      <link>https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</link>
       <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
       
-      <guid>/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</guid>
+      <guid>https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</guid>
       <description>
 
 
@@ -407,7 +407,7 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preparar los datos&lt;/h2&gt;
-&lt;p&gt;Primero importamos la precipitación y temperatura diaria de la estación meteorológica seleccionada (&lt;a href=&#34;/files/meteo_tenerife.csv&#34;&gt;descarga&lt;/a&gt;). Usaremos los datos de Tenerife Sur (España) [1981-2020] accesible a través de &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. En R existe un paquete &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; que facilita la descarga con funciones específicas para acceder a los datos de AEMET, Meteogalicia y Meteocat.&lt;/p&gt;
+&lt;p&gt;Primero importamos la precipitación y temperatura diaria de la estación meteorológica seleccionada (&lt;a href=&#34;https://dominicroye.github.io/files/meteo_tenerife.csv&#34;&gt;descarga&lt;/a&gt;). Usaremos los datos de Tenerife Sur (España) [1981-2020] accesible a través de &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. En R existe un paquete &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; que facilita la descarga con funciones específicas para acceder a los datos de AEMET, Meteogalicia y Meteocat.&lt;/p&gt;
 &lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
 &lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
@@ -537,7 +537,7 @@ bglab&lt;/code&gt;&lt;/pre&gt;
                      angle = 90, colour = &amp;quot;white&amp;quot;)
 
 g1&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;parte-3&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Parte 3&lt;/h3&gt;
@@ -549,7 +549,7 @@ g1&lt;/code&gt;&lt;/pre&gt;
                            size = 3.5) 
 g2&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;parte-4&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Parte 4&lt;/h3&gt;
@@ -568,7 +568,7 @@ g2&lt;/code&gt;&lt;/pre&gt;
 
 g3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -594,10 +594,10 @@ g3&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Visualizar el crecimiento urbano</title>
-      <link>/es/2019/visualizar-el-crecimiento-urbano/</link>
+      <link>https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/</link>
       <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>/es/2019/visualizar-el-crecimiento-urbano/</guid>
+      <guid>https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/</guid>
       <description>
 
 
@@ -792,7 +792,7 @@ filter(buildings_val, beginning &amp;gt;= &amp;quot;1750-01-01&amp;quot;) %&amp;
   theme(title = element_text(family = &amp;quot;Montserrat&amp;quot;),
         axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;)) +
   labs(y = &amp;quot;&amp;quot;,x = &amp;quot;&amp;quot;, title = &amp;quot;Evolución del desarrollo urbano&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-11-01-visualizar-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-11-01-visualizar-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;buffer-de-25-km-de-valencia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Buffer de 2,5 km de Valencia&lt;/h2&gt;
@@ -861,7 +861,7 @@ tm_shape(buildings_val25) +
             panel.label.bg.color = &amp;quot;black&amp;quot;,
             panel.label.size = 5,
             panel.label.fontface = &amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/es/2019-11-01-visualizar-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-11-01-visualizar-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;mapa-dinámico-en-leaflet&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Mapa dinámico en leaflet&lt;/h2&gt;
@@ -877,7 +877,7 @@ m &amp;lt;-   tm_shape(buildings_val25) +
 
 #mapa dinámico
 tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
-&lt;iframe src=&#34;/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
+&lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
 </description>

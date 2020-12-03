@@ -2,21 +2,21 @@
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R:elementary on Dominic Royé</title>
-    <link>/en/categories/relementary/</link>
+    <link>https://dominicroye.github.io/en/categories/relementary/</link>
     <description>Recent content in R:elementary on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
     <lastBuildDate>Sat, 06 Jun 2020 00:00:00 +0000</lastBuildDate>
     
-        <atom:link href="/en/categories/relementary/index.xml" rel="self" type="application/rss+xml" />
+        <atom:link href="https://dominicroye.github.io/en/categories/relementary/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
       <title>A very short introduction to Tidyverse</title>
-      <link>/en/2020/a-very-short-introduction-to-tidyverse/</link>
+      <link>https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/</link>
       <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
       
-      <guid>/en/2020/a-very-short-introduction-to-tidyverse/</guid>
+      <guid>https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/</guid>
       <description>
 
 &lt;div id=&#34;TOC&#34;&gt;
@@ -128,7 +128,7 @@
 &lt;div id=&#34;read-and-write-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.1&lt;/span&gt; Read and write data&lt;/h2&gt;
 &lt;p&gt;The &lt;code&gt;readr&lt;/code&gt; package makes it easy to read or write multiple file formats using functions that start with &lt;code&gt;read_*&lt;/code&gt; or &lt;code&gt;write_*&lt;/code&gt;.
-In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class &lt;code&gt;tibble&lt;/code&gt; (&lt;em&gt;tbl_df&lt;/em&gt;), a modern version of &lt;code&gt;data.frame&lt;/code&gt; from the &lt;code&gt;tibble&lt;/code&gt; package. In the same sense, you can use the &lt;code&gt;read_excel()&lt;/code&gt; function of the &lt;code&gt;readxl&lt;/code&gt; package to import data from Excel sheets (more details also in this &lt;a href=&#34;https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/&#34;&gt;blog post&lt;/a&gt;). In the following example, we import the mobility data registered by Google (&lt;a href=&#34;https://www.google.com/covid19/mobility/&#34;&gt;link&lt;/a&gt;) during the last months of the COVID-19 pandemic (&lt;a href=&#34;/files/Global_Mobility_Report.csv&#34;&gt;download&lt;/a&gt;).&lt;/p&gt;
+In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class &lt;code&gt;tibble&lt;/code&gt; (&lt;em&gt;tbl_df&lt;/em&gt;), a modern version of &lt;code&gt;data.frame&lt;/code&gt; from the &lt;code&gt;tibble&lt;/code&gt; package. In the same sense, you can use the &lt;code&gt;read_excel()&lt;/code&gt; function of the &lt;code&gt;readxl&lt;/code&gt; package to import data from Excel sheets (more details also in this &lt;a href=&#34;https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/&#34;&gt;blog post&lt;/a&gt;). In the following example, we import the mobility data registered by Google (&lt;a href=&#34;https://www.google.com/covid19/mobility/&#34;&gt;link&lt;/a&gt;) during the last months of the COVID-19 pandemic (&lt;a href=&#34;https://dominicroye.github.io/files/Global_Mobility_Report.csv&#34;&gt;download&lt;/a&gt;).&lt;/p&gt;
 &lt;table&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
@@ -543,7 +543,7 @@ wld &amp;lt;- filter(wld, !is.na(iso_a2)) %&amp;gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Other &lt;code&gt;dplyr&lt;/code&gt; functions allow us to join tables: &lt;code&gt;*_join ()&lt;/code&gt;. Depending on which table (left or right) you want to join, the functions change: &lt;code&gt;left_join()&lt;/code&gt;, &lt;code&gt;right_join()&lt;/code&gt; or even &lt;code&gt;full_join()&lt;/code&gt;. The &lt;code&gt;by&lt;/code&gt; argument is not necessary as long as both tables have a column in common. However, in this case the variable names are different, so we use the following way: &lt;code&gt;c(&#34;country_region_code&#34;=&#34;iso_a2&#34;)&lt;/code&gt;. The &lt;code&gt;forcats&lt;/code&gt; package of &lt;code&gt;tidyverse&lt;/code&gt; has many useful functions for handling categorical variables (&lt;code&gt;factors&lt;/code&gt;), variables that have a fixed and known set of possible values. All &lt;code&gt;forcats&lt;/code&gt; functions have the prefix &lt;code&gt;fct_*&lt;/code&gt;. For example, in this case we use &lt;code&gt;fct_reorder()&lt;/code&gt; to reorder the country labels in order of the maximum based on the residential mobility records. Finally, we create a new column &lt;code&gt;&#34;resi_real&#34;&lt;/code&gt; to change the reference value, the average or baseline, from 0 to 100.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;subset_europe &amp;lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -666,14 +666,14 @@ it &amp;lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To modify the axes, we use the different &lt;code&gt;scale_*&lt;/code&gt; functions that we must adapt to the scales of measurement (date, discrete, continuous, etc.). The &lt;code&gt;labs()&lt;/code&gt; function helps us define the axis, legend and plot titles. Finally, we add the style of the graph with &lt;code&gt;theme_light()&lt;/code&gt; (others are &lt;code&gt;theme_bw()&lt;/code&gt;, &lt;code&gt;theme_minimal()&lt;/code&gt;, etc.). We could also make changes to all graphic elements through &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time serie plot
 ggplot(it, 
@@ -687,7 +687,7 @@ ggplot(it,
        y = &amp;quot;Residential mobility&amp;quot;,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -702,7 +702,7 @@ ggplot(it,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/h3&gt;
@@ -731,7 +731,7 @@ ggplot(subset_europe_reg,
        title = &amp;quot;Mobility during COVID-19&amp;quot;, 
        fill = &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/h3&gt;
@@ -773,7 +773,7 @@ ggplot(subset_europe,
                                label.position = &amp;quot;top&amp;quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;apply-functions-on-vectors-or-lists&#34; class=&#34;section level2&#34;&gt;
@@ -898,10 +898,10 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
     
     <item>
       <title>Geographic distance</title>
-      <link>/en/2020/geographic-distance/</link>
+      <link>https://dominicroye.github.io/en/2020/geographic-distance/</link>
       <pubDate>Sun, 19 Jan 2020 00:00:00 +0000</pubDate>
       
-      <guid>/en/2020/geographic-distance/</guid>
+      <guid>https://dominicroye.github.io/en/2020/geographic-distance/</guid>
       <description>
 
 
@@ -1142,7 +1142,7 @@ ggplot(world) +
    coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
   labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital city&amp;quot;) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2020-01-19-geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-01-19-geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
@@ -1165,10 +1165,10 @@ ggplot(world) +
     
     <item>
       <title>Visualize urban growth</title>
-      <link>/en/2019/visualize-urban-growth/</link>
+      <link>https://dominicroye.github.io/en/2019/visualize-urban-growth/</link>
       <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
       
-      <guid>/en/2019/visualize-urban-growth/</guid>
+      <guid>https://dominicroye.github.io/en/2019/visualize-urban-growth/</guid>
       <description>
 
 
@@ -1362,7 +1362,7 @@ filter(buildings_val, beginning &amp;gt;= &amp;quot;1750-01-01&amp;quot;) %&amp;
   theme(title = element_text(family = &amp;quot;Montserrat&amp;quot;),
         axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;)) +
   labs(y = &amp;quot;&amp;quot;,x = &amp;quot;&amp;quot;, title = &amp;quot;Evolution of urban development&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2019-11-01-visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-11-01-visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;buffer-of-25-km-for-valencia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Buffer of 2,5 km for Valencia&lt;/h2&gt;
@@ -1431,7 +1431,7 @@ tm_shape(buildings_val25) +
             panel.label.bg.color = &amp;quot;black&amp;quot;,
             panel.label.size = 5,
             panel.label.fontface = &amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;/post/en/2019-11-01-visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-11-01-visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;dynamic-map-with-leaflet&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Dynamic map with leaflet&lt;/h2&gt;
@@ -1447,7 +1447,7 @@ m &amp;lt;-   tm_shape(buildings_val25) +
 
 # dynamic map
 tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
-&lt;iframe src=&#34;/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
+&lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
 &lt;/iframe&gt;
 &lt;/div&gt;
 </description>
