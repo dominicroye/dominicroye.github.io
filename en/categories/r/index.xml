@@ -84,7 +84,7 @@ dat_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preparation&lt;/h2&gt;
-&lt;p&gt;In the first step we must 1) complement the time series from December 21 to December 31 with &lt;code&gt;NA&lt;/code&gt;, 2) add the day of the week, the month, the number of the week and the day. Depending on whether we want each week to start on Sunday or Monday, we indicate it in the &lt;code&gt;wday()&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;In the first step we must 1) complement the time series from December 21 to December 31 with &lt;code&gt;NA&lt;/code&gt;, 2) add the day of the week, the month, the week number and the day. Depending on whether we want each week to start on Sunday or Monday, we indicate it in the &lt;code&gt;wday()&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- dat_pr %&amp;gt;% 
           complete(date = seq(ymd(&amp;quot;2020-01-01&amp;quot;), 
                               ymd(&amp;quot;2020-12-31&amp;quot;), 
@@ -152,7 +152,7 @@ col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
        plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 16)
   )
 }&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally, we build the final chart using &lt;code&gt;geom_tile()&lt;/code&gt; and specify the day of the week as the X axis and the week of the year as the Y axis. With &lt;code&gt;geom_text()&lt;/code&gt; we add the number of each day with its color according to what we defined previously. In &lt;code&gt;guides&lt;/code&gt; we make the adjustments of the colorbar and in &lt;code&gt;scale_fill/colour_manual()&lt;/code&gt; we define the corresponding colors. An important step is found in &lt;code&gt;facet_wrap()&lt;/code&gt; where we specify the facets composition of each month. The facets should have free scales and the ideal would be a 4 x 3 facet distribution. It is possible to modify the position of the day number to another using the arguments &lt;code&gt;nudge_*&lt;/code&gt; in &lt;code&gt;geom_text()&lt;/code&gt; (eg bottom-right corner: nudge_x = .35, nudge_y = -.25).&lt;/p&gt;
+&lt;p&gt;Finally, we build the final chart using &lt;code&gt;geom_tile()&lt;/code&gt; and specify the day of the week as the X axis and the week number as the Y axis. As you can see in the variable of the week number (&lt;code&gt;-week&lt;/code&gt;), I change the sign so that the first day of each month is in the first row. With &lt;code&gt;geom_text()&lt;/code&gt; we add the number of each day with its color according to what we defined previously. In &lt;code&gt;guides&lt;/code&gt; we make the adjustments of the colorbar and in &lt;code&gt;scale_fill/colour_manual()&lt;/code&gt; we define the corresponding colors. An important step is found in &lt;code&gt;facet_wrap()&lt;/code&gt; where we specify the facets composition of each month. The facets should have free scales and the ideal would be a 4 x 3 facet distribution. It is possible to modify the position of the day number to another using the arguments &lt;code&gt;nudge_*&lt;/code&gt; in &lt;code&gt;geom_text()&lt;/code&gt; (eg bottom-right corner: nudge_x = .35, nudge_y = -.25).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;    ggplot(dat_pr, 
            aes(weekday, -week, fill = pcat)) +
       geom_tile(colour = &amp;quot;white&amp;quot;, size = .4)  + 
