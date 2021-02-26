@@ -1,21 +1,25 @@
+<script src="index.en_files/header-attrs-2.7/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
 <li><a href="#tidyverse"><span class="toc-section-number">1</span> Tidyverse</a></li>
 <li><a href="#style-guide"><span class="toc-section-number">2</span> Style guide</a></li>
 <li><a href="#pipe"><span class="toc-section-number">3</span> Pipe %&gt;%</a></li>
-<li><a href="#tidyverse-packages"><span class="toc-section-number">4</span> Tidyverse packages</a><ul>
+<li><a href="#tidyverse-packages"><span class="toc-section-number">4</span> Tidyverse packages</a>
+<ul>
 <li><a href="#read-and-write-data"><span class="toc-section-number">4.1</span> Read and write data</a></li>
 <li><a href="#character-manipulations"><span class="toc-section-number">4.2</span> Character manipulations</a></li>
 <li><a href="#management-of-dates-and-times"><span class="toc-section-number">4.3</span> Management of dates and times</a></li>
-<li><a href="#table-and-vector-manipulation"><span class="toc-section-number">4.4</span> Table and vector manipulation</a><ul>
+<li><a href="#table-and-vector-manipulation"><span class="toc-section-number">4.4</span> Table and vector manipulation</a>
+<ul>
 <li><a href="#select-and-rename"><span class="toc-section-number">4.4.1</span> Select and rename</a></li>
 <li><a href="#filter-and-sort"><span class="toc-section-number">4.4.2</span> Filter and sort</a></li>
 <li><a href="#group-and-summarize"><span class="toc-section-number">4.4.3</span> Group and summarize</a></li>
 <li><a href="#join-tables"><span class="toc-section-number">4.4.4</span> Join tables</a></li>
 <li><a href="#long-and-wide-tables"><span class="toc-section-number">4.4.5</span> Long and wide tables</a></li>
 </ul></li>
-<li><a href="#visualize-data"><span class="toc-section-number">4.5</span> Visualize data</a><ul>
+<li><a href="#visualize-data"><span class="toc-section-number">4.5</span> Visualize data</a>
+<ul>
 <li><a href="#line-and-scatter-plot"><span class="toc-section-number">4.5.1</span> Line and scatter plot</a></li>
 <li><a href="#boxplot"><span class="toc-section-number">4.5.2</span> Boxplot</a></li>
 <li><a href="#heatmap"><span class="toc-section-number">4.5.3</span> Heatmap</a></li>
@@ -25,7 +29,7 @@
 </ul>
 </div>
 
-<div id="tidyverse" class="section level1">
+<div id="tidyverse" class="section level1" number="1">
 <h1><span class="header-section-number">1</span> Tidyverse</h1>
 <p>The <code>tidyverse</code> universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The <code>tidyverse</code> philosophy and grammar of functions are also reflected in other packages that make its use compatible with the collection. For example, the <code>sf</code> package (<a href="https://r-spatial.github.io/sf/articles/sf1.html">simple feature</a>) is a standardized way to encode spatial vector data and allows the use of multiple functions that we can find in the <code>dplyr</code> package.</p>
 <p>The core of the <code>tidyverse</code> collection is made up of the following packages:</p>
@@ -81,7 +85,7 @@
 <p>It is very easy to get conflicts between functions, that is, that the same function name exists in several packages. To avoid this, we can write the name of the package in front of the function we want to use, separated by the colon symbol written twice (<code>package_name::function_name</code>).</p>
 <p>Before I get started with the packages, I hope it will be a really short introduction, some comments on the style when programming in R.</p>
 </div>
-<div id="style-guide" class="section level1">
+<div id="style-guide" class="section level1" number="2">
 <h1><span class="header-section-number">2</span> Style guide</h1>
 <p>In R there is no universal style guide, that is, in the R syntax it is not necessary to follow specific rules for our scripts. But it is recommended to work in a homogeneous, uniform, legible and clear way when writing scripts. The <code>tidyverse</code> collection has its own guide (<a href="https://style.tidyverse.org/" class="uri">https://style.tidyverse.org/</a>).</p>
 <p>The most important recommendations are:</p>
@@ -97,15 +101,15 @@
 </ul>
 <p>It is advisable to use a correct indentation for multiple arguments of a function or functions chained by the <code>pipe</code> operator (<code>%&gt;%</code>).</p>
 </div>
-<div id="pipe" class="section level1">
+<div id="pipe" class="section level1" number="3">
 <h1><span class="header-section-number">3</span> Pipe %&gt;%</h1>
 <p>To facilitate working in data management, manipulation and visualization, the <code>magrittr</code> package introduces the famous <em>pipe</em> operator in the form <code>%&gt;%</code> with the aim of combining various functions without the need to assign the result to a new object. The <em>pipe</em> operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously, to perform sequential tasks. In the very simple example below, we pass the vector <code>1:5</code> to the <code>mean()</code> function to calculate the average. You should know that there are a couple of other pipe operators in the same package.</p>
 <pre class="r"><code>1:5 %&gt;% mean()</code></pre>
 <pre><code>## [1] 3</code></pre>
 </div>
-<div id="tidyverse-packages" class="section level1">
+<div id="tidyverse-packages" class="section level1" number="4">
 <h1><span class="header-section-number">4</span> Tidyverse packages</h1>
-<div id="read-and-write-data" class="section level2">
+<div id="read-and-write-data" class="section level2" number="4.1">
 <h2><span class="header-section-number">4.1</span> Read and write data</h2>
 <p>The <code>readr</code> package makes it easy to read or write multiple file formats using functions that start with <code>read_*</code> or <code>write_*</code>.
 In comparison to R Base, <code>readr</code> functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class <code>tibble</code> (<em>tbl_df</em>), a modern version of <code>data.frame</code> from the <code>tibble</code> package. In the same sense, you can use the <code>read_excel()</code> function of the <code>readxl</code> package to import data from Excel sheets (more details also in this <a href="https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/">blog post</a>). In the following example, we import the mobility data registered by Google (<a href="https://www.google.com/covid19/mobility/">link</a>) during the last months of the COVID-19 pandemic (<a href="/files/Global_Mobility_Report.csv">download</a>).</p>
@@ -184,7 +188,7 @@ google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></p
 ## #   residential_percent_change_from_baseline &lt;dbl&gt;</code></pre>
 <p>Important is to take a look at the argument names, since they change in the <code>readr</code> functions. For example, the well-known <code>header = TRUE</code> argument of <code>read.csv()</code> is in this case <code>col_names = TRUE</code>. More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf">Cheat-Sheet</a> of <code>readr</code>.</p>
 </div>
-<div id="character-manipulations" class="section level2">
+<div id="character-manipulations" class="section level2" number="4.2">
 <h2><span class="header-section-number">4.2</span> Character manipulations</h2>
 <p>For working with strings we use the <code>stringr</code> package, whose functions always start with <code>str_*</code> followed by a verb and the first argument.</p>
 <p>Some of these functions are as follows:</p>
@@ -277,7 +281,7 @@ str_glue(
 <pre><code>## My name is Juan, I&#39;am 50, and my birth year is 1971.
 ## My name is Michael, I&#39;am 80, and my birth year is 1941.</code></pre>
 </div>
-<div id="management-of-dates-and-times" class="section level2">
+<div id="management-of-dates-and-times" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Management of dates and times</h2>
 <p>The <code>lubridate</code> package is very powerful in handling dates and times. It allows us to create R recognized objects with functions (like <code>ymd()</code> or <code>ymd_hms()</code>) and we can even make calculations.</p>
 <p>We only must know the following abbreviations:</p>
@@ -351,7 +355,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 <pre><code>## [1] &quot;2005-05-23 05:00:00 UTC&quot;</code></pre>
 <p>More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf">Cheat-Sheet</a> of <code>lubridate</code>.</p>
 </div>
-<div id="table-and-vector-manipulation" class="section level2">
+<div id="table-and-vector-manipulation" class="section level2" number="4.4">
 <h2><span class="header-section-number">4.4</span> Table and vector manipulation</h2>
 <p>The <code>dplyr</code> and <code>tidyr</code> packages provide us with a data manipulation grammar, a set of useful verbs to solve common problems. The most important functions are:</p>
 <table>
@@ -420,7 +424,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
 ## ...... ................ .................. .............. ............................
 ## See problems(...) for more details.</code></pre>
-<div id="select-and-rename" class="section level3">
+<div id="select-and-rename" class="section level3" number="4.4.1">
 <h3><span class="header-section-number">4.4.1</span> Select and rename</h3>
 <p>We can select or remove columns with the <code>select()</code> function, using the name or index of the column. To delete columns we make use of the negative sign. The <code>rename</code> function helps in renaming columns with either the same name or their index.</p>
 <pre class="r"><code>residential_mobility &lt;- select(google_mobility, 
@@ -429,7 +433,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
                                residential_percent_change_from_baseline) %&gt;% 
                         rename(resi = 5)</code></pre>
 </div>
-<div id="filter-and-sort" class="section level3">
+<div id="filter-and-sort" class="section level3" number="4.4.2">
 <h3><span class="header-section-number">4.4.2</span> Filter and sort</h3>
 <p>To filter data, we use <code>filter()</code> with logical operators (<code>|</code>, <code>==</code>, <code>&gt;</code>, etc) or functions that return a logical value (<code>str_detect()</code>, <code>is.na()</code> , etc.). The <code>arrange()</code> function sorts from least to greatest for one or multiple variables (with the negative sign <code>-</code> the order is reversed from greatest to least).</p>
 <pre class="r"><code>filter(residential_mobility, 
@@ -483,7 +487,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ## 10 SG                 Singapore      &lt;NA&gt;                       2020-04-10    53
 ## # ... with 22 more rows</code></pre>
 </div>
-<div id="group-and-summarize" class="section level3">
+<div id="group-and-summarize" class="section level3" number="4.4.3">
 <h3><span class="header-section-number">4.4.3</span> Group and summarize</h3>
 <p>Where do we find greater variability between regions in each country on April 1, 2020?</p>
 <p>To answer this question, we first filter the data and then we group by the country column. When we use the <code>summarize()</code> function after grouping, it allows us to summarize by these groups. Moreover, combining <code>group_by()</code> with the <code>mutate()</code> function modifies columns in each group separately. In <code>summarize()</code> we calculate the maximum, minimum value and the difference between both extremes creating new columns.</p>
@@ -493,9 +497,9 @@ make_datetime(2005, 5, 23, 5)</code></pre>
                           group_by(country_region) %&gt;% 
                            summarise(mx = max(resi, na.rm = TRUE), 
                                     min = min(resi, na.rm = TRUE),
-                                    range = abs(mx)-abs(min))</code></pre>
-<pre><code>## `summarise()` ungrouping output (override with `.groups` argument)</code></pre>
-<pre class="r"><code>arrange(resi_variability, -range)</code></pre>
+                                    range = abs(mx)-abs(min))
+
+arrange(resi_variability, -range)</code></pre>
 <pre><code>## # A tibble: 94 x 4
 ##    country_region    mx   min range
 ##    &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
@@ -511,7 +515,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ## 10 Chile             30    14    16
 ## # ... with 84 more rows</code></pre>
 </div>
-<div id="join-tables" class="section level3">
+<div id="join-tables" class="section level3" number="4.4.4">
 <h3><span class="header-section-number">4.4.4</span> Join tables</h3>
 <p>How can we filter the data to get a subset of Europe?</p>
 <p>To do this, we import a spatial dataset with the country code and a column of regions. Detailed explanations about the <code>sf</code> (<em>simple feature</em>) package, I’ll leave for another post.</p>
@@ -558,7 +562,7 @@ str(subset_europe)</code></pre>
 ##   ..$ actual  : chr [1:597554] &quot;Autauga County&quot; &quot;01001&quot; &quot;Autauga County&quot; &quot;01001&quot; ...
 ##   ..$ file    : chr [1:597554] &quot;&#39;Global_Mobility_Report.csv&#39;&quot; &quot;&#39;Global_Mobility_Report.csv&#39;&quot; &quot;&#39;Global_Mobility_Report.csv&#39;&quot; &quot;&#39;Global_Mobility_Report.csv&#39;&quot; ...</code></pre>
 </div>
-<div id="long-and-wide-tables" class="section level3">
+<div id="long-and-wide-tables" class="section level3" number="4.4.5">
 <h3><span class="header-section-number">4.4.5</span> Long and wide tables</h3>
 <p>Before we go to create graphics with <code>ggplot2</code>, it is very common to modify the table between two main formats, long and wide. A table is tidy when 1) each variable is a column 2) each observation/case is a row and 3) each type of observational unit forms a table.</p>
 <pre class="r"><code># subset
@@ -622,7 +626,7 @@ pivot_longer(mobi_wide,
 <p>Another group of functions you should take a look at are: <code>separate()</code>, <code>case_when()</code>, <code>complete()</code>. More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">Cheat-Sheet</a> of <code>dplyr</code>.</p>
 </div>
 </div>
-<div id="visualize-data" class="section level2">
+<div id="visualize-data" class="section level2" number="4.5">
 <h2><span class="header-section-number">4.5</span> Visualize data</h2>
 <p><code>ggplot2</code> is a modern system for data visualization with a huge variety of options. Unlike the R Base graphic system, in <code>ggplot2</code> a different grammar is used. The grammar of graphics (gg) consists of the sum of several independent layers or objects that are combined using <code>+</code> to construct the final graph. <code>ggplot</code> differentiates between data, what is displayed and how it is displayed.</p>
 <ul>
@@ -633,7 +637,7 @@ pivot_longer(mobi_wide,
 <li><p><em>statistics</em>: are <code>stat_ *</code> objects (eg, <code>stat_density()</code>) that allow to apply statistical transformations.</p></li>
 </ul>
 <p>More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf">Cheat-Sheet</a> of <code>ggplot2</code>. <code>ggplot</code> is constantly supplemented by extensions for geometries or other graphical options (see <a href="https://exts.ggplot2.tidyverse.org/ggiraph.html" class="uri">https://exts.ggplot2.tidyverse.org/ggiraph.html</a>), for graphical ideas have a look a the R Graph Gallery (<a href="https://www.r-graph-gallery.com/" class="uri">https://www.r-graph-gallery.com/</a>).</p>
-<div id="line-and-scatter-plot" class="section level3">
+<div id="line-and-scatter-plot" class="section level3" number="4.5.1">
 <h3><span class="header-section-number">4.5.1</span> Line and scatter plot</h3>
 <p>We create a subset of our mobility data for residences and parks, filtering the records for Italian regions. In addition, we divide the mobility values in percentage by 100 to obtain the fraction, since <code>ggplot2</code> allows us to indicate the unit of percentage in the label argument (see last plot in this section).</p>
 <pre class="r"><code># create subset
@@ -686,7 +690,7 @@ ggplot(it,
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
 <p><img src="index.en_files/figure-html/unnamed-chunk-21-2.png" width="2100" /></p>
 </div>
-<div id="boxplot" class="section level3">
+<div id="boxplot" class="section level3" number="4.5.2">
 <h3><span class="header-section-number">4.5.2</span> Boxplot</h3>
 <p>We can visualize different aspects of the mobility with other geometries. Here we will create boxplots for each European country representing the variability of mobility between and within countries during the COVID-19 pandemic.</p>
 <pre class="r"><code># subset
@@ -715,7 +719,7 @@ ggplot(subset_europe_reg,
   theme_minimal()</code></pre>
 <p><img src="index.en_files/figure-html/unnamed-chunk-22-1.png" width="2100" /></p>
 </div>
-<div id="heatmap" class="section level3">
+<div id="heatmap" class="section level3" number="4.5.3">
 <h3><span class="header-section-number">4.5.3</span> Heatmap</h3>
 <p>To visualize the mobility trend of all European countries it is recommended to use a heatmap instead of a bundle of lines. Before building the graph, we will create a vector of Sundays for the x-axis labels in the observation period.</p>
 <pre class="r"><code># sequence of dates
@@ -758,7 +762,7 @@ ggplot(subset_europe,
 <p><img src="index.en_files/figure-html/unnamed-chunk-25-1.png" width="3675" /></p>
 </div>
 </div>
-<div id="apply-functions-on-vectors-or-lists" class="section level2">
+<div id="apply-functions-on-vectors-or-lists" class="section level2" number="4.6">
 <h2><span class="header-section-number">4.6</span> Apply functions on vectors or lists</h2>
 <p>The <code>purrr</code> package contains a set of advanced functional programming functions for working with functions and vectors. The known <code>lapply()</code> family of R Base corresponds to the <code>map()</code> functions in this package. One of the biggest advantages is being able to reduce the use of loops (<code>for</code>, etc.).</p>
 <pre class="r"><code># list of two vectors
