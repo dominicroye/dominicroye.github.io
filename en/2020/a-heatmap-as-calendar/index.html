@@ -616,6 +616,7 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <p>Recently I was looking for a visual representation to show the daily changes of temperature, precipitation and wind in an application <a href="https://xeo81.shinyapps.io/MeteoExtremosGalicia/">xeo81.shinyapps.io/MeteoExtremosGalicia</a> (in Spanish), which led me to use a heatmap in the form of a calendar. The <a href="https://shiny.rstudio.com/">shiny</a> application is updated every four hours with new data showing calendars for each weather station. The heatmap as a calendar allows you to visualize any variable with a daily time reference.</p>
@@ -661,7 +662,7 @@ library(ragg)</code></pre>
 </div>
 <div id="data" class="section level2">
 <h2>Data</h2>
-<p>In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20).</p>
+<p>In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20) <a href="/files/precipitation_santiago.csv">download</a>.</p>
 <pre class="r"><code># import the data
 dat_pr &lt;- read_csv(&quot;precipitation_santiago.csv&quot;)
 dat_pr</code></pre>
@@ -767,7 +768,7 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
              caption = &quot;Data: Meteogalicia&quot;,
              fill = &quot;mm&quot;) +
        theme_calendar()</code></pre>
-<p><img src="/en/2020/a-heatmap-as-calendar/index.en_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/figure-html/unnamed-chunk-9-1.png" width="768" /></p>
 <p>To export we will use the <a href="https://github.com/r-lib/ragg"><code>ragg</code></a> package, which provides higher performance and quality than the standard raster devices provided by grDevices.</p>
 <pre class="r"><code>ggsave(&quot;pr_calendar.png&quot;, height = 10, width = 8, device = agg_png())</code></pre>
 <p>In other heatmap calendars I have added the predominant wind direction of each day as an arrow using <code>geom_arrow()</code> from the <code>metR</code> package (it can be seen in the aforementioned application).</p>
@@ -893,7 +894,7 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
         
         <li><a href="/en/publication/era5_esp_2020/">Comparison of temperature-mortality associations using observed weather station and reanalysis data in 52 Spanish cities</a></li>
         
-        <li><a href="/en/2019/visualize-monthly-precipitation-anomalies/">Visualize monthly precipitation anomalies</a></li>
+        <li><a href="/en/publication/ncdf_2015/">The use of climate databases netCDF with array structure in the environment of R</a></li>
         
       </ul>
     </div>
@@ -902,6 +903,11 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Next</div>
+    <a href="https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/" rel="next">Bivariate dasymetric map</a>
+  </div>
   
   
   <div class="post-nav-item">
@@ -948,7 +954,7 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
   
 
   <p class="powered-by">
-    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
+    &copy; 2018-2021 Dominic Royé. All rights reserved. &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

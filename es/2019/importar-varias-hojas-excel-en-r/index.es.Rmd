@@ -1,0 +1,186 @@
+---
+categories: ["gestión","R","R:intermedio"]
+title: Importar varias hojas Excel en R
+date: '2019-03-10'
+slug: importar-varias-hojas-Excel-en-R
+tags: ["excel","hojas","importar"]
+header:
+  caption: ''
+  image: 'excel_import.png'
+lang: es
+summary: "Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentran en dos archvios de Excel con hojas para cada año entre 2000 y 2005."
+---
+
+Cuando trabajamos con diferentes fuentes de datos, nos podemos encontrar con tablas distrubidas sobre varias hojas de Excel. En este post vamos a importar la temperatura media diaria de Madrid y Berlín que se encuentra en dos archvios de Excel con hojas para cada año entre 2000 y 2005: [descarga](/files/Data_Excel.zip). 
+
+## Paquetes
+
+En este post usaremos los siguientes paquetes:
+
+```{r echo=FALSE,message=FALSE,error=FALSE,warning=FALSE}
+library(knitr)
+
+tb <- data.frame(paquete=c("tidyverse","fs","readxl"),
+                 descripcion=c("Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.",
+                               "Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos",
+                               "Importar archivos Excel"
+                               ))
+
+kable(tb,booktabs = TRUE,col.names=c("Paquete","Descripción"))
+
+```
+
+```{r,message=FALSE,error=FALSE,warning=FALSE}
+#instalamos los paquetes si hace falta
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("fs")) install.packages("fs")
+if(!require("readxl")) install.packages("readxl")
+
+
+#paquetes
+library(tidyverse)
+library(fs)
+library(readxl)
+
+
+```
+
+
+Por defecto, la función `read_excel()` importa la primera hoja. Para importar una hoja diferente es necesario indicarlo con el argumento *sheet* o bien el número o el nombre (segundo argumento). 
+
+```{r}
+
+#importar primera hoja
+read_excel("madrid_temp.xlsx")
+
+#importar hoja 3
+read_excel("madrid_temp.xlsx", 3)
+
+
+```
+
+La función `excel_sheets()` permite extraer los nombres de las hojas.
+
+```{r}
+
+path <- "madrid_temp.xlsx"
+
+path %>%
+  excel_sheets()
+
+```
+
+El resultado nos indica que en cada hoja encontramos un año de los datos desde 2000 a 2005. La función más importante para leer múltiples hojas es `map()` del paquete *{purrr}* que forma parte de la colección de paquetes *{tidyverse}*. `map()` permite aplicar una función a cada elemento de un vector o lista. 
+
+```{r}
+
+path <- "madrid_temp.xlsx"
+
+mad <- path %>%
+        excel_sheets() %>%
+        set_names() %>%
+       map(read_excel,
+           path = path)
+        
+str(mad)
+
+```
+
+
+El resultado es una lista nombrada con el nombre de cada hoja que contiene el data.frame. Dado que se trata de la misma tabla en todas las hojas, podríamos usar la función `bind_rows()`, no obstante, existe una variante de `map()`que directamente nos une todas las tablas por fila: `map_df()`. Si fuese necesario unir por columna se debería usar `map_dfc()`. 
+
+
+```{r}
+
+path <- "madrid_temp.xlsx"
+
+mad <- path %>%
+        excel_sheets() %>%
+        set_names() %>%
+       map_df(read_excel,
+           path = path)
+
+mad
+
+```
+
+
+En nuestro caso tenemos una columna en cada hoja (año, pero también la fecha) que diferencia cada tabla. Si no fuera el caso, deberíamos usar el nombre de las hojas como nueva columna al unir todas. En `bind_rows()` puede hacerse con el argumento *.id* asignando un nombre para la columna. Lo mismo valdría para `map_df()`. 
+
+
+```{r}
+
+path <- "madrid_temp.xlsx"
+
+mad <- path %>%
+        excel_sheets() %>%
+        set_names() %>%
+       map_df(read_excel,
+           path = path,
+           .id = "yr2")
+
+str(mad)
+
+```
+
+
+¿Pero cómo importamos múltiples archivos de Excel? 
+
+Para ello, primero debemos conocer la función `dir_ls()` del paquete [*{fs}*](https://github.com/r-lib/fs). Es cierto que existe la función `dir()` de *R Base*, pero las ventajas del reciente paquete son varias, pero especialmente es la compatibilidad con la colección de *{tidyverse}*.
+
+```{r}
+
+dir_ls()
+
+#podemos filtrar los archivos que queremos
+dir_ls(regexp = "xlsx") 
+
+```
+
+Importamos los dos archivos de Excel que tenemos. 
+
+```{r}
+
+#sin unir
+dir_ls(regexp = "xlsx")%>%
+  map(read_excel)
+
+#uniendo con una nueva columna
+dir_ls(regexp = "xlsx")%>%
+  map_df(read_excel, .id = "city")
+
+```
+
+Ahora bien, en este caso sólo importamos la primera hoja de cada archivo Excel. Para resolver este problema, debemos crear nuestra propia función. En esta función hacemos lo que hicimos previamente de forma individual.
+
+
+```{r}
+
+read_multiple_excel <- function(path) {
+  path %>%
+    excel_sheets() %>% 
+    set_names() %>% 
+  map_df(read_excel, path = path)
+}
+
+```
+
+Aplicamos nuestra función creada para importar múltiples hojas de varios archivos Excel. 
+
+```{r}
+
+#por separado
+data <- dir_ls(regexp = "xlsx") %>% 
+           map(read_multiple_excel)
+
+str(data)
+
+#unir todas
+data_df <- dir_ls(regexp = "xlsx") %>% 
+           map_df(read_multiple_excel,
+                  .id = "city")
+
+str(data_df)
+
+```
+

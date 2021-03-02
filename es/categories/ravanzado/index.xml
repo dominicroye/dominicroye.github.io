@@ -5,11 +5,293 @@
     <link>https://dominicroye.github.io/es/categories/ravanzado/</link>
     <description>Recent content in R:avanzado on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 11 Oct 2020 00:00:00 +0000</lastBuildDate>
+    <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 01 Mar 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://dominicroye.github.io/es/categories/ravanzado/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Mapa dasimétrico bivariante</title>
+      <link>https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/</link>
+      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;consideraciones-iniciales&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Consideraciones iniciales&lt;/h1&gt;
+&lt;p&gt;Una desventaja de los mapas coropletas es que estos suelen distorsionar la relación entre la verdadera geografía subyacente y la variable representada. Se debe a que las divisiones administrativas no suelen coincidir con la realidad geográfica, donde la gente vive. Además, grandes áreas aparentan tener un peso con poca población que no tienen realmente. Para reflejar mejor la realidad se hace uso de distribuciones más realista de la población como puede ser el uso de suelo. Con técnicas de Sistemas de Información Geográfica es posible redistribuir la variable de interés en función de una variable a menor unidad espacial.&lt;/p&gt;
+&lt;p&gt;Cuando disponemos de datos de puntos, el proceso de redistribución simplemente es recortar áreas de puntos con población a base del uso de suelo, normalmente clasificado como urbano. En caso de polígonos también podríamos recortar con polígonos de uso de suelo, pero una alternativa interesante son los mismos datos en formato raster. Veremos cómo podemos realizar un mapa dasimétrico usando datos raster con una resolución de 100 m. En este post usaremos datos de secciones censales de la renta media y el índice de Gini de España. No sólo haremos un mapa dasimétrico, sino también bivariante, representando con dos gamas de colores ambas variables en el mismo mapa.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple gramática para combinar ggplots separados en el mismo gráfico&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;biscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Herramientas y paletas para mapeo temático bivariado&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes en R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;biscale&amp;quot;)) install.packages(&amp;quot;biscale&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(tidyverse)
+library(sf)
+library(readxl)
+library(biscale)
+library(patchwork)
+library(raster)
+library(sysfonts)
+library(showtext)
+library(raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Primero descargamos todos los datos necesarios. Con excepción de los datos CORINE Land Cover (~200 MB), se pueden obtener los datos almacenados en este blog directamente vía los enlaces indicados .&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CORINE Land Cover 2018 (geotiff): &lt;a href=&#34;https://land.copernicus.eu/pan-european/corine-land-cover/clc2018?tab=download&#34;&gt;COPERNICUS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Datos de renta e índice Gini (excel) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/renta.zip&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Límites censales de España (vectorial) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/SECC_CE_20200101.zip&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar&lt;/h2&gt;
+&lt;p&gt;Lo primero que hacemos es importar el raster del uso de suelo, los datos de renta e índice de Gini y los límites censales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster de CORINE LAND COVER 2018
+urb &amp;lt;- raster(&amp;quot;C:/Users/xeo19/Desktop/R_friki/2020/mapchallange2020/u2018_clc2018_v2020_20u1_raster100m/DATA/U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
+## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
+## definition&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# datos de renta y Gini
+renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
+gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
+
+# límites censales del INE
+limits &amp;lt;- read_sf(&amp;quot;SECC_CE_20200101.shp&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;usos-de-suelo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Usos de suelo&lt;/h2&gt;
+&lt;p&gt;En este primer paso filtramos las secciones censales para obtener aquellas de la Comunidad Autónoma de Madrid, y creamos los límites municipales. Para disolver los polígonos de secciones censales aplicamos la función &lt;code&gt;group_by()&lt;/code&gt; en combinación con &lt;code&gt;summarise()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la Comunidad Autónoma de Madrid
+limits &amp;lt;- filter(limits, NCA == &amp;quot;Comunidad de Madrid&amp;quot;)
+
+# obtenemos los límites municipales
+mun_limit &amp;lt;- group_by(limits, CUMUN) %&amp;gt;% summarise()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso recortamos el raster de uso de suelo con los límites de Madrid. Recomiendo usar siempre primero la función &lt;code&gt;crop()&lt;/code&gt; y después &lt;code&gt;mask()&lt;/code&gt;, la primera recorta a la extensión requerida y la segunda enmascara. Posteriormente, eliminamos todos los valores que correspondan a 1 o 2 (urbano continuo, discontinuo). Por último, proyectamos el raster.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos los límites 
+limits_prj &amp;lt;- st_transform(limits, projection(urb))
+
+# acortamos y enmascaramos 
+urb_mad &amp;lt;- crop(urb, limits_prj) %&amp;gt;% 
+              mask(limits_prj)
+
+# eliminamos píxeles no urbanos 
+urb_mad[!urb_mad %in% 1:2] &amp;lt;- NA 
+
+# plot del raster
+plot(urb_mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos 
+urb_mad &amp;lt;- projectRaster(urb_mad, crs = CRS(&amp;quot;+proj=longlat +datum=WGS84 +no_defs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En este siguiente paso, convertimos los datos raster en un objeto &lt;code&gt;sf&lt;/code&gt; de puntos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# transformamos el raster a xyz y objeto sf 
+urb_mad &amp;lt;- as.data.frame(urb_mad, xy = TRUE, na.rm = TRUE) %&amp;gt;%
+                st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326)
+
+# añadimos las columnas de las coordinadas
+urb_mad &amp;lt;- urb_mad %&amp;gt;% rename(urb = 1) %&amp;gt;% cbind(st_coordinates(urb_mad))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;renta-media-e-índice-de-gini&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Renta media e índice de Gini&lt;/h2&gt;
+&lt;p&gt;El formato de los Excels no coincide con el original del INE, dado que he limpiado el formato antes con el objetivo de hacer más fácil este post. Lo que nos queda es crear una columna con los códigos de las secciones censales y excluir datos que corresponden a otro nivel administrativo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## datos renta y gini INE
+
+renta_sec &amp;lt;- mutate(renta, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+                nc_len = str_length(NATCODE),
+                mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)
+
+gini_sec &amp;lt;- mutate(gini, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+               nc_len = str_length(NATCODE),
+               mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso unimos ambas tablas con las secciones censales usando &lt;code&gt;left_join()&lt;/code&gt; y convertimos columnas de interés en modo numérico.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# unimos ambas tablas de renta y Gini con los límites censales
+mad &amp;lt;- left_join(limits, renta_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;)) %&amp;gt;% 
+          left_join(gini_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;))
+
+# convertimos columnas en numérico 
+mad &amp;lt;- mutate_at(mad, c(23:27, 30:31), as.numeric)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;variable-bivariante&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Variable bivariante&lt;/h2&gt;
+&lt;p&gt;Para crear un mapa bivariante debemos construir una única variable que combina diferentes clases de dos variables. Normalmente son tres de cada una lo que lleva a nueve clases en total. En nuestro caso, la renta media y el índice Gini. El paquete &lt;code&gt;biscale&lt;/code&gt; incluye funciones auxiliares para llevar a cabo este proceso. Con la función &lt;code&gt;bi_class()&lt;/code&gt; creamos esta variable de clasificación usando cuantiles como algoritmo. Dado que en ambas variables encontramos valores ausentes, corregimos aquellas combinaciones entre ambas variables donde aparece un &lt;code&gt;NA&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## creamos clasificación bivariante
+mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantile&amp;quot;, dim = 3) %&amp;gt;% 
+             mutate(bi_class = ifelse(str_detect(bi_class, &amp;quot;NA&amp;quot;), NA, bi_class))
+
+# resultado
+head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## projected CRS:  ETRS89 / UTM zone 30N
+## # A tibble: 6 x 4
+##   GINI_2017 RNMP_2017 bi_class                                          geometry
+##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
+## 1      NA          NA &amp;lt;NA&amp;gt;     (((446007.9 4552348, 446133.7 4552288, 446207.8 ~
+## 2      31       13581 2-2      (((460243.8 4487756, 460322.4 4487739, 460279 44~
+## 3      30       12407 2-2      (((457392.5 4486262, 457391.6 4486269, 457391.1 ~
+## 4      34.3     13779 3-2      (((468720.8 4481374, 468695.5 4481361, 468664.6 ~
+## 5      33.5      9176 3-1      (((417140.2 4451736, 416867.5 4451737, 416436.8 ~
+## 6      26.2     10879 1-1      (((469251.9 4480826, 469268.1 4480797, 469292.6 ~&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Terminamos redistribuyendo la variable de desigualdad sobre los píxeles del uso de suelo urbano. La función &lt;code&gt;st_join()&lt;/code&gt; une los datos con los puntos del uso de suelo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## redistribuimos los píxeles urbanos a la desigualdad
+mapdasi &amp;lt;- st_join(urb_mad, st_transform(mapbivar, 4326))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construcción-del-mapa&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Construcción del mapa&lt;/h1&gt;
+&lt;div id=&#34;leyenda-y-fuente&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Leyenda y fuente&lt;/h2&gt;
+&lt;p&gt;Antes de construir ambos mapas debemos crear la leyenda usando la función &lt;code&gt;bi_legend()&lt;/code&gt;. En la función definimos los títulos para cada variable, el número de dimensiones y la gama de colores. Por último, añadimos la fuente de Montserrat para los títulos del gráfico final.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# leyenda bivariante
+legend2 &amp;lt;- bi_legend(pal = &amp;quot;DkViolet&amp;quot;,
+                     dim = 3,
+                     xlab = &amp;quot;Más desigual&amp;quot;,
+                     ylab = &amp;quot;Más renta&amp;quot;,
+                     size = 9)
+
+
+#descarga de fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+showtext_auto()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-dasimétrico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa dasimétrico&lt;/h2&gt;
+&lt;p&gt;Este mapa construimos usando &lt;code&gt;geom_tile()&lt;/code&gt; para los píxeles y &lt;code&gt;geom_sf()&lt;/code&gt; para los límites municipales. Además, será el mapa de la derecha donde ubicamos también la leyenda. Para añadir la leyenda hacemos uso de la función &lt;code&gt;annotation_custom()&lt;/code&gt; indicando la posición en las coordenadas geográficas del mapa. El paquete &lt;code&gt;biscale&lt;/code&gt; también nos ayuda con la definición del color a través de la función &lt;code&gt;bi_scale_fill()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- ggplot(mapdasi) + 
+  geom_tile(aes(X, Y, 
+                fill = bi_class), 
+            show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;grey80&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  annotation_custom(ggplotGrob(legend2), 
+                    xmin = -3.25, xmax = -2.65,
+                    ymin = 40.55, ymax = 40.95) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;dasimétrico&amp;quot;, x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-coropleta&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa coropleta&lt;/h2&gt;
+&lt;p&gt;El mapa coropleta se construye de forma similar al mapa anterior con la diferencia de que usamos &lt;code&gt;geom_sf()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- ggplot(mapbivar) + 
+  geom_sf(aes(fill = bi_class), 
+          colour = NA, 
+          size = .1, 
+          show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;white&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;coroplético&amp;quot;,  x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;combinar-ambos-mapas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Combinar ambos mapas&lt;/h2&gt;
+&lt;p&gt;Con ayuda del paquete &lt;code&gt;patchwork&lt;/code&gt; combinamos ambos mapas en una única fila, primero el mapa coropleta y a su derecha el mapa dasimétrico. Más detalles de la gramática que se usa para la combinación de gráficos &lt;a href=&#34;https://patchwork.data-imaginist.com/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Combinamos 
+p &amp;lt;- p1 | p2
+
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>bivariante</category>
+      
+            <category>mapa</category>
+      
+            <category>desigualdad</category>
+      
+            <category>renta</category>
+      
+            <category>Madrid</category>
+      
+            <category>urbano</category>
+      
+      
+            <category>sig</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+            <category>visualización</category>
+      
+    </item>
     
     <item>
       <title>Animación climática de la temperatura máxima</title>
@@ -728,429 +1010,6 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
       
       
             <category>sig</category>
-      
-            <category>R</category>
-      
-            <category>R:avanzado</category>
-      
-    </item>
-    
-    <item>
-      <title>Resumir tests de correlaciones en R</title>
-      <link>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</link>
-      <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
-      <description>
-
-
-&lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;https://dominicroye.github.io/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
-&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Paquetes&lt;/h2&gt;
-&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
-&lt;table&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;broom&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Convierte resultados de funciones estadísticas (lm, t.test, cor.test, etc.) en bonitas tablas&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
-if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-
-#paquetes
-library(tidyverse)
-library(broom)
-library(fs)
-library(lubridate)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;importar-datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Importar datos&lt;/h2&gt;
-&lt;p&gt;Primero debemos importar la precipitación diaria de las estaciones meteorológicas seleccionadas.&lt;/p&gt;
-&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
-&lt;li&gt;Creamos un vector con todos los archivos de precipitación con la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;em&gt;{fs}&lt;/em&gt;.&lt;/li&gt;
-&lt;li&gt;Importamos los datos con ayuda de la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que aplica otra función a un vector o lista, y los une en una única tabla.&lt;/li&gt;
-&lt;li&gt;&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
-&lt;li&gt;Seleccionamos únicamente las columnas que nos interesan, b) Convertimos la fecha en objeto &lt;em&gt;date&lt;/em&gt; con la función &lt;code&gt;ymd()&lt;/code&gt; del paquete &lt;em&gt;{lubridate}&lt;/em&gt;, c) Creamos una nueva columna &lt;em&gt;yr&lt;/em&gt; con el año, d) Dividimos la precipitación entre 10 y reclasificamos valores ausentes -9999 por NA, e) Por último, reclasificamos la ID de cada estación meteorológica, creando un factor con nuevas etiquetas.&lt;/li&gt;
-&lt;/ol&gt;&lt;/li&gt;
-&lt;/ol&gt;
-&lt;p&gt;Más detalles sobre el uso de las funciones &lt;code&gt;dir_ls()&lt;/code&gt; y &lt;code&gt;map_df()&lt;/code&gt; en este último &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#archivos de la precipitación
-files &amp;lt;- dir_ls(regexp = &amp;quot;txt&amp;quot;)
-files&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
-## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
-pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## Parsed with column specification:
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 5
-##    STAID SOUID     DATE    RR  Q_RR
-##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1  1393 20611 19470301     0     0
-##  2  1393 20611 19470302     5     0
-##  3  1393 20611 19470303     0     0
-##  4  1393 20611 19470304    33     0
-##  5  1393 20611 19470305    15     0
-##  6  1393 20611 19470306     0     0
-##  7  1393 20611 19470307    85     0
-##  8  1393 20611 19470308     3     0
-##  9  1393 20611 19470309     0     0
-## 10  1393 20611 19470310     0     0
-## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos los niveles del factor 
-id &amp;lt;- unique(pr$STAID)
-
-#las etiquetas correspondientes
-lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;, &amp;quot;Santiago&amp;quot;, &amp;quot;Barcelona&amp;quot;, &amp;quot;Madrid&amp;quot;, &amp;quot;Valencia&amp;quot;)
-
-#primeros cambios
-pr &amp;lt;- select(pr, STAID, DATE, RR)%&amp;gt;% 
-        mutate(DATE = ymd(DATE), 
-               RR = ifelse(RR == -9999, NA, RR/10), 
-               STAID = factor(STAID, id, lab), 
-               yr = year(DATE)) 
-pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
-##    STAID  DATE          RR    yr
-##    &amp;lt;fct&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 Bilbao 1947-03-01   0    1947
-##  2 Bilbao 1947-03-02   0.5  1947
-##  3 Bilbao 1947-03-03   0    1947
-##  4 Bilbao 1947-03-04   3.3  1947
-##  5 Bilbao 1947-03-05   1.5  1947
-##  6 Bilbao 1947-03-06   0    1947
-##  7 Bilbao 1947-03-07   8.5  1947
-##  8 Bilbao 1947-03-08   0.3  1947
-##  9 Bilbao 1947-03-09   0    1947
-## 10 Bilbao 1947-03-10   0    1947
-## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Lo que todavía nos hace falta es filtrar y calcular la suma anual de precipitación. En principio, no es lo más correcto sumar la precipitación sin tener en cuenta que haya valores ausentes, pero nos sirve igualmente para este ensayo. Después, cambiamos el formato de la tabla con la función &lt;code&gt;spread()&lt;/code&gt;, pasando de una tabla larga a una ancha, es decir, queremos obtener una columna por estación meteorológica.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
-           group_by(STAID, yr) %&amp;gt;%
-             summarise(pr = sum(RR, na.rm = TRUE))
-pr_yr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
-## # Groups:   STAID [5]
-##    STAID     yr    pr
-##    &amp;lt;fct&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
-##  1 Bilbao  1950 1342 
-##  2 Bilbao  1951 1306.
-##  3 Bilbao  1952 1355.
-##  4 Bilbao  1953 1372.
-##  5 Bilbao  1954 1428.
-##  6 Bilbao  1955 1062.
-##  7 Bilbao  1956 1254.
-##  8 Bilbao  1957  968.
-##  9 Bilbao  1958 1272.
-## 10 Bilbao  1959 1450.
-## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr, STAID, pr)
-pr_yr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
-##       yr Bilbao Santiago Barcelona Madrid Valencia
-##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950  1342     1800.      345     NA        NA
-##  2  1951  1306.    2344.     1072.   798.       NA
-##  3  1952  1355.    1973.      415.   524.       NA
-##  4  1953  1372.     973.      683.   365.       NA
-##  5  1954  1428.    1348.      581.   246.       NA
-##  6  1955  1062.    1769.      530.   473.       NA
-##  7  1956  1254.    1533.      695.   480.       NA
-##  8  1957   968.    1599.      635.   424.       NA
-##  9  1958  1272.    2658.      479.   482.       NA
-## 10  1959  1450.    2847.     1006    665.       NA
-## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
-telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
-## cols(
-##   yr = col_double(),
-##   NAO = col_double(),
-##   WeMO = col_double(),
-##   EA = col_double(),
-##   `POL-EUAS` = col_double(),
-##   `EATL/WRUS` = col_double(),
-##   MO = col_double(),
-##   SCAND = col_double(),
-##   AO = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 9
-##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND       AO
-##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950  0.49  0.555 -0.332     0.0217     -0.0567 0.335  0.301   -1.99e-1
-##  2  1951 -0.07  0.379 -0.372     0.402      -0.419  0.149 -0.00667 -3.65e-1
-##  3  1952 -0.37  0.693 -0.688    -0.0117     -0.711  0.282  0.0642  -6.75e-1
-##  4  1953  0.4  -0.213 -0.727    -0.0567     -0.0508 0.216  0.0233  -1.64e-2
-##  5  1954  0.51  1.20  -0.912     0.142      -0.318  0.386  0.458   -5.83e-4
-##  6  1955 -0.64  0.138 -0.824    -0.0267      0.154  0.134  0.0392  -3.62e-1
-##  7  1956  0.17  0.617 -1.29     -0.197       0.0617 0.256  0.302   -1.63e-1
-##  8  1957 -0.02  0.321 -0.952    -0.638      -0.167  0.322 -0.134   -3.42e-1
-##  9  1958  0.12  0.941 -0.243     0.138       0.661  0.296  0.279   -8.68e-1
-## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
-## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Por último nos falta unir ambas tablas por año.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
-data_all&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
-##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
-##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
-##  1  1950  1342     1800.      345     NA        NA  0.49  0.555 -0.332
-##  2  1951  1306.    2344.     1072.   798.       NA -0.07  0.379 -0.372
-##  3  1952  1355.    1973.      415.   524.       NA -0.37  0.693 -0.688
-##  4  1953  1372.     973.      683.   365.       NA  0.4  -0.213 -0.727
-##  5  1954  1428.    1348.      581.   246.       NA  0.51  1.20  -0.912
-##  6  1955  1062.    1769.      530.   473.       NA -0.64  0.138 -0.824
-##  7  1956  1254.    1533.      695.   480.       NA  0.17  0.617 -1.29 
-##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
-##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
-## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
-## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;test-de-correlacion&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Test de correlación&lt;/h2&gt;
-&lt;p&gt;Un test de correlación lo podemos hacer con la función &lt;code&gt;cor.test()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;. En este caso entre la precipitación anual de Bilbao y el índice de NAO.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
-                        method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
-## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
-##  Spearman&amp;#39;s rank correlation rho
-## 
-## data:  data_all$Bilbao and data_all$NAO
-## S = 44372, p-value = 0.2126
-## alternative hypothesis: true rho is not equal to 0
-## sample estimates:
-##       rho 
-## 0.1531149&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## List of 8
-##  $ statistic  : Named num 44372
-##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##  $ parameter  : NULL
-##  $ p.value    : num 0.213
-##  $ estimate   : Named num 0.153
-##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##  $ null.value : Named num 0
-##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##  $ alternative: chr &amp;quot;two.sided&amp;quot;
-##  $ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##  $ data.name  : chr &amp;quot;data_all$Bilbao and data_all$NAO&amp;quot;
-##  - attr(*, &amp;quot;class&amp;quot;)= chr &amp;quot;htest&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Vemos que el resultado está en un formato poco manejable. Nos resume la correlación con todos los parametros estadísticos necesarios para sacar una conclusión sobre la relación. La estructura orginal es una lista de vectores. No obstante, la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt; nos permite convertir el resultado en formato de tabla.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 5
-##   estimate statistic p.value method                          alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;      
-## 1    0.153    44372.   0.213 Spearman&amp;#39;s rank correlation rho two.sided&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;aplicar-el-test-de-correlacion-a-multiples-variables&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Aplicar el test de correlación a múltiples variables&lt;/h2&gt;
-&lt;p&gt;El objetivo es aplicar el test de correlación a todas las estaciones meteorológicas e índices de teleconexión.&lt;/p&gt;
-&lt;p&gt;Primero, debemos pasar la tabla al formato largo, o sea, crear una columna de la ciudad y el valor de la precipitación correspondiente. Después lo repetimos para las teleconexiones.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all, city, pr, Bilbao:Valencia) %&amp;gt;%
-                     gather(telecon, index, NAO:AO)
-data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
-##       yr city      pr telecon index
-##    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;
-##  1  1950 Bilbao 1342  NAO      0.49
-##  2  1951 Bilbao 1306. NAO     -0.07
-##  3  1952 Bilbao 1355. NAO     -0.37
-##  4  1953 Bilbao 1372. NAO      0.4 
-##  5  1954 Bilbao 1428. NAO      0.51
-##  6  1955 Bilbao 1062. NAO     -0.64
-##  7  1956 Bilbao 1254. NAO      0.17
-##  8  1957 Bilbao  968. NAO     -0.02
-##  9  1958 Bilbao 1272. NAO      0.12
-## 10  1959 Bilbao 1450. NAO      0.49
-## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para poder aplicar el test a todas las ciudades, debemos tener las correspondientes agrupaciones. Por ello, usamos la función &lt;code&gt;group_by()&lt;/code&gt; indicando los dos grupos (&lt;em&gt;city&lt;/em&gt; y &lt;em&gt;telecon&lt;/em&gt;), y además, aplicamos la función &lt;code&gt;nest()&lt;/code&gt; del paquete &lt;em&gt;{tidyr}&lt;/em&gt;, colección &lt;em&gt;{tidyverse}&lt;/em&gt;, con el objetivo de crear listas de tablas encajadas por fila. En otras palabras, en cada fila de cada ciudad y teleconexión tendremos una nueva tabla que contiene correspondientemente el año, la precipitación y el valor del índice.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
-data_nest&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
-##    city      telecon data             
-##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
-##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
-##  $ city   : chr &amp;quot;Bilbao&amp;quot;
-##  $ telecon: chr &amp;quot;NAO&amp;quot;
-##  $ data   :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
-##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El siguiente paso es crear una función, en la que definimos el test de correlación y lo pasamos al formato limpio, que aplicamos a cada agrupación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method=&amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Ahora sólo nos queda por aplicar nuestra función a la columna que contiene las tablas por cada combinación entre ciudad y teleconexión. Para ello, usamos la función &lt;code&gt;map()&lt;/code&gt; que aplica otra función sobre un vector o lista. Lo que hacemos es crear una nueva columna que contiene el resultado, una tabla del resumen estadístico, por cada fila de cada combinación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
-data_nest&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
-##    city      telecon data              model           
-##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
-##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
-##  $ city   : chr &amp;quot;Bilbao&amp;quot;
-##  $ telecon: chr &amp;quot;NAO&amp;quot;
-##  $ data   :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
-##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##  $ model  :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 1 obs. of  5 variables:
-##   .. ..$ estimate   : num 0.153
-##   .. ..$ statistic  : num 44372
-##   .. ..$ p.value    : num 0.213
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;¿Cómo podemos deshacer la lista de tablas en cada fila de nuestra tabla?&lt;/p&gt;
-&lt;p&gt;Pues bien, primero eliminamos la columna con los datos y después aplicamos simplemente la función &lt;code&gt;unnest()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()
-corr_pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
-##    city    telecon estimate statistic  p.value method           alternative
-##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;      
-##  1 Bilbao  NAO       0.153     44372. 0.213    Spearman&amp;#39;s rank~ two.sided  
-##  2 Santia~ NAO      -0.181     61902. 0.139    Spearman&amp;#39;s rank~ two.sided  
-##  3 Barcel~ NAO      -0.0203    53460. 0.869    Spearman&amp;#39;s rank~ two.sided  
-##  4 Madrid  NAO      -0.291     64692. 0.0169   Spearman&amp;#39;s rank~ two.sided  
-##  5 Valenc~ NAO      -0.113     27600. 0.422    Spearman&amp;#39;s rank~ two.sided  
-##  6 Bilbao  WeMO      0.404     31242. 0.000706 Spearman&amp;#39;s rank~ two.sided  
-##  7 Santia~ WeMO      0.332     35014. 0.00594  Spearman&amp;#39;s rank~ two.sided  
-##  8 Barcel~ WeMO      0.0292    50862  0.813    Spearman&amp;#39;s rank~ two.sided  
-##  9 Madrid  WeMO      0.109     44660  0.380    Spearman&amp;#39;s rank~ two.sided  
-## 10 Valenc~ WeMO     -0.252     31056. 0.0688   Spearman&amp;#39;s rank~ two.sided  
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;El resultado es una tabla en la que podemos ver las correlaciones y su significación estadística para cada ciudad y teleconexiones.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;heatmap-de-los-resultados&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Heatmap de los resultados&lt;/h2&gt;
-&lt;p&gt;Finalmente, hacemos un &lt;em&gt;heatmap&lt;/em&gt; del resultado obtenido. Antes creamos una columna que indica si la correlación es significativa con p-valor menor de 0,05.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr, sig = ifelse(p.value &amp;lt; 0.05, &amp;quot;Sig.&amp;quot;, &amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
-  geom_tile(data = corr_pr,
-            aes(city, telecon, fill = estimate),
-            size = 1,
-            colour = &amp;quot;white&amp;quot;)+
-  geom_tile(data = filter(corr_pr, sig == &amp;quot;Sig.&amp;quot;),
-            aes(city, telecon),
-            size = 1,
-            colour = &amp;quot;black&amp;quot;,
-            fill = &amp;quot;transparent&amp;quot;)+
-  geom_text(data = corr_pr,
-            aes(city, telecon, label = round(estimate, 2),
-            fontface = ifelse(sig == &amp;quot;Sig.&amp;quot;, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)))+
-  scale_fill_gradient2(breaks = seq(-1, 1, 0.2))+
-  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;, p.value = &amp;quot;&amp;quot;)+
-  theme_minimal()+
-  theme(panel.grid.major = element_blank(),
-        panel.border = element_blank(),
-        panel.background = element_blank(),
-        axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-04-17-resumir-tests-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>correlación</category>
-      
-            <category>variables</category>
-      
-            <category>resumir</category>
-      
-            <category>tests</category>
-      
-            <category>limpio</category>
-      
-      
-            <category>estadistica</category>
       
             <category>R</category>
       

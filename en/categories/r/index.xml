@@ -5,11 +5,294 @@
     <link>https://dominicroye.github.io/en/categories/r/</link>
     <description>Recent content in R on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
-    <copyright>&amp;copy; 2018-2020 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 20 Dec 2020 00:00:00 +0000</lastBuildDate>
+    <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 01 Mar 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://dominicroye.github.io/en/categories/r/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Bivariate dasymetric map</title>
+      <link>https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/</link>
+      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Initial considerations&lt;/h1&gt;
+&lt;p&gt;A disadvantage of choropleth maps is that they tend to distort the relationship between the true underlying geography and the represented variable. It is because the administrative divisions do not usually coincide with the geographical reality where people live. Besides, large areas appear to have a weight that they do not really have because of sparsely populated regions. To better reflect reality, more realistic population distributions are used, such as land use. With Geographic Information Systems techniques, it is possible to redistribute the variable of interest as a function of a variable with a smaller spatial unit.&lt;/p&gt;
+&lt;p&gt;With point data, the redistribution process is simply clipping points with population based on land use, usually classified as urban. We could also crop and mask with land use polygons when we have a vectorial polygon layer, but an interesting alternative is the same data in raster format. We will see how we can make a dasymetric map using raster data with a resolution of 100 m. This post will use data from census sections of the median income and the Gini index for Spain. We will make a dasymetric and bivariate map, representing both variables with two ranges of colours on the same map.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple grammar to combine separate ggplots into the same graphic&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;biscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Tools and Palettes for Bivariate Thematic Mapping&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Load fonts in R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Use fonts more easily in R graphs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;biscale&amp;quot;)) install.packages(&amp;quot;biscale&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# packages
+library(tidyverse)
+library(sf)
+library(readxl)
+library(biscale)
+library(patchwork)
+library(raster)
+library(sysfonts)
+library(showtext)
+library(raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;First we download all the necessary data. With the exception of the CORINE Land Cover (~ 200 MB), the data stored on this blog can be obtained directly via the indicated links.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CORINE Land Cover 2018 (geotiff): &lt;a href=&#34;https://land.copernicus.eu/pan-european/corine-land-cover/clc2018?tab=download&#34;&gt;COPERNICUS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Income data and Gini index (excel) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/renta.zip&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Census limits of Spain (vectorial) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/SECC_CE_20200101.zip&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import&lt;/h2&gt;
+&lt;p&gt;The first thing we do is to import the land use raster, the income and Gini index data, and the census boundaries.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster of CORINE LAND COVER 2018
+urb &amp;lt;- raster(&amp;quot;C:/Users/xeo19/Desktop/R_friki/2020/mapchallange2020/u2018_clc2018_v2020_20u1_raster100m/DATA/U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
+## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
+## definition&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# income data and Gini index
+renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
+gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
+
+# census boundaries
+limits &amp;lt;- read_sf(&amp;quot;SECC_CE_20200101.shp&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;land-uses&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Land uses&lt;/h2&gt;
+&lt;p&gt;In this first step we filter the census sections to obtain those of the Autonomous Community of Madrid, and we create the municipal limits. To dissolve the polygons of census tracts we apply the function &lt;code&gt;group_by()&lt;/code&gt; in combination with &lt;code&gt;summarise()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the Autonomous Community of Madrid
+limits &amp;lt;- filter(limits, NCA == &amp;quot;Comunidad de Madrid&amp;quot;)
+
+# obtain the municipal limits
+mun_limit &amp;lt;- group_by(limits, CUMUN) %&amp;gt;% summarise()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we cut the land use raster with the limits of Madrid. I recommend always using the &lt;code&gt;crop()&lt;/code&gt; function first and then &lt;code&gt;mask()&lt;/code&gt;, the first function crop to the required extent and the second mask the values. Subsequently, we remove all the cells that correspond to 1 or 2 (urban continuous, discontinuous). Finally, we project the raster.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project the limits
+limits_prj &amp;lt;- st_transform(limits, projection(urb))
+
+# crop and mask 
+urb_mad &amp;lt;- crop(urb, limits_prj) %&amp;gt;% 
+              mask(limits_prj)
+
+# remove non-urban pixels
+urb_mad[!urb_mad %in% 1:2] &amp;lt;- NA 
+
+# plot the raster
+plot(urb_mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project
+urb_mad &amp;lt;- projectRaster(urb_mad, crs = CRS(&amp;quot;+proj=longlat +datum=WGS84 +no_defs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this step, we convert the raster data into a point &lt;code&gt;sf&lt;/code&gt; object.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# transform the raster to xyz and a sf object
+urb_mad &amp;lt;- as.data.frame(urb_mad, xy = TRUE, na.rm = TRUE) %&amp;gt;%
+                st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326)
+
+# add the columns of the coordinates
+urb_mad &amp;lt;- urb_mad %&amp;gt;% rename(urb = 1) %&amp;gt;% cbind(st_coordinates(urb_mad))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;income-data-and-gini-index&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Income data and Gini index&lt;/h2&gt;
+&lt;p&gt;The format of the Excels does not coincide with the original of the INE, since I have cleaned the format before in order to make this post easier. What remains is to create a column with the codes of the census sections and exclude data that correspond to another administrative level.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## income and Gini index data
+
+renta_sec &amp;lt;- mutate(renta, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+                nc_len = str_length(NATCODE),
+                mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)
+
+gini_sec &amp;lt;- mutate(gini, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+               nc_len = str_length(NATCODE),
+               mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we join both tables with the census tracts using &lt;code&gt;left_join()&lt;/code&gt; and convert columns of interest in numerical mode.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# join both the income and Gini tables with the census limits
+mad &amp;lt;- left_join(limits, renta_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;)) %&amp;gt;% 
+          left_join(gini_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;))
+
+# convert selected columns to numeric
+mad &amp;lt;- mutate_at(mad, c(23:27, 30:31), as.numeric)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bivariate-variable&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bivariate variable&lt;/h2&gt;
+&lt;p&gt;To create a bivariate map we must construct a single variable that combines different classes of two variables. Usually we make three classes of each variable which leads to nine combinations; in our case, the average income and the Gini index. The &lt;code&gt;biscale&lt;/code&gt; package includes helper functions to carry out this process. With the &lt;code&gt;bi_class()&lt;/code&gt; function we create the classification variable using quantiles as algorithm. Since in both variables we find missing values, we correct those combinations between both variables where an &lt;code&gt;NA&lt;/code&gt; appears.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create bivariate classification
+mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantile&amp;quot;, dim = 3) %&amp;gt;% 
+             mutate(bi_class = ifelse(str_detect(bi_class, &amp;quot;NA&amp;quot;), NA, bi_class))
+
+# results
+head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## projected CRS:  ETRS89 / UTM zone 30N
+## # A tibble: 6 x 4
+##   GINI_2017 RNMP_2017 bi_class                                          geometry
+##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
+## 1      NA          NA &amp;lt;NA&amp;gt;     (((446007.9 4552348, 446133.7 4552288, 446207.8 ~
+## 2      31       13581 2-2      (((460243.8 4487756, 460322.4 4487739, 460279 44~
+## 3      30       12407 2-2      (((457392.5 4486262, 457391.6 4486269, 457391.1 ~
+## 4      34.3     13779 3-2      (((468720.8 4481374, 468695.5 4481361, 468664.6 ~
+## 5      33.5      9176 3-1      (((417140.2 4451736, 416867.5 4451737, 416436.8 ~
+## 6      26.2     10879 1-1      (((469251.9 4480826, 469268.1 4480797, 469292.6 ~&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We finish by redistributing the inequality variable over the pixels of urban land use. The &lt;code&gt;st_join()&lt;/code&gt; function joins the data with the land use points.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# redistribute urban pixels to inequality
+mapdasi &amp;lt;- st_join(urb_mad, st_transform(mapbivar, 4326))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-building&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Map building&lt;/h1&gt;
+&lt;div id=&#34;legend-and-font&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Legend and font&lt;/h2&gt;
+&lt;p&gt;Before constructing both maps we must create the legend using the &lt;code&gt;bi_legend()&lt;/code&gt; function. In the function we define the titles for each variable, the number of dimensions and the color scale. Finally, we add the Montserrat font for the final titles in the graphic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# bivariate legend
+legend2 &amp;lt;- bi_legend(pal = &amp;quot;DkViolet&amp;quot;,
+                     dim = 3,
+                     xlab = &amp;quot;Higher inequality&amp;quot;,
+                     ylab = &amp;quot;Higher income&amp;quot;,
+                     size = 9)
+
+
+# download font
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+showtext_auto()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dasymetric-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Dasymetric map&lt;/h2&gt;
+&lt;p&gt;We build this map using &lt;code&gt;geom_tile()&lt;/code&gt; for the pixels and &lt;code&gt;geom_sf()&lt;/code&gt; for the municipal boundaries. In addition, it will be the map on the right where we also place the legend. To add the legend we use the &lt;code&gt;annotation_custom()&lt;/code&gt; function indicating the position in the geographical coordinates of the map. The &lt;code&gt;biscale&lt;/code&gt; package also helps us with the color definition via the &lt;code&gt;bi_scale_fill()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- ggplot(mapdasi) + 
+  geom_tile(aes(X, Y, 
+                fill = bi_class), 
+            show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;grey80&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  annotation_custom(ggplotGrob(legend2), 
+                    xmin = -3.25, xmax = -2.65,
+                    ymin = 40.55, ymax = 40.95) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;dasymetric&amp;quot;, x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;choropleth-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Choropleth map&lt;/h2&gt;
+&lt;p&gt;The choropleth map is built in a similar way to the previous map with the difference that we use &lt;code&gt;geom_sf()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- ggplot(mapbivar) + 
+  geom_sf(aes(fill = bi_class), 
+          colour = NA, 
+          size = .1, 
+          show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;white&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;choropleth&amp;quot;,  x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;merge-both-maps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Merge both maps&lt;/h2&gt;
+&lt;p&gt;With the help of the &lt;code&gt;patchwork&lt;/code&gt; package, we combine both maps in a single row, first the choropleth map and on its right the dasymmetric map. More details of the grammar used for the combination of graphics &lt;a href=&#34;https://patchwork.data-imaginist.com/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# combine 
+p &amp;lt;- p1 | p2
+
+# final map
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>bivariate</category>
+      
+            <category>map</category>
+      
+            <category>inequality</category>
+      
+            <category>income</category>
+      
+            <category>Madrid</category>
+      
+            <category>urban</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:advanced</category>
+      
+            <category>visualization</category>
+      
+    </item>
     
     <item>
       <title>A heatmap as calendar</title>
@@ -18,6 +301,7 @@
       
       <guid>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Recently I was looking for a visual representation to show the daily changes of temperature, precipitation and wind in an application &lt;a href=&#34;https://xeo81.shinyapps.io/MeteoExtremosGalicia/&#34;&gt;xeo81.shinyapps.io/MeteoExtremosGalicia&lt;/a&gt; (in Spanish), which led me to use a heatmap in the form of a calendar. The &lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;shiny&lt;/a&gt; application is updated every four hours with new data showing calendars for each weather station. The heatmap as a calendar allows you to visualize any variable with a daily time reference.&lt;/p&gt;
@@ -63,7 +347,7 @@ library(ragg)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data&lt;/h2&gt;
-&lt;p&gt;In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20).&lt;/p&gt;
+&lt;p&gt;In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20) &lt;a href=&#34;https://dominicroye.github.io/files/precipitation_santiago.csv&#34;&gt;download&lt;/a&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import the data
 dat_pr &amp;lt;- read_csv(&amp;quot;precipitation_santiago.csv&amp;quot;)
 dat_pr&lt;/code&gt;&lt;/pre&gt;
@@ -535,380 +819,6 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
       
       
             <category>visualization</category>
-      
-            <category>R</category>
-      
-            <category>R:advanced</category>
-      
-    </item>
-    
-    <item>
-      <title>River flow directions</title>
-      <link>https://dominicroye.github.io/en/2020/river-flow-directions/</link>
-      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/en/2020/river-flow-directions/</guid>
-      <description>
-
-
-&lt;p&gt;I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks (&lt;a href=&#34;%5Btweet%5D(https://twitter.com/dr_xeo/status/1277978724034465798?s=20)&#34;&gt;here&lt;/a&gt;), I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex. I did the same for a selection of European rivers here in this &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. However, originally I started with the orientation of the European coasts.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
-&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
-&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Packages&lt;/h2&gt;
-&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
-&lt;table&gt;
-&lt;colgroup&gt;
-&lt;col width=&#34;10%&#34; /&gt;
-&lt;col width=&#34;89%&#34; /&gt;
-&lt;/colgroup&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Packages&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;remotes&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Installation from remote repositories&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;RQGIS3&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Interface between R and QGIS3&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;ggtext&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Improved text rendering support for ggplot2&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Load fonts in R&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Use fonts more easily in R graphs&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;circular&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Functions for working with circular data&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;geosphere&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Spherical trigonometry for geographic applications&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;p&gt;In the case of the &lt;code&gt;RQGIS3&lt;/code&gt; package, it is necessary to install QGIS in OSGeo4W &lt;a href=&#34;https://www.qgis.org/es/site/forusers/download.html&#34;&gt;here&lt;/a&gt;. I will explain the reason for using QGIS later.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;remotes&amp;quot;)) install.packages(&amp;quot;remotes&amp;quot;)
-if(!require(&amp;quot;RQGIS3&amp;quot;)) remotes::install_github(&amp;quot;jannes-m/RQGIS3&amp;quot;)
-if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-if(!require(&amp;quot;ggtext&amp;quot;)) install.packages(&amp;quot;ggtext&amp;quot;)
-if(!require(&amp;quot;circular&amp;quot;)) install.packages(&amp;quot;circular&amp;quot;)
-if(!require(&amp;quot;geosphere&amp;quot;)) install.packages(&amp;quot;geosphere&amp;quot;)
-if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
-if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
-
-# packages
-library(sf)
-library(tidyverse)
-library(ggtext)
-library(circular)
-library(geosphere)
-library(RQGIS3)
-library(showtext)
-library(sysfonts)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Initial considerations&lt;/h1&gt;
-&lt;p&gt;Angles in vectorial lines are based on the angle between two vertices, and the number of vertices depends on the complexity, and therefore the resolution, of the vector data. Consequently, there can be differences in using different resolutions of a spatial line, either from the coast or from the river as in this example. A straight line is simply constructed with two points of longitude and latitude.&lt;/p&gt;
-&lt;p&gt;Related to this is fractality, an apparently irregular structure but that is repeated at different scales, known from coastlines or also from river. The most paradoxical feature is that the length of a coastline depends on the measurement scale, the smaller the measurement increment, the longer is the measured coastline.&lt;/p&gt;
-&lt;p&gt;There are two possibilities of obtaining the vertice angles. In the first one we calculate the angle between all consecutive vertices.&lt;/p&gt;
-&lt;p&gt;For example, imagine two points, Madrid (-3.71, 40.43) and Barcelona (2.14, 41.4).&lt;/p&gt;
-&lt;p&gt;What is the angle of a straight line between both cities?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We see that it is 77º, that is, northeast direction. But what if we go from Barcelona to Madrid?&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The angle is different because we &lt;em&gt;move&lt;/em&gt; from the northeast to the southwest. We can easily invert the direction to get the opposite angle.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# opposite angle of Barcelona -&amp;gt; Madrid
-bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43)) - 180&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# opposite angle of Madrid -&amp;gt; Barcelona
-bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The direction in which we calculate the angles is important. In the case of rivers, it is expected to be the direction of flow from origin to the mouth, however, a problem may be that the vertices, which build the lines, are not geographically ordered in the attribute table. Another problem may be that the vertices start at the mouth which would give the reverse angle as we have seen before.&lt;/p&gt;
-&lt;p&gt;However, there is an easier way. We can take advantage of the attributes of projected coordinate systems (Robinson projection, etc.) that include the angle between the vertices. We will use this last approach in this post. Still, we must pay close attention to the results as stated above.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Preparation&lt;/h1&gt;
-&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Data&lt;/h2&gt;
-&lt;p&gt;We download the central lines of the largest rivers in the world (&lt;a href=&#34;https://dominicroye.github.io/files/RiverHRCenterlinesCombo.zip&#34;&gt;here&lt;/a&gt;), also accessible in &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;import-and-project&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Import and project&lt;/h2&gt;
-&lt;p&gt;The first thing we do is to import, project the spatial lines and delete the third dimension &lt;em&gt;Z&lt;/em&gt;, chaining the following functions: &lt;code&gt;st_read()&lt;/code&gt; helps us import any vector format, &lt;code&gt;st_zm()&lt;/code&gt; delete the dimension Z or M of a geometry and &lt;code&gt;st_transform()&lt;/code&gt; projects the vector data to the new projection in &lt;em&gt;proj4&lt;/em&gt; format. We combine the functions with the famous pipe (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) that facilitates the application of a sequence of functions on a data set, more details in this &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;. All functions in the &lt;code&gt;sf&lt;/code&gt; package start with &lt;code&gt;st_*&lt;/code&gt; with reference to the spatial character, similar to &lt;em&gt;PostGIS&lt;/em&gt;. In the same style as &lt;em&gt;PostGIS&lt;/em&gt;, verbs are used as function names.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;proj_rob &amp;lt;- &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m no_defs&amp;quot;
-
-river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
-                 st_zm() %&amp;gt;% 
-                    st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
-## Simple feature collection with 78 features and 6 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XYZ
-## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
-## z_range:        zmin: 0 zmax: 0
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;extract-the-angles&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Extract the angles&lt;/h2&gt;
-&lt;p&gt;In the next step we have to extract the vertice angles. Unfortunately, as far as I know, it is not possible to extract the attributes with some function from the &lt;code&gt;sf&lt;/code&gt; package. Although the function &lt;code&gt;st_coordinates()&lt;/code&gt; returns the coordinates, it does not include other attributes. Therefore, we must use another way, and that is the open software Quantum GIS in which we can find a tool to extract all the vertice attributes. We could import the vector data into QGIS Desktop and export the vertices from there, but it is also possible to access the QGIS tools from R directly.&lt;/p&gt;
-&lt;p&gt;For this, we need to have QGIS installed in OSGeo4W. The &lt;code&gt;RQGIS3&lt;/code&gt; package allows us to use very easily all the tools of the software in R. First we use the &lt;code&gt;set_env()&lt;/code&gt; function to define all the necessary QGIS paths and start the API with &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# paths to QGIS
-set_env()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $root
-## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
-## 
-## $qgis_prefix_path
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
-## 
-## $python_plugins
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
-## 
-## $platform
-## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# start of QGIS Python
-open_app()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The &lt;code&gt;find_algorithms()&lt;/code&gt; function helps us to search for different QGIS tools. In addition the &lt;code&gt;get_usage()&lt;/code&gt; function specifies the way of usage with all the required parameters.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# search tools
-find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
-## [2] &amp;quot;native:extractvertices&amp;quot;                 
-## [3] &amp;quot;native:filterverticesbym&amp;quot;               
-## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
-## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
-## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# usage of tool
-get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
-## 
-## This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
-## 
-## Additional fields are added to the point indicating the vertex index (beginning at 0)
-## the vertex’s part and its index within the part (as well as its ring for polygons)
-## distance along original geometry and bisector angle of vertex for original geometry.
-## 
-## 
-## ----------------
-## Input parameters
-## ----------------
-## 
-## INPUT: Input layer
-## 
-##  Parameter type: QgsProcessingParameterFeatureSource
-## 
-##  Accepted data types:
-##      - str: layer ID
-##      - str: layer name
-##      - str: layer source
-##      - QgsProcessingFeatureSourceDefinition
-##      - QgsProperty
-##      - QgsVectorLayer
-## 
-## OUTPUT: Vertices
-## 
-##  Parameter type: QgsProcessingParameterFeatureSink
-## 
-##  Accepted data types:
-##      - str: destination vector file
-## e.g. d:/test.shp
-##      - str: memory: to store result in temporary memory layer
-##      - str: using vector provider ID prefix and destination URI
-## e.g. postgres:… to store result in PostGIS table
-##      - QgsProcessingOutputLayerDefinition
-##      - QgsProperty
-## 
-## ----------------
-## Outputs
-## ----------------
-## 
-## OUTPUT:  &amp;lt;QgsProcessingOutputVectorLayer&amp;gt;
-##  Vertices&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In our case the tool to extract the vertices is simple and only has one input and one output. The function &lt;code&gt;run_qgis()&lt;/code&gt; executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class &lt;code&gt;sf&lt;/code&gt; (or &lt;code&gt;sp&lt;/code&gt;) and &lt;code&gt;raster&lt;/code&gt; that we have imported or created in R. As output we create a &lt;code&gt;geojson&lt;/code&gt;, it could also be of another vector format, and we save it in a temporary folder. At the same time we indicate to import the result directly into R (&lt;code&gt;load_output = TRUE&lt;/code&gt;).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- run_qgis(alg = &amp;quot;native:extractvertices&amp;quot;,
-               INPUT = river_line,
-               OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
-               load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpYb53tP/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Currently on Windows there seem to be problems with the &lt;em&gt;proj&lt;/em&gt; library. In principle, if the function ends up creating the &lt;code&gt;river_vertices&lt;/code&gt; object, you should not worry. Otherwise, I recommend looking at the discussion in the issue opened at &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.&lt;/p&gt;
-
-&lt;/div&gt;
-
-&lt;/div&gt;
-&lt;div id=&#34;selection&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Selection&lt;/h2&gt;
-&lt;p&gt;Before continuing with the distribution estimation of the angles, we filter some rivers of interest. The functions of the &lt;code&gt;tidyverse&lt;/code&gt; collection are compatible with the &lt;code&gt;sf&lt;/code&gt; package. In the last post I made an introduction to &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;-  filter(river_vertices, 
-                          NAME %in% c(&amp;quot;Mississippi&amp;quot;, &amp;quot;Colorado&amp;quot;, 
-                                      &amp;quot;Amazon&amp;quot;, &amp;quot;Nile&amp;quot;, &amp;quot;Orange&amp;quot;, 
-                                      &amp;quot;Ganges&amp;quot;, &amp;quot;Yangtze&amp;quot;, &amp;quot;Danube&amp;quot;,
-                                      &amp;quot;Mackenzie&amp;quot;, &amp;quot;Lena&amp;quot;, &amp;quot;Murray&amp;quot;, 
-                                      &amp;quot;Niger&amp;quot;)
-                          ) 
-
-river_vertices &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data
-
-## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 94,702 x 12
-##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
-##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
-##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
-##  2 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            1           0
-##  3 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            2           0
-##  4 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            3           0
-##  5 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            4           0
-##  6 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            5           0
-##  7 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            6           0
-##  8 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            7           0
-##  9 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            8           0
-## 10 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            9           0
-## # ... with 94,692 more rows, and 4 more variables: vertex_part_index &amp;lt;int&amp;gt;,
-## #   distance &amp;lt;dbl&amp;gt;, angle &amp;lt;dbl&amp;gt;, geometry &amp;lt;POINT [°]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;estimate-the-distribution&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Estimate the distribution&lt;/h1&gt;
-&lt;p&gt;To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the &lt;code&gt;density()&lt;/code&gt; standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the &lt;code&gt;circular&lt;/code&gt; package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.&lt;/p&gt;
-&lt;p&gt;So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the &lt;code&gt;density()&lt;/code&gt; function, in which the smoothing bandwidth &lt;code&gt;bw&lt;/code&gt; is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, &lt;code&gt;bw.nrd.circular()&lt;/code&gt; that could be used here.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_circ &amp;lt;- function(x){
-  
-  dens &amp;lt;- density.circular(circular(x$angle, units = &amp;quot;degrees&amp;quot;),
-                                     bw = 70, kernel = &amp;quot;vonmises&amp;quot;,
-                                     control.circular = list(units = &amp;quot;degrees&amp;quot;))
-  
-  df &amp;lt;- data.frame(x = dens$x, y = dens$y/max(dens$y))
-  
-  return(df)
-  
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally, we estimate the density of each river in our selection. We use the &lt;code&gt;split()&lt;/code&gt; function of R Base to get a table of each river in a list object. Then we apply our density estimation function to the list with the function &lt;code&gt;map_df()&lt;/code&gt; from the &lt;code&gt;purrr&lt;/code&gt; package. The suffix &lt;code&gt;_df&lt;/code&gt; allows us to get a joined table, instead of a list with the results of each river. However, it is necessary to indicate the name of the column with the argument &lt;code&gt;.id&lt;/code&gt;, which will contain the name of each river. Otherwise we would not know how to differentiate the results. Also here I recommend reading more details in the last post about &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_river &amp;lt;- split(river_vertices, river_vertices$NAME) %&amp;gt;% 
-                  map_df(dens_circ, .id = &amp;quot;river&amp;quot;)
-
-# results
-head(dens_river)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;##    river        x         y
-## 1 Amazon 0.000000 0.2399907
-## 2 Amazon 0.704501 0.2492548
-## 3 Amazon 1.409002 0.2585758
-## 4 Amazon 2.113503 0.2679779
-## 5 Amazon 2.818004 0.2774859
-## 6 Amazon 3.522505 0.2871232&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;visualization&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Visualization&lt;/h1&gt;
-&lt;p&gt;Now we only have to make the graph through the famous &lt;code&gt;ggplot&lt;/code&gt; package. First we add a new font &lt;em&gt;Montserrat&lt;/em&gt; for it use in this plot.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# font download
-font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
-
-# use of showtext
-showtext_opts(dpi = 200)
-showtext_auto() &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the next step we create two objects with the title and the plot caption. In the title we are using an html code to color part of the text instead of a legend. You can use html very easily with the &lt;code&gt;ggtext&lt;/code&gt; package.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# title with html
-title &amp;lt;- &amp;quot;Relative distribution of river &amp;lt;span style=&amp;#39;color:#011FFD;&amp;#39;&amp;gt;&amp;lt;strong&amp;gt;flow direction&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt; in the world&amp;quot;
-
-
-caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;The background grid that creates &lt;code&gt;ggplot&lt;/code&gt; by default for polar coordinates did not convince me, so we create a table with x axis background lines.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(0, 360 - 22.5, by = 22.5), 
-                 y = rep(0, 16), 
-                 xend = seq(0, 360 - 22.5, by = 22.5), 
-                 yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Next we define all the styles of the graph. The most important thing in this step is the &lt;code&gt;element_textbox()&lt;/code&gt; function of the &lt;code&gt;ggtext&lt;/code&gt; package to be able to interpret our html code incorporated into the title.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- theme_minimal() +
-               theme(axis.title.y = element_blank(),
-                     axis.text.y = element_blank(),
-                     legend.title = element_blank(),
-                     plot.title = element_textbox(family = &amp;quot;Montserrat&amp;quot;, 
-                                                   hjust = 0.5, 
-                                                   colour = &amp;quot;white&amp;quot;, 
-                                                   size = 15),
-                     plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
-                                                 colour = &amp;quot;white&amp;quot;),
-                     axis.text.x = element_text(family = &amp;quot;Montserrat&amp;quot;, 
-                                                 colour = &amp;quot;white&amp;quot;),
-                     strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, 
-                                               colour = &amp;quot;white&amp;quot;, 
-                                               face = &amp;quot;bold&amp;quot;),
-                     panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
-                     plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
-                     panel.grid = element_blank()
-                    )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finally we build the graph: 1) We use the &lt;code&gt;geom_hline()&lt;/code&gt; function with different y intersection points to create the background grid. The &lt;code&gt;geom_segment()&lt;/code&gt; function creates the x grid. 2) We create the density area using the &lt;code&gt;geom_area()&lt;/code&gt; function. 3) In &lt;code&gt;scale_x_continous()&lt;/code&gt; we define a negative lower limit so that it does not collapse at a small point. The labels of the eight main directions are indicated in the &lt;code&gt;scale_y_continous()&lt;/code&gt; function, and 4) Finally, we change to a polar coordinate system and set the variable to create facets.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
-  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
-  geom_segment(data = grid_x , 
-               aes(x = x, y = y, xend = xend, yend = yend), 
-               linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
-  geom_area(data = dens_river, 
-            aes(x = x, y = y, ymin = 0, ymax = y), 
-            alpha = .7, 
-            colour = NA, 
-            show.legend = FALSE,
-            fill = &amp;quot;#011FFD&amp;quot;) + 
-  scale_y_continuous(limits = c(-.2, 1), expand = c(0, 0)) +
-  scale_x_continuous(limits = c(0, 360), 
-                     breaks = seq(0, 360 - 22.5, by = 22.5),
-                     minor_breaks = NULL,
-                     labels = c(&amp;quot;N&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NE&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;E&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SE&amp;quot;, &amp;quot;&amp;quot;,
-                                &amp;quot;S&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SW&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;W&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NW&amp;quot;, &amp;quot;&amp;quot;)) +
-  coord_polar() + 
-  facet_wrap(river ~ ., ncol = 4) +
-  labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
-  theme_polar&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-07-24-river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-</description>
-      
-            <category>directions</category>
-      
-            <category>river</category>
-      
-            <category>fluvial</category>
-      
-            <category>orientation</category>
-      
-            <category>distribution</category>
-      
-      
-            <category>gis</category>
       
             <category>R</category>
       

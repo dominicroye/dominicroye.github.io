@@ -616,6 +616,7 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/es/2020/un-heatmap-como-calendario/index.es_files/header-attrs/header-attrs.js"></script>
 
 
 <p>Recientemente buscaba una representación visual para mostrar los cambios diarios de la temperatura, precipitación y el viento en una aplicación <a href="https://xeo81.shinyapps.io/MeteoExtremosGalicia/">xeo81.shinyapps.io/MeteoExtremosGalicia</a>, lo que me llevó a usar un heatmap en forma de calendario. La aplicación <a href="https://shiny.rstudio.com/">shiny</a> se actualiza cada cuatro horas con nuevos datos mostrando calendarios de cada estación meteorológica. El heatmap como calendario permite visualizar cualquier variable con una referencia temporal diaria.</p>
@@ -661,7 +662,7 @@ library(ragg)</code></pre>
 </div>
 <div id="datos" class="section level2">
 <h2>Datos</h2>
-<p>En este ejemplo usaremos la precipitación diaria de Santiago de Compostela de este año 2020 (hasta el 20 de diciembre).</p>
+<p>En este ejemplo usaremos la precipitación diaria de Santiago de Compostela de este año 2020 (hasta el 20 de diciembre) <a href="/files/precipitation_santiago.csv">descarga</a>.</p>
 <pre class="r"><code># importamos los datos
 dat_pr &lt;- read_csv(&quot;precipitation_santiago.csv&quot;)
 dat_pr</code></pre>
@@ -770,7 +771,7 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
              caption = &quot;Datos: Meteogalicia&quot;,
              fill = &quot;mm&quot;) +
        theme_calendar()</code></pre>
-<p><img src="/es/2020/un-heatmap-como-calendario/index.es_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/un-heatmap-como-calendario/index.es_files/figure-html/unnamed-chunk-8-1.png" width="768" /></p>
 <p>Para exportar haremos uso del paquete <a href="https://github.com/r-lib/ragg"><code>ragg</code></a>, que proporciona mayor rendimiento y mayor calidad que los dispositivos ráster estándar proporcionados por grDevices.</p>
 <pre class="r"><code>ggsave(&quot;pr_calendar.png&quot;, height = 10, width = 8, device = agg_png())</code></pre>
 <p>En otros calendarios he añadido la dirección predominante del viento de cada día como flecha usando <code>geom_arrow()</code> del paquete <code>metR</code> (se puede ver en la mencionada aplicación).</p>
@@ -894,9 +895,9 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
         
         <li><a href="/es/graphs/climate/">Clima y tiempo</a></li>
         
-        <li><a href="/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/">Visualizar anomalías de precipitación mensual</a></li>
-        
         <li><a href="/es/publication/os_tempos_2019/">Os tempos e o clima de Galicia</a></li>
+        
+        <li><a href="/es/publication/ncdf_2015/">El uso de bases de datos climáticos netCDF con estructura matricial en el entorno de R</a></li>
         
       </ul>
     </div>
@@ -905,6 +906,11 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
     
     <div class="article-widget">
       <div class="post-nav">
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Siguiente</div>
+    <a href="https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/" rel="next">Mapa dasimétrico bivariante</a>
+  </div>
   
   
   <div class="post-nav-item">
@@ -951,7 +957,7 @@ col_p &lt;- colorRampPalette(pubu)</code></pre>
   
 
   <p class="powered-by">
-    &copy; 2018-2020 Dominic Royé. All rights reserved. &middot; 
+    &copy; 2018-2021 Dominic Royé. All rights reserved. &middot; 
 
     Powered by the
     <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for

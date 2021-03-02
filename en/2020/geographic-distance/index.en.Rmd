@@ -1,0 +1,196 @@
+---
+categories: ["spatial analysis","R","R:elementary", "gis"]
+title: Geographic distance
+date: '2020-01-19'
+slug: geographic-distance
+tags: ["distance","points","cities"]
+header:
+  caption: ''
+  image: 'distance_capitals.png'
+lang: en
+summary: "The first post of this year 2020, I will dedicate to a question that I was recently asked. The question was how to calculate the shortest distance between different points and how to know which is the closest point. When we work with spatial data in R, currently the easiest thing is to use the ``sf`` package in combination with the ``tidyverse`` collection of packages. We also use the ``units`` package which is very useful for working with units of measurement."
+---
+
+The first post of this year 2020, I will dedicate to a question that I was recently asked. The question was how to calculate the shortest distance between different points and how to know which is the closest point. When we work with spatial data in R, currently the easiest thing is to use the ``sf`` package in combination with the ``tidyverse`` collection of packages. We also use the ``units`` package which is very useful for working with units of measurement.
+
+## Packages
+
+```{r echo=FALSE,message=FALSE,error=FALSE,warning=FALSE}
+library(knitr)
+
+tb <- data.frame(paquete=c("tidyverse","sf","units","maps","rnaturalearth"),
+                 descripcion=c("Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.",
+                               "Simple Feature: import, export and manipulate vector data",
+                               "Support for measurement units in R vectors, matrices and arrays: propagation, conversion, derivation",
+                               "Draw geographical maps",
+                               "Hold and facilitate interaction with Natural Earth map data"))
+
+kable(tb,booktabs = TRUE,col.names=c("Package","Description"))
+
+```
+
+```{r, message=FALSE,error=FALSE,warning=FALSE}
+# install the necessary packages
+if(!require("tidyverse")) install.packages("tidyverse")
+if(!require("units")) install.packages("units")
+if(!require("sf")) install.packages("sf")
+if(!require("maps")) install.packages("maps")
+if(!require("rnaturalearth")) install.packages("rnaturalearth")
+
+# load packages
+library(maps)
+library(sf) 
+library(tidyverse)
+library(units)
+library(rnaturalearth)
+```
+
+## Measurement units
+
+The use of vectors and matrices with the ``units`` class allows us to calculate and transform units of measurement.
+
+```{r}
+# length
+l <- set_units(1:10, m)
+l
+
+# convert units
+set_units(l, cm)
+
+# sum different units
+set_units(l, cm) + l
+
+# area
+a <- set_units(355, ha)
+set_units(a, km2)
+
+# velocity
+vel <- set_units(seq(20, 50, 10), km/h)
+set_units(vel, m/s)
+
+```
+
+## Capital cities of the world
+
+We will use the capital cities of the whole world with the objective of calculating the distance to the nearest capital city and indicating the name/country.
+
+```{r}
+# set of world cities with coordinates
+head(world.cities) # from the maps package
+```
+
+To convert points with longitude and latitude into a spatial object of class ``sf``, we use the function ``st_as_sf()``, indicating the coordinate columns and the coordinate reference system (WSG84, epsg: 4326).
+
+```{r}
+# convert the points into an sf object with CRS WSG84
+cities <- st_as_sf(world.cities, coords = c("long", "lat"), crs = 4326)
+cities
+```
+
+In the next step, we filter by the capital cities encoded in the column *capital* with 1. The advantage of the ``sf`` package is the possibility of applying functions of the ``tidyverse`` collection to manipulate the attributes. In addition, we add a column with new labels using the ``str_c()`` function of the ``stringr`` package, which is similar to that of *R Base* ``paste()``. 
+
+```{r}
+# filter the capital cities
+capitals <- filter(cities, capital == 1)
+
+# create a new label combining name and country
+capitals <- mutate(capitals, city_country = str_c(name, " (", country.etc, ")"))
+
+capitals 
+
+```
+
+## Calculate distances
+
+Geographical distance (Euclidean or greater circle) is calculated with the ``st_distance()`` function, either between two points, between one point and others or between all points. In the latter case we obtain a symmetric matrix of distances (NxN), taken pairwise between the elements of the  capital city set. In the diagonal we find the combinations between the same points giving all null values.
+
+```{r echo=FALSE,message=FALSE,error=FALSE,warning=FALSE}
+library(knitr)
+
+m <- matrix(round(rnorm(9, 300, 100)), nrow = 3)
+diag(m) <- 0
+
+m[lower.tri(m)]<- m[upper.tri(m)]
+
+m <- rbind(c("",LETTERS[1:3]), cbind(LETTERS[1:3], m))
+ 
+kable(m)
+```
+
+For instance, when we want to know the distance from Amsterdam to Abu Dhabi, Washington and Tokyo we pass two spatial objects.
+
+```{r}
+# calculate distance
+dist_amsterdam <- st_distance(slice(capitals, 10), 
+                              slice(capitals, c(2, 220, 205)))
+
+dist_amsterdam # distance in meters
+```
+
+The result is a matrix with a single row or column (depending on the order of the spatial objects) with a class of ``units``. Thus it is possible to convert easily to another unit of measure. If we want to obtain a vector without class ``units``, we only have to apply the function ``as.vector()``.
+
+```{r}
+# change from m to km
+set_units(dist_amsterdam, "km")
+
+# units class to vector
+as.vector(dist_amsterdam)
+```
+
+In the second step, we estimate the distance matrix between all the capital cities. It is important to convert the null values to ``NA`` to subsequently obtain the correct matrix index. 
+
+```{r}
+# calculate distance
+m_distance <- st_distance(capitals)
+
+# matrix
+dim(m_distance)
+
+# change m to km
+m_distance_km <- set_units(m_distance, km)
+
+# replace the distance of 0 m with NA
+m_distance_km[m_distance_km == set_units(0, km)] <- NA
+```
+
+{{% alert note %}}
+When the result is of the ``units`` class, it is necessary to use the same class to be able to make logical queries. For example, ``set_units(1, m) == set_units(1, m)`` vs. ``set_units(1, m) == 1``.
+{{% /alert %}}
+
+To obtain the shortest distance, in addition to its position, we use the ``apply ()`` function which in turn allows us to apply the function ``which.min()`` and ``min()`` on each row. It would also be possible to use the function on columns  giving the same result. Finally, we add the results as new columns with the ``mutate()`` function. The indices in *pos* allow us to obtain the names of the nearest cities.
+
+```{r}
+# get the index (position) of the city and the distance
+pos <- apply(m_distance_km, 1, which.min)
+dist <- apply(m_distance_km, 1, min, na.rm = TRUE)
+
+# add the distance and get the name of the city
+capitals <- mutate(capitals, nearest_city =  city_country[pos], 
+                             geometry_nearest = geometry[pos],
+                             distance_city = dist)
+
+```
+
+## Map of distances to the next capital city
+
+Finally, we build a map representing the distance in proportional circles. To do this, we use the usual grammar of ``ggplot()`` by adding the geometry ``geom_sf()``, first for the world map as background and then for the cities. In ``aes()`` we indicate, with the argument ``size = distance_city``, the variable which we want to map proportionally. The ``theme_void()`` function removes all style elements. In addition, we define with the function ``coord_sf()`` a new projection indicating the *proj4* format.
+
+```{r}
+# world map
+world <- ne_countries(scale = 10, returnclass = "sf")
+
+# map
+ggplot(world) +
+   geom_sf(fill = "black", colour = "white") +
+   geom_sf(data = capitals, 
+           aes(size = distance_city),
+           alpha = 0.7,
+           fill = "#bd0026",
+           shape = 21,
+           show.legend = 'point') +
+   coord_sf(crs = "+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs") +
+  labs(size = "Distance (km)", title = "Distance to the next capital city") +
+  theme_void()
+```
+
+
