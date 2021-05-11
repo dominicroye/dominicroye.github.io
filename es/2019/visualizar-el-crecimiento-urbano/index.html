@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.55.0" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -409,7 +409,7 @@
     
     <a href="/es/categories/r/">R</a>, 
     
-    <a href="/es/categories/rprincipante/">R:principante</a>, 
+    <a href="">R:principante</a>, 
     
     <a href="/es/categories/gis/">gis</a>
     
@@ -539,7 +539,7 @@
     
     <a href="/es/categories/r/">R</a>, 
     
-    <a href="/es/categories/rprincipante/">R:principante</a>, 
+    <a href="">R:principante</a>, 
     
     <a href="/es/categories/gis/">gis</a>
     
@@ -623,11 +623,12 @@
 
 
 <p>La Dirección General del Catastro de España dispone de información espacial de toda la edificación a excepción del País Vasco y Navarra. Este conjunto de datos forma parte de la implantación de <a href="https://inspire.ec.europa.eu/">INSPIRE</a>, la Infraestructura de Información Espacial en Europa. Más información podemos encontrar <a href="http://www.catastro.meh.es/webinspire/index.html">aquí</a>. Utilizaremos los enlaces (<em>urls</em>) en formato <em>ATOM</em>, que es un formato de redifusión de tipo RSS, permitiéndonos obtener el enlace de descarga para cada municipio.</p>
-<div class="alert alert-note">
-  <p>Esta entrada de blog es una versión reducida del caso práctico que podéis encontrar en nuestra reciente publicación - <a href="https://dominicroye.github.io/es/publication/manual_rgis_2019/">Introducción a los SIG con R</a> - publicado por Dominic Royé y Roberto Serrano-Notivoli.</p>
+<p><div class="alert alert-note">
+  
+Esta entrada de blog es una versión reducida del caso práctico que podéis encontrar en nuestra reciente publicación - <a href="https://dominicroye.github.io/es/publication/manual_rgis_2019/">Introducción a los SIG con R</a> - publicado por Dominic Royé y Roberto Serrano-Notivoli.
 
 </div>
-
+</p>
 <div id="paquetes" class="section level2">
 <h2>Paquetes</h2>
 <table>
@@ -735,11 +736,12 @@ prov_enlaces_tab &lt;- as_tibble(prov_enlaces$items) %&gt;%
 ## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
 ## # ... with 42 more rows</code></pre>
 <p>Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función <code>filter()</code> del paquete <code>dplyr</code> buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función <code>str_detect()</code> de <code>stringr</code>. La función <code>pull()</code> nos permite extraer una columna de un <code>data.frame</code>.</p>
-<div class="alert alert-note">
-  <p>Actualmente la función <code>feed.extract()</code> no importa correctamente en el <em>encoding</em> UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función <code>repair_encoding()</code> del paquete <code>rvest</code>.</p>
+<p><div class="alert alert-note">
+  
+Actualmente la función <code>feed.extract()</code> no importa correctamente en el <em>encoding</em> UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función <code>repair_encoding()</code> del paquete <code>rvest</code>.
 
 </div>
-
+</p>
 <pre class="r"><code># filtramos la provincia y obtenemos la url RSS
 val_atom &lt;- filter(prov_enlaces_tab, str_detect(title, &quot;Valencia&quot;)) %&gt;% pull(link)
 
@@ -909,11 +911,11 @@ tmap_leaflet(m)</code></pre>
 
 <div class="article-tags">
   
-  <a class="badge badge-light" href="/es/tags/crecimiento-urbano/">crecimiento urbano</a>
+  <a class="badge badge-light" href="">crecimiento urbano</a>
   
   <a class="badge badge-light" href="/es/tags/ciudad/">ciudad</a>
   
-  <a class="badge badge-light" href="/es/tags/geografia-urbana/">geografia urbana</a>
+  <a class="badge badge-light" href="">geografia urbana</a>
   
 </div>
 

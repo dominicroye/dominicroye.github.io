@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.55.0" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -405,11 +405,11 @@
   <span class="article-categories">
     <i class="fas fa-folder"></i>
     
-    <a href="/es/categories/an%C3%A1lisis-espacial/">análisis espacial</a>, 
+    <a href="">análisis espacial</a>, 
     
     <a href="/es/categories/r/">R</a>, 
     
-    <a href="/es/categories/rprincipante/">R:principante</a>, 
+    <a href="">R:principante</a>, 
     
     <a href="/es/categories/gis/">gis</a>
     
@@ -535,11 +535,11 @@
   <span class="article-categories">
     <i class="fas fa-folder"></i>
     
-    <a href="/es/categories/an%C3%A1lisis-espacial/">análisis espacial</a>, 
+    <a href="">análisis espacial</a>, 
     
     <a href="/es/categories/r/">R</a>, 
     
-    <a href="/es/categories/rprincipante/">R:principante</a>, 
+    <a href="">R:principante</a>, 
     
     <a href="/es/categories/gis/">gis</a>
     
@@ -826,11 +826,12 @@ m_distance_km &lt;- set_units(m_distance, km)
 
 # reemplazamos la distance de 0 con NA
 m_distance_km[m_distance_km == set_units(0, km)] &lt;- NA</code></pre>
-<div class="alert alert-note">
-  <p>Cuando el resultado es de clase <code>units</code> es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, <code>set_units(1, m) == set_units(1, m)</code> vs. <code>set_units(1, m) == 1</code>.</p>
+<p><div class="alert alert-note">
+  
+Cuando el resultado es de clase <code>units</code> es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, <code>set_units(1, m) == set_units(1, m)</code> vs. <code>set_units(1, m) == 1</code>.
 
 </div>
-
+</p>
 <p>Con el objetivo de obtener la distancia más corta, además de la posición de la misma, usamos la función <code>apply()</code> que a su vez nos permite aplicar la función <code>which.min()</code> y <code>min()</code> sobre cada fila. También sería posible emplear la función sobre columnas que daría el mismo resulado. Para finalizar, añadimos los resultados como nuevas columnas con la función <code>mutate()</code>. Las posiciones en <em>pos</em> nos permiten obtener los nombres de las ciudades más próximas.</p>
 <pre class="r"><code># obtenemos la posición de la ciudad y la distancia
 pos &lt;- apply(m_distance_km, 1, which.min)

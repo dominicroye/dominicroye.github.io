@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R:elementary on Dominic Royé</title>
@@ -1109,11 +1108,12 @@ m_distance_km &amp;lt;- set_units(m_distance, km)
 
 # replace the distance of 0 m with NA
 m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;p&gt;To obtain the shortest distance, in addition to its position, we use the &lt;code&gt;apply ()&lt;/code&gt; function which in turn allows us to apply the function &lt;code&gt;which.min()&lt;/code&gt; and &lt;code&gt;min()&lt;/code&gt; on each row. It would also be possible to use the function on columns giving the same result. Finally, we add the results as new columns with the &lt;code&gt;mutate()&lt;/code&gt; function. The indices in &lt;em&gt;pos&lt;/em&gt; allow us to obtain the names of the nearest cities.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the index (position) of the city and the distance
 pos &amp;lt;- apply(m_distance_km, 1, which.min)
@@ -1173,11 +1173,12 @@ ggplot(world) +
 
 
 &lt;p&gt;The General Directorate for the Cadastre of Spain has spatial information of the all buildings except for the Basque Country and Navarra. This data set is part of the implementation of &lt;a href=&#34;https://inspire.ec.europa.eu/&#34;&gt;INSPIRE&lt;/a&gt;, the Space Information Infrastructure in Europe. More information can be found &lt;a href=&#34;http://www.catastro.meh.es/webinspire/index.html&#34;&gt;here&lt;/a&gt;. We will use the links (&lt;em&gt;urls&lt;/em&gt;) in &lt;em&gt;ATOM&lt;/em&gt; format, which is an RSS type for web feeds, allowing us to obtain the download link for each municipality.&lt;/p&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;This blog post is a reduced version of the case study that you can find in our recent publication - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introduction to GIS with R&lt;/a&gt; - published by Dominic Royé and Roberto Serrano-Notivoli (in Spanish).&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+This blog post is a reduced version of the case study that you can find in our recent publication - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introduction to GIS with R&lt;/a&gt; - published by Dominic Royé and Roberto Serrano-Notivoli (in Spanish).
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Packages&lt;/h2&gt;
 &lt;table&gt;
@@ -1285,11 +1286,12 @@ prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;%
 ## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, we access and download the data from Valencia. To filter the final download link we use the &lt;code&gt;filter()&lt;/code&gt; function of the &lt;code&gt;dplyr&lt;/code&gt; package, searching for the name of the territorial headquarter and then the name of the municipality in capital letters with the &lt;code&gt;str_detect()&lt;/code&gt; function of &lt;code&gt;stringr&lt;/code&gt;. The &lt;code&gt;pull()&lt;/code&gt; function allows us to extract a column from a &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Currently the &lt;code&gt;feed.extract()&lt;/code&gt; function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the &lt;code&gt;repair_encoding()&lt;/code&gt; function of the &lt;code&gt;rvest&lt;/code&gt; package.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Currently the &lt;code&gt;feed.extract()&lt;/code&gt; function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the &lt;code&gt;repair_encoding()&lt;/code&gt; function of the &lt;code&gt;rvest&lt;/code&gt; package.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the province and get the RSS link
 val_atom &amp;lt;- filter(prov_enlaces_tab, str_detect(title, &amp;quot;Valencia&amp;quot;)) %&amp;gt;% pull(link)
 
@@ -1466,6 +1468,789 @@ tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
             <category>R:elementary</category>
       
             <category>gis</category>
+      
+    </item>
+    
+    <item>
+      <title>Calculating the distance to the sea in R</title>
+      <link>https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/</link>
+      <pubDate>Tue, 08 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/</guid>
+      <description>
+
+
+&lt;p&gt;The distance to the sea is a fundamental variable in geography, especially relevant when it comes to modeling. For example, in interpolations of air temperature, the distance to the sea is usually used as a predictor variable, since there is a casual relationship between the two that explains the spatial variation. How can we estimate the (shortest) distance to the coast in R?&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following libraries:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Library&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Set of vector maps ‘natural earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RColorBrewer&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Color palettes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the libraries if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+#packages
+library(rnaturalearth)
+library(sf)
+library(raster)
+library(tidyverse)
+library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-coast-of-iceland-as-an-example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The coast of Iceland as an example&lt;/h2&gt;
+&lt;p&gt;Our example in this post will be Iceland, and, as it is an island territory it will facilitate the tutorial showing the process in a simple manner. The &lt;em&gt;rnaturalearth&lt;/em&gt; package allows you to import the boundaries of countries (with different administrative levels) from around the world. The data comes from the platform &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. I recommend exploring the package, more info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;here&lt;/a&gt;. The &lt;code&gt;ne_countries( )&lt;/code&gt; function imports the country boundaries. In this case we indicate with the argument &lt;em&gt;scale&lt;/em&gt; the resolution (10, 50 or 110m), with &lt;em&gt;country&lt;/em&gt; we indicate the specific country of interest and with &lt;em&gt;returnclass&lt;/em&gt; we determine which class we want (&lt;em&gt;sf&lt;/em&gt; or &lt;em&gt;sp&lt;/em&gt;), in our case &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #world map with 50m resolution
+
+plot(world) #sp class by default&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the limits of Iceland
+iceland &amp;lt;- ne_countries(scale = 10, country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
+
+#info of our spatial vector object
+iceland&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 1 feature and 94 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## epsg (SRID):    4326
+## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
+## 188 Admin-0 country         0         3    Iceland    ISL        0     2
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
+##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
+## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &amp;lt;NA&amp;gt;
+##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
+## 188 Iceland     IS Republic of Iceland      &amp;lt;NA&amp;gt;    Iceland      &amp;lt;NA&amp;gt;
+##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
+## 188     &amp;lt;NA&amp;gt;   Iceland     &amp;lt;NA&amp;gt;         1         4         4          9
+##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
+## 188  339747       10      16150     2017         NA     2016
+##                        economy           income_grp wikipedia fips_10_
+## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
+##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
+## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
+##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
+## 188 Exact WOE match as country        ISL        ISL         NA         NA
+##     continent region_un       subregion             region_wb name_len
+## 188    Europe    Europe Northern Europe Europe &amp;amp; Central Asia        7
+##     long_len abbrev_len tiny homepart min_zoom min_label max_label
+## 188        7          7   NA        1        0         2         7
+##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
+## 188 1159320917       Q189    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Island Iceland Islandia Islande
+##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
+## 188    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Izland Islandia Islanda    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt; IJsland
+##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 Islandia Islândia    &amp;lt;NA&amp;gt;  Island Izlanda Iceland    &amp;lt;NA&amp;gt;
+##                           geometry
+## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#here Iceland
+plot(iceland)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default, the &lt;code&gt;plot( )&lt;/code&gt; function with the class &lt;em&gt;sf&lt;/em&gt; creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name &lt;code&gt;plot(iceland[&#34;admin&#34;])&lt;/code&gt; or the limit argument &lt;code&gt;plot(iceland, max.plot = 1)&lt;/code&gt;. With the argument &lt;em&gt;max.plot = 1&lt;/em&gt; the function uses the first available variable of the map.&lt;/p&gt;
+&lt;p&gt;In addition, we see in the information of the object &lt;em&gt;sf&lt;/em&gt; that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;here&lt;/a&gt;. For that purpose, we use the &lt;code&gt;st_transform( )&lt;/code&gt; function. We simply indicate the map and the EPSG code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform to UTM
+iceland &amp;lt;- st_transform(iceland, 3055)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-a-fishnet-of-points&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Create a fishnet of points&lt;/h2&gt;
+&lt;p&gt;We still need the points where we want to know the distance. In our case it will be a regular fishnet of points in Iceland with a resolution of 5km. We do this with the function &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicating the resolution in the unit of the coordinate system (meters in our case) with the argument &lt;em&gt;cellsize&lt;/em&gt;, and what geometry we would like to create &lt;em&gt;what&lt;/em&gt; (polygons, centers or corners).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create the fishnet
+grid &amp;lt;- st_make_grid(iceland, cellsize = 5000, what = &amp;quot;centers&amp;quot;)
+
+#our fishnet with the extension of Iceland
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#only extract the points in the limits of Iceland
+grid &amp;lt;- st_intersection(grid, iceland)   
+
+#our fishnet now
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calculating-the-distance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calculating the distance&lt;/h2&gt;
+&lt;p&gt;To estimate the distance we use the &lt;code&gt;st_distance( )&lt;/code&gt; function that returns a vector of distances for all our points in the fishnet. But first it is necessary to transform the map of Iceland from a polygon shape (MULTIPOLYGON) to a line (MULTILINESTRING). More details with &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform Iceland from polygon shape to line
+iceland &amp;lt;- st_cast(iceland, &amp;quot;MULTILINESTRING&amp;quot;)
+
+#calculation of the distance between the coast and our points
+dist &amp;lt;- st_distance(iceland, grid)
+
+#distance with unit in meters
+head(dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plotting-the-calculated-distance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Plotting the calculated distance&lt;/h2&gt;
+&lt;p&gt;Once obtained the distance for our points, we can combine them with the coordinates and plot them in &lt;em&gt;ggplot2&lt;/em&gt;. For this, we create a &lt;em&gt;data.frame&lt;/em&gt;. The object &lt;em&gt;dist&lt;/em&gt; is a matrix of one column, so we have to convert it to a vector with the function &lt;code&gt;as.vector( )&lt;/code&gt;. In addition, we divide by 1000 to convert the distance in meters to km. The &lt;code&gt;st_coordinates( )&lt;/code&gt; function extracts the coordinates of our points. For the final visualization we use a vector of colors with the RdGy palette (more &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a data.frame with the distance and the coordinates of the points
+df &amp;lt;- data.frame(dist = as.vector(dist)/1000,
+                    st_coordinates(grid))
+
+#structure
+str(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    4104 obs. of  3 variables:
+##  $ dist: num  0.791 1.151 1.271 3.129 2.429 ...
+##  $ X   : num  608796 613796 583796 588796 593796 ...
+##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colors 
+col_dist &amp;lt;- brewer.pal(11, &amp;quot;RdGy&amp;quot;)
+
+
+ggplot(df, aes(X, Y, fill = dist))+ #variables
+         geom_tile()+ #geometry
+           scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
+             labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #legend name
+             theme_void()+ #map theme
+              theme(legend.position = &amp;quot;bottom&amp;quot;) #legend position&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;export-the-distance-as-a-raster&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Export the distance as a raster&lt;/h2&gt;
+&lt;p&gt;To be able to export the estimated distance to the sea of Iceland, we need to use the &lt;code&gt;rasterize( )&lt;/code&gt; function of the library &lt;em&gt;raster&lt;/em&gt;.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;First, it is necessary to create an empty raster. In this raster we have to indicate the resolution, in our case it is of 5000m, the projection and the extension of the raster.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;p&gt;We can extract the projection from the information of the map of Iceland.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The extension can be extracted from our &lt;em&gt;grid&lt;/em&gt; points with the function &lt;code&gt;extent( )&lt;/code&gt;. However, this last function needs the class &lt;em&gt;sp&lt;/em&gt;, so we pass the object &lt;em&gt;grid&lt;/em&gt; in &lt;em&gt;sf&lt;/em&gt; format, only for this time, to the class &lt;em&gt;sp&lt;/em&gt; using the function &lt;code&gt;as( )&lt;/code&gt; and the argument “Spatial”.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In addition to the above, the &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt;, that we created earlier, has to be converted into the &lt;em&gt;sf&lt;/em&gt; class. Therefore, we apply the function &lt;code&gt;st_as_sf( )&lt;/code&gt; with the argument &lt;em&gt;coords&lt;/em&gt; indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#get the extension
+ext &amp;lt;- extent(as(grid, &amp;quot;Spatial&amp;quot;))
+
+#extent object
+ext&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : Extent 
+## xmin       : 338795.6 
+## xmax       : 848795.6 
+## ymin       : 7033371 
+## ymax       : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destination
+r &amp;lt;- raster(resolution = 5000, ext = ext, crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+
+#convert the points to a spatial object class sf
+dist_sf &amp;lt;- st_as_sf(df, coords = c(&amp;quot;X&amp;quot;, &amp;quot;Y&amp;quot;)) %&amp;gt;%
+                      st_set_crs(3055)
+
+#create the distance raster
+dist_raster &amp;lt;- rasterize(dist_sf, r, &amp;quot;dist&amp;quot;, fun = mean)
+
+#raster
+dist_raster&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterLayer 
+## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution : 5000, 5000  (x, y)
+## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## source     : memory
+## names      : layer 
+## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot the raster
+plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#export the raster
+writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;rasterize( )&lt;/code&gt; function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; function converts a &lt;em&gt;data.frame&lt;/em&gt; with longitude, latitude and the variable &lt;em&gt;Z&lt;/em&gt; into a raster object. It is important that the order should be longitude, latitude, variables.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+
+plot(r)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With the calculation of distance we can create art, as seen in the header of this post, which includes a world map only with the distance to the sea of all continents. A different perspective to our world (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;here more (spanish)&lt;/a&gt;) .&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>distance</category>
+      
+            <category>raster</category>
+      
+            <category>estimation</category>
+      
+            <category>variable</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:elementary</category>
+      
+    </item>
+    
+    <item>
+      <title>How to create &#39;Warming Stripes&#39; in R</title>
+      <link>https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/</link>
+      <pubDate>Wed, 05 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/</guid>
+      <description>
+
+
+&lt;p&gt;This year, the so-called &lt;em&gt;warming stripes&lt;/em&gt;, which were created by the scientist &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; of the University of Reading, became very famous all over the world. These graphs represent and communicate climate change in a very illustrative and effective way.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;From his idea, I created strips for examples of Spain, like the next one in Madrid.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;es&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/Temperatura?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#Temperatura&lt;/a&gt; anual en &lt;a href=&#34;https://twitter.com/hashtag/MadridRetiro?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#MadridRetiro&lt;/a&gt; desde 1920 a 2017.  &lt;a href=&#34;https://twitter.com/hashtag/CambioClimatico?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#CambioClimatico&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; (idea de &lt;a href=&#34;https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw&#34;&gt;@ed_hawkins&lt;/a&gt; 🙏) &lt;a href=&#34;https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw&#34;&gt;@Divulgameteo&lt;/a&gt; &lt;a href=&#34;https://twitter.com/edupenabad?ref_src=twsrc%5Etfw&#34;&gt;@edupenabad&lt;/a&gt; &lt;a href=&#34;https://twitter.com/climayagua?ref_src=twsrc%5Etfw&#34;&gt;@climayagua&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw&#34;&gt;@ClimaGroupUB&lt;/a&gt; &lt;a href=&#34;https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw&#34;&gt;@4gotas_com&lt;/a&gt; &lt;a href=&#34;https://t.co/wmLb5uczpT&#34;&gt;pic.twitter.com/wmLb5uczpT&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw&#34;&gt;June 2, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;In this post I will show how you can create these strips in R with the library &lt;em&gt;ggplot2&lt;/em&gt;. Although I must say that there are many ways in R that can lead us to the same result or to a similar one, even within &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;In this case we will use the annual temperatures of Lisbon
+&lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt;, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded &lt;a href=&#34;https://dominicroye.github.io/files/temp_lisboa.csv&#34;&gt;here&lt;/a&gt;. First, we should, as long as we have not done it, install the collection of &lt;em&gt;tidyverse&lt;/em&gt; libraries that also include &lt;em&gt;ggplot2&lt;/em&gt;. In addition, we will need the library &lt;em&gt;lubridate&lt;/em&gt; for the treatment of dates. Then, we import the data of Lisbon in csv format.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the lubridate and tidyverse libraries
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+
+#packages
+library(tidyverse)
+library(lubridate)
+library(RColorBrewer)
+
+#import the annual temperatures
+temp_lisboa &amp;lt;- read_csv(&amp;quot;temp_lisboa.csv&amp;quot;)
+
+str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;spec_tbl_df&amp;#39;, &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 139 obs. of  18 variables:
+##  $ YEAR  : num  1880 1881 1882 1883 1884 ...
+##  $ JAN   : num  9.17 11.37 10.07 10.86 11.16 ...
+##  $ FEB   : num  12 11.8 11.9 11.5 10.6 ...
+##  $ MAR   : num  13.6 14.1 13.5 10.5 12.4 ...
+##  $ APR   : num  13.1 14.4 14 13.8 12.2 ...
+##  $ MAY   : num  15.7 17.3 15.6 14.6 16.4 ...
+##  $ JUN   : num  17 19.2 17.9 17.2 19.1 ...
+##  $ JUL   : num  19.1 21.8 20.3 19.5 21.4 ...
+##  $ AUG   : num  20.6 23.5 21 21.6 22.4 ...
+##  $ SEP   : num  20.7 20 18 18.8 19.5 ...
+##  $ OCT   : num  17.9 16.3 16.4 15.8 16.4 ...
+##  $ NOV   : num  12.5 14.7 13.7 13.5 12.5 ...
+##  $ DEC   : num  11.07 9.97 10.66 9.46 10.25 ...
+##  $ D-J-F : num  10.7 11.4 10.6 11 10.4 ...
+##  $ M-A-M : num  14.1 15.2 14.3 12.9 13.6 ...
+##  $ J-J-A : num  18.9 21.5 19.7 19.4 20.9 ...
+##  $ S-O-N : num  17 17 16 16 16.1 ...
+##  $ metANN: num  15.2 16.3 15.2 14.8 15.3 ...
+##  - attr(*, &amp;quot;spec&amp;quot;)=
+##   .. cols(
+##   ..   YEAR = col_double(),
+##   ..   JAN = col_double(),
+##   ..   FEB = col_double(),
+##   ..   MAR = col_double(),
+##   ..   APR = col_double(),
+##   ..   MAY = col_double(),
+##   ..   JUN = col_double(),
+##   ..   JUL = col_double(),
+##   ..   AUG = col_double(),
+##   ..   SEP = col_double(),
+##   ..   OCT = col_double(),
+##   ..   NOV = col_double(),
+##   ..   DEC = col_double(),
+##   ..   `D-J-F` = col_double(),
+##   ..   `M-A-M` = col_double(),
+##   ..   `J-J-A` = col_double(),
+##   ..   `S-O-N` = col_double(),
+##   ..   metANN = col_double()
+##   .. )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values &lt;em&gt;999.9&lt;/em&gt; with &lt;code&gt;NA&lt;/code&gt;, using the &lt;code&gt;ifelse( )&lt;/code&gt; function that evaluates a condition and perform the given argument corresponding to true and false.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#select only the annual temperature and year column
+temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
+
+#rename the temperature column
+temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr, ta = metANN)
+
+#missing values 999.9
+summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##       YEAR            ta        
+##  Min.   :1880   Min.   : 14.53  
+##  1st Qu.:1914   1st Qu.: 15.65  
+##  Median :1949   Median : 16.11  
+##  Mean   :1949   Mean   : 37.38  
+##  3rd Qu.:1984   3rd Qu.: 16.70  
+##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the library &lt;em&gt;lubridate&lt;/em&gt; and the support functions inside of &lt;em&gt;ggplot2&lt;/em&gt;. The &lt;code&gt;str_c( )&lt;/code&gt; function of the library &lt;em&gt;stringr&lt;/em&gt;, part of the collection of &lt;em&gt;tidyverse&lt;/em&gt;, is similar to &lt;code&gt;paste( )&lt;/code&gt; of R Base that allows us to combine characters by specifying a separator (sep = “-”). The &lt;code&gt;ymd( )&lt;/code&gt; (year month day) function of the &lt;em&gt;lubridate&lt;/em&gt; library converts a date character into a &lt;em&gt;Date&lt;/em&gt; object. It is possible to combine several functions
+using the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; that helps to chain without assigning the result to a new object. Its use is very extended especially with the library &lt;em&gt;tidyverse&lt;/em&gt;. If you want to know more about its use, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; you have a tutorial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-strips&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the strips&lt;/h2&gt;
+&lt;p&gt;First, we create the style of the graph, specifying all the arguments of the theme we want to adjust. We start with the default style of &lt;code&gt;theme_minimal( )&lt;/code&gt;. In addition, we assign
+the colors from &lt;em&gt;RColorBrewer&lt;/em&gt; to an object &lt;em&gt;col_srip&lt;/em&gt;. More information about the colors used &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_strip &amp;lt;- theme_minimal()+
+                 theme(axis.text.y = element_blank(),
+                       axis.line.y = element_blank(),
+                       axis.title = element_blank(),
+                       panel.grid.major = element_blank(),
+                       legend.title = element_blank(),
+                       axis.text.x = element_text(vjust = 3),
+                       panel.grid.minor = element_blank(),
+                        plot.title = element_text(size = 14, face = &amp;quot;bold&amp;quot;)
+                       )
+
+
+col_strip &amp;lt;- brewer.pal(11, &amp;quot;RdBu&amp;quot;)
+
+brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
+## BrBG            11      div       TRUE
+## PiYG            11      div       TRUE
+## PRGn            11      div       TRUE
+## PuOr            11      div       TRUE
+## RdBu            11      div       TRUE
+## RdGy            11      div      FALSE
+## RdYlBu          11      div       TRUE
+## RdYlGn          11      div      FALSE
+## Spectral        11      div      FALSE
+## Accent           8     qual      FALSE
+## Dark2            8     qual       TRUE
+## Paired          12     qual       TRUE
+## Pastel1          9     qual      FALSE
+## Pastel2          8     qual      FALSE
+## Set1             9     qual      FALSE
+## Set2             8     qual       TRUE
+## Set3            12     qual      FALSE
+## Blues            9      seq       TRUE
+## BuGn             9      seq       TRUE
+## BuPu             9      seq       TRUE
+## GnBu             9      seq       TRUE
+## Greens           9      seq       TRUE
+## Greys            9      seq       TRUE
+## Oranges          9      seq       TRUE
+## OrRd             9      seq       TRUE
+## PuBu             9      seq       TRUE
+## PuBuGn           9      seq       TRUE
+## PuRd             9      seq       TRUE
+## Purples          9      seq       TRUE
+## RdPu             9      seq       TRUE
+## Reds             9      seq       TRUE
+## YlGn             9      seq       TRUE
+## YlGnBu           9      seq       TRUE
+## YlOrBr           9      seq       TRUE
+## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For the final graphic we use the geometry &lt;code&gt;geom_tile( )&lt;/code&gt;. Since the data does not have a specific value for the Y axis, we need a &lt;em&gt;dummy&lt;/em&gt; value, here I used 1. Also, I adjust the width of the color bar in the legend.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
+             aes(x = date, y = 1, fill = ta))+
+        geom_tile()+
+           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
+                     date_labels = &amp;quot;%Y&amp;quot;,
+                     expand = c(0, 0))+
+           scale_y_continuous(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+             guides(fill = guide_colorbar(barwidth = 1))+
+            labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+              theme_strip&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In case we want to get only the strips, we can use &lt;code&gt;theme_void( )&lt;/code&gt; and the argument &lt;em&gt;show.legend = FALSE&lt;/em&gt; in &lt;code&gt;geom_tile( )&lt;/code&gt; to remove all style elements. We can also change the color for the &lt;code&gt;NA&lt;/code&gt; values, including the argument &lt;em&gt;na.value = “gray70”&lt;/em&gt; in the &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
+             aes(x = date, y = 1, fill = ta))+
+        geom_tile(show.legend = FALSE)+
+           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
+                     date_labels = &amp;quot;%Y&amp;quot;,
+                     expand = c(0, 0))+
+           scale_y_discrete(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+             theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-12-05-how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>ggplot2</category>
+      
+            <category>warming stripes</category>
+      
+            <category>global warming</category>
+      
+            <category>visualization</category>
+      
+      
+            <category>datavis</category>
+      
+            <category>R</category>
+      
+            <category>R:elementary</category>
+      
+    </item>
+    
+    <item>
+      <title>Accessing OpenStreetMap data with R</title>
+      <link>https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/</link>
+      <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/</guid>
+      <description>
+
+
+&lt;div id=&#34;the-database-of-open-street-maps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The database of Open Street Maps&lt;/h2&gt;
+&lt;p&gt;Recently I created a map of the distribution of gas stations and electric charging stations in Europe.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;How can you obtain this data?&lt;/p&gt;
+&lt;p&gt;Well, in this case I used points of interest (POIs) from the database of &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviously OSM not only contains streets and highways, but also information that can be useful when we use a map such as locations of hospitals or gas stations. To avoid downloading the entire OSM and extracting the required information, you can use an &lt;em&gt;overpass API&lt;/em&gt;, which allows us to query the OSM database with our own criteria.&lt;/p&gt;
+&lt;p&gt;An easy way to access an &lt;em&gt;overpass API&lt;/em&gt; is through &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, which even includes a wizard to build a query and display the results on a interactive map. A detailed explanation of the previous web can be found &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;here&lt;/a&gt;.
+However, we have at our disposal a package &lt;em&gt;osmdata&lt;/em&gt; that allows us to create and make queries directly from the R environment. Nevertheless, the use of the &lt;em&gt;overpass-turbo.eu&lt;/em&gt; can be useful when we are not sure what we are looking for or when we have some difficulty in building the query.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;accessing-the-overpass-api-from-r&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Accessing the overpass API from R&lt;/h2&gt;
+&lt;p&gt;The first step is to install several packages, in case they are not installed. In almost all my scripts I use &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;em&gt;tidyverse&lt;/em&gt;&lt;/a&gt; which is a fundamental collection of different packages, including &lt;em&gt;dplyr&lt;/em&gt; (data manipulation), &lt;em&gt;ggplot2&lt;/em&gt; (visualization), etc. The &lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt; package is the new standard for working with spatial data and is compatible with &lt;em&gt;ggplot2&lt;/em&gt; and &lt;em&gt;dplyr&lt;/em&gt;. Finally, &lt;a href=&#34;http://stat405.had.co.nz/ggmap.pdf&#34;&gt;&lt;em&gt;ggmap&lt;/em&gt;&lt;/a&gt; makes it easier for us to create maps.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the osmdata, sf, tidyverse and ggmap package
+if(!require(&amp;quot;osmdata&amp;quot;)) install.packages(&amp;quot;osmdata&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggmap&amp;quot;)) install.packages(&amp;quot;ggmap&amp;quot;)
+
+#load packages
+library(tidyverse)
+library(osmdata)
+library(sf)
+library(ggmap)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;build-a-query&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Build a query&lt;/h2&gt;
+&lt;p&gt;Before creating a query, we need to know what we can filter. The &lt;code&gt;available_features( )&lt;/code&gt; function returns a list of available OSM features that have different tags. More details are available in the OSM &lt;em&gt;wiki&lt;/em&gt; &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/Map_Features&#34;&gt;here&lt;/a&gt;.
+For example, the feature &lt;em&gt;shop&lt;/em&gt; contains several tags among others &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#the first five features
+head(available_features())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#amenities
+head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal_boarding&amp;quot; &amp;quot;animal_shelter&amp;quot;  &amp;quot;arts_centre&amp;quot;     &amp;quot;atm&amp;quot;            
+## [5] &amp;quot;baby_hatch&amp;quot;      &amp;quot;baking_oven&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#shops
+head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;the-first-query-where-are-cinemas-in-madrid&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;The first query: Where are cinemas in Madrid?&lt;/h3&gt;
+&lt;p&gt;To build the query, we use the &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt;, which helps to chain several functions without assigning the result to a new object. Its use is very extended especially within the &lt;em&gt;tidyverse&lt;/em&gt; package collection. If you want to know more about its use, you can find &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;here&lt;/a&gt; a tutorial.&lt;/p&gt;
+&lt;p&gt;In the first part of the query we need to indicate the place where we want to extract the information. The &lt;code&gt;getbb( )&lt;/code&gt; function creates a boundering box for a given place, looking for the name. The main function is &lt;code&gt;opq( )&lt;/code&gt; which build the final query. We add our filter criteria with the &lt;code&gt;add_osm_feature( )&lt;/code&gt; function. In this first query we will look for cinemas in Madrid. That’s why we use as key &lt;em&gt;amenity&lt;/em&gt; and &lt;em&gt;cinema&lt;/em&gt; as tag. There are several formats to obtain the resulting spatial data of the query. The &lt;code&gt;osmdata_*( )&lt;/code&gt; function sends the query to the server and, depending on the suffix * sf/sp/xml, returns a &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; or &lt;em&gt;XML&lt;/em&gt; format.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#building the query
+q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
+      opq() %&amp;gt;%
+       add_osm_feature(&amp;quot;amenity&amp;quot;, &amp;quot;cinema&amp;quot;)
+
+str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
+##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
+##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
+##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
+cinema&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##         $overpass_call : The call submitted to the overpass API
+##                  $meta : metadata including timestamp and version numbers
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 197 points
+##             $osm_lines : NULL
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
+##        $osm_multilines : NULL
+##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see that the result is a list of different spatial objects. In our case, we are only interested in &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;How can we visulise these points?&lt;/p&gt;
+&lt;p&gt;The advantage of &lt;em&gt;sf&lt;/em&gt; objects is that for &lt;em&gt;ggplot2&lt;/em&gt; already exists a geometry function &lt;code&gt;geom_sf( )&lt;/code&gt;. Furthermore, we can include a background map using &lt;em&gt;ggmap&lt;/em&gt;. The &lt;code&gt;get_map( )&lt;/code&gt; function downloads the map for a given place. Alternatively, it can be an address, latitude/longitude or a bounding box. The &lt;em&gt;maptype&lt;/em&gt; argument allows us to indicate the style or type of map. You can find more details in the help of the &lt;code&gt;?get_map&lt;/code&gt; function.&lt;/p&gt;
+&lt;p&gt;When we build a graph with &lt;em&gt;ggplot&lt;/em&gt; we usually start with &lt;code&gt;ggplot( )&lt;/code&gt;. In this case, we start with &lt;code&gt;ggmap( )&lt;/code&gt; that includes the object with our background map. Then we add with &lt;code&gt;geom_sf( )&lt;/code&gt; the points of the cinemas in Madrid. It is important to indicate with the argument &lt;em&gt;inherit.aes = FALSE&lt;/em&gt; that it has to use the &lt;em&gt;aesthetic mappings&lt;/em&gt; of the spatial object &lt;em&gt;osm_points&lt;/em&gt;. In addition, we change the color, fill, transparency (&lt;em&gt;alpha&lt;/em&gt;), type and size of the circles.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#our background map
+mad_map &amp;lt;- get_map(getbb(&amp;quot;Madrid&amp;quot;), maptype = &amp;quot;toner-background&amp;quot;)
+
+#final map
+ggmap(mad_map)+
+  geom_sf(data = cinema$osm_points,
+          inherit.aes = FALSE,
+          colour = &amp;quot;#238443&amp;quot;,
+          fill = &amp;quot;#004529&amp;quot;,
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-11-03-accessing-osm-data-with-r/index.en_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;where-can-we-find-mercadona-supermarkets&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Where can we find Mercadona supermarkets?&lt;/h3&gt;
+&lt;p&gt;Instead of obtaining a bounding box with the function &lt;em&gt;getbb( )&lt;/em&gt; we can build our own box. To do this, we create a vector of four elements, the order has to be West/South/East/North. In the query we use two features: &lt;em&gt;name&lt;/em&gt; and &lt;em&gt;shop&lt;/em&gt; to filter supermarkets that are of this particular brand. Depending on the area or volume of the query, it is necessary to extend the waiting time. By default, the limit is set at 25 seconds (&lt;em&gt;timeout&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;The map, we create in this case, consists only of the supermarket points. Therefore, we use the usual grammar by adding the geometry &lt;code&gt;geom_sf( )&lt;/code&gt;. The &lt;code&gt;theme_void( )&lt;/code&gt; function removes everything except for the points.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#bounding box for the Iberian Peninsula
+m &amp;lt;- c(-10, 30, 5, 46)
+
+#building the query
+q &amp;lt;- m %&amp;gt;% 
+      opq (timeout = 25*100) %&amp;gt;%
+         add_osm_feature(&amp;quot;name&amp;quot;, &amp;quot;Mercadona&amp;quot;) %&amp;gt;%
+         add_osm_feature(&amp;quot;shop&amp;quot;, &amp;quot;supermarket&amp;quot;)
+
+#query
+mercadona &amp;lt;- osmdata_sf(q)
+
+#final map
+ggplot(mercadona$osm_points)+
+  geom_sf(colour = &amp;quot;#08519c&amp;quot;,
+          fill = &amp;quot;#08306b&amp;quot;,
+          alpha = .5,
+          size = 1,
+          shape = 21)+
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-11-03-accessing-osm-data-with-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>database</category>
+      
+            <category>overpass API</category>
+      
+            <category>OSM</category>
+      
+            <category>Point of interest</category>
+      
+      
+            <category>visualization</category>
+      
+            <category>R:elementary</category>
+      
+            <category>R</category>
+      
+            <category>mapping</category>
+      
+    </item>
+    
+    <item>
+      <title>the pie chart</title>
+      <link>https://dominicroye.github.io/en/2018/the-pie-chart/</link>
+      <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2018/the-pie-chart/</guid>
+      <description>
+
+
+&lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Background&lt;/h2&gt;
+&lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
+&lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;(&lt;span class=&#34;citeproc-not-found&#34; data-reference-id=&#34;Simkin1987&#34;&gt;&lt;strong&gt;???&lt;/strong&gt;&lt;/span&gt;)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
+&lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;alternatives-to-the-pie-chart&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Alternatives to the pie chart&lt;/h2&gt;
+&lt;p&gt;The dataset we will use about the vaccination status of &lt;strong&gt;measles&lt;/strong&gt; correspond to June 2018 in Europe and come from the &lt;a href=&#34;https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases&#34;&gt;ECDC&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#packages
+library(tidyverse)
+library(scales)
+library(RColorBrewer)
+
+#data
+measles &amp;lt;- data.frame(
+          vacc_status=c(&amp;quot;Unvaccinated&amp;quot;,&amp;quot;1 Dose&amp;quot;,
+                        &amp;quot;&amp;gt;= 2 Dose&amp;quot;,&amp;quot;Unkown Dose&amp;quot;,&amp;quot;Unkown&amp;quot;),
+          prop=c(0.75,0.091,0.05,0.012,0.096)
+          )
+
+#we order from the highest to the lowest and fix it with a factor
+
+measles &amp;lt;- arrange(measles,
+                   desc(prop))%&amp;gt;%
+              mutate(vacc_status=factor(vacc_status,vacc_status))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;vacc_status&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;prop&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unvaccinated&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.750&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unkown&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.096&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1 Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.091&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&amp;gt;= 2 Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.050&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unkown Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.012&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div id=&#34;bar-plot-or-similar&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Bar plot or similar&lt;/h4&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(vacc_status,prop))+
+            geom_bar(stat=&amp;quot;identity&amp;quot;)+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convert to %
+                                limits=c(0,1))+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
+            geom_pointrange()+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convert to %
+                                limits=c(0,1))+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#custom themes definitions
+theme_singlebar &amp;lt;- theme_bw()+
+  theme(
+    legend.position = &amp;quot;bottom&amp;quot;,
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    plot.title=element_text(size=14, face=&amp;quot;bold&amp;quot;)
+  )
+
+#plot
+mutate(measles,
+       vacc_status=factor(vacc_status,               #we change the order of the categories
+                          rev(levels(vacc_status))))%&amp;gt;%
+ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
+         geom_bar(stat=&amp;quot;identity&amp;quot;)+
+          scale_y_continuous(breaks=seq(0,1,.1),
+                             labels=percent,
+                             limits=c(0,1),
+                             expand=c(.01,.01))+
+          scale_x_continuous(expand=c(0,0))+
+              scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
+                coord_flip()+
+                  theme_singlebar&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we expand our data with numbers from Italy
+measles2 &amp;lt;- mutate(measles,
+                  italy=c(0.826,0.081,0.053,0.013,0.027),
+                  vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&amp;gt;%
+                rename(europe=&amp;quot;prop&amp;quot;)%&amp;gt;%
+                gather(region,prop,europe:italy)
+
+#plot
+ggplot(measles2,aes(region,prop,fill=vacc_status))+
+            geom_bar(stat=&amp;quot;identity&amp;quot;,position=&amp;quot;stack&amp;quot;)+ #stack bar
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convert to %
+                                limits=c(0,1),
+                                expand=c(0,0))+
+            scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;waffle-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Waffle plot&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#package
+library(waffle)
+
+#the waffle function uses a vector with names
+val_measles &amp;lt;- round(measles$prop*100)
+names(val_measles) &amp;lt;- measles$vacc_status
+
+#plot
+waffle(val_measles, #data
+        colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colors
+        rows=5) #row number &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#data
+medida &amp;lt;- c(41,59) #data from the OECD 2015
+names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
+
+#plot
+waffle(medida,
+       colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
+       rows=5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;treemap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Treemap&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#package
+library(treemap)
+
+#plot
+treemap(measles,
+index=&amp;quot;vacc_status&amp;quot;, #variable with categories
+vSize=&amp;quot;prop&amp;quot;,        #values
+type=&amp;quot;index&amp;quot;,        #style more in ?treemap
+title=&amp;quot;&amp;quot;,            
+palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;span class=&#34;citeproc-not-found&#34; data-reference-id=&#34;Robbins2013&#34;&gt;&lt;strong&gt;???&lt;/strong&gt;&lt;/span&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;references&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;References&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>pie chart</category>
+      
+            <category>data</category>
+      
+            <category>circular</category>
+      
+            <category>proportions</category>
+      
+            <category>first post</category>
+      
+            <category>treemap</category>
+      
+            <category>waffle</category>
+      
+            <category>bar</category>
+      
+      
+            <category>datavis</category>
+      
+            <category>R</category>
+      
+            <category>R:elementary</category>
       
     </item>
     

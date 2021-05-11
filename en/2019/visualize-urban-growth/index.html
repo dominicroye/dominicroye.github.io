@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.55.0" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -409,7 +409,7 @@
     
     <a href="/en/categories/r/">R</a>, 
     
-    <a href="/en/categories/relementary/">R:elementary</a>, 
+    <a href="">R:elementary</a>, 
     
     <a href="/en/categories/gis/">gis</a>
     
@@ -539,7 +539,7 @@
     
     <a href="/en/categories/r/">R</a>, 
     
-    <a href="/en/categories/relementary/">R:elementary</a>, 
+    <a href="">R:elementary</a>, 
     
     <a href="/en/categories/gis/">gis</a>
     
@@ -623,11 +623,12 @@
 
 
 <p>The General Directorate for the Cadastre of Spain has spatial information of the all buildings except for the Basque Country and Navarra. This data set is part of the implementation of <a href="https://inspire.ec.europa.eu/">INSPIRE</a>, the Space Information Infrastructure in Europe. More information can be found <a href="http://www.catastro.meh.es/webinspire/index.html">here</a>. We will use the links (<em>urls</em>) in <em>ATOM</em> format, which is an RSS type for web feeds, allowing us to obtain the download link for each municipality.</p>
-<div class="alert alert-note">
-  <p>This blog post is a reduced version of the case study that you can find in our recent publication - <a href="https://dominicroye.github.io/es/publication/manual_rgis_2019/">Introduction to GIS with R</a> - published by Dominic Royé and Roberto Serrano-Notivoli (in Spanish).</p>
+<p><div class="alert alert-note">
+  
+This blog post is a reduced version of the case study that you can find in our recent publication - <a href="https://dominicroye.github.io/es/publication/manual_rgis_2019/">Introduction to GIS with R</a> - published by Dominic Royé and Roberto Serrano-Notivoli (in Spanish).
 
 </div>
-
+</p>
 <div id="packages" class="section level2">
 <h2>Packages</h2>
 <table>
@@ -735,11 +736,12 @@ prov_enlaces_tab &lt;- as_tibble(prov_enlaces$items) %&gt;%
 ## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
 ## # ... with 42 more rows</code></pre>
 <p>Now, we access and download the data from Valencia. To filter the final download link we use the <code>filter()</code> function of the <code>dplyr</code> package, searching for the name of the territorial headquarter and then the name of the municipality in capital letters with the <code>str_detect()</code> function of <code>stringr</code>. The <code>pull()</code> function allows us to extract a column from a <code>data.frame</code>.</p>
-<div class="alert alert-note">
-  <p>Currently the <code>feed.extract()</code> function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the <code>repair_encoding()</code> function of the <code>rvest</code> package.</p>
+<p><div class="alert alert-note">
+  
+Currently the <code>feed.extract()</code> function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the <code>repair_encoding()</code> function of the <code>rvest</code> package.
 
 </div>
-
+</p>
 <pre class="r"><code># filter the province and get the RSS link
 val_atom &lt;- filter(prov_enlaces_tab, str_detect(title, &quot;Valencia&quot;)) %&gt;% pull(link)
 
@@ -908,11 +910,11 @@ tmap_leaflet(m)</code></pre>
 
 <div class="article-tags">
   
-  <a class="badge badge-light" href="/en/tags/urban-growth/">urban growth</a>
+  <a class="badge badge-light" href="">urban growth</a>
   
   <a class="badge badge-light" href="/en/tags/city/">city</a>
   
-  <a class="badge badge-light" href="/en/tags/urban-geography/">urban geography</a>
+  <a class="badge badge-light" href="">urban geography</a>
   
 </div>
 

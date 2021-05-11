@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>spatial analysis on Dominic Royé</title>
@@ -224,11 +223,12 @@ m_distance_km &amp;lt;- set_units(m_distance, km)
 
 # replace the distance of 0 m with NA
 m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;p&gt;To obtain the shortest distance, in addition to its position, we use the &lt;code&gt;apply ()&lt;/code&gt; function which in turn allows us to apply the function &lt;code&gt;which.min()&lt;/code&gt; and &lt;code&gt;min()&lt;/code&gt; on each row. It would also be possible to use the function on columns giving the same result. Finally, we add the results as new columns with the &lt;code&gt;mutate()&lt;/code&gt; function. The indices in &lt;em&gt;pos&lt;/em&gt; allow us to obtain the names of the nearest cities.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the index (position) of the city and the distance
 pos &amp;lt;- apply(m_distance_km, 1, which.min)

@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.55.0" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -409,7 +409,7 @@
     
     <a href="/es/categories/r/">R</a>, 
     
-    <a href="/es/categories/ravanzado/">R:avanzado</a>
+    <a href="">R:avanzado</a>
     
   </span>
   
@@ -537,7 +537,7 @@
     
     <a href="/es/categories/r/">R</a>, 
     
-    <a href="/es/categories/ravanzado/">R:avanzado</a>
+    <a href="">R:avanzado</a>
     
   </span>
   
@@ -735,11 +735,12 @@ plot(tmx[[200]], col = rev(heat.colors(7)))</code></pre>
 <h2>Calcular el promedio de la temperatura</h2>
 <p>En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete <code>raster</code> disponemos de la función <code>stackApply()</code> que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.</p>
 <p>Empezamos con las funciones <code>beginClusterr()</code> y <code>endCluster()</code> que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función <code>clusterR</code> permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función <code>stackApply()</code>, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento <code>progress = 'text'</code> se muestra una barra de progreso del cálculo.</p>
-<div class="alert alert-note">
-  <p>Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de <a href="https://earthengine.google.com/">Google Earth Engine</a> lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.</p>
+<p><div class="alert alert-note">
+  
+Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de <a href="https://earthengine.google.com/">Google Earth Engine</a> lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.
 
 </div>
-
+</p>
 <pre class="r"><code># convertimos las fechas entre 1901 y 2014 a días del año
 time_days &lt;- yday(seq(as_date(&quot;1901-01-01&quot;), as_date(&quot;2014-12-31&quot;), &quot;day&quot;))
 
@@ -1053,8 +1054,6 @@ files &lt;- str_c(&quot;./ta_anima/D&quot;, str_pad(1:366, 3, &quot;left&quot;, 
       <ul>
         
         <li><a href="/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/">Visualizar anomalías climáticas</a></li>
-        
-        <li><a href="/es/graphs/climate/">Clima y tiempo</a></li>
         
         <li><a href="/es/publication/os_tempos_2019/">Os tempos e o clima de Galicia</a></li>
         

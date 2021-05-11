@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>R:principante on Dominic Royé</title>
@@ -1277,11 +1276,12 @@ m_distance_km &amp;lt;- set_units(m_distance, km)
 
 # reemplazamos la distance de 0 con NA
 m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Cuando el resultado es de clase &lt;code&gt;units&lt;/code&gt; es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Cuando el resultado es de clase &lt;code&gt;units&lt;/code&gt; es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;p&gt;Con el objetivo de obtener la distancia más corta, además de la posición de la misma, usamos la función &lt;code&gt;apply()&lt;/code&gt; que a su vez nos permite aplicar la función &lt;code&gt;which.min()&lt;/code&gt; y &lt;code&gt;min()&lt;/code&gt; sobre cada fila. También sería posible emplear la función sobre columnas que daría el mismo resulado. Para finalizar, añadimos los resultados como nuevas columnas con la función &lt;code&gt;mutate()&lt;/code&gt;. Las posiciones en &lt;em&gt;pos&lt;/em&gt; nos permiten obtener los nombres de las ciudades más próximas.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos la posición de la ciudad y la distancia
 pos &amp;lt;- apply(m_distance_km, 1, which.min)
@@ -1341,11 +1341,12 @@ ggplot(world) +
 
 
 &lt;p&gt;La Dirección General del Catastro de España dispone de información espacial de toda la edificación a excepción del País Vasco y Navarra. Este conjunto de datos forma parte de la implantación de &lt;a href=&#34;https://inspire.ec.europa.eu/&#34;&gt;INSPIRE&lt;/a&gt;, la Infraestructura de Información Espacial en Europa. Más información podemos encontrar &lt;a href=&#34;http://www.catastro.meh.es/webinspire/index.html&#34;&gt;aquí&lt;/a&gt;. Utilizaremos los enlaces (&lt;em&gt;urls&lt;/em&gt;) en formato &lt;em&gt;ATOM&lt;/em&gt;, que es un formato de redifusión de tipo RSS, permitiéndonos obtener el enlace de descarga para cada municipio.&lt;/p&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Esta entrada de blog es una versión reducida del caso práctico que podéis encontrar en nuestra reciente publicación - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introducción a los SIG con R&lt;/a&gt; - publicado por Dominic Royé y Roberto Serrano-Notivoli.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Esta entrada de blog es una versión reducida del caso práctico que podéis encontrar en nuestra reciente publicación - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introducción a los SIG con R&lt;/a&gt; - publicado por Dominic Royé y Roberto Serrano-Notivoli.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;table&gt;
@@ -1453,11 +1454,12 @@ prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;%
 ## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Actualmente la función &lt;code&gt;feed.extract()&lt;/code&gt; no importa correctamente en el &lt;em&gt;encoding&lt;/em&gt; UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función &lt;code&gt;repair_encoding()&lt;/code&gt; del paquete &lt;code&gt;rvest&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Actualmente la función &lt;code&gt;feed.extract()&lt;/code&gt; no importa correctamente en el &lt;em&gt;encoding&lt;/em&gt; UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función &lt;code&gt;repair_encoding()&lt;/code&gt; del paquete &lt;code&gt;rvest&lt;/code&gt;.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la provincia y obtenemos la url RSS
 val_atom &amp;lt;- filter(prov_enlaces_tab, str_detect(title, &amp;quot;Valencia&amp;quot;)) %&amp;gt;% pull(link)
 

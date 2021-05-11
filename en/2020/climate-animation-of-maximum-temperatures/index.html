@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.53" />
+  <meta name="generator" content="Hugo 0.55.0" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -409,7 +409,7 @@
     
     <a href="/en/categories/r/">R</a>, 
     
-    <a href="/en/categories/radvanced/">R:advanced</a>
+    <a href="">R:advanced</a>
     
   </span>
   
@@ -537,7 +537,7 @@
     
     <a href="/en/categories/r/">R</a>, 
     
-    <a href="/en/categories/radvanced/">R:advanced</a>
+    <a href="">R:advanced</a>
     
   </span>
   
@@ -735,11 +735,12 @@ plot(tmx[[200]], col = rev(heat.colors(7)))</code></pre>
 <h2>Calculate the average temperature</h2>
 <p>In this step the objective is to calculate the average maximum temperature for each day of the year. Therefore, the first thing we do is to create a vector, indicating the day of the year for the entire time series. In the <code>raster</code> package we have the <code>stackApply()</code> function that allows us to apply another function on groups of layers, or rather, indexes. Since our dataset is large, we include this function in parallelization functions.</p>
 <p>For the parallelization we start and end always with the <code>beginClusterr()</code> and <code>endCluster()</code>. In the first function we must indicate the number of cores we want to use. In this case, I use 4 of 7 possible cores, however, the number must be changed according to the characteristics of each CPU, the general rule is n-1. So the <code>clusterR</code> function execute a function in parallel with multiple cores. The first argument corresponds to the raster object, the second to the used function, and as list argument we pass the arguments of the <code>stackApply()</code> function: the indexes that create the groups and the function used for each of the groups. Adding the argument <code>progress = 'text'</code> shows a progress bar of the calculation process.</p>
-<div class="alert alert-note">
-  <p>For the US dataset I did the preprocessing, the calculation of the average, in a cloud computing platform through <a href="https://earthengine.google.com/">Google Earth Engine</a>, which makes the whole process faster. In the case of Australia the preprocessing was more complex as the dataset is separated in multiple <em>netCDF</em> files for each year.</p>
+<p><div class="alert alert-note">
+  
+For the US dataset I did the preprocessing, the calculation of the average, in a cloud computing platform through <a href="https://earthengine.google.com/">Google Earth Engine</a>, which makes the whole process faster. In the case of Australia the preprocessing was more complex as the dataset is separated in multiple <em>netCDF</em> files for each year.
 
 </div>
-
+</p>
 <pre class="r"><code># convert the dates between 1901 and 2014 to days of the year
 time_days &lt;- yday(seq(as_date(&quot;1901-01-01&quot;), as_date(&quot;2014-12-31&quot;), &quot;day&quot;))
 
@@ -1057,8 +1058,6 @@ files &lt;- str_c(&quot;./ta_anima/D&quot;, str_pad(1:366, 3, &quot;left&quot;, 
         <li><a href="/en/publication/era5_esp_2020/">Comparison of temperature-mortality associations using observed weather station and reanalysis data in 52 Spanish cities</a></li>
         
         <li><a href="/en/publication/manual_rgis_2019/">Introducción a los SIG con R</a></li>
-        
-        <li><a href="/en/graphs/climate/">Climate and Weather</a></li>
         
         <li><a href="/en/publication/ncdf_2015/">The use of climate databases netCDF with array structure in the environment of R</a></li>
         

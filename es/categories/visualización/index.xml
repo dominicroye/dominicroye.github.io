@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
     <title>visualización on Dominic Royé</title>
@@ -605,11 +604,12 @@ plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
 &lt;p&gt;En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete &lt;code&gt;raster&lt;/code&gt; disponemos de la función &lt;code&gt;stackApply()&lt;/code&gt; que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.&lt;/p&gt;
 &lt;p&gt;Empezamos con las funciones &lt;code&gt;beginClusterr()&lt;/code&gt; y &lt;code&gt;endCluster()&lt;/code&gt; que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función &lt;code&gt;clusterR&lt;/code&gt; permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función &lt;code&gt;stackApply()&lt;/code&gt;, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento &lt;code&gt;progress = &#39;text&#39;&lt;/code&gt; se muestra una barra de progreso del cálculo.&lt;/p&gt;
-&lt;div class=&#34;alert alert-note&#34;&gt;
-  &lt;p&gt;Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de &lt;a href=&#34;https://earthengine.google.com/&#34;&gt;Google Earth Engine&lt;/a&gt; lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de &lt;a href=&#34;https://earthengine.google.com/&#34;&gt;Google Earth Engine&lt;/a&gt; lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.
 
 &lt;/div&gt;
-
+&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos las fechas entre 1901 y 2014 a días del año
 time_days &amp;lt;- yday(seq(as_date(&amp;quot;1901-01-01&amp;quot;), as_date(&amp;quot;2014-12-31&amp;quot;), &amp;quot;day&amp;quot;))
 
@@ -825,6 +825,1090 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
             <category>R</category>
       
             <category>R:avanzado</category>
+      
+    </item>
+    
+    <item>
+      <title>Visualizar anomalías climáticas</title>
+      <link>https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/</guid>
+      <description>
+
+
+&lt;p&gt;Cuando visualizamos anomalías de precipitación y temperatura, simplemente usamos series temporales en un gráfico de barras indicando con color rojo y azul valores negativos y positivos. No obstante, para tener una imagen global necesitamos ambas anomalías en un único gráfico. Así podríamos responder directamente a la pregunta de si una estación del año o un mes en concreto fue seco-cálido o húmedo-frío, e incluso comparar estas anomalías en el contexto de años anteriores.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggrepel&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Etiquetas sin superposición con ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggrepel&amp;quot;)) install.packages(&amp;quot;ggrepel&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#paquetes
+library(tidyverse)
+library(lubridate)
+library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparar los datos&lt;/h2&gt;
+&lt;p&gt;Primero importamos la precipitación y temperatura diaria de la estación meteorológica seleccionada (&lt;a href=&#34;https://dominicroye.github.io/files/meteo_tenerife.csv&#34;&gt;descarga&lt;/a&gt;). Usaremos los datos de Tenerife Sur (España) [1981-2020] accesible a través de &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. En R existe un paquete &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; que facilita la descarga con funciones específicas para acceder a los datos de AEMET, Meteogalicia y Meteocat.&lt;/p&gt;
+&lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
+&lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+## cols(
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-2-preparar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 2: preparar los datos&lt;/h3&gt;
+&lt;p&gt;En el segundo paso preparamos los datos para calcular las anomalías. Para ello, creamos tres nuevas columnas: el mes, el año y la estación del año. Como nuestro objetivo son las anomalías invernales no podemos usar el año natural, ya que el invierno comprende el mes de diciembre de un año y los meses de enero y febrero del siguiente. La función personalizada &lt;code&gt;meteo_yr()&lt;/code&gt; extrae el año de una fecha indicando el mes inicial. El concepto es similar al año hidrológico en el que se empieza en octubre.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yr &amp;lt;- function(dates, start_month = NULL) {
+  # convertir a POSIXlt
+  dates.posix &amp;lt;- as.POSIXlt(dates)
+  # la compensación
+  offset &amp;lt;- ifelse(dates.posix$mon &amp;gt;= start_month - 1, 1, 0)
+  # nuevo año
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Usaremos las funciones de la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt; (&lt;a href=&#34;https://www.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://www.tidyverse.org/&lt;/a&gt;). La función &lt;code&gt;mutate()&lt;/code&gt; ayuda a añadir nuevas columnas o a cambiar otras existentes. Para definir las estaciones del año, empleamos la función &lt;code&gt;case_when()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; lo que tiene muchas ventajas en comparación con una cadena de &lt;code&gt;ifelse()&lt;/code&gt;. En la función &lt;code&gt;case_when()&lt;/code&gt; usamos fórmulas en dos tiempos, por un lado la condición y por otro la acción cuando se cumpla esa condición. En R una fórmula de dos tiempos o dos lados se consistuye con el operador &lt;code&gt;~&lt;/code&gt;. El operador binario &lt;code&gt;%in%&lt;/code&gt; nos permite filtrar varios valores en un conjunto.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &amp;quot;Winter&amp;quot;,
+                                  month %in% 3:5 ~ &amp;quot;Spring&amp;quot;,
+                                  month %in% 6:8 ~ &amp;quot;Summer&amp;quot;,
+                                  month %in% 9:11 ~ &amp;quot;Autum&amp;quot;))
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-3-estimar-las-anomalías-invernales&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 3: estimar las anomalías invernales&lt;/h3&gt;
+&lt;p&gt;En el siguiente paso creamos un subset del invierno. Después agrupamos por el año meteorológico y calculamos la suma y el promedio para la precipitación y la temperatura, respectivamente. Para facilitar el trabajo el paquete &lt;code&gt;magrittr&lt;/code&gt; introduce el operador llamado &lt;em&gt;pipe&lt;/em&gt; en la forma &lt;code&gt;%&amp;gt;%&lt;/code&gt; con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador &lt;em&gt;pipe&lt;/em&gt; pasa la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. Se debe entender y pronunciar el &lt;code&gt;%&amp;gt;%&lt;/code&gt; como &lt;em&gt;“luego”&lt;/em&gt; (&lt;em&gt;then&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;- filter(data, 
+                   season == &amp;quot;Winter&amp;quot;) %&amp;gt;% 
+              group_by(winter_yr) %&amp;gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sólo nos quedan por calcular las anomalías de precipitación y temperatura. Las columnas &lt;code&gt;pr_mean&lt;/code&gt; y &lt;code&gt;ta_mean&lt;/code&gt; contendrán el promedio climatico, la referencia de las anomalías respecto al periodo normal 1981-2010. Por eso debemos filtrar los valores al periodo antes de 2010, lo que haremos de la forma habitual de filtrado de vectores en R. Una vez que tenemos las referencias estimamos las anomalías &lt;code&gt;pr_anom&lt;/code&gt; y &lt;code&gt;ta_anom&lt;/code&gt;. Para facilitar la interpretación, en el caso de la precipitación lo expresamos en porcentaje, pero poniendo el promedio en 0% en lugar del 100%.&lt;/p&gt;
+&lt;p&gt;Además, añadimmos tres columnas con información necesaria en la creación del gráfico. 1) &lt;code&gt;labyr&lt;/code&gt; contiene el año de cada anomalía siempre y cuando haya sido mayor/menor del -+10% o -+0,5ºC, respectivamente (lo hago para que no haya demasiadas etiquetas), 2) &lt;code&gt;symb_point&lt;/code&gt; una variable dummy para poder crear un simbolo diferencial entre los casos de (1), y 3) &lt;code&gt;lab_font&lt;/code&gt; destacaremos en negrita el año 2020.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &amp;lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &amp;lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;),
+                              lab_font = ifelse(labyr == 2020, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Crear el gráfico&lt;/h2&gt;
+&lt;p&gt;El gráfico lo construiremos añadiendo capa por capa los diferentes elementos: 1) el fondo con las diferentes cuadrículas (Seco-Cálido, Seco-Frío, etc.) 2) los puntos y etiquetas, y 3) los últimos ajustes de estilo.&lt;/p&gt;
+&lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 1&lt;/h3&gt;
+&lt;p&gt;La idea es que tengamos los puntos con anomalías seco-cálido en el cuadrante I (arriba-derecha) y los de húmedo-frío en el cuadrante III (abajo-izquierda). Por eso, debemos invertir el signo en las anomalías de precipitación. Después creamos un &lt;code&gt;data.frame&lt;/code&gt; con las posiciones de las etiquetas de los cuatro cuadrantes. Para las posiciones en &lt;em&gt;x&lt;/em&gt; y &lt;em&gt;y&lt;/em&gt; se usan &lt;code&gt;Inf&lt;/code&gt; y &lt;code&gt;-Inf&lt;/code&gt; lo que equivale al punto máximo dentro del &lt;em&gt;panel&lt;/em&gt;. No obstante, es necesario ajustar la posición hacia los puntos extremos dentro del marco gráfico con los argumentos conocidos de &lt;code&gt;ggplot2&lt;/code&gt;: &lt;em&gt;hjust&lt;/em&gt; y &lt;em&gt;vjust&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv_p &amp;lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &amp;lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&amp;quot;Húmedo-Cálido&amp;quot;, &amp;quot;Seco-Cálido&amp;quot;,
+                              &amp;quot;Húmedo-Frío&amp;quot;, &amp;quot;Seco-Frío&amp;quot;))
+
+  
+bglab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      x    y hjust vjust           lab
+## 1 -Inf  Inf     1     1 Húmedo-Cálido
+## 2  Inf  Inf     1     0   Seco-Cálido
+## 3 -Inf -Inf     0     1   Húmedo-Frío
+## 4  Inf -Inf     0     0     Seco-Frío&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 2&lt;/h3&gt;
+&lt;p&gt;En la segunda podemos empezar a construir el gráfico añadiendo todos los elementos gráficos. En esta parte creamos el fondo con los diferentes colores de cada cuadrante. La función &lt;code&gt;annotate()&lt;/code&gt; permite añadir capas de geometría sin el uso de variables dentro de un &lt;code&gt;data.frame&lt;/code&gt;. Con la función &lt;code&gt;geom_hline()&lt;/code&gt; y &lt;code&gt;geom_vline()&lt;/code&gt; marcamos los cuadrantes en horizontal y vertical usando una linea discontinua. Por último, dibujamos las etiquetas de cada cuadrante, empleando la función &lt;code&gt;geom_text()&lt;/code&gt;. Cuando usamos diferentes fuentes de &lt;code&gt;data.frames&lt;/code&gt;, uno diferente al principal usado en &lt;code&gt;ggplot()&lt;/code&gt;, debemos indicarlo con el argumento &lt;code&gt;data&lt;/code&gt; en la función de geomtría correspondiente.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &amp;quot;#fc9272&amp;quot;, alpha = .6) + #humedo-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &amp;quot;#cb181d&amp;quot;, alpha = .6) + #seco-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &amp;quot;#2171b5&amp;quot;, alpha = .6) + #humedo-frio
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &amp;quot;#c6dbef&amp;quot;, alpha = .6) + #seco-frio
+       geom_hline(yintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &amp;quot;italic&amp;quot;, size = 5, 
+                     angle = 90, colour = &amp;quot;white&amp;quot;)
+
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 3&lt;/h3&gt;
+&lt;p&gt;En la tercera parte simplemente añadimos los puntos de las anomalías y las etiquetas de los años. La función &lt;code&gt;geom_text_repel()&lt;/code&gt; es similar a la que conocemos por defecto en &lt;code&gt;ggplot2&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, pero evita el sobrlapso entre sí.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-4&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 4&lt;/h3&gt;
+&lt;p&gt;En la última parte ajustamos, además del estilo general, los ejes, el tipo de color y el (sub)título. Recuerda que cambiamos el signo en las anomalías de precipitación. Por eso, debemos usar los argumentos &lt;code&gt;breaks&lt;/code&gt; y &lt;code&gt;labels&lt;/code&gt; en la función &lt;code&gt;scale_x_continouous()&lt;/code&gt; para revertir el signo en las etiquetas correspondientes a los cortes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g3 &amp;lt;- g2 + scale_x_continuous(&amp;quot;Anomalía de precipitación en %&amp;quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&amp;quot;Anomalía de temperatura media en ºC&amp;quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;)) +
+           scale_colour_manual(values = rev(c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;))) +
+           labs(title = &amp;quot;Anomalías invernales en Tenerife Sur&amp;quot;, 
+                caption = &amp;quot;Datos: AEMET\nPeriodo normal 1981-2010&amp;quot;) +
+           theme_bw()
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>anomalía</category>
+      
+            <category>precipitación</category>
+      
+            <category>temperatura</category>
+      
+            <category>clima</category>
+      
+            <category>puntos</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
+    </item>
+    
+    <item>
+      <title>Visualizar el crecimiento urbano</title>
+      <link>https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/</guid>
+      <description>
+
+
+&lt;p&gt;La Dirección General del Catastro de España dispone de información espacial de toda la edificación a excepción del País Vasco y Navarra. Este conjunto de datos forma parte de la implantación de &lt;a href=&#34;https://inspire.ec.europa.eu/&#34;&gt;INSPIRE&lt;/a&gt;, la Infraestructura de Información Espacial en Europa. Más información podemos encontrar &lt;a href=&#34;http://www.catastro.meh.es/webinspire/index.html&#34;&gt;aquí&lt;/a&gt;. Utilizaremos los enlaces (&lt;em&gt;urls&lt;/em&gt;) en formato &lt;em&gt;ATOM&lt;/em&gt;, que es un formato de redifusión de tipo RSS, permitiéndonos obtener el enlace de descarga para cada municipio.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Esta entrada de blog es una versión reducida del caso práctico que podéis encontrar en nuestra reciente publicación - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introducción a los SIG con R&lt;/a&gt; - publicado por Dominic Royé y Roberto Serrano-Notivoli.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;feedeR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar formatos de redifusión RSS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tmap&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil creación de mapas temáticos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;classInt&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Para crear intervalos de clase univariantes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Carga familias tipográficas del sistema y de Google&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar familias tipográficas más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes necesarios
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;feedeR&amp;quot;)) install.packages(&amp;quot;feedeR&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;tmap&amp;quot;)) install.packages(&amp;quot;tmap&amp;quot;)
+if(!require(&amp;quot;classInt&amp;quot;)) install.packages(&amp;quot;classInt&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;rvest&amp;quot;)) install.packages(&amp;quot;rvest&amp;quot;)
+
+# cargamos los paquetes
+library(feedeR)
+library(sf) 
+library(fs)
+library(tidyverse)
+library(lubridate)
+library(classInt)
+library(tmap)
+library(rvest)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;enlaces-de-descarga&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Enlaces de descarga&lt;/h2&gt;
+&lt;p&gt;La primera &lt;em&gt;url&lt;/em&gt; nos dará acceso a un listado de provincias, sedes territoriales (no siempre coinciden con la provincia), con nuevos enlaces RSS los cuales incluyen los enlaces finales de descarga para cada municipio. En este caso, descargaremos el edificado de Valencia. Los datos del Catastro se actualizan cada seis meses.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;url &amp;lt;- &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.bu.atom.xml&amp;quot;
+
+# importamos los RSS con enlaces de provincias
+prov_enlaces &amp;lt;- feed.extract(url)
+str(prov_enlaces) #estructura es lista&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
+##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2019-10-26&amp;quot;
+##  $ items  :&amp;#39;data.frame&amp;#39;: 52 obs. of  4 variables:
+##   ..$ title: chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 AlmerÃ­a&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
+##   ..$ date : POSIXct[1:52], format: &amp;quot;2019-10-26&amp;quot; &amp;quot;2019-10-26&amp;quot; ...
+##   ..$ link : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
+##   ..$ hash : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos la tabla con los enlaces
+prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;% 
+                       mutate(title = repair_encoding(title))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prov_enlaces_tab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 4
+##    title           date                link                            hash     
+##    &amp;lt;chr&amp;gt;           &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;    
+##  1 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d21ebb79~
+##  2 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ bdba5e14~
+##  3 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 03bcbcc7~
+##  4 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 8a154202~
+##  5 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 7d3fd376~
+##  6 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 9c08741f~
+##  7 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ ff722b15~
+##  8 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ b431aa61~
+##  9 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ f79c6562~
+## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
+## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Actualmente la función &lt;code&gt;feed.extract()&lt;/code&gt; no importa correctamente en el &lt;em&gt;encoding&lt;/em&gt; UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función &lt;code&gt;repair_encoding()&lt;/code&gt; del paquete &lt;code&gt;rvest&lt;/code&gt;.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la provincia y obtenemos la url RSS
+val_atom &amp;lt;- filter(prov_enlaces_tab, str_detect(title, &amp;quot;Valencia&amp;quot;)) %&amp;gt;% pull(link)
+
+# importamos la RSS
+val_enlaces &amp;lt;- feed.extract(val_atom)
+
+# obtenemos la tabla con los enlaces de descarga
+val_enlaces_tab &amp;lt;- val_enlaces$items
+val_enlaces_tab &amp;lt;- mutate(val_enlaces_tab, title = repair_encoding(title),
+                          link = repair_encoding(link)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)
+## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la tabla con el nombre de la ciudad
+val_link &amp;lt;- filter(val_enlaces_tab, str_detect(title, &amp;quot;VALENCIA&amp;quot;)) %&amp;gt;% pull(link)
+val_link&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;http://www.catastro.minhap.es/INSPIRE/Buildings/46/46900-VALENCIA/A.ES.SDGC.BU.46900.zip&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;descarga-de-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Descarga de datos&lt;/h2&gt;
+&lt;p&gt;La descarga se realiza con la función &lt;code&gt;download.file()&lt;/code&gt; que únicamente tiene dos argumentos principales, el enlace de descarga y la ruta con el nombre del archivo. En este caso hacemos uso de la función &lt;code&gt;tempfile()&lt;/code&gt;, que nos es útil para crear archivos temporales, es decir, archivos que únicamente existen en la memoría RAM por un tiempo determinado.
+El archivo que descargamos tiene extensión &lt;code&gt;*.zip&lt;/code&gt;, por lo que debemos descomprimirlo con otra función (&lt;code&gt;unzip()&lt;/code&gt;), que requiere el nombre del archivo y el nombre de la carpeta donde lo queremos descomprimir. Por último, la función &lt;code&gt;URLencode()&lt;/code&gt; codifica una dirección &lt;em&gt;URL&lt;/em&gt; que contiene caracteres especiales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos un archivo temporal 
+temp &amp;lt;- tempfile()
+
+# descargamos los datos
+download.file(URLencode(val_link), temp)
+
+# descomprimimos a una carpeta llamda buildings
+unzip(temp, exdir = &amp;quot;buildings&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar los datos&lt;/h2&gt;
+&lt;p&gt;Para importar los datos utilizamos la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;code&gt;fs&lt;/code&gt;, que nos permite obtener los archivos y carpetas de una ruta concreta al mismo tiempo que filtramos por un patrón de texto (&lt;em&gt;regexp&lt;/em&gt;: expresión regular). Aplicamos la función &lt;code&gt;st_read()&lt;/code&gt; del paquete &lt;code&gt;sf&lt;/code&gt; al archivo espacial de formato &lt;em&gt;Geography Markup Language&lt;/em&gt; (GML).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos la ruta con el archivo
+file_val &amp;lt;- dir_ls(&amp;quot;buildings&amp;quot;, regexp = &amp;quot;building.gml&amp;quot;)
+
+# importamos los datos
+buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `Building&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2019-11-01-visualizar-crecimiento-urbano\buildings\A.ES.SDGC.BU.46900.building.gml&amp;#39; using driver `GML&amp;#39;
+## Simple feature collection with 36296 features and 24 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 720608 ymin: 4351287 xmax: 734982.5 ymax: 4382906
+## CRS:            25830&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación-de-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación de los datos&lt;/h2&gt;
+&lt;p&gt;Únicamente convertimos la columna de la edad del edificio (&lt;em&gt;beginning&lt;/em&gt;) en clase &lt;code&gt;Date&lt;/code&gt;. La columna de la fecha contiene algunas fechas en formato &lt;code&gt;--01-01&lt;/code&gt; lo que no corresponde a ninguna fecha reconocible. Por eso, reemplazamos el primer &lt;code&gt;-&lt;/code&gt; por &lt;code&gt;0000&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# 
+buildings_val &amp;lt;- mutate(buildings_val, 
+               beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
+                            ymd_hms() %&amp;gt;% as_date()
+               )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 4 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gráfico-de-distribución&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Gráfico de distribución&lt;/h2&gt;
+&lt;p&gt;Antes de crear el mapa de la edad del edificado, lo que reflejará el crecimiento urbano, haremos un gráfico de distribución de la fecha de construcción de los edificios. Podremos identificar claramente períodos de expansión urbana. Usaremos el paquete &lt;code&gt;ggplot2&lt;/code&gt; con la geometría de &lt;code&gt;geom_density()&lt;/code&gt; para este objetivo. La función &lt;code&gt;font_add_google()&lt;/code&gt; del paquete &lt;code&gt;sysfonts&lt;/code&gt; nos permite descargar e incluir familias tipográficas de Google.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#descarga de familia tipográfica
+sysfonts::font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+#usar showtext para familias tipográficas
+showtext::showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#limitamos al periodo posterior a 1750
+filter(buildings_val, beginning &amp;gt;= &amp;quot;1750-01-01&amp;quot;) %&amp;gt;%
+ ggplot(aes(beginning)) + 
+    geom_density(fill = &amp;quot;#2166ac&amp;quot;, alpha = 0.7) +
+  scale_x_date(date_breaks = &amp;quot;20 year&amp;quot;, 
+               date_labels = &amp;quot;%Y&amp;quot;) +
+  theme_minimal() +
+  theme(title = element_text(family = &amp;quot;Montserrat&amp;quot;),
+        axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;)) +
+  labs(y = &amp;quot;&amp;quot;,x = &amp;quot;&amp;quot;, title = &amp;quot;Evolución del desarrollo urbano&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-11-01-visualizar-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;buffer-de-25-km-de-valencia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Buffer de 2,5 km de Valencia&lt;/h2&gt;
+&lt;p&gt;Para poder visualizar bien la distribución del crecimiento, limitamos el mapa a un radio de 2,5 km desde el centro de la ciudad. Usamos la función &lt;code&gt;geocode_OSM()&lt;/code&gt; del paquete &lt;code&gt;tmaptools&lt;/code&gt; para obtener las coordenadas de Valencia en clase &lt;code&gt;sf&lt;/code&gt;. Después proyectamos los puntos al sistema que usamos para el edificado (EPSG:25830). Como último paso creamos con la función &lt;code&gt;st_buffer()&lt;/code&gt; un &lt;em&gt;buffer&lt;/em&gt; con 2500 m y la intersección con nuestros datos de los edificios. También es posible crear un buffer en forma de un rectángulo indicando el tipo de estilo con el argumento &lt;code&gt;endCapStyle = &#34;SQUARE&#34;&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos las coordinadas de Valencia
+ciudad_point &amp;lt;- tmaptools::geocode_OSM(&amp;quot;Valencia&amp;quot;, 
+                                      as.sf = TRUE)
+
+# proyectamos los datos
+ciudad_point &amp;lt;- st_transform(ciudad_point, 25830)
+
+# creamos un buffer
+point_bf &amp;lt;- st_buffer(ciudad_point, 2500)
+
+
+# obtenemos la intersección entre el buffer y la edificación
+buildings_val25 &amp;lt;- st_intersection(buildings_val, point_bf)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparar-los-datos-para-el-mapas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparar los datos para el mapas&lt;/h2&gt;
+&lt;p&gt;Para poder visualizar bien las diferentes épocas de crecimiento, categorizamos el año en 15 grupos empleando cuartiles.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#encontrar 15 clases
+br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;): var
+## has missing values, omitted in finding classes&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#crear etiquetas
+lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## style: quantile
+##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
+##         940        1369         971         596        1719        1080 
+## 1950 - 1957 1957 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1977 
+##        1227        1266        1233        1165        1161         932 
+## 1977 - 1987 1987 - 1999      &amp;gt; 1999 
+##        1337        1197        1190&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#categorizar el año
+buildings_val25 &amp;lt;- mutate(buildings_val25, 
+               yr_cl = cut(year(beginning), br$brks, labels = lab, include.lowest = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-valencia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa de Valencia&lt;/h2&gt;
+&lt;p&gt;El mapa creamos con el paquete &lt;code&gt;tmap&lt;/code&gt;. Es una interesante alternativa a &lt;code&gt;ggplot2&lt;/code&gt;. Se trata de un paquete de funciones especializadas en crear mapas temáticos. La filosofía del paquete sigue a la de &lt;code&gt;ggplot2&lt;/code&gt;, creando multiples capas con diferentes funciones, que siempre empiezan con &lt;code&gt;tm_*&lt;/code&gt; y se combinan con &lt;code&gt;+&lt;/code&gt;. La construcción de un mapa con &lt;code&gt;tmap&lt;/code&gt; siempre comienza con &lt;code&gt;tm_shape()&lt;/code&gt;, donde se definen los datos que queremos dibujar. Luego agregamos la geometría correspondiente al tipo de datos (&lt;code&gt;tm_polygon()&lt;/code&gt;, &lt;code&gt;tm_border()&lt;/code&gt;, &lt;code&gt;tm_dots()&lt;/code&gt; o incluso &lt;code&gt;tm_raster()&lt;/code&gt;). La función &lt;code&gt;tm_layout()&lt;/code&gt; ayuda a configurar el estilo del mapa.&lt;/p&gt;
+&lt;p&gt;Cuando necesitamos más colores del máximo permitido por &lt;code&gt;RColorBrewer&lt;/code&gt; podemos pasar los colores a la función &lt;code&gt;colorRampPalette()&lt;/code&gt;. Esta función interpola para un mayor número más colores de la gama.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colores
+col_spec &amp;lt;- RColorBrewer::brewer.pal(11, &amp;quot;Spectral&amp;quot;)
+
+#función de una gama de colores
+col_spec_fun &amp;lt;- colorRampPalette(col_spec)
+
+
+#crear los mapas
+tm_shape(buildings_val25) +
+  tm_polygons(&amp;quot;yr_cl&amp;quot;, 
+              border.col = &amp;quot;transparent&amp;quot;,
+              palette = col_spec_fun(15),
+              textNA = &amp;quot;Sin dato&amp;quot;,
+              title = &amp;quot;&amp;quot;) +
+ tm_layout(bg.color = &amp;quot;black&amp;quot;,
+           outer.bg.color = &amp;quot;black&amp;quot;,
+           legend.outside = TRUE,
+           legend.text.color = &amp;quot;white&amp;quot;,
+           legend.text.fontfamily = &amp;quot;Montserrat&amp;quot;, 
+            panel.label.fontfamily = &amp;quot;Montserrat&amp;quot;,
+            panel.label.color = &amp;quot;white&amp;quot;,
+            panel.label.bg.color = &amp;quot;black&amp;quot;,
+            panel.label.size = 5,
+            panel.label.fontface = &amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-11-01-visualizar-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-dinámico-en-leaflet&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa dinámico en leaflet&lt;/h2&gt;
+&lt;p&gt;Una ventaja muy interesante es la función &lt;code&gt;tmap_leaflet()&lt;/code&gt; del paquete &lt;code&gt;tmap&lt;/code&gt; para pasar de forma sencilla un mapa creado en el mismo marco a &lt;code&gt;leaflet&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#mapa tmap de Santiago
+m &amp;lt;-   tm_shape(buildings_val25) +
+          tm_polygons(&amp;quot;yr_cl&amp;quot;, 
+              border.col = &amp;quot;transparent&amp;quot;,
+              palette = col_spec_fun(15),
+              textNA = &amp;quot;Without data&amp;quot;,
+              title = &amp;quot;&amp;quot;)
+
+
+#mapa dinámico
+tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
+&lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>crecimiento urbano</category>
+      
+            <category>ciudad</category>
+      
+            <category>geografia urbana</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:principante</category>
+      
+            <category>gis</category>
+      
+    </item>
+    
+    <item>
+      <title>Cómo crear &#39;Warming Stripes&#39; in R</title>
+      <link>https://dominicroye.github.io/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</link>
+      <pubDate>Wed, 05 Dec 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2018/c%C3%B3mo-crear-warming-stripes-in-r/</guid>
+      <description>
+
+
+&lt;p&gt;Este año se hicieron muy famosos en todo el mundo los llamados &lt;em&gt;warming stripes&lt;/em&gt;, las tiras del calentamiento global, que fueron creadas por el científico &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;A partir de su idea, creé tiras para ejemplos de España, como el siguiente de Madrid.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;es&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/Temperatura?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#Temperatura&lt;/a&gt; anual en &lt;a href=&#34;https://twitter.com/hashtag/MadridRetiro?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#MadridRetiro&lt;/a&gt; desde 1920 a 2017.  &lt;a href=&#34;https://twitter.com/hashtag/CambioClimatico?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#CambioClimatico&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; (idea de &lt;a href=&#34;https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw&#34;&gt;@ed_hawkins&lt;/a&gt; 🙏) &lt;a href=&#34;https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw&#34;&gt;@Divulgameteo&lt;/a&gt; &lt;a href=&#34;https://twitter.com/edupenabad?ref_src=twsrc%5Etfw&#34;&gt;@edupenabad&lt;/a&gt; &lt;a href=&#34;https://twitter.com/climayagua?ref_src=twsrc%5Etfw&#34;&gt;@climayagua&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw&#34;&gt;@ClimaGroupUB&lt;/a&gt; &lt;a href=&#34;https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw&#34;&gt;@4gotas_com&lt;/a&gt; &lt;a href=&#34;https://t.co/wmLb5uczpT&#34;&gt;pic.twitter.com/wmLb5uczpT&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw&#34;&gt;June 2, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;En este caso usaremos las temperaturas anuales de Lisboa del &lt;a href=&#34;https://data.giss.nasa.gov/gistemp/stdata/&#34;&gt;GISS Surface Temperature Analysis&lt;/a&gt; que comprenden el periodo 1880-2018. Se trata de series temporales homogeneizadas. También se podrían usar temperaturas mensuales u otras series temporales. El archivo se puede descargar &lt;a href=&#34;https://dominicroye.github.io/files/temp_lisboa.csv&#34;&gt;aquí&lt;/a&gt;. Lo primero que debemos hacer, siempre y cuando no lo hayamos hecho, es instalar la colección de paquetes &lt;em&gt;tidyverse&lt;/em&gt; que incluyen también &lt;em&gt;ggplot2&lt;/em&gt;. Además, nos hará falta el paquete &lt;em&gt;lubridate&lt;/em&gt; para el tratamiento de fechas. Después, importamos los datos de Lisboa que están en formato csv.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes lubridate y tidyverse
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+
+#paquetes
+library(tidyverse)
+library(lubridate)
+library(RColorBrewer)
+
+#importar las temperaturas anuales
+temp_lisboa &amp;lt;- read_csv(&amp;quot;temp_lisboa.csv&amp;quot;)
+
+str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;spec_tbl_df&amp;#39;, &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 139 obs. of  18 variables:
+##  $ YEAR  : num  1880 1881 1882 1883 1884 ...
+##  $ JAN   : num  9.17 11.37 10.07 10.86 11.16 ...
+##  $ FEB   : num  12 11.8 11.9 11.5 10.6 ...
+##  $ MAR   : num  13.6 14.1 13.5 10.5 12.4 ...
+##  $ APR   : num  13.1 14.4 14 13.8 12.2 ...
+##  $ MAY   : num  15.7 17.3 15.6 14.6 16.4 ...
+##  $ JUN   : num  17 19.2 17.9 17.2 19.1 ...
+##  $ JUL   : num  19.1 21.8 20.3 19.5 21.4 ...
+##  $ AUG   : num  20.6 23.5 21 21.6 22.4 ...
+##  $ SEP   : num  20.7 20 18 18.8 19.5 ...
+##  $ OCT   : num  17.9 16.3 16.4 15.8 16.4 ...
+##  $ NOV   : num  12.5 14.7 13.7 13.5 12.5 ...
+##  $ DEC   : num  11.07 9.97 10.66 9.46 10.25 ...
+##  $ D-J-F : num  10.7 11.4 10.6 11 10.4 ...
+##  $ M-A-M : num  14.1 15.2 14.3 12.9 13.6 ...
+##  $ J-J-A : num  18.9 21.5 19.7 19.4 20.9 ...
+##  $ S-O-N : num  17 17 16 16 16.1 ...
+##  $ metANN: num  15.2 16.3 15.2 14.8 15.3 ...
+##  - attr(*, &amp;quot;spec&amp;quot;)=
+##   .. cols(
+##   ..   YEAR = col_double(),
+##   ..   JAN = col_double(),
+##   ..   FEB = col_double(),
+##   ..   MAR = col_double(),
+##   ..   APR = col_double(),
+##   ..   MAY = col_double(),
+##   ..   JUN = col_double(),
+##   ..   JUL = col_double(),
+##   ..   AUG = col_double(),
+##   ..   SEP = col_double(),
+##   ..   OCT = col_double(),
+##   ..   NOV = col_double(),
+##   ..   DEC = col_double(),
+##   ..   `D-J-F` = col_double(),
+##   ..   `M-A-M` = col_double(),
+##   ..   `J-J-A` = col_double(),
+##   ..   `S-O-N` = col_double(),
+##   ..   metANN = col_double()
+##   .. )&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos en las columnas que tenemos valores mensuales y estacionales, y el valor anual. Pero antes de proceder a visualizar la temperatura anual, debemos sustituir los valores ausentes &lt;em&gt;999.9&lt;/em&gt; por &lt;code&gt;NA&lt;/code&gt;, usando la función &lt;code&gt;ifelse( )&lt;/code&gt; que lleva una condición y los argumentos correspondientes a verdadero y falso de la condición dada.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#selecionamos la columna del año y la temperatura anual
+temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
+
+#cambiamos el nombre de la columna 
+temp_lisboa_yr &amp;lt;- rename(temp_lisboa_yr, ta = metANN)
+
+#valores ausentes 999.9
+summary(temp_lisboa_yr) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##       YEAR            ta        
+##  Min.   :1880   Min.   : 14.53  
+##  1st Qu.:1914   1st Qu.: 15.65  
+##  Median :1949   Median : 16.11  
+##  Mean   :1949   Mean   : 37.38  
+##  3rd Qu.:1984   3rd Qu.: 16.70  
+##  Max.   :2018   Max.   :999.90&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, ta = ifelse(ta == 999.9, NA, ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Cuando usamos el año como variable, no solemos convertirlo en un objeto de fecha, no obstante es aconsejable. De este modo nos permite usar las funciones de fechas del paquete &lt;em&gt;lubridate&lt;/em&gt; y las funciones de apoyo dentro de &lt;em&gt;ggplot2&lt;/em&gt;. La función &lt;code&gt;str_c( )&lt;/code&gt; del paquete &lt;em&gt;stringr&lt;/em&gt;, forma parte de la colección de &lt;em&gt;tidyverse&lt;/em&gt;, es similar a &lt;code&gt;paste( )&lt;/code&gt; de R Base que nos permite combinar caracteres especificando un separador (sep=“-”). La función &lt;code&gt;ymd( )&lt;/code&gt; (year month day) del paquete &lt;em&gt;lubridate&lt;/em&gt; convierte una fecha en un objeto &lt;em&gt;Date&lt;/em&gt;. Es posible combinar varias funciones haciendo uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;temp_lisboa_yr &amp;lt;- mutate(temp_lisboa_yr, date = str_c(YEAR, &amp;quot;01-01&amp;quot;, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd())&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creando-las-tiras&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creando las tiras&lt;/h2&gt;
+&lt;p&gt;Primero, creamos el estilo del gráfico, especificando todo los argumentos del aspecto que queremos ajustar. Partimos del estilo por defecto de &lt;code&gt;theme_minimal( )&lt;/code&gt;. Además, asignamos los colores procedientes de &lt;em&gt;RColorBrewer&lt;/em&gt; a un objeto &lt;em&gt;col_srip&lt;/em&gt;. Más información sobre los colores usados &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_strip &amp;lt;- theme_minimal()+
+                 theme(axis.text.y = element_blank(),
+                       axis.line.y = element_blank(),
+                       axis.title = element_blank(),
+                       panel.grid.major = element_blank(),
+                       legend.title = element_blank(),
+                       axis.text.x = element_text(vjust = 3),
+                       panel.grid.minor = element_blank(),
+                       plot.title = element_text(size = 14, face = &amp;quot;bold&amp;quot;)
+                       )
+
+
+col_strip &amp;lt;- brewer.pal(11, &amp;quot;RdBu&amp;quot;)
+
+brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##          maxcolors category colorblind
+## BrBG            11      div       TRUE
+## PiYG            11      div       TRUE
+## PRGn            11      div       TRUE
+## PuOr            11      div       TRUE
+## RdBu            11      div       TRUE
+## RdGy            11      div      FALSE
+## RdYlBu          11      div       TRUE
+## RdYlGn          11      div      FALSE
+## Spectral        11      div      FALSE
+## Accent           8     qual      FALSE
+## Dark2            8     qual       TRUE
+## Paired          12     qual       TRUE
+## Pastel1          9     qual      FALSE
+## Pastel2          8     qual      FALSE
+## Set1             9     qual      FALSE
+## Set2             8     qual       TRUE
+## Set3            12     qual      FALSE
+## Blues            9      seq       TRUE
+## BuGn             9      seq       TRUE
+## BuPu             9      seq       TRUE
+## GnBu             9      seq       TRUE
+## Greens           9      seq       TRUE
+## Greys            9      seq       TRUE
+## Oranges          9      seq       TRUE
+## OrRd             9      seq       TRUE
+## PuBu             9      seq       TRUE
+## PuBuGn           9      seq       TRUE
+## PuRd             9      seq       TRUE
+## Purples          9      seq       TRUE
+## RdPu             9      seq       TRUE
+## Reds             9      seq       TRUE
+## YlGn             9      seq       TRUE
+## YlGnBu           9      seq       TRUE
+## YlOrBr           9      seq       TRUE
+## YlOrRd           9      seq       TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para el gráfico final usamos la geometría &lt;code&gt;geom_tile( )&lt;/code&gt;. Como los datos no tienen un valor específico para el eje Y, usamos un valor &lt;em&gt;dummy&lt;/em&gt;, aquí es 1. Además, ajusto el ancho de la barra de colores en la leyenda.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
+             aes(x = date, y = 1,fill = ta))+
+        geom_tile()+
+           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
+                     date_labels = &amp;quot;%Y&amp;quot;,
+                     expand = c(0, 0))+
+           scale_y_continuous(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+           guides(fill = guide_colorbar(barwidth = 1))+
+           labs(title = &amp;quot;LISBOA 1880-2018&amp;quot;,
+                caption = &amp;quot;Datos: GISS Surface Temperature Analysis&amp;quot;)+
+             theme_strip&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;En el caso de que quisieramos obtener únicamente las tiras, podemos usar &lt;code&gt;theme_void( )&lt;/code&gt; y el argumento &lt;em&gt;show.legend=FALSE&lt;/em&gt; en &lt;code&gt;geom_tile( )&lt;/code&gt; para eliminar todos los elementos de estilo. También podemos cambiar el color para los valores &lt;code&gt;NA&lt;/code&gt;, incluyendo el argumento &lt;em&gt;na.value=“grey70”&lt;/em&gt; en la función &lt;code&gt;scale_fill_gradientn( )&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;     ggplot(temp_lisboa_yr,
+             aes(x = date, y = 1, fill = ta))+
+        geom_tile(show.legend = FALSE)+
+           scale_x_date(date_breaks = &amp;quot;6 years&amp;quot;,
+                     date_labels = &amp;quot;%Y&amp;quot;,
+                     expand = c(0, 0))+
+           scale_y_discrete(expand = c(0, 0))+
+           scale_fill_gradientn(colors = rev(col_strip))+
+             theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-12-05-como-crear-warming-stripes-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>ggplot2</category>
+      
+            <category>warming stripes</category>
+      
+            <category>calentamiento global</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:elemental</category>
+      
+    </item>
+    
+    <item>
+      <title>Acceso a la base de datos de OpenStreetMaps desde R</title>
+      <link>https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</link>
+      <pubDate>Sat, 03 Nov 2018 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</guid>
+      <description>
+
+
+&lt;div id=&#34;la-base-de-datos-de-open-street-maps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;La base de datos de Open Street Maps&lt;/h2&gt;
+&lt;p&gt;Recientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.&lt;/p&gt;
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;¿Cómo se puede obtener estos datos?&lt;/p&gt;
+&lt;p&gt;Pues, en este caso usé puntos de interés (PDIs) de la base de datos de &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una &lt;em&gt;overpass API&lt;/em&gt;, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.&lt;/p&gt;
+&lt;p&gt;Una forma fácil de acceder a una &lt;em&gt;overpass API&lt;/em&gt; es a través de &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;aquí&lt;/a&gt;.
+Sin embargo, tenemos a nuestra disposicón el paquete &lt;em&gt;osmdata&lt;/em&gt; que nos permite crear y hacer las consultas directamente desde el entorno de R. Aún así, el uso de la &lt;em&gt;overpass-turbo.eu&lt;/em&gt; puede ser útil cuando no estamos seguros de lo que buscamos o tenemos alguna dificultad en construir la consulta.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;acceso-a-la-overpass-api-desde-r&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Acceso a la overpass API desde R&lt;/h2&gt;
+&lt;p&gt;El primer paso, que debemos seguir, es instalar varios paquetes, en el caso de que no estén instaldos. En casi todos mis scripts hago uso de &lt;a href=&#34;https://www.tidyverse.org/&#34;&gt;&lt;em&gt;tidyverse&lt;/em&gt;&lt;/a&gt; que es una colección fundamental de distintos paquetes, incluyendo &lt;em&gt;dplyr&lt;/em&gt; (manipulación de datos), &lt;em&gt;ggplot2&lt;/em&gt; (visualización), etc. El paquete &lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt; es el nuevo estándar para trabajar con datos espaciales y es compatible con &lt;em&gt;ggplot2&lt;/em&gt; y &lt;em&gt;dplyr&lt;/em&gt;. Por último, &lt;a href=&#34;http://stat405.had.co.nz/ggmap.pdf&#34;&gt;&lt;em&gt;ggmap&lt;/em&gt;&lt;/a&gt; nos facilita el trabajo para crear mapas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes osmdata, sf, tidyverse y ggmap
+if(!require(&amp;quot;osmdata&amp;quot;)) install.packages(&amp;quot;osmdata&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggmap&amp;quot;)) install.packages(&amp;quot;ggmap&amp;quot;)
+
+#cargamos las librerías
+library(tidyverse)
+library(osmdata)
+library(sf)
+library(ggmap)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construir-una-consulta&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Construir una consulta&lt;/h2&gt;
+&lt;p&gt;Antes de crear una consulta, debemos conocer qué podemos filtrar. La función &lt;code&gt;available_features( )&lt;/code&gt; nos devuelve un listado amplio de las características disponibles en OSM que a su vez tienen diferentes categorías (&lt;em&gt;tags&lt;/em&gt;). Están disponibles más detalles en la &lt;em&gt;wiki&lt;/em&gt; de OSM &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Caracter%C3%ADsticas_del_mapa&#34;&gt;aquí&lt;/a&gt;.
+Por ejemplo, la característica &lt;em&gt;shop&lt;/em&gt; contiene como categoría entre otros &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#las primeras cinco características 
+head(available_features())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalaciones y establecimientos públicos
+head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal_boarding&amp;quot; &amp;quot;animal_shelter&amp;quot;  &amp;quot;arts_centre&amp;quot;     &amp;quot;atm&amp;quot;            
+## [5] &amp;quot;baby_hatch&amp;quot;      &amp;quot;baking_oven&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#tiendas
+head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;div id=&#34;la-primera-consulta-dónde-podemos-encontrar-cines-en-madrid&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;La primera consulta: ¿Dónde podemos encontrar cines en Madrid?&lt;/h3&gt;
+&lt;p&gt;Para construir la consulta se hace uso del &lt;em&gt;pipe operator&lt;/em&gt; &lt;code&gt;%&amp;gt;%&lt;/code&gt; que ayuda a encadenar varias funciones sin asignar el resultado a un nuevo objeto. Su uso es muy extendido especialmente con el paquete &lt;em&gt;tidyverse&lt;/em&gt;. Si quieres saber más de su uso, &lt;a href=&#34;https://www.datacamp.com/community/tutorials/pipe-r-tutorial&#34;&gt;aquí&lt;/a&gt; tienes un tutorial.&lt;/p&gt;
+&lt;p&gt;En la primera parte de la consulta debemos indicar el lugar donde queremos extraer la información. La función &lt;code&gt;getbb( )&lt;/code&gt; crea un rectángulo de selección para un lugar dado, buscando el nombre. La función principal es &lt;code&gt;opq( )&lt;/code&gt; que construye la consulta final. Añadimos con la función &lt;code&gt;add_osm_feature( )&lt;/code&gt; nuestros criterios de filtro. En esta primera consulta buscaremos cines en Madrid. Por eso, usamos como clave &lt;em&gt;amenity&lt;/em&gt; y como categoría &lt;em&gt;cinema&lt;/em&gt;. Existen varios formatos para obtener el resultado de la consulta. La función &lt;code&gt;osmdata_*( )&lt;/code&gt; envía la consulta al servidor y en función del sufijo * sf/sp/xml nos devuelve el formato &lt;em&gt;simple feature&lt;/em&gt;, &lt;em&gt;spatial&lt;/em&gt; o &lt;em&gt;XML&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#construcción de la consulta
+q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
+      opq() %&amp;gt;%
+       add_osm_feature(&amp;quot;amenity&amp;quot;, &amp;quot;cinema&amp;quot;)
+
+str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
+##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
+##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
+##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
+cinema&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##         $overpass_call : The call submitted to the overpass API
+##                  $meta : metadata including timestamp and version numbers
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 197 points
+##             $osm_lines : NULL
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
+##        $osm_multilines : NULL
+##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;¿Cómo podemos visulizar estos puntos?&lt;/p&gt;
+&lt;p&gt;La ventaja de objetos &lt;em&gt;sf&lt;/em&gt; es que para &lt;em&gt;ggplot2&lt;/em&gt; existe una geometría propia &lt;code&gt;geom_sf( )&lt;/code&gt;. Además, haciendo uso de &lt;em&gt;ggmap&lt;/em&gt; podemos incluir un mapa de fondo. La función &lt;code&gt;get_map( )&lt;/code&gt; descarga el mapa para un lugar dado. En lugar puede ser una dirección, latitud/longitud o un rectángulo de selección. El argumento &lt;em&gt;maptype&lt;/em&gt; nos permite indicar el estilo o tipo de mapa. Podemos consultar más detalles en la ayuda de la función &lt;code&gt;?get_map&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;Cuando construimos un gráfico con &lt;em&gt;ggplot&lt;/em&gt; habitualmente empezamos con &lt;code&gt;ggplot( )&lt;/code&gt;. En este caso, se empieza por &lt;code&gt;ggmap( )&lt;/code&gt; que incluye el objeto con nuestro mapa de fondo. Después añadimos con &lt;code&gt;geom_sf( )&lt;/code&gt; los puntos de los cines en Madrid. Es importante indicar con el argumento &lt;em&gt;inherit.aes=FALSE&lt;/em&gt; que debe usar &lt;em&gt;aesthetic mappings&lt;/em&gt; del objeto espacial &lt;em&gt;osm_points&lt;/em&gt;. Además, indicamos el color (&lt;em&gt;colour&lt;/em&gt;, &lt;em&gt;fill&lt;/em&gt;), transparencia (&lt;em&gt;alpha&lt;/em&gt;), tipo y tamaño (&lt;em&gt;size&lt;/em&gt;) del círculo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#nuestro mapa de fondo
+mad_map &amp;lt;- get_map(getbb(&amp;quot;Madrid&amp;quot;), maptype = &amp;quot;toner-background&amp;quot;)
+
+#mapa final
+ggmap(mad_map)+
+  geom_sf(data = cinema$osm_points,
+          inherit.aes = FALSE,
+          colour = &amp;quot;#238443&amp;quot;,
+          fill = &amp;quot;#004529&amp;quot;,
+          alpha = .5,
+          size = 4,
+          shape = 21)+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dónde-están-los-supermercados-de-mercadona&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;¿Dónde están los supermercados de Mercadona?&lt;/h3&gt;
+&lt;p&gt;En lugar de obtener un rectángulo de selección con la función &lt;code&gt;getbb( )&lt;/code&gt; podemos construir nuestro propio. Para ello, creamos un vector de cuatro elementos, siendo aquí el orden Oeste/Sur/Este/Norte. En la consulta usamos dos características: &lt;em&gt;name&lt;/em&gt; y &lt;em&gt;shop&lt;/em&gt; para poder filtrar supermercados que sean de esta marca en concreto. En función del area o bien del volumen que tenga la consulta, es necesario ampliar el tiempo de espera. Por defecto, son 25 segundo (&lt;em&gt;timeout&lt;/em&gt;).&lt;/p&gt;
+&lt;p&gt;El mapa que creamos en este caso se basa únicamente en los puntos de supermercados. Por eso, usamos la gramática habitual añadiendo la geometría &lt;code&gt;geom_sf( )&lt;/code&gt;. La función &lt;code&gt;theme_void( )&lt;/code&gt; elimina todo con excepción de los puntos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#rectángulo de selección para la Península Ibérica
+m &amp;lt;- c(-10, 30, 5, 46)
+
+#construcción de la consulta
+q &amp;lt;- m %&amp;gt;% 
+      opq (timeout = 25*100) %&amp;gt;%
+         add_osm_feature(&amp;quot;name&amp;quot;, &amp;quot;Mercadona&amp;quot;) %&amp;gt;%
+         add_osm_feature(&amp;quot;shop&amp;quot;, &amp;quot;supermarket&amp;quot;)
+
+str(q) #estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ bbox    : chr &amp;quot;30,-10,46,5&amp;quot;
+##  $ prefix  : chr &amp;quot;[out:xml][timeout:2500];\n(\n&amp;quot;
+##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
+##  $ features: chr [1:2] &amp;quot; [\&amp;quot;name\&amp;quot;=\&amp;quot;Mercadona\&amp;quot;]&amp;quot; &amp;quot; [\&amp;quot;shop\&amp;quot;=\&amp;quot;supermarket\&amp;quot;]&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#consulta 
+mercadona &amp;lt;- osmdata_sf(q)
+
+#mapa final del resultado
+ggplot(mercadona$osm_points)+
+  geom_sf(colour = &amp;quot;#08519c&amp;quot;,
+          fill = &amp;quot;#08306b&amp;quot;,
+          alpha = .5,
+          size = 1,
+          shape = 21)+
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>base de datos</category>
+      
+            <category>overpass API</category>
+      
+            <category>OSM</category>
+      
+            <category>Puntos de interés</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R:elemental</category>
+      
+            <category>R</category>
+      
+            <category>mapping</category>
+      
+    </item>
+    
+    <item>
+      <title>El gráfico de tarta</title>
+      <link>https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/</link>
+      <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/</guid>
+      <description>
+
+
+&lt;p&gt;Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R. Espero que os guste. Cualquier sugerencia o idea, será bienvenida.&lt;/p&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;preámbulo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preámbulo&lt;/h2&gt;
+&lt;p&gt;Siempre he querido escribir sobre el uso del gráfico de tarta. El gráfico circular es ampliamente usado en investigación, docencia, periodismo o en informes técnicos. Es más, no sé si es debido a Excel, pero todavía peor que el mismo gráfico de tarta es su versión en 3D (también para el gráfico de barras). Sobre las versiones 3D únicamente debo decir que no es recomendable, ya que en estos casos la tercera dimensión no contiene ninguna información y por tanto no ayuda en leer correctamente la información del gráfico. Respecto al gráfico de tarta, entre muchos expertos no se aconseja claramente su uso. Pero, ¿por qué?&lt;/p&gt;
+&lt;p&gt;Ya en un estudio hecho por &lt;span class=&#34;citation&#34;&gt;(&lt;span class=&#34;citeproc-not-found&#34; data-reference-id=&#34;Simkin1987&#34;&gt;&lt;strong&gt;???&lt;/strong&gt;&lt;/span&gt;)&lt;/span&gt; encontraron que la interpretación y el procesamiento de ángulos es más díficil que el de formas lineales. Mayormente es más fácil leer un gráfico de barras que uno de tarta. Un problema que se hace muy visible cuando nos encontramos con; 1) demasiadas categorías 2) pocas diferencias entre las categorías 3) un mal uso de colores como leyenda ó 4) comparaciones entre varios gráficos de tarta.&lt;/p&gt;
+&lt;p&gt;Para decidir qué posibles representaciones gráficas existen para nuestros datos, recomiendo ir a la página web &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; o usar &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;Ahora bien, ¿qué alternativas podemos usar en R?&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;alternativas-al-gráfico-de-tarta&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Alternativas al gráfico de tarta&lt;/h2&gt;
+&lt;p&gt;Los datos sobre el estado de la enfermedad &lt;strong&gt;sarampión&lt;/strong&gt; corresponden a junio de 2018 en Europa y vienen del &lt;a href=&#34;https://ecdc.europa.eu/en/surveillance-atlas-infectious-diseases&#34;&gt;ECDC&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#librerías
+library(tidyverse)
+library(scales)
+library(RColorBrewer)
+
+#datos
+measles &amp;lt;- data.frame(
+          vacc_status=c(&amp;quot;Unvaccinated&amp;quot;,&amp;quot;1 Dose&amp;quot;,
+                        &amp;quot;&amp;gt;= 2 Dose&amp;quot;,&amp;quot;Unkown Dose&amp;quot;,&amp;quot;Unkown&amp;quot;),
+          prop=c(0.75,0.091,0.05,0.012,0.096)
+          )
+
+#ordenamos de mayor a menor y lo fijamos con un factor 
+
+measles &amp;lt;- arrange(measles,
+                   desc(prop))%&amp;gt;%
+              mutate(vacc_status=factor(vacc_status,vacc_status))&lt;/code&gt;&lt;/pre&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;vacc_status&lt;/th&gt;
+&lt;th align=&#34;right&#34;&gt;prop&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unvaccinated&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.750&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unkown&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.096&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;1 Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.091&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&amp;gt;= 2 Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.050&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;Unkown Dose&lt;/td&gt;
+&lt;td align=&#34;right&#34;&gt;0.012&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;div id=&#34;gráfico-de-barra-o-similar&#34; class=&#34;section level4&#34;&gt;
+&lt;h4&gt;Gráfico de barra o similar&lt;/h4&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(vacc_status,prop))+
+            geom_bar(stat=&amp;quot;identity&amp;quot;)+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1))+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
+            geom_pointrange()+
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1))+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definiciones sobre el theme que usamos
+theme_singlebar &amp;lt;- theme_bw()+
+  theme(
+    legend.position = &amp;quot;bottom&amp;quot;,
+    axis.title = element_blank(),
+    axis.ticks.y = element_blank(),
+    axis.text.y = element_blank(),
+    panel.border = element_blank(),
+    panel.grid=element_blank(),
+    plot.title=element_text(size=14, face=&amp;quot;bold&amp;quot;)
+  )
+
+mutate(measles,
+       vacc_status=factor(vacc_status,               #cambiamos el orden de las categorías
+                          rev(levels(vacc_status))))%&amp;gt;%
+ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra única
+         geom_bar(stat=&amp;quot;identity&amp;quot;)+
+          scale_y_continuous(breaks=seq(0,1,.1),
+                             labels=percent,
+                             limits=c(0,1),
+                             expand=c(.01,.01))+
+          scale_x_continuous(expand=c(0,0))+
+              scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
+                coord_flip()+
+                  theme_singlebar&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#ampliamos los datos con las cifras de Italia
+measles2 &amp;lt;- mutate(measles,
+                  italy=c(0.826,0.081,0.053,0.013,0.027),
+                  vacc_status=factor(vacc_status,rev(levels(vacc_status))))%&amp;gt;%
+                rename(europe=&amp;quot;prop&amp;quot;)%&amp;gt;%
+                gather(region,prop,europe:italy)
+
+
+ggplot(measles2,aes(region,prop,fill=vacc_status))+
+            geom_bar(stat=&amp;quot;identity&amp;quot;,position=&amp;quot;stack&amp;quot;)+ #stack: columna 100%
+             scale_y_continuous(breaks=seq(0,1,.1),
+                                labels=percent,    #convertimos en %
+                                limits=c(0,1),
+                                expand=c(0,0))+
+            scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
+            labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
+            theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gráfico-de-waffle&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#libería
+library(waffle)
+
+#la función de waffle usa un vector con nombres
+val_measles &amp;lt;- round(measles$prop*100)
+names(val_measles) &amp;lt;- measles$vacc_status
+
+waffle(val_measles, #datos
+        colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colores
+        rows=5) #número de filas &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;medida &amp;lt;- c(41,59) #datos de la OECD 2015
+names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
+
+waffle(medida,
+       colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
+       rows=5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#librería
+library(treemap)
+
+treemap(measles,
+index=&amp;quot;vacc_status&amp;quot;, #variable de categrías
+vSize=&amp;quot;prop&amp;quot;,        #valores
+type=&amp;quot;index&amp;quot;,        #estilo más en ?treemap
+title=&amp;quot;&amp;quot;,            
+palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-08-22-el-grafico-de-tarta/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;span class=&#34;citeproc-not-found&#34; data-reference-id=&#34;Robbins2013&#34;&gt;&lt;strong&gt;???&lt;/strong&gt;&lt;/span&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;referencias&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Referencias&lt;/h3&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>gráfico de tarta</category>
+      
+            <category>datos</category>
+      
+            <category>circular</category>
+      
+            <category>proporciones</category>
+      
+            <category>primera entrada</category>
+      
+            <category>treemap</category>
+      
+            <category>waffle</category>
+      
+            <category>barra</category>
+      
+            <category>visualización</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:elemental</category>
       
     </item>
     
