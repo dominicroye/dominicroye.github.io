@@ -1170,6 +1170,7 @@ ggplot(world) +
       
       <guid>https://dominicroye.github.io/en/2019/visualize-urban-growth/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;The General Directorate for the Cadastre of Spain has spatial information of the all buildings except for the Basque Country and Navarra. This data set is part of the implementation of &lt;a href=&#34;https://inspire.ec.europa.eu/&#34;&gt;INSPIRE&lt;/a&gt;, the Space Information Infrastructure in Europe. More information can be found &lt;a href=&#34;http://www.catastro.meh.es/webinspire/index.html&#34;&gt;here&lt;/a&gt;. We will use the links (&lt;em&gt;urls&lt;/em&gt;) in &lt;em&gt;ATOM&lt;/em&gt; format, which is an RSS type for web feeds, allowing us to obtain the download link for each municipality.&lt;/p&gt;
@@ -1182,6 +1183,10 @@ This blog post is a reduced version of the case study that you can find in our r
 &lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Packages&lt;/h2&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
@@ -1260,35 +1265,38 @@ str(prov_enlaces) # object is a list&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
 ##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
 ##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
-##  $ updated: POSIXct[1:1], format: &amp;quot;2019-10-26&amp;quot;
-##  $ items  :&amp;#39;data.frame&amp;#39;: 52 obs. of  4 variables:
-##   ..$ title: chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 AlmerÃ­a&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
-##   ..$ date : POSIXct[1:52], format: &amp;quot;2019-10-26&amp;quot; &amp;quot;2019-10-26&amp;quot; ...
-##   ..$ link : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
-##   ..$ hash : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2021-03-04&amp;quot;
+##  $ items  : tibble[,5] [52 x 5] (S3: tbl_df/tbl/data.frame)
+##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-03-04&amp;quot; &amp;quot;2021-03-04&amp;quot; ...
+##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
+##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
+##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extract the table with the links
 prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;% 
                        mutate(title = repair_encoding(title))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `html_encoding_repair()` was deprecated in rvest 1.0.0.
+## Instead, re-load using the `encoding` argument of `read_html()`&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prov_enlaces_tab&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 4
-##    title           date                link                            hash     
-##    &amp;lt;chr&amp;gt;           &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;    
-##  1 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d21ebb79~
-##  2 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ bdba5e14~
-##  3 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 03bcbcc7~
-##  4 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 8a154202~
-##  5 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 7d3fd376~
-##  6 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ 9c08741f~
-##  7 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ ff722b15~
-##  8 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ b431aa61~
-##  9 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ f79c6562~
-## 10 Territorial of~ 2019-10-26 00:00:00 http://www.catastro.minhap.es/~ d702a6a8~
+&lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
+##    title         date                link                    description hash   
+##    &amp;lt;chr&amp;gt;         &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;  
+##  1 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ d21ebb~
+##  2 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ bdba5e~
+##  3 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 03bcbc~
+##  4 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 8a1542~
+##  5 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 7d3fd3~
+##  6 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 9c0874~
+##  7 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ ff722b~
+##  8 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ b431aa~
+##  9 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ f79c65~
+## 10 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ d702a6~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, we access and download the data from Valencia. To filter the final download link we use the &lt;code&gt;filter()&lt;/code&gt; function of the &lt;code&gt;dplyr&lt;/code&gt; package, searching for the name of the territorial headquarter and then the name of the municipality in capital letters with the &lt;code&gt;str_detect()&lt;/code&gt; function of &lt;code&gt;stringr&lt;/code&gt;. The &lt;code&gt;pull()&lt;/code&gt; function allows us to extract a column from a &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
   
-Currently the &lt;code&gt;feed.extract()&lt;/code&gt; function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the &lt;code&gt;repair_encoding()&lt;/code&gt; function of the &lt;code&gt;rvest&lt;/code&gt; package.
+Currently the &lt;code&gt;feed.extract()&lt;/code&gt; function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the &lt;code&gt;repair_encoding()&lt;/code&gt; function of the &lt;code&gt;rvest&lt;/code&gt; package. Nevertheless, problems can arise that have to be corrected manually.
 
 &lt;/div&gt;
 &lt;/p&gt;
@@ -1320,22 +1328,22 @@ temp &amp;lt;- tempfile()
 download.file(URLencode(val_link), temp)
 
 # unzip to a folder called buildings
-unzip(temp, exdir = &amp;quot;buildings&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+unzip(temp, exdir = &amp;quot;buildings_valencia&amp;quot;) # change the name according to the city&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;import-the-data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Import the data&lt;/h2&gt;
 &lt;p&gt;To import the data we use the &lt;code&gt;dir_ls()&lt;/code&gt; function of the &lt;code&gt;fs&lt;/code&gt; package, which can obtain the files and folders of a specific path while filtering through a text pattern (&lt;em&gt;regexp &lt;/em&gt;: regular expression). We apply the &lt;code&gt;st_read()&lt;/code&gt; function of the &lt;code&gt;sf&lt;/code&gt; package to the &lt;em&gt;Geography Markup Language&lt;/em&gt; (GML) file.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the path with the file
-file_val &amp;lt;- dir_ls(&amp;quot;buildings&amp;quot;, regexp = &amp;quot;building.gml&amp;quot;)
+file_val &amp;lt;- dir_ls(&amp;quot;buildings_valencia&amp;quot;, regexp = &amp;quot;building.gml&amp;quot;) # change the folder if needed
 
 # import the data
 buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `Building&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2019-11-01-visualize-urban-growth\buildings\A.ES.SDGC.BU.46900.building.gml&amp;#39; using driver `GML&amp;#39;
-## Simple feature collection with 36296 features and 24 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 720608 ymin: 4351287 xmax: 734982.5 ymax: 4382906
-## CRS:            25830&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `Building&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\en\2019-11-01-visualize-urban-growth\buildings_valencia\A.ES.SDGC.BU.46900.building.gml&amp;#39; using driver `GML&amp;#39;
+## Simple feature collection with 36279 features and 24 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data-preparation&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data preparation&lt;/h2&gt;
@@ -1344,7 +1352,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
                beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
                             ymd_hms() %&amp;gt;% as_date()
                )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 4 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;distribution-chart&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Distribution chart&lt;/h2&gt;
@@ -1360,24 +1368,22 @@ filter(buildings_val, beginning &amp;gt;= &amp;quot;1750-01-01&amp;quot;) %&amp;
     geom_density(fill = &amp;quot;#2166ac&amp;quot;, alpha = 0.7) +
   scale_x_date(date_breaks = &amp;quot;20 year&amp;quot;, 
                date_labels = &amp;quot;%Y&amp;quot;) +
-  theme_minimal() +
-  theme(title = element_text(family = &amp;quot;Montserrat&amp;quot;),
-        axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;)) +
+  theme_minimal(base_family = &amp;quot;Montserrat&amp;quot;) +
   labs(y = &amp;quot;&amp;quot;,x = &amp;quot;&amp;quot;, title = &amp;quot;Evolution of urban development&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-11-01-visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;buffer-of-25-km-for-valencia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Buffer of 2,5 km for Valencia&lt;/h2&gt;
-&lt;p&gt;To visualize better the distribution of urban growth, we limit the map to a radius of 2.5 km from the city center. Therefore, we use the &lt;code&gt;geocode_OSM()&lt;/code&gt; function of the &lt;code&gt;tmaptools&lt;/code&gt; package to obtain the coordinates of Valencia in class &lt;code&gt;sf&lt;/code&gt;. Then we project the points to the system we use for the buildings (EPSG: 25830). Finally, we create with the function &lt;code&gt;st_buffer()&lt;/code&gt; a buffer with 2500 m and the intersection with our building data. It is also possible to create a buffer in the form of a rectangle indicating the style with the argument &lt;code&gt;endCapStyle =&#34; SQUARE &#34;&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To visualize better the distribution of urban growth, we limit the map to a radius of 2.5 km from the city center. Therefore, we use the &lt;code&gt;geocode_OSM()&lt;/code&gt; function of the &lt;code&gt;tmaptools&lt;/code&gt; package to obtain the coordinates of Valencia in class &lt;code&gt;sf&lt;/code&gt;. Then we project the points to the system we use for the buildings (EPSG: 25830). The &lt;code&gt;st_crs()&lt;/code&gt; function returns the coordinate system of a spatial object &lt;code&gt;sf&lt;/code&gt;. Finally, we create with the function &lt;code&gt;st_buffer()&lt;/code&gt; a buffer with 2500 m and the intersection with our building data. It is also possible to create a buffer in the form of a rectangle indicating the style with the argument &lt;code&gt;endCapStyle =&#34; SQUARE &#34;&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the coordinates of Valencia
 ciudad_point &amp;lt;- tmaptools::geocode_OSM(&amp;quot;Valencia&amp;quot;, 
                                       as.sf = TRUE)
 
 #  project the points
-ciudad_point &amp;lt;- st_transform(ciudad_point, 25830)
+ciudad_point &amp;lt;- st_transform(ciudad_point, st_crs(buildings_val))
 
 # create the buffer
-point_bf &amp;lt;- st_buffer(ciudad_point, 2500)
+point_bf &amp;lt;- st_buffer(ciudad_point, 2500) # radius of 2500 m
 
 
 # get the intersection between the buffer and the building
@@ -1387,7 +1393,7 @@ buildings_val25 &amp;lt;- st_intersection(buildings_val, point_bf)&lt;/code&gt;&
 &lt;/div&gt;
 &lt;div id=&#34;prepare-data-for-mapping&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Prepare data for mapping&lt;/h2&gt;
-&lt;p&gt;We categorize the year into 15 groups using quartiles.&lt;/p&gt;
+&lt;p&gt;We categorize the year into 15 groups using quartiles. It is also possible to modify the number of classes or the applied method (eg jenks, fisher, etc), you can find more details in the help &lt;code&gt;?classIntervals&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# find 15 classes
 br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning in classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;): var
@@ -1396,14 +1402,17 @@ br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quant
 lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## style: quantile
 ##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
-##         940        1369         971         596        1719        1080 
-## 1950 - 1957 1957 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1977 
-##        1227        1266        1233        1165        1161         932 
-## 1977 - 1987 1987 - 1999      &amp;gt; 1999 
-##        1337        1197        1190&lt;/code&gt;&lt;/pre&gt;
+##         939        1361         957         595        1708        1055 
+## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
+##        1454        1029        1224        1160        1154        1191 
+## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
+##        1148        1111        1207&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# categorize the year
 buildings_val25 &amp;lt;- mutate(buildings_val25, 
-               yr_cl = cut(year(beginning), br$brks, labels = lab, include.lowest = TRUE))&lt;/code&gt;&lt;/pre&gt;
+                          yr_cl = cut(year(beginning), 
+                                       br$brks, 
+                                       labels = lab, 
+                                       include.lowest = TRUE))&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;map-of-valencia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Map of Valencia&lt;/h2&gt;
@@ -1420,7 +1429,7 @@ col_spec_fun &amp;lt;- colorRampPalette(col_spec)
 tm_shape(buildings_val25) +
   tm_polygons(&amp;quot;yr_cl&amp;quot;, 
               border.col = &amp;quot;transparent&amp;quot;,
-              palette = col_spec_fun(15),
+              palette = col_spec_fun(15), # adapt to the number of classes
               textNA = &amp;quot;Without data&amp;quot;,
               title = &amp;quot;&amp;quot;) +
  tm_layout(bg.color = &amp;quot;black&amp;quot;,
@@ -1433,7 +1442,27 @@ tm_shape(buildings_val25) +
             panel.label.bg.color = &amp;quot;black&amp;quot;,
             panel.label.size = 5,
             panel.label.fontface = &amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2019-11-01-visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can export our map using the function &lt;code&gt;tmap_save(&#34;name.png&#34;, dpi = 300)&lt;/code&gt;. I recommend using the &lt;code&gt;dpi = 300&lt;/code&gt; argument for a good image quality.&lt;/p&gt;
+&lt;p&gt;An alternative way to the &lt;code&gt;tmap&lt;/code&gt; package is &lt;code&gt;ggplot2&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create the final map
+ggplot(buildings_val25) +
+     geom_sf(aes(fill = yr_cl), colour = &amp;quot;transparent&amp;quot;) +
+  scale_fill_manual(values = col_spec_fun(15)) + # adapt to the number of classes
+    labs(title = &amp;quot;VALÈNCIA&amp;quot;, fill = &amp;quot;&amp;quot;) +
+  guides(fill = guide_legend(keywidth = .7, keyheight = 2.7)) +
+theme_void(base_family = &amp;quot;Montserrat&amp;quot;) +
+theme(panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+      plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+      legend.justification = .5,
+      legend.text = element_text(colour = &amp;quot;white&amp;quot;, size = 12),
+      plot.title = element_text(colour = &amp;quot;white&amp;quot;, hjust = .5, size = 60,
+      margin = margin(t = 30)),
+      plot.caption = element_text(colour = &amp;quot;white&amp;quot;,
+      margin = margin(b = 20), hjust = .5, size = 16),
+      plot.margin = margin(r = 40, l = 40))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To export the result of ggplot we can use the function &lt;code&gt;ggsave(&#34;name.png&#34;)&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;dynamic-map-with-leaflet&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Dynamic map with leaflet&lt;/h2&gt;
@@ -1442,7 +1471,7 @@ tm_shape(buildings_val25) +
 m &amp;lt;-   tm_shape(buildings_val25) +
           tm_polygons(&amp;quot;yr_cl&amp;quot;, 
               border.col = &amp;quot;transparent&amp;quot;,
-              palette = col_spec_fun(15),
+              palette = col_spec_fun(15), # adapt to the number of classes
               textNA = &amp;quot;Without data&amp;quot;,
               title = &amp;quot;&amp;quot;)
 
