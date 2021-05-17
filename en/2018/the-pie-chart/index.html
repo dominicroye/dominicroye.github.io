@@ -6,7 +6,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.58.0" />
+  <meta name="generator" content="Hugo 0.55.4" />
   <meta name="author" content="Dr. Dominic Royé">
 
   
@@ -15,7 +15,7 @@
   
     
   
-  <meta name="description" content="Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R.">
+  <meta name="description" content="categories: [“datavis,”“R,”“R:elementary”]date: “2018-08-22T11:23:32&#43;01:00”draft: falseheader:caption: &#34;&#34;image: “vaccination_pie.png”tags: [“pie chart,”“data,”“circular,”“proportions,”“first post,”“treemap,”“waffle,”“bar”]title: the pie chartbibliography: bibliography.biblang: enslug: “pie-chart”Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data.">
 
   
   <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/en/2018/the-pie-chart/">
@@ -117,7 +117,7 @@
   <meta property="og:site_name" content="Dominic Royé">
   <meta property="og:url" content="https://dominicroye.github.io/en/2018/the-pie-chart/">
   <meta property="og:title" content="the pie chart | Dominic Royé">
-  <meta property="og:description" content="Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R."><meta property="og:image" content="https://dominicroye.github.io/en/2018/the-pie-chart/featured.png">
+  <meta property="og:description" content="categories: [“datavis,”“R,”“R:elementary”]date: “2018-08-22T11:23:32&#43;01:00”draft: falseheader:caption: &#34;&#34;image: “vaccination_pie.png”tags: [“pie chart,”“data,”“circular,”“proportions,”“first post,”“treemap,”“waffle,”“bar”]title: the pie chartbibliography: bibliography.biblang: enslug: “pie-chart”Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data."><meta property="og:image" content="https://dominicroye.github.io/en/2018/the-pie-chart/featured.png">
   <meta property="og:locale" content="en-us">
   
   <meta property="article:published_time" content="2018-08-22T11:23:32&#43;01:00">
@@ -692,14 +692,55 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/header-attrs/header-attrs.js"></script>
 
 
+<table>
+<tbody>
+<tr class="odd">
+<td>categories: [“datavis,”“R,”“R:elementary”]</td>
+</tr>
+<tr class="even">
+<td>date: “2018-08-22T11:23:32+01:00”</td>
+</tr>
+<tr class="odd">
+<td>draft: false</td>
+</tr>
+<tr class="even">
+<td>header:</td>
+</tr>
+<tr class="odd">
+<td>caption: ""</td>
+</tr>
+<tr class="even">
+<td>image: “vaccination_pie.png”</td>
+</tr>
+<tr class="odd">
+<td>tags: [“pie chart,”“data,”“circular,”“proportions,”“first post,”</td>
+</tr>
+<tr class="even">
+<td>“treemap,”“waffle,”“bar”]</td>
+</tr>
+<tr class="odd">
+<td>title: the pie chart</td>
+</tr>
+<tr class="even">
+<td>bibliography: bibliography.bib</td>
+</tr>
+<tr class="odd">
+<td>lang: en</td>
+</tr>
+<tr class="even">
+<td>slug: “pie-chart”</td>
+</tr>
+</tbody>
+</table>
 <p>Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.</p>
 <hr />
 <div id="background" class="section level2">
 <h2>Background</h2>
 <p>I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?</p>
-<p>Already in a study conducted by <span class="citation">(<span class="citeproc-not-found" data-reference-id="Simkin1987"><strong>???</strong></span>)</span> they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.</p>
+<p>Already in a study conducted by <span class="citation">(<a href="#ref-Simkin1987" role="doc-biblioref"><strong>Simkin1987?</strong></a>)</span> they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.</p>
 <p>In general, to decide what possible graphic representations exist for our data, I recommend using the website <a href="https://www.data-to-viz.com">www.data-to-viz.com</a> or the <em>Financial Times Visual Vocabulary</em>.</p>
 <p><a href="https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary"><img src="/img/poster_piepost.png" /></a></p>
 <p>Well, now what alternative ways can we use in R?</p>
@@ -763,7 +804,7 @@ measles &lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&quot;&quot;,y=&quot;&quot;)+
             theme_minimal()</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -771,7 +812,7 @@ measles &lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&quot;&quot;,y=&quot;&quot;)+
             theme_minimal()</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <pre class="r"><code>#custom themes definitions
 theme_singlebar &lt;- theme_bw()+
   theme(
@@ -798,7 +839,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
               scale_fill_brewer(&quot;&quot;,palette=&quot;Set1&quot;)+
                 coord_flip()+
                   theme_singlebar</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>#we expand our data with numbers from Italy
 measles2 &lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -816,7 +857,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &quot;Set1&quot;)+
             labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;Vaccination Status&quot;)+
             theme_minimal()</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="waffle-plot" class="section level3">
 <h3>Waffle plot</h3>
@@ -831,7 +872,7 @@ names(val_measles) &lt;- measles$vacc_status
 waffle(val_measles, #data
         colors=brewer.pal(5,&quot;Set1&quot;), #colors
         rows=5) #row number </code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.</p>
 <pre class="r"><code>#data
 medida &lt;- c(41,59) #data from the OECD 2015
@@ -841,7 +882,7 @@ names(medida) &lt;- c(&quot;Estudios Superiores&quot;,&quot;Otros estudios&quot;
 waffle(medida,
        colors=c(&quot;#377eb8&quot;,&quot;#bdbdbd&quot;),
        rows=5)</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="treemap" class="section level3">
 <h3>Treemap</h3>
@@ -856,8 +897,8 @@ type=&quot;index&quot;,        #style more in ?treemap
 title=&quot;&quot;,            
 palette = brewer.pal(5,&quot;Set1&quot;) #colors
 )</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
-<p>Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent <a href="https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart">post</a> by <a href="https://twitter.com/lisacrost">Lisa Charlotte Rost</a>. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a <a href="https://policyviz.com/2018/08/07/dataviz-cheatsheet/">cheat sheet</a> from <em>policyviz</em> with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book <em>Creating More Effective Graphs</em> <span class="citation">(<span class="citeproc-not-found" data-reference-id="Robbins2013"><strong>???</strong></span>)</span>.</p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent <a href="https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart">post</a> by <a href="https://twitter.com/lisacrost">Lisa Charlotte Rost</a>. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a <a href="https://policyviz.com/2018/08/07/dataviz-cheatsheet/">cheat sheet</a> from <em>policyviz</em> with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book <em>Creating More Effective Graphs</em> <span class="citation">(<a href="#ref-Robbins2013" role="doc-biblioref"><strong>Robbins2013?</strong></a>)</span>.</p>
 </div>
 <div id="references" class="section level3">
 <h3>References</h3>
@@ -1141,7 +1182,7 @@ palette = brewer.pal(5,&quot;Set1&quot;) #colors
     
     
     
-    <script src="/js/academic.min.5752a62e7c04993e8f13fbc193e7a138.js"></script>
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
 
     
 
