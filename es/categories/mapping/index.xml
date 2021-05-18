@@ -17,14 +17,15 @@
       
       <guid>https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;div id=&#34;la-base-de-datos-de-open-street-maps&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;La base de datos de Open Street Maps&lt;/h2&gt;
 &lt;p&gt;Recientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Population density through the number of gas stations in Europe. &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw&#34;&gt;@AGE_Oficial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/mipazos?ref_src=twsrc%5Etfw&#34;&gt;@mipazos&lt;/a&gt; &lt;a href=&#34;https://twitter.com/simongerman600?ref_src=twsrc%5Etfw&#34;&gt;@simongerman600&lt;/a&gt; &lt;a href=&#34;https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw&#34;&gt;@openstreetmap&lt;/a&gt; &lt;a href=&#34;https://t.co/eIUx2yn7ej&#34;&gt;pic.twitter.com/eIUx2yn7ej&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw&#34;&gt;February 25, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
+&lt;/p&gt;
 &lt;p&gt;¿Cómo se puede obtener estos datos?&lt;/p&gt;
 &lt;p&gt;Pues, en este caso usé puntos de interés (PDIs) de la base de datos de &lt;em&gt;Open Street Maps&lt;/em&gt; (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una &lt;em&gt;overpass API&lt;/em&gt;, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.&lt;/p&gt;
 &lt;p&gt;Una forma fácil de acceder a una &lt;em&gt;overpass API&lt;/em&gt; es a través de &lt;a href=&#34;http://overpass-turbo.eu&#34;&gt;overpass-turbo.eu&lt;/a&gt;, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar &lt;a href=&#34;https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo&#34;&gt;aquí&lt;/a&gt;.
@@ -51,11 +52,11 @@ library(ggmap)&lt;/code&gt;&lt;/pre&gt;
 Por ejemplo, la característica &lt;em&gt;shop&lt;/em&gt; contiene como categoría entre otros &lt;em&gt;supermarket&lt;/em&gt;, &lt;em&gt;fishing&lt;/em&gt;, &lt;em&gt;books&lt;/em&gt;, etc.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#las primeras cinco características 
 head(available_features())&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;4wd_only&amp;quot;  &amp;quot;abandoned&amp;quot; &amp;quot;abutters&amp;quot;  &amp;quot;access&amp;quot;    &amp;quot;addr&amp;quot;      &amp;quot;addr:city&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalaciones y establecimientos públicos
 head(available_tags(&amp;quot;amenity&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal_boarding&amp;quot; &amp;quot;animal_shelter&amp;quot;  &amp;quot;arts_centre&amp;quot;     &amp;quot;atm&amp;quot;            
-## [5] &amp;quot;baby_hatch&amp;quot;      &amp;quot;baking_oven&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;animal_boarding&amp;quot; &amp;quot;animal_breeding&amp;quot; &amp;quot;animal_shelter&amp;quot;  &amp;quot;arts_centre&amp;quot;    
+## [5] &amp;quot;atm&amp;quot;             &amp;quot;baby_hatch&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#tiendas
 head(available_tags(&amp;quot;shop&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;agrarian&amp;quot;  &amp;quot;alcohol&amp;quot;   &amp;quot;anime&amp;quot;     &amp;quot;antiques&amp;quot;  &amp;quot;appliance&amp;quot; &amp;quot;art&amp;quot;&lt;/code&gt;&lt;/pre&gt;
@@ -74,7 +75,8 @@ str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
-##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;
+##  - attr(*, &amp;quot;nodes_only&amp;quot;)= logi FALSE&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
 cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
@@ -83,7 +85,7 @@ cinema&lt;/code&gt;&lt;/pre&gt;
 ##                  $meta : metadata including timestamp and version numbers
 ##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 197 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 11 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
@@ -103,7 +105,7 @@ ggmap(mad_map)+
           size = 4,
           shape = 21)+
   labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;dónde-están-los-supermercados-de-mercadona&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;¿Dónde están los supermercados de Mercadona?&lt;/h3&gt;
@@ -124,7 +126,8 @@ str(q) #estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:2500];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr [1:2] &amp;quot; [\&amp;quot;name\&amp;quot;=\&amp;quot;Mercadona\&amp;quot;]&amp;quot; &amp;quot; [\&amp;quot;shop\&amp;quot;=\&amp;quot;supermarket\&amp;quot;]&amp;quot;
-##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;
+##  - attr(*, &amp;quot;nodes_only&amp;quot;)= logi FALSE&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#consulta 
 mercadona &amp;lt;- osmdata_sf(q)
 
@@ -136,7 +139,7 @@ ggplot(mercadona$osm_points)+
           size = 1,
           shape = 21)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

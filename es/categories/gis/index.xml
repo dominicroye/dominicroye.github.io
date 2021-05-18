@@ -17,12 +17,17 @@
       
       <guid>https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;El primer post del año 2020, lo dedicaré a una consulta que me hicieron recientemente. Me plantearon la pregunta de cómo se podría calcular la distancia más corta entre diferentes puntos y cómo saber cúal es el punto más próximo a uno dado. Cuando trabajamos con datos espaciales en R, en la actualidad lo más fácil es usar el paquete &lt;code&gt;sf&lt;/code&gt; en combinación con la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt;. Además usamos el paquete &lt;code&gt;units&lt;/code&gt; que es muy útil para trabajar con unidades de medida.&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
@@ -109,10 +114,10 @@ head(world.cities) # proviene del paquete maps&lt;/code&gt;&lt;/pre&gt;
 cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
 cities&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
-## CRS:            EPSG:4326
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
 ## First 10 features:
 ##                  name  country.etc   pop capital            geometry
 ## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
@@ -134,10 +139,10 @@ capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;
 
 capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
-## CRS:            EPSG:4326
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
 ## First 10 features:
 ##           name          country.etc     pop capital               geometry
 ## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
@@ -168,27 +173,27 @@ capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;table&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;336&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;384&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;246&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;344&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;336&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;246&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;374&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;118&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;C&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;384&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;374&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;344&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;118&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -257,7 +262,7 @@ ggplot(world) +
    coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
   labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital&amp;quot;) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-01-19-distancia-geografica/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       

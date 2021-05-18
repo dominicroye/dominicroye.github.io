@@ -616,6 +616,7 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <p>When we visualize precipitation and temperature anomalies, we simply use time series as bar graph indicating negative and positive values in red and blue. However, in order to have a better overview we need both anomalies in a single graph. In this way we could more easly answer the question of whether a particular season or month was dry-warm or wet-cold, and even compare these anomalies in the context of previous years.</p>
@@ -623,6 +624,10 @@
 <h2>Packages</h2>
 <p>In this post we will use the following packages:</p>
 <table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Package</th>
@@ -661,7 +666,8 @@ library(ggrepel)</code></pre>
 <h3>Step 1: import the data</h3>
 <p>We import the data in <em>csv</em> format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).</p>
 <pre class="r"><code>data &lt;- read_csv(&quot;meteo_tenerife.csv&quot;) </code></pre>
-<pre><code>## Parsed with column specification:
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   date = col_date(format = &quot;&quot;),
 ##   pr = col_double(),
@@ -786,7 +792,7 @@ bglab</code></pre>
                      angle = 90, colour = &quot;white&quot;)
 
 g1</code></pre>
-<p><img src="/post/en/2020-03-29-climate-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png" width="3507" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png" width="3507" /></p>
 </div>
 <div id="part-3" class="section level3">
 <h3>Part 3</h3>
@@ -798,7 +804,7 @@ g1</code></pre>
                            size = 3.5) 
 g2</code></pre>
 <pre><code>## Warning: Removed 25 rows containing missing values (geom_text_repel).</code></pre>
-<p><img src="/post/en/2020-03-29-climate-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png" width="3507" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png" width="3507" /></p>
 </div>
 <div id="part-4" class="section level3">
 <h3>Part 4</h3>
@@ -817,7 +823,7 @@ g2</code></pre>
 
 g3</code></pre>
 <pre><code>## Warning: Removed 25 rows containing missing values (geom_text_repel).</code></pre>
-<p><img src="/post/en/2020-03-29-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png" width="3507" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png" width="3507" /></p>
 </div>
 </div>
 
@@ -934,6 +940,8 @@ g3</code></pre>
       <div class="hr-light"></div>
       <h3>Related</h3>
       <ul>
+        
+        <li><a href="/en/2019/visualize-monthly-precipitation-anomalies/">Visualize monthly precipitation anomalies</a></li>
         
         <li><a href="/en/publication/era5_esp_2020/">Comparison of temperature-mortality associations using observed weather station and reanalysis data in 52 Spanish cities</a></li>
         

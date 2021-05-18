@@ -17,24 +17,28 @@
       
       <guid>https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Tidyverse&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#style-guide&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Style guide&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#pipe&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#tidyverse-packages&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Tidyverse packages&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#tidyverse-packages&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Tidyverse packages&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#read-and-write-data&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.1&lt;/span&gt; Read and write data&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#character-manipulations&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.2&lt;/span&gt; Character manipulations&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#management-of-dates-and-times&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.3&lt;/span&gt; Management of dates and times&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#table-and-vector-manipulation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4&lt;/span&gt; Table and vector manipulation&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#table-and-vector-manipulation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4&lt;/span&gt; Table and vector manipulation&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#select-and-rename&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.1&lt;/span&gt; Select and rename&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#filter-and-sort&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.2&lt;/span&gt; Filter and sort&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#group-and-summarize&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.3&lt;/span&gt; Group and summarize&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#join-tables&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.4&lt;/span&gt; Join tables&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#long-and-wide-tables&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.5&lt;/span&gt; Long and wide tables&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#visualize-data&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5&lt;/span&gt; Visualize data&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#visualize-data&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5&lt;/span&gt; Visualize data&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#line-and-scatter-plot&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.1&lt;/span&gt; Line and scatter plot&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#boxplot&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#heatmap&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/a&gt;&lt;/li&gt;
@@ -44,7 +48,7 @@
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div id=&#34;tidyverse&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;tidyverse&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Tidyverse&lt;/h1&gt;
 &lt;p&gt;The &lt;code&gt;tidyverse&lt;/code&gt; universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The &lt;code&gt;tidyverse&lt;/code&gt; philosophy and grammar of functions are also reflected in other packages that make its use compatible with the collection. For example, the &lt;code&gt;sf&lt;/code&gt; package (&lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;simple feature&lt;/a&gt;) is a standardized way to encode spatial vector data and allows the use of multiple functions that we can find in the &lt;code&gt;dplyr&lt;/code&gt; package.&lt;/p&gt;
 &lt;p&gt;The core of the &lt;code&gt;tidyverse&lt;/code&gt; collection is made up of the following packages:&lt;/p&gt;
@@ -91,16 +95,18 @@
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;In addition to the mentioned packages, &lt;code&gt;lubridate&lt;/code&gt; is also used very frequently to work with dates and times, and also &lt;code&gt;readxl&lt;/code&gt; which allows us to import files in Excel format. To know all the available packages we can use the function &lt;code&gt;tidyverse_packages()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;broom&amp;quot;      &amp;quot;cli&amp;quot;        &amp;quot;crayon&amp;quot;     &amp;quot;dbplyr&amp;quot;     &amp;quot;dplyr&amp;quot;     
-##  [6] &amp;quot;forcats&amp;quot;    &amp;quot;ggplot2&amp;quot;    &amp;quot;haven&amp;quot;      &amp;quot;hms&amp;quot;        &amp;quot;httr&amp;quot;      
-## [11] &amp;quot;jsonlite&amp;quot;   &amp;quot;lubridate&amp;quot;  &amp;quot;magrittr&amp;quot;   &amp;quot;modelr&amp;quot;     &amp;quot;pillar&amp;quot;    
-## [16] &amp;quot;purrr&amp;quot;      &amp;quot;readr&amp;quot;      &amp;quot;readxl&amp;quot;     &amp;quot;reprex&amp;quot;     &amp;quot;rlang&amp;quot;     
-## [21] &amp;quot;rstudioapi&amp;quot; &amp;quot;rvest&amp;quot;      &amp;quot;stringr&amp;quot;    &amp;quot;tibble&amp;quot;     &amp;quot;tidyr&amp;quot;     
-## [26] &amp;quot;xml2&amp;quot;       &amp;quot;tidyverse&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;broom&amp;quot;         &amp;quot;cli&amp;quot;           &amp;quot;crayon&amp;quot;        &amp;quot;dbplyr&amp;quot;       
+##  [5] &amp;quot;dplyr&amp;quot;         &amp;quot;dtplyr&amp;quot;        &amp;quot;forcats&amp;quot;       &amp;quot;googledrive&amp;quot;  
+##  [9] &amp;quot;googlesheets4&amp;quot; &amp;quot;ggplot2&amp;quot;       &amp;quot;haven&amp;quot;         &amp;quot;hms&amp;quot;          
+## [13] &amp;quot;httr&amp;quot;          &amp;quot;jsonlite&amp;quot;      &amp;quot;lubridate&amp;quot;     &amp;quot;magrittr&amp;quot;     
+## [17] &amp;quot;modelr&amp;quot;        &amp;quot;pillar&amp;quot;        &amp;quot;purrr&amp;quot;         &amp;quot;readr&amp;quot;        
+## [21] &amp;quot;readxl&amp;quot;        &amp;quot;reprex&amp;quot;        &amp;quot;rlang&amp;quot;         &amp;quot;rstudioapi&amp;quot;   
+## [25] &amp;quot;rvest&amp;quot;         &amp;quot;stringr&amp;quot;       &amp;quot;tibble&amp;quot;        &amp;quot;tidyr&amp;quot;        
+## [29] &amp;quot;xml2&amp;quot;          &amp;quot;tidyverse&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;It is very easy to get conflicts between functions, that is, that the same function name exists in several packages. To avoid this, we can write the name of the package in front of the function we want to use, separated by the colon symbol written twice (&lt;code&gt;package_name::function_name&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;Before I get started with the packages, I hope it will be a really short introduction, some comments on the style when programming in R.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;style-guide&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;style-guide&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Style guide&lt;/h1&gt;
 &lt;p&gt;In R there is no universal style guide, that is, in the R syntax it is not necessary to follow specific rules for our scripts. But it is recommended to work in a homogeneous, uniform, legible and clear way when writing scripts. The &lt;code&gt;tidyverse&lt;/code&gt; collection has its own guide (&lt;a href=&#34;https://style.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://style.tidyverse.org/&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;The most important recommendations are:&lt;/p&gt;
@@ -116,15 +122,15 @@
 &lt;/ul&gt;
 &lt;p&gt;It is advisable to use a correct indentation for multiple arguments of a function or functions chained by the &lt;code&gt;pipe&lt;/code&gt; operator (&lt;code&gt;%&amp;gt;%&lt;/code&gt;).&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;pipe&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;pipe&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/h1&gt;
 &lt;p&gt;To facilitate working in data management, manipulation and visualization, the &lt;code&gt;magrittr&lt;/code&gt; package introduces the famous &lt;em&gt;pipe&lt;/em&gt; operator in the form &lt;code&gt;%&amp;gt;%&lt;/code&gt; with the aim of combining various functions without the need to assign the result to a new object. The &lt;em&gt;pipe&lt;/em&gt; operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously, to perform sequential tasks. In the very simple example below, we pass the vector &lt;code&gt;1:5&lt;/code&gt; to the &lt;code&gt;mean()&lt;/code&gt; function to calculate the average. You should know that there are a couple of other pipe operators in the same package.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1:5 %&amp;gt;% mean()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 3&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;tidyverse-packages&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;tidyverse-packages&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Tidyverse packages&lt;/h1&gt;
-&lt;div id=&#34;read-and-write-data&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;read-and-write-data&#34; class=&#34;section level2&#34; number=&#34;4.1&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.1&lt;/span&gt; Read and write data&lt;/h2&gt;
 &lt;p&gt;The &lt;code&gt;readr&lt;/code&gt; package makes it easy to read or write multiple file formats using functions that start with &lt;code&gt;read_*&lt;/code&gt; or &lt;code&gt;write_*&lt;/code&gt;.
 In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; they handle problematic column names, and dates are automatically converted. The imported tables are of class &lt;code&gt;tibble&lt;/code&gt; (&lt;em&gt;tbl_df&lt;/em&gt;), a modern version of &lt;code&gt;data.frame&lt;/code&gt; from the &lt;code&gt;tibble&lt;/code&gt; package. In the same sense, you can use the &lt;code&gt;read_excel()&lt;/code&gt; function of the &lt;code&gt;readxl&lt;/code&gt; package to import data from Excel sheets (more details also in this &lt;a href=&#34;https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/&#34;&gt;blog post&lt;/a&gt;). In the following example, we import the mobility data registered by Google (&lt;a href=&#34;https://www.google.com/covid19/mobility/&#34;&gt;link&lt;/a&gt;) during the last months of the COVID-19 pandemic (&lt;a href=&#34;https://dominicroye.github.io/files/Global_Mobility_Report.csv&#34;&gt;download&lt;/a&gt;).&lt;/p&gt;
@@ -154,7 +160,8 @@ In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; th
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   country_region_code = col_character(),
 ##   country_region = col_character(),
@@ -181,18 +188,18 @@ google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot
 ## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 516,697 x 13
-##    country_region_~ country_region sub_region_1 sub_region_2 iso_3166_2_code
-##    &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;        &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;          
-##  1 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  2 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  3 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  4 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  5 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  6 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  7 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  8 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  9 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-## 10 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##    country_region_co~ country_region   sub_region_1 sub_region_2 iso_3166_2_code
+##    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;        &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  2 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  3 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  4 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  5 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  6 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  7 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  8 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  9 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+## 10 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
 ## # ... with 516,687 more rows, and 8 more variables: census_fips_code &amp;lt;lgl&amp;gt;,
 ## #   date &amp;lt;date&amp;gt;, retail_and_recreation_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
 ## #   grocery_and_pharmacy_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
@@ -202,7 +209,7 @@ google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot
 ## #   residential_percent_change_from_baseline &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Important is to take a look at the argument names, since they change in the &lt;code&gt;readr&lt;/code&gt; functions. For example, the well-known &lt;code&gt;header = TRUE&lt;/code&gt; argument of &lt;code&gt;read.csv()&lt;/code&gt; is in this case &lt;code&gt;col_names = TRUE&lt;/code&gt;. More details can be found in the &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; of &lt;code&gt;readr&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;character-manipulations&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;character-manipulations&#34; class=&#34;section level2&#34; number=&#34;4.2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.2&lt;/span&gt; Character manipulations&lt;/h2&gt;
 &lt;p&gt;For working with strings we use the &lt;code&gt;stringr&lt;/code&gt; package, whose functions always start with &lt;code&gt;str_*&lt;/code&gt; followed by a verb and the first argument.&lt;/p&gt;
 &lt;p&gt;Some of these functions are as follows:&lt;/p&gt;
@@ -292,10 +299,10 @@ str_glue(
   &amp;quot;I&amp;#39;am {age}, &amp;quot;,
   &amp;quot;and my birth year is {format(date_today-age*365, &amp;#39;%Y&amp;#39;)}.&amp;quot;
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## My name is Juan, I&amp;#39;am 50, and my birth year is 1970.
-## My name is Michael, I&amp;#39;am 80, and my birth year is 1940.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## My name is Juan, I&amp;#39;am 50, and my birth year is 1971.
+## My name is Michael, I&amp;#39;am 80, and my birth year is 1941.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;management-of-dates-and-times&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;management-of-dates-and-times&#34; class=&#34;section level2&#34; number=&#34;4.3&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.3&lt;/span&gt; Management of dates and times&lt;/h2&gt;
 &lt;p&gt;The &lt;code&gt;lubridate&lt;/code&gt; package is very powerful in handling dates and times. It allows us to create R recognized objects with functions (like &lt;code&gt;ymd()&lt;/code&gt; or &lt;code&gt;ymd_hms()&lt;/code&gt;) and we can even make calculations.&lt;/p&gt;
 &lt;p&gt;We only must know the following abbreviations:&lt;/p&gt;
@@ -369,7 +376,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2005-05-23 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;More details can be found in the &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; of &lt;code&gt;lubridate&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;table-and-vector-manipulation&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;table-and-vector-manipulation&#34; class=&#34;section level2&#34; number=&#34;4.4&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4&lt;/span&gt; Table and vector manipulation&lt;/h2&gt;
 &lt;p&gt;The &lt;code&gt;dplyr&lt;/code&gt; and &lt;code&gt;tidyr&lt;/code&gt; packages provide us with a data manipulation grammar, a set of useful verbs to solve common problems. The most important functions are:&lt;/p&gt;
 &lt;table&gt;
@@ -412,7 +419,8 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;In case you haven’t done it before, we import the mobility data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   country_region_code = col_character(),
 ##   country_region = col_character(),
@@ -437,7 +445,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 ## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
 ## ...... ................ .................. .............. ............................
 ## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;select-and-rename&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;select-and-rename&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.1&lt;/span&gt; Select and rename&lt;/h3&gt;
 &lt;p&gt;We can select or remove columns with the &lt;code&gt;select()&lt;/code&gt; function, using the name or index of the column. To delete columns we make use of the negative sign. The &lt;code&gt;rename&lt;/code&gt; function helps in renaming columns with either the same name or their index.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;residential_mobility &amp;lt;- select(google_mobility, 
@@ -446,7 +454,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
                                residential_percent_change_from_baseline) %&amp;gt;% 
                         rename(resi = 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;filter-and-sort&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;filter-and-sort&#34; class=&#34;section level3&#34; number=&#34;4.4.2&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.2&lt;/span&gt; Filter and sort&lt;/h3&gt;
 &lt;p&gt;To filter data, we use &lt;code&gt;filter()&lt;/code&gt; with logical operators (&lt;code&gt;|&lt;/code&gt;, &lt;code&gt;==&lt;/code&gt;, &lt;code&gt;&amp;gt;&lt;/code&gt;, etc) or functions that return a logical value (&lt;code&gt;str_detect()&lt;/code&gt;, &lt;code&gt;is.na()&lt;/code&gt; , etc.). The &lt;code&gt;arrange()&lt;/code&gt; function sorts from least to greatest for one or multiple variables (with the negative sign &lt;code&gt;-&lt;/code&gt; the order is reversed from greatest to least).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(residential_mobility, 
@@ -500,7 +508,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 ## 10 SG                 Singapore      &amp;lt;NA&amp;gt;                       2020-04-10    53
 ## # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;group-and-summarize&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;group-and-summarize&#34; class=&#34;section level3&#34; number=&#34;4.4.3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.3&lt;/span&gt; Group and summarize&lt;/h3&gt;
 &lt;p&gt;Where do we find greater variability between regions in each country on April 1, 2020?&lt;/p&gt;
 &lt;p&gt;To answer this question, we first filter the data and then we group by the country column. When we use the &lt;code&gt;summarize()&lt;/code&gt; function after grouping, it allows us to summarize by these groups. Moreover, combining &lt;code&gt;group_by()&lt;/code&gt; with the &lt;code&gt;mutate()&lt;/code&gt; function modifies columns in each group separately. In &lt;code&gt;summarize()&lt;/code&gt; we calculate the maximum, minimum value and the difference between both extremes creating new columns.&lt;/p&gt;
@@ -510,9 +518,9 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
                           group_by(country_region) %&amp;gt;% 
                            summarise(mx = max(resi, na.rm = TRUE), 
                                     min = min(resi, na.rm = TRUE),
-                                    range = abs(mx)-abs(min))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;arrange(resi_variability, -range)&lt;/code&gt;&lt;/pre&gt;
+                                    range = abs(mx)-abs(min))
+
+arrange(resi_variability, -range)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 94 x 4
 ##    country_region    mx   min range
 ##    &amp;lt;chr&amp;gt;          &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
@@ -528,7 +536,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 ## 10 Chile             30    14    16
 ## # ... with 84 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;join-tables&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;join-tables&#34; class=&#34;section level3&#34; number=&#34;4.4.4&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.4&lt;/span&gt; Join tables&lt;/h3&gt;
 &lt;p&gt;How can we filter the data to get a subset of Europe?&lt;/p&gt;
 &lt;p&gt;To do this, we import a spatial dataset with the country code and a column of regions. Detailed explanations about the &lt;code&gt;sf&lt;/code&gt; (&lt;em&gt;simple feature&lt;/em&gt;) package, I’ll leave for another post.&lt;/p&gt;
@@ -542,7 +550,7 @@ wld &amp;lt;- filter(wld, !is.na(iso_a2)) %&amp;gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Other &lt;code&gt;dplyr&lt;/code&gt; functions allow us to join tables: &lt;code&gt;*_join ()&lt;/code&gt;. Depending on which table (left or right) you want to join, the functions change: &lt;code&gt;left_join()&lt;/code&gt;, &lt;code&gt;right_join()&lt;/code&gt; or even &lt;code&gt;full_join()&lt;/code&gt;. The &lt;code&gt;by&lt;/code&gt; argument is not necessary as long as both tables have a column in common. However, in this case the variable names are different, so we use the following way: &lt;code&gt;c(&#34;country_region_code&#34;=&#34;iso_a2&#34;)&lt;/code&gt;. The &lt;code&gt;forcats&lt;/code&gt; package of &lt;code&gt;tidyverse&lt;/code&gt; has many useful functions for handling categorical variables (&lt;code&gt;factors&lt;/code&gt;), variables that have a fixed and known set of possible values. All &lt;code&gt;forcats&lt;/code&gt; functions have the prefix &lt;code&gt;fct_*&lt;/code&gt;. For example, in this case we use &lt;code&gt;fct_reorder()&lt;/code&gt; to reorder the country labels in order of the maximum based on the residential mobility records. Finally, we create a new column &lt;code&gt;&#34;resi_real&#34;&lt;/code&gt; to change the reference value, the average or baseline, from 0 to 100.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;subset_europe &amp;lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -575,7 +583,7 @@ str(subset_europe)&lt;/code&gt;&lt;/pre&gt;
 ##   ..$ actual  : chr [1:597554] &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; ...
 ##   ..$ file    : chr [1:597554] &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;long-and-wide-tables&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;long-and-wide-tables&#34; class=&#34;section level3&#34; number=&#34;4.4.5&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.5&lt;/span&gt; Long and wide tables&lt;/h3&gt;
 &lt;p&gt;Before we go to create graphics with &lt;code&gt;ggplot2&lt;/code&gt;, it is very common to modify the table between two main formats, long and wide. A table is tidy when 1) each variable is a column 2) each observation/case is a row and 3) each type of observational unit forms a table.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subset
@@ -639,7 +647,7 @@ pivot_longer(mobi_wide,
 &lt;p&gt;Another group of functions you should take a look at are: &lt;code&gt;separate()&lt;/code&gt;, &lt;code&gt;case_when()&lt;/code&gt;, &lt;code&gt;complete()&lt;/code&gt;. More details can be found in the &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; of &lt;code&gt;dplyr&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;visualize-data&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;visualize-data&#34; class=&#34;section level2&#34; number=&#34;4.5&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5&lt;/span&gt; Visualize data&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; is a modern system for data visualization with a huge variety of options. Unlike the R Base graphic system, in &lt;code&gt;ggplot2&lt;/code&gt; a different grammar is used. The grammar of graphics (gg) consists of the sum of several independent layers or objects that are combined using &lt;code&gt;+&lt;/code&gt; to construct the final graph. &lt;code&gt;ggplot&lt;/code&gt; differentiates between data, what is displayed and how it is displayed.&lt;/p&gt;
 &lt;ul&gt;
@@ -650,7 +658,7 @@ pivot_longer(mobi_wide,
 &lt;li&gt;&lt;p&gt;&lt;em&gt;statistics&lt;/em&gt;: are &lt;code&gt;stat_ *&lt;/code&gt; objects (eg, &lt;code&gt;stat_density()&lt;/code&gt;) that allow to apply statistical transformations.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;More details can be found in the &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; of &lt;code&gt;ggplot2&lt;/code&gt;. &lt;code&gt;ggplot&lt;/code&gt; is constantly supplemented by extensions for geometries or other graphical options (see &lt;a href=&#34;https://exts.ggplot2.tidyverse.org/ggiraph.html&#34; class=&#34;uri&#34;&gt;https://exts.ggplot2.tidyverse.org/ggiraph.html&lt;/a&gt;), for graphical ideas have a look a the R Graph Gallery (&lt;a href=&#34;https://www.r-graph-gallery.com/&#34; class=&#34;uri&#34;&gt;https://www.r-graph-gallery.com/&lt;/a&gt;).&lt;/p&gt;
-&lt;div id=&#34;line-and-scatter-plot&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;line-and-scatter-plot&#34; class=&#34;section level3&#34; number=&#34;4.5.1&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.1&lt;/span&gt; Line and scatter plot&lt;/h3&gt;
 &lt;p&gt;We create a subset of our mobility data for residences and parks, filtering the records for Italian regions. In addition, we divide the mobility values in percentage by 100 to obtain the fraction, since &lt;code&gt;ggplot2&lt;/code&gt; allows us to indicate the unit of percentage in the label argument (see last plot in this section).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create subset
@@ -665,14 +673,14 @@ it &amp;lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To modify the axes, we use the different &lt;code&gt;scale_*&lt;/code&gt; functions that we must adapt to the scales of measurement (date, discrete, continuous, etc.). The &lt;code&gt;labs()&lt;/code&gt; function helps us define the axis, legend and plot titles. Finally, we add the style of the graph with &lt;code&gt;theme_light()&lt;/code&gt; (others are &lt;code&gt;theme_bw()&lt;/code&gt;, &lt;code&gt;theme_minimal()&lt;/code&gt;, etc.). We could also make changes to all graphic elements through &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time serie plot
 ggplot(it, 
@@ -686,7 +694,7 @@ ggplot(it,
        y = &amp;quot;Residential mobility&amp;quot;,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -701,9 +709,9 @@ ggplot(it,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34; number=&#34;4.5.2&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/h3&gt;
 &lt;p&gt;We can visualize different aspects of the mobility with other geometries. Here we will create boxplots for each European country representing the variability of mobility between and within countries during the COVID-19 pandemic.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subset
@@ -730,9 +738,9 @@ ggplot(subset_europe_reg,
        title = &amp;quot;Mobility during COVID-19&amp;quot;, 
        fill = &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34; number=&#34;4.5.3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/h3&gt;
 &lt;p&gt;To visualize the mobility trend of all European countries it is recommended to use a heatmap instead of a bundle of lines. Before building the graph, we will create a vector of Sundays for the x-axis labels in the observation period.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sequence of dates
@@ -772,10 +780,10 @@ ggplot(subset_europe,
                                label.position = &amp;quot;top&amp;quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;apply-functions-on-vectors-or-lists&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;apply-functions-on-vectors-or-lists&#34; class=&#34;section level2&#34; number=&#34;4.6&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.6&lt;/span&gt; Apply functions on vectors or lists&lt;/h2&gt;
 &lt;p&gt;The &lt;code&gt;purrr&lt;/code&gt; package contains a set of advanced functional programming functions for working with functions and vectors. The known &lt;code&gt;lapply()&lt;/code&gt; family of R Base corresponds to the &lt;code&gt;map()&lt;/code&gt; functions in this package. One of the biggest advantages is being able to reduce the use of loops (&lt;code&gt;for&lt;/code&gt;, etc.).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# list of two vectors
@@ -860,13 +868,13 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 27 x 9
 ##    country_code estimate statistic   p.value parameter conf.low conf.high method
 ##    &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
-##  1 IT             -0.831    -71.0  0.             2250   -0.844    -0.818 Pears~
-##  2 ES             -0.825    -65.4  0.             2005   -0.839    -0.811 Pears~
+##  1 IT             -0.831    -71.0  0              2250   -0.844    -0.818 Pears~
+##  2 ES             -0.825    -65.4  0              2005   -0.839    -0.811 Pears~
 ##  3 PT             -0.729    -46.9  2.12e-321      1938   -0.749    -0.707 Pears~
 ##  4 FR             -0.698    -37.4  3.29e-216      1474   -0.723    -0.671 Pears~
 ##  5 GR             -0.692    -27.0  1.03e-114       796   -0.726    -0.654 Pears~
 ##  6 BG             -0.677    -37.8  1.47e-227      1694   -0.702    -0.650 Pears~
-##  7 RO             -0.640    -56.0  0.             4517   -0.657    -0.623 Pears~
+##  7 RO             -0.640    -56.0  0              4517   -0.657    -0.623 Pears~
 ##  8 SI             -0.627    -11.4  1.98e- 23       200   -0.704    -0.535 Pears~
 ##  9 HR             -0.579    -21.9  9.32e- 87       954   -0.620    -0.536 Pears~
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~

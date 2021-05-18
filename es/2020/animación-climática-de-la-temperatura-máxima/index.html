@@ -616,12 +616,13 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/header-attrs/header-attrs.js"></script>
 
 
 <p>En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de <a href="https://dominicroye.github.io/es/graphs/climate/">gráficos</a> de este mismo blog.</p>
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">I couldn&#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/climate?src=hash&amp;ref_src=twsrc%5Etfw">#climate</a> <a href="https://t.co/ZC9L0vh3vR">pic.twitter.com/ZC9L0vh3vR</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw">May 9, 2020</a></blockquote>
+<p><blockquote class="twitter-tweet"><p lang="en" dir="ltr">I couldn&#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/climate?src=hash&amp;ref_src=twsrc%5Etfw">#climate</a> <a href="https://t.co/ZC9L0vh3vR">pic.twitter.com/ZC9L0vh3vR</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw">May 9, 2020</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+</p>
 <div id="paquetes" class="section level2">
 <h2>Paquetes</h2>
 <p>En este post usaremos los siguientes paquetes:</p>
@@ -721,7 +722,7 @@ tmx &lt;- brick(&quot;tmax_pen.nc&quot;, varname = &quot;tx&quot;)</code></pre>
 ## resolution : 0.0585, 0.045  (x, y)
 ## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : C:/Users/xeo19/Documents/GitHub/blogR_update/content/post/es/2020-10-11-animacion-climatica-temperatura-maxima/tmax_pen.nc 
+## source     : tmax_pen.nc 
 ## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
 ## Time (days since 1901-01-01): 1, 41638 (min, max)
 ## varname    : tx</code></pre>
@@ -729,7 +730,7 @@ tmx &lt;- brick(&quot;tmax_pen.nc&quot;, varname = &quot;tx&quot;)</code></pre>
 <p>Para acceder a cualquier capa hacemos uso de <code>[[ ]]</code> con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.</p>
 <pre class="r"><code># mapear cualquier día
 plot(tmx[[200]], col = rev(heat.colors(7)))</code></pre>
-<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="calcular-el-promedio-de-la-temperatura" class="section level2">
 <h2>Calcular el promedio de la temperatura</h2>
@@ -768,7 +769,7 @@ ggplot(df,
   scale_y_continuous(breaks = seq(5, 28, 2)) +
   labs(y = &quot;Temperatura máxima&quot;, x = &quot;&quot;, colour =  &quot;&quot;) +
   theme_minimal()</code></pre>
-<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función <code>loess()</code>. El argumento más importante es <code>span</code> que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.</p>
 <pre class="r"><code>daily_smooth &lt;- function(x, span = 0.5){
   
@@ -801,7 +802,7 @@ ggplot(df,
   scale_colour_manual(values = c(&quot;#f4a582&quot;, &quot;#b2182b&quot;)) +
   labs(y = &quot;Temperatura máxima&quot;, x = &quot;&quot;, colour =  &quot;&quot;) +
   theme_minimal()</code></pre>
-<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el <em>RasterBrick</em> usando la función <code>calc()</code>. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.</p>
 <pre class="r"><code># suavizar el RasterBrick
 tmx_smooth &lt;- calc(tmx_mean, fun = daily_smooth)</code></pre>
@@ -842,7 +843,7 @@ map &lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) </code></pre>
 plot(map)</code></pre>
 <pre><code>## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
 ## all</code></pre>
-<p><img src="/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <p>Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.</p>
 <p>Cuarto, aplicamos la función <code>cut()</code> con los cortes a todas las columnas con las temperaturas de cada día del año.</p>
 <pre class="r"><code># etiquetas de los días del año
@@ -1054,6 +1055,8 @@ files &lt;- str_c(&quot;./ta_anima/D&quot;, str_pad(1:366, 3, &quot;left&quot;, 
       <ul>
         
         <li><a href="/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/">Visualizar anomalías climáticas</a></li>
+        
+        <li><a href="/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/">Visualizar anomalías de precipitación mensual</a></li>
         
         <li><a href="/es/publication/os_tempos_2019/">Os tempos e o clima de Galicia</a></li>
         

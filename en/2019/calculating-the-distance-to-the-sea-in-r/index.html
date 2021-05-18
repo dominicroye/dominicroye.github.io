@@ -616,6 +616,7 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <p>The distance to the sea is a fundamental variable in geography, especially relevant when it comes to modeling. For example, in interpolations of air temperature, the distance to the sea is usually used as a predictor variable, since there is a casual relationship between the two that explains the spatial variation. How can we estimate the (shortest) distance to the coast in R?</p>
@@ -623,6 +624,10 @@
 <h2>Packages</h2>
 <p>In this post we will use the following libraries:</p>
 <table>
+<colgroup>
+<col width="15%" />
+<col width="84%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Library</th>
@@ -671,51 +676,48 @@ library(RColorBrewer)</code></pre>
 <pre class="r"><code>world &lt;- ne_countries(scale = 50) #world map with 50m resolution
 
 plot(world) #sp class by default</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>#import the limits of Iceland
 iceland &lt;- ne_countries(scale = 10, country = &quot;Iceland&quot;, returnclass = &quot;sf&quot;)
 
 #info of our spatial vector object
 iceland</code></pre>
 <pre><code>## Simple feature collection with 1 feature and 94 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## CRS:           +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
 ##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
 ## 188 Admin-0 country         0         3    Iceland    ISL        0     2
-##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
-## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
-##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
-## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &lt;NA&gt;
-##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
-## 188 Iceland     IS Republic of Iceland      &lt;NA&gt;    Iceland      &lt;NA&gt;
-##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
-## 188     &lt;NA&gt;   Iceland     &lt;NA&gt;         1         4         4          9
-##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
-## 188  339747       10      16150     2017         NA     2016
-##                        economy           income_grp wikipedia fips_10_
-## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
-##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
-## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
-##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
-## 188 Exact WOE match as country        ISL        ISL         NA         NA
-##     continent region_un       subregion             region_wb name_len
-## 188    Europe    Europe Northern Europe Europe &amp; Central Asia        7
-##     long_len abbrev_len tiny homepart min_zoom min_label max_label
-## 188        7          7   NA        1        0         2         7
-##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
-## 188 1159320917       Q189    &lt;NA&gt;    &lt;NA&gt;  Island Iceland Islandia Islande
-##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
-## 188    &lt;NA&gt;    &lt;NA&gt;  Izland Islandia Islanda    &lt;NA&gt;    &lt;NA&gt; IJsland
-##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
-## 188 Islandia Islândia    &lt;NA&gt;  Island Izlanda Iceland    &lt;NA&gt;
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif subunit
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0 Iceland
+##     su_a3 brk_diff    name name_long brk_a3 brk_name brk_group  abbrev postal
+## 188   ISL        0 Iceland   Iceland    ISL  Iceland      &lt;NA&gt; Iceland     IS
+##               formal_en formal_fr name_ciawf note_adm0 note_brk name_sort
+## 188 Republic of Iceland      &lt;NA&gt;    Iceland      &lt;NA&gt;     &lt;NA&gt;   Iceland
+##     name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13 pop_est pop_rank
+## 188     &lt;NA&gt;         1         4         4          9  339747       10
+##     gdp_md_est pop_year lastcensus gdp_year                    economy
+## 188      16150     2017         NA     2016 2. Developed region: nonG7
+##               income_grp wikipedia fips_10_ iso_a2 iso_a3 iso_a3_eh iso_n3
+## 188 1. High income: OECD        NA       IC     IS    ISL       ISL    352
+##     un_a3 wb_a2 wb_a3   woe_id woe_id_eh                   woe_note adm0_a3_is
+## 188   352    IS   ISL 23424845  23424845 Exact WOE match as country        ISL
+##     adm0_a3_us adm0_a3_un adm0_a3_wb continent region_un       subregion
+## 188        ISL         NA         NA    Europe    Europe Northern Europe
+##                 region_wb name_len long_len abbrev_len tiny homepart min_zoom
+## 188 Europe &amp; Central Asia        7        7          7   NA        1        0
+##     min_label max_label      ne_id wikidataid name_ar name_bn name_de name_en
+## 188         2         7 1159320917       Q189    &lt;NA&gt;    &lt;NA&gt;  Island Iceland
+##      name_es name_fr name_el name_hi name_hu  name_id name_it name_ja name_ko
+## 188 Islandia Islande    &lt;NA&gt;    &lt;NA&gt;  Izland Islandia Islanda    &lt;NA&gt;    &lt;NA&gt;
+##     name_nl  name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 IJsland Islandia Islândia    &lt;NA&gt;  Island Izlanda Iceland    &lt;NA&gt;
 ##                           geometry
 ## 188 MULTIPOLYGON (((-14.56363 6...</code></pre>
 <pre class="r"><code>#here Iceland
 plot(iceland)</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <p>By default, the <code>plot( )</code> function with the class <em>sf</em> creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name <code>plot(iceland["admin"])</code> or the limit argument <code>plot(iceland, max.plot = 1)</code>. With the argument <em>max.plot = 1</em> the function uses the first available variable of the map.</p>
 <p>In addition, we see in the information of the object <em>sf</em> that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections <a href="http://spatialreference.org/ref/epsg/wgs-84/">here</a>. For that purpose, we use the <code>st_transform( )</code> function. We simply indicate the map and the EPSG code.</p>
 <pre class="r"><code>#transform to UTM
@@ -729,13 +731,13 @@ grid &lt;- st_make_grid(iceland, cellsize = 5000, what = &quot;centers&quot;)
 
 #our fishnet with the extension of Iceland
 plot(grid)</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>#only extract the points in the limits of Iceland
 grid &lt;- st_intersection(grid, iceland)   
 
 #our fishnet now
 plot(grid)</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="calculating-the-distance" class="section level2">
 <h2>Calculating the distance</h2>
@@ -747,7 +749,7 @@ iceland &lt;- st_cast(iceland, &quot;MULTILINESTRING&quot;)
 dist &lt;- st_distance(iceland, grid)
 
 #distance with unit in meters
-head(dist)</code></pre>
+head(dist[1,])</code></pre>
 <pre><code>## Units: [m]
 ## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472</code></pre>
 </div>
@@ -774,7 +776,7 @@ ggplot(df, aes(X, Y, fill = dist))+ #variables
              labs(fill = &quot;Distance (km)&quot;)+ #legend name
              theme_void()+ #map theme
               theme(legend.position = &quot;bottom&quot;) #legend position</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="export-the-distance-as-a-raster" class="section level2">
 <h2>Export the distance as a raster</h2>
@@ -813,20 +815,20 @@ dist_raster</code></pre>
 ## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
 ## resolution : 5000, 5000  (x, y)
 ## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
-## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## crs        : +proj=utm +zone=27 +ellps=intl +units=m +no_defs 
 ## source     : memory
 ## names      : layer 
 ## values     : 0.006124901, 115.1712  (min, max)</code></pre>
 <pre class="r"><code>#plot the raster
 plot(dist_raster)</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>#export the raster
 writeRaster(dist_raster, file = &quot;dist_islandia.tif&quot;, format = &quot;GTiff&quot;, overwrite = TRUE)</code></pre>
 <p>The <code>rasterize( )</code> function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The <code>rasterFromXYZ( )</code> function converts a <em>data.frame</em> with longitude, latitude and the variable <em>Z</em> into a raster object. It is important that the order should be longitude, latitude, variables.</p>
 <pre class="r"><code>r &lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&quot;)
 
 plot(r)</code></pre>
-<p><img src="/post/en/2019-01-08-calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>With the calculation of distance we can create art, as seen in the header of this post, which includes a world map only with the distance to the sea of all continents. A different perspective to our world (<a href="https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/">here more (spanish)</a>) .</p>
 </div>
 

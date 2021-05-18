@@ -616,6 +616,7 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/index.es_files/header-attrs/header-attrs.js"></script>
 
 
 <p>Cuando visualizamos anomalías de precipitación y temperatura, simplemente usamos series temporales en un gráfico de barras indicando con color rojo y azul valores negativos y positivos. No obstante, para tener una imagen global necesitamos ambas anomalías en un único gráfico. Así podríamos responder directamente a la pregunta de si una estación del año o un mes en concreto fue seco-cálido o húmedo-frío, e incluso comparar estas anomalías en el contexto de años anteriores.</p>
@@ -623,6 +624,10 @@
 <h2>Paquetes</h2>
 <p>En este post usaremos los siguientes paquetes:</p>
 <table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Paquete</th>
@@ -661,7 +666,8 @@ library(ggrepel)</code></pre>
 <h3>Paso 1: importar los datos</h3>
 <p>Importamos los datos en formato <em>csv</em>, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).</p>
 <pre class="r"><code>data &lt;- read_csv(&quot;meteo_tenerife.csv&quot;) </code></pre>
-<pre><code>## Parsed with column specification:
+<pre><code>## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   date = col_date(format = &quot;&quot;),
 ##   pr = col_double(),
@@ -786,7 +792,7 @@ bglab</code></pre>
                      angle = 90, colour = &quot;white&quot;)
 
 g1</code></pre>
-<p><img src="/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png" width="3507" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/index.es_files/figure-html/unnamed-chunk-9-1.png" width="3507" /></p>
 </div>
 <div id="parte-3" class="section level3">
 <h3>Parte 3</h3>
@@ -798,7 +804,7 @@ g1</code></pre>
                            size = 3.5) 
 g2</code></pre>
 <pre><code>## Warning: Removed 25 rows containing missing values (geom_text_repel).</code></pre>
-<p><img src="/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png" width="3507" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/index.es_files/figure-html/unnamed-chunk-10-1.png" width="3507" /></p>
 </div>
 <div id="parte-4" class="section level3">
 <h3>Parte 4</h3>
@@ -817,7 +823,7 @@ g2</code></pre>
 
 g3</code></pre>
 <pre><code>## Warning: Removed 25 rows containing missing values (geom_text_repel).</code></pre>
-<p><img src="/post/es/2020-03-29-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png" width="3507" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/index.es_files/figure-html/unnamed-chunk-11-1.png" width="3507" /></p>
 </div>
 </div>
 
@@ -934,6 +940,8 @@ g3</code></pre>
       <div class="hr-light"></div>
       <h3>Relacionado</h3>
       <ul>
+        
+        <li><a href="/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/">Visualizar anomalías de precipitación mensual</a></li>
         
         <li><a href="/es/2020/distancias-geogr%C3%A1ficas/">Distancias geográficas</a></li>
         

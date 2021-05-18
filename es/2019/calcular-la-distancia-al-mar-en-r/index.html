@@ -616,6 +616,7 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/header-attrs/header-attrs.js"></script>
 
 
 <p>En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?</p>
@@ -623,6 +624,10 @@
 <h2>Paquetes</h2>
 <p>En este post usaremos los siguientes paquetes:</p>
 <table>
+<colgroup>
+<col width="14%" />
+<col width="85%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Paquete</th>
@@ -671,52 +676,49 @@ library(RColorBrewer)</code></pre>
 <pre class="r"><code>world &lt;- ne_countries(scale = 50) #mapamundi con 50m de resolución
 
 plot(world) #tiene clase sp por defecto</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>#importamos los límites de Islandia 
 iceland &lt;- ne_countries(scale = 10,country = &quot;Iceland&quot;, returnclass = &quot;sf&quot;)
 
 #info del objeto vectorial
 iceland</code></pre>
 <pre><code>## Simple feature collection with 1 feature and 94 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## CRS:           +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
 ##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
 ## 188 Admin-0 country         0         3    Iceland    ISL        0     2
-##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
-## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
-##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
-## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &lt;NA&gt;
-##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
-## 188 Iceland     IS Republic of Iceland      &lt;NA&gt;    Iceland      &lt;NA&gt;
-##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
-## 188     &lt;NA&gt;   Iceland     &lt;NA&gt;         1         4         4          9
-##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
-## 188  339747       10      16150     2017         NA     2016
-##                        economy           income_grp wikipedia fips_10_
-## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
-##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
-## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
-##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
-## 188 Exact WOE match as country        ISL        ISL         NA         NA
-##     continent region_un       subregion             region_wb name_len
-## 188    Europe    Europe Northern Europe Europe &amp; Central Asia        7
-##     long_len abbrev_len tiny homepart min_zoom min_label max_label
-## 188        7          7   NA        1        0         2         7
-##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
-## 188 1159320917       Q189    &lt;NA&gt;    &lt;NA&gt;  Island Iceland Islandia Islande
-##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
-## 188    &lt;NA&gt;    &lt;NA&gt;  Izland Islandia Islanda    &lt;NA&gt;    &lt;NA&gt; IJsland
-##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
-## 188 Islandia Islândia    &lt;NA&gt;  Island Izlanda Iceland    &lt;NA&gt;
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif subunit
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0 Iceland
+##     su_a3 brk_diff    name name_long brk_a3 brk_name brk_group  abbrev postal
+## 188   ISL        0 Iceland   Iceland    ISL  Iceland      &lt;NA&gt; Iceland     IS
+##               formal_en formal_fr name_ciawf note_adm0 note_brk name_sort
+## 188 Republic of Iceland      &lt;NA&gt;    Iceland      &lt;NA&gt;     &lt;NA&gt;   Iceland
+##     name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13 pop_est pop_rank
+## 188     &lt;NA&gt;         1         4         4          9  339747       10
+##     gdp_md_est pop_year lastcensus gdp_year                    economy
+## 188      16150     2017         NA     2016 2. Developed region: nonG7
+##               income_grp wikipedia fips_10_ iso_a2 iso_a3 iso_a3_eh iso_n3
+## 188 1. High income: OECD        NA       IC     IS    ISL       ISL    352
+##     un_a3 wb_a2 wb_a3   woe_id woe_id_eh                   woe_note adm0_a3_is
+## 188   352    IS   ISL 23424845  23424845 Exact WOE match as country        ISL
+##     adm0_a3_us adm0_a3_un adm0_a3_wb continent region_un       subregion
+## 188        ISL         NA         NA    Europe    Europe Northern Europe
+##                 region_wb name_len long_len abbrev_len tiny homepart min_zoom
+## 188 Europe &amp; Central Asia        7        7          7   NA        1        0
+##     min_label max_label      ne_id wikidataid name_ar name_bn name_de name_en
+## 188         2         7 1159320917       Q189    &lt;NA&gt;    &lt;NA&gt;  Island Iceland
+##      name_es name_fr name_el name_hi name_hu  name_id name_it name_ja name_ko
+## 188 Islandia Islande    &lt;NA&gt;    &lt;NA&gt;  Izland Islandia Islanda    &lt;NA&gt;    &lt;NA&gt;
+##     name_nl  name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 IJsland Islandia Islândia    &lt;NA&gt;  Island Izlanda Iceland    &lt;NA&gt;
 ##                           geometry
 ## 188 MULTIPOLYGON (((-14.56363 6...</code></pre>
 <pre class="r"><code>#aquí Islandia
 plot(iceland)</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
-<p>Por defecto, la función <code>plot( )</code> con la clase <em>sf</em> nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable <code>plot(iceland[&quot;admin&quot;])</code> o el argumento <em>max.plot</em> <code>plot(iceland,max.plot=1)</code>. Con el argumento <em>max.plot=1</em> la función usa la primera variable disponible del mapa.</p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p>Por defecto, la función <code>plot( )</code> con la clase <em>sf</em> nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable <code>plot(iceland["admin"])</code> o el argumento <em>max.plot</em> <code>plot(iceland,max.plot=1)</code>. Con el argumento <em>max.plot=1</em> la función usa la primera variable disponible del mapa.</p>
 <p>Además, vemos en la información del objeto <em>sf</em> que la proyección es WGS84 con grados decimales (código EPSG:4326). Para el cálculo de distancias es más conveniente usar metros en lugar de grados. Debido a ello, lo primero que hacemos es transformar el mapa de Islandia a UTM Zona 27 (código EPSG:3055). Más información sobre EPSG y proyecciones <a href="http://spatialreference.org/ref/epsg/wgs-84/">aquí</a>. Con ese objetivo, usamos la función <code>st_transform( )</code>. Simplemente indicamos el mapa y el código EPSG.</p>
 <pre class="r"><code>#transformamos a UTM
 iceland &lt;- st_transform(iceland, 3055)</code></pre>
@@ -729,13 +731,13 @@ grid &lt;- st_make_grid(iceland,cellsize = 5000, what = &quot;centers&quot;)
 
 #nuestra red sobre la extensión de Islandia
 plot(grid)</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code>#exraemos sólamente los puntos en los límites de Islandia
 grid &lt;- st_intersection(grid, iceland)   
 
 #nuestra red ahora
 plot(grid)</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="calcular-la-distancia" class="section level2">
 <h2>Calcular la distancia</h2>
@@ -747,7 +749,7 @@ iceland &lt;- st_cast(iceland, &quot;MULTILINESTRING&quot;)
 dist &lt;- st_distance(iceland, grid)
 
 #distancia con unidad en metros
-head(dist)</code></pre>
+head(dist[1,])</code></pre>
 <pre><code>## Units: [m]
 ## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472</code></pre>
 </div>
@@ -774,7 +776,7 @@ ggplot(df, aes(X, Y,fill = dist))+ #variables
              labs(fill = &quot;Distance (km)&quot;)+ #nombre de la leyenda
              theme_void()+ #estilo del mapa
               theme(legend.position = &quot;bottom&quot;) #posición de la leyenda</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 </div>
 <div id="exportar-la-distancia-como-raster" class="section level2">
 <h2>Exportar la distancia como raster</h2>
@@ -813,20 +815,20 @@ dist_raster</code></pre>
 ## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
 ## resolution : 5000, 5000  (x, y)
 ## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
-## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## crs        : +proj=utm +zone=27 +ellps=intl +units=m +no_defs 
 ## source     : memory
 ## names      : layer 
 ## values     : 0.006124901, 115.1712  (min, max)</code></pre>
 <pre class="r"><code>#plotear el raster
 plot(dist_raster)</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code>#exportamos el raster
 writeRaster(dist_raster, file = &quot;dist_islandia.tif&quot;, format = &quot;GTiff&quot;, overwrite = TRUE)</code></pre>
 <p>La función <code>rasterize( )</code> está pensada para crear rasters a partir de un grid irregular. En caso que tengamos un grid regular, como este mismo, podemos usar una alternativa más fácil. La función <code>rasterFromXYZ( )</code> convierte un <em>data.frame</em> con longitud, latitud y la variable <em>Z</em> en un raster. Es importante que el orden debe ser longitud, latitud, variables.</p>
 <pre class="r"><code>r &lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&quot;)
 
 plot(r)</code></pre>
-<p><img src="/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
 <p>Con el cálculo de la distancia podemos llegar crear <em>arte</em>, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (<a href="https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/">aquí más</a>).</p>
 </div>
 

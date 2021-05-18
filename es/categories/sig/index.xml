@@ -299,12 +299,13 @@ p&lt;/code&gt;&lt;/pre&gt;
       
       <guid>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Recientemente creé una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
@@ -416,13 +417,13 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
 river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
                  st_zm() %&amp;gt;% 
                     st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
 ## Simple feature collection with 78 features and 6 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XYZ
-## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
-## z_range:        zmin: 0 zmax: 0
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+## Geometry type: MULTILINESTRING
+## Dimension:     XYZ
+## Bounding box:  xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:       zmin: 0 zmax: 0
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;extraer-los-ángulos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Extraer los ángulos&lt;/h2&gt;
@@ -430,29 +431,34 @@ river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&
 &lt;p&gt;Para ello, tenemos que tener instalado QGIS en OSGeo4W. El paquete &lt;code&gt;RQGIS3&lt;/code&gt; nos permite de forma muy fácil usar las funciones del programa en R. Primero empleamos la función &lt;code&gt;set_env()&lt;/code&gt; para definir todas las rutas necesarias de QGIS e inciamos la API con &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a QGIS
 set_env()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $root
-## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18&amp;quot;
 ## 
 ## $qgis_prefix_path
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis&amp;quot;
 ## 
 ## $python_plugins
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis/python/plugins&amp;quot;
 ## 
 ## $platform
 ## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# inicio de QGIS Python
 open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in check_for_server(): Hey there! According to our internal checks, you are trying to run RQGIS3 on a Windows server.
+## Please note that this is only possible if you imitate a x-display.
+## QGIS needs this in the background to be able to execute its processing modules.
+## Note that you need to start the x-display with admin rights&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función &lt;code&gt;find_algorithms()&lt;/code&gt; nos ayuda a buscar diferentes herramientas de QGIS. Además la función &lt;code&gt;get_usage()&lt;/code&gt; especifica la forma de uso con todos los argumentos requeridos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
 find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
-## [2] &amp;quot;native:extractvertices&amp;quot;                 
-## [3] &amp;quot;native:filterverticesbym&amp;quot;               
-## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
-## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
-## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:exportmeshvertices&amp;quot;              
+## [2] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [3] &amp;quot;native:extractvertices&amp;quot;                 
+## [4] &amp;quot;native:filterverticesbym&amp;quot;               
+## [5] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [6] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [7] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
 get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
@@ -505,7 +511,7 @@ get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
                load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpGurVm9/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpw5vYcG/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
   
 Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.
@@ -526,16 +532,11 @@ Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj
 
 river_vertices &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data
-
-## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 94,702 x 12
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## Geodetic CRS:  WGS 84
+## # A tibble: 94,702 x 12
 ##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
 ##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
 ##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
@@ -644,8 +645,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
   theme_polar&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
@@ -675,6 +675,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
       
       <guid>https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;En geografía, la distancia al mar es una variable fundamental, especialmente relevante a la hora de modelizar. Por ejemplo, en interpolaciones de la temperatura del aire habitualmente se hace uso de la distancia al mar como variable predictora, ya que existe una relación casual entre ambas que explica la variación espacial. ¿Cómo podemos estimar la distancia (más corta) a la costa en R?&lt;/p&gt;
@@ -682,6 +683,10 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;14%&#34; /&gt;
+&lt;col width=&#34;85%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
@@ -730,52 +735,49 @@ library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #mapamundi con 50m de resolución
 
 plot(world) #tiene clase sp por defecto&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos los límites de Islandia 
 iceland &amp;lt;- ne_countries(scale = 10,country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
 
 #info del objeto vectorial
 iceland&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 1 feature and 94 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
-## epsg (SRID):    4326
-## proj4string:    +proj=longlat +datum=WGS84 +no_defs
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## CRS:           +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
 ##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
 ## 188 Admin-0 country         0         3    Iceland    ISL        0     2
-##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif
-## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0
-##     subunit su_a3 brk_diff    name name_long brk_a3 brk_name brk_group
-## 188 Iceland   ISL        0 Iceland   Iceland    ISL  Iceland      &amp;lt;NA&amp;gt;
-##      abbrev postal           formal_en formal_fr name_ciawf note_adm0
-## 188 Iceland     IS Republic of Iceland      &amp;lt;NA&amp;gt;    Iceland      &amp;lt;NA&amp;gt;
-##     note_brk name_sort name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13
-## 188     &amp;lt;NA&amp;gt;   Iceland     &amp;lt;NA&amp;gt;         1         4         4          9
-##     pop_est pop_rank gdp_md_est pop_year lastcensus gdp_year
-## 188  339747       10      16150     2017         NA     2016
-##                        economy           income_grp wikipedia fips_10_
-## 188 2. Developed region: nonG7 1. High income: OECD        NA       IC
-##     iso_a2 iso_a3 iso_a3_eh iso_n3 un_a3 wb_a2 wb_a3   woe_id woe_id_eh
-## 188     IS    ISL       ISL    352   352    IS   ISL 23424845  23424845
-##                       woe_note adm0_a3_is adm0_a3_us adm0_a3_un adm0_a3_wb
-## 188 Exact WOE match as country        ISL        ISL         NA         NA
-##     continent region_un       subregion             region_wb name_len
-## 188    Europe    Europe Northern Europe Europe &amp;amp; Central Asia        7
-##     long_len abbrev_len tiny homepart min_zoom min_label max_label
-## 188        7          7   NA        1        0         2         7
-##          ne_id wikidataid name_ar name_bn name_de name_en  name_es name_fr
-## 188 1159320917       Q189    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Island Iceland Islandia Islande
-##     name_el name_hi name_hu  name_id name_it name_ja name_ko name_nl
-## 188    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Izland Islandia Islanda    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt; IJsland
-##      name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
-## 188 Islandia Islândia    &amp;lt;NA&amp;gt;  Island Izlanda Iceland    &amp;lt;NA&amp;gt;
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif subunit
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0 Iceland
+##     su_a3 brk_diff    name name_long brk_a3 brk_name brk_group  abbrev postal
+## 188   ISL        0 Iceland   Iceland    ISL  Iceland      &amp;lt;NA&amp;gt; Iceland     IS
+##               formal_en formal_fr name_ciawf note_adm0 note_brk name_sort
+## 188 Republic of Iceland      &amp;lt;NA&amp;gt;    Iceland      &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;   Iceland
+##     name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13 pop_est pop_rank
+## 188     &amp;lt;NA&amp;gt;         1         4         4          9  339747       10
+##     gdp_md_est pop_year lastcensus gdp_year                    economy
+## 188      16150     2017         NA     2016 2. Developed region: nonG7
+##               income_grp wikipedia fips_10_ iso_a2 iso_a3 iso_a3_eh iso_n3
+## 188 1. High income: OECD        NA       IC     IS    ISL       ISL    352
+##     un_a3 wb_a2 wb_a3   woe_id woe_id_eh                   woe_note adm0_a3_is
+## 188   352    IS   ISL 23424845  23424845 Exact WOE match as country        ISL
+##     adm0_a3_us adm0_a3_un adm0_a3_wb continent region_un       subregion
+## 188        ISL         NA         NA    Europe    Europe Northern Europe
+##                 region_wb name_len long_len abbrev_len tiny homepart min_zoom
+## 188 Europe &amp;amp; Central Asia        7        7          7   NA        1        0
+##     min_label max_label      ne_id wikidataid name_ar name_bn name_de name_en
+## 188         2         7 1159320917       Q189    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Island Iceland
+##      name_es name_fr name_el name_hi name_hu  name_id name_it name_ja name_ko
+## 188 Islandia Islande    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Izland Islandia Islanda    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;
+##     name_nl  name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 IJsland Islandia Islândia    &amp;lt;NA&amp;gt;  Island Izlanda Iceland    &amp;lt;NA&amp;gt;
 ##                           geometry
 ## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#aquí Islandia
 plot(iceland)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Por defecto, la función &lt;code&gt;plot( )&lt;/code&gt; con la clase &lt;em&gt;sf&lt;/em&gt; nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable &lt;code&gt;plot(iceland[&amp;quot;admin&amp;quot;])&lt;/code&gt; o el argumento &lt;em&gt;max.plot&lt;/em&gt; &lt;code&gt;plot(iceland,max.plot=1)&lt;/code&gt;. Con el argumento &lt;em&gt;max.plot=1&lt;/em&gt; la función usa la primera variable disponible del mapa.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Por defecto, la función &lt;code&gt;plot( )&lt;/code&gt; con la clase &lt;em&gt;sf&lt;/em&gt; nos crea tantas facetas del mapa como variables tiene. Para limitarlo podemos usar o bien con el nombre de una variable &lt;code&gt;plot(iceland[&#34;admin&#34;])&lt;/code&gt; o el argumento &lt;em&gt;max.plot&lt;/em&gt; &lt;code&gt;plot(iceland,max.plot=1)&lt;/code&gt;. Con el argumento &lt;em&gt;max.plot=1&lt;/em&gt; la función usa la primera variable disponible del mapa.&lt;/p&gt;
 &lt;p&gt;Además, vemos en la información del objeto &lt;em&gt;sf&lt;/em&gt; que la proyección es WGS84 con grados decimales (código EPSG:4326). Para el cálculo de distancias es más conveniente usar metros en lugar de grados. Debido a ello, lo primero que hacemos es transformar el mapa de Islandia a UTM Zona 27 (código EPSG:3055). Más información sobre EPSG y proyecciones &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;aquí&lt;/a&gt;. Con ese objetivo, usamos la función &lt;code&gt;st_transform( )&lt;/code&gt;. Simplemente indicamos el mapa y el código EPSG.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transformamos a UTM
 iceland &amp;lt;- st_transform(iceland, 3055)&lt;/code&gt;&lt;/pre&gt;
@@ -788,13 +790,13 @@ grid &amp;lt;- st_make_grid(iceland,cellsize = 5000, what = &amp;quot;centers&am
 
 #nuestra red sobre la extensión de Islandia
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exraemos sólamente los puntos en los límites de Islandia
 grid &amp;lt;- st_intersection(grid, iceland)   
 
 #nuestra red ahora
 plot(grid)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-la-distancia&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular la distancia&lt;/h2&gt;
@@ -806,7 +808,7 @@ iceland &amp;lt;- st_cast(iceland, &amp;quot;MULTILINESTRING&amp;quot;)
 dist &amp;lt;- st_distance(iceland, grid)
 
 #distancia con unidad en metros
-head(dist)&lt;/code&gt;&lt;/pre&gt;
+head(dist[1,])&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Units: [m]
 ## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
@@ -833,7 +835,7 @@ ggplot(df, aes(X, Y,fill = dist))+ #variables
              labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #nombre de la leyenda
              theme_void()+ #estilo del mapa
               theme(legend.position = &amp;quot;bottom&amp;quot;) #posición de la leyenda&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;exportar-la-distancia-como-raster&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Exportar la distancia como raster&lt;/h2&gt;
@@ -872,20 +874,20 @@ dist_raster&lt;/code&gt;&lt;/pre&gt;
 ## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
 ## resolution : 5000, 5000  (x, y)
 ## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
-## crs        : +proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs 
+## crs        : +proj=utm +zone=27 +ellps=intl +units=m +no_defs 
 ## source     : memory
 ## names      : layer 
 ## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plotear el raster
 plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#exportamos el raster
 writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función &lt;code&gt;rasterize( )&lt;/code&gt; está pensada para crear rasters a partir de un grid irregular. En caso que tengamos un grid regular, como este mismo, podemos usar una alternativa más fácil. La función &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; convierte un &lt;em&gt;data.frame&lt;/em&gt; con longitud, latitud y la variable &lt;em&gt;Z&lt;/em&gt; en un raster. Es importante que el orden debe ser longitud, latitud, variables.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-01-10-calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Con el cálculo de la distancia podemos llegar crear &lt;em&gt;arte&lt;/em&gt;, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;aquí más&lt;/a&gt;).&lt;/p&gt;
 &lt;/div&gt;
 </description>

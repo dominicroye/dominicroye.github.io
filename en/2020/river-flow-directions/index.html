@@ -616,12 +616,13 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <p>I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks (<a href="%5Btweet%5D(https://twitter.com/dr_xeo/status/1277978724034465798?s=20)">here</a>), I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex. I did the same for a selection of European rivers here in this <a href="https://twitter.com/dr_xeo/status/1277243216828473345?s=20">tweet</a>. However, originally I started with the orientation of the European coasts.</p>
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Have you ever wondered where the European <a href="https://twitter.com/hashtag/coasts?src=hash&amp;ref_src=twsrc%5Etfw">#coasts</a> are oriented? <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> <a href="https://twitter.com/hashtag/geography?src=hash&amp;ref_src=twsrc%5Etfw">#geography</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://t.co/tpWVxSoHlw">pic.twitter.com/tpWVxSoHlw</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw">May 26, 2020</a></blockquote>
+<p><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Have you ever wondered where the European <a href="https://twitter.com/hashtag/coasts?src=hash&amp;ref_src=twsrc%5Etfw">#coasts</a> are oriented? <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/ggplot2?src=hash&amp;ref_src=twsrc%5Etfw">#ggplot2</a> <a href="https://twitter.com/hashtag/geography?src=hash&amp;ref_src=twsrc%5Etfw">#geography</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://t.co/tpWVxSoHlw">pic.twitter.com/tpWVxSoHlw</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw">May 26, 2020</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+</p>
 <div id="packages" class="section level2">
 <h2>Packages</h2>
 <p>In this post we will use the following packages:</p>
@@ -733,13 +734,13 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180</code></pre>
 river_line &lt;- st_read(&quot;RiverHRCenterlinesCombo.shp&quot;) %&gt;% 
                  st_zm() %&gt;% 
                     st_transform(proj_rob)</code></pre>
-<pre><code>## Reading layer `RiverHRCenterlinesCombo&#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&#39; using driver `ESRI Shapefile&#39;
+<pre><code>## Reading layer `RiverHRCenterlinesCombo&#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&#39; using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 78 features and 6 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XYZ
-## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
-## z_range:        zmin: 0 zmax: 0
-## geographic CRS: WGS 84</code></pre>
+## Geometry type: MULTILINESTRING
+## Dimension:     XYZ
+## Bounding box:  xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:       zmin: 0 zmax: 0
+## Geodetic CRS:  WGS 84</code></pre>
 </div>
 <div id="extract-the-angles" class="section level2">
 <h2>Extract the angles</h2>
@@ -747,29 +748,34 @@ river_line &lt;- st_read(&quot;RiverHRCenterlinesCombo.shp&quot;) %&gt;%
 <p>For this, we need to have QGIS installed in OSGeo4W. The <code>RQGIS3</code> package allows us to use very easily all the tools of the software in R. First we use the <code>set_env()</code> function to define all the necessary QGIS paths and start the API with <code>open_app()</code>.</p>
 <pre class="r"><code># paths to QGIS
 set_env()</code></pre>
-<pre><code>## Trying to find QGIS in C:/OSGEO4~1</code></pre>
+<pre><code>## Trying to find QGIS in C:/</code></pre>
 <pre><code>## $root
-## [1] &quot;C:/OSGeo4W64&quot;
+## [1] &quot;C:/Program Files/QGIS 3.18&quot;
 ## 
 ## $qgis_prefix_path
-## [1] &quot;C:/OSGeo4W64/apps/qgis&quot;
+## [1] &quot;C:/Program Files/QGIS 3.18/apps/qgis&quot;
 ## 
 ## $python_plugins
-## [1] &quot;C:/OSGeo4W64/apps/qgis/python/plugins&quot;
+## [1] &quot;C:/Program Files/QGIS 3.18/apps/qgis/python/plugins&quot;
 ## 
 ## $platform
 ## [1] &quot;Windows&quot;</code></pre>
 <pre class="r"><code># start of QGIS Python
 open_app()</code></pre>
+<pre><code>## Warning in check_for_server(): Hey there! According to our internal checks, you are trying to run RQGIS3 on a Windows server.
+## Please note that this is only possible if you imitate a x-display.
+## QGIS needs this in the background to be able to execute its processing modules.
+## Note that you need to start the x-display with admin rights</code></pre>
 <p>The <code>find_algorithms()</code> function helps us to search for different QGIS tools. In addition the <code>get_usage()</code> function specifies the way of usage with all the required parameters.</p>
 <pre class="r"><code># search tools
 find_algorithms(search_term = &quot;vertices&quot;, name_only = TRUE)</code></pre>
-<pre><code>## [1] &quot;native:extractspecificvertices&quot;         
-## [2] &quot;native:extractvertices&quot;                 
-## [3] &quot;native:filterverticesbym&quot;               
-## [4] &quot;native:filterverticesbyz&quot;               
-## [5] &quot;native:removeduplicatevertices&quot;         
-## [6] &quot;saga:convertpolygonlineverticestopoints&quot;</code></pre>
+<pre><code>## [1] &quot;native:exportmeshvertices&quot;              
+## [2] &quot;native:extractspecificvertices&quot;         
+## [3] &quot;native:extractvertices&quot;                 
+## [4] &quot;native:filterverticesbym&quot;               
+## [5] &quot;native:filterverticesbyz&quot;               
+## [6] &quot;native:removeduplicatevertices&quot;         
+## [7] &quot;saga:convertpolygonlineverticestopoints&quot;</code></pre>
 <pre class="r"><code># usage of tool
 get_usage(alg = &quot;native:extractvertices&quot;)</code></pre>
 <pre><code>## Extract vertices (native:extractvertices)
@@ -822,7 +828,7 @@ get_usage(alg = &quot;native:extractvertices&quot;)</code></pre>
                OUTPUT = file.path(tempdir(), &quot;rivers_world_vertices.geojson&quot;),
                load_output = TRUE)</code></pre>
 <pre><code>## $OUTPUT
-## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/RtmpYb53tP/rivers_world_vertices.geojson&quot;</code></pre>
+## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/RtmpigHIXu/rivers_world_vertices.geojson&quot;</code></pre>
 <p><div class="alert alert-note">
   
 Currently on Windows there seem to be problems with the <em>proj</em> library. In principle, if the function ends up creating the <code>river_vertices</code> object, you should not worry. Otherwise, I recommend looking at the discussion in the issue opened at <a href="https://github.com/r-spatial/RQGIS3/issues/20">gitbub</a>.
@@ -843,16 +849,11 @@ Currently on Windows there seem to be problems with the <em>proj</em> library. I
 
 river_vertices </code></pre>
 <pre><code>## Simple feature collection with 94702 features and 11 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
-## geographic CRS: WGS 84</code></pre>
-<pre><code>## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data
-
-## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data</code></pre>
-<pre><code>## # A tibble: 94,702 x 12
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## Geodetic CRS:  WGS 84
+## # A tibble: 94,702 x 12
 ##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
 ##  * &lt;chr&gt; &lt;chr&gt;  &lt;chr&gt;        &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;        &lt;int&gt;       &lt;int&gt;
 ##  1 Nile  &lt;NA&gt;   &lt;NA&gt;             1        4     3344.            0           0
@@ -960,8 +961,7 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &quot;&quot;) +
   theme_polar</code></pre>
-<pre><code>## Warning: Ignoring unknown aesthetics: ymin, ymax</code></pre>
-<p><img src="/post/en/2020-07-24-river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 
     </div>

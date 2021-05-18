@@ -17,12 +17,17 @@
       
       <guid>https://dominicroye.github.io/en/2020/geographic-distance/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;The first post of this year 2020, I will dedicate to a question that I was recently asked. The question was how to calculate the shortest distance between different points and how to know which is the closest point. When we work with spatial data in R, currently the easiest thing is to use the &lt;code&gt;sf&lt;/code&gt; package in combination with the &lt;code&gt;tidyverse&lt;/code&gt; collection of packages. We also use the &lt;code&gt;units&lt;/code&gt; package which is very useful for working with units of measurement.&lt;/p&gt;
 &lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Packages&lt;/h2&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;12%&#34; /&gt;
+&lt;col width=&#34;87%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
@@ -109,10 +114,10 @@ head(world.cities) # from the maps package&lt;/code&gt;&lt;/pre&gt;
 cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
 cities&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
-## CRS:            EPSG:4326
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
 ## First 10 features:
 ##                  name  country.etc   pop capital            geometry
 ## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
@@ -134,10 +139,10 @@ capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;
 
 capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
-## CRS:            EPSG:4326
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
 ## First 10 features:
 ##           name          country.etc     pop capital               geometry
 ## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
@@ -168,27 +173,27 @@ capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;table&gt;
 &lt;tbody&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;235&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;478&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;340&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;259&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;235&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;340&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;287&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;337&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;C&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;478&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;287&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;259&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;337&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -257,7 +262,7 @@ ggplot(world) +
    coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
   labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital city&amp;quot;) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-01-19-geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       

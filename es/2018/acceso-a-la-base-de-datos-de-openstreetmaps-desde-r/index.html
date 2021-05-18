@@ -620,14 +620,15 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/header-attrs/header-attrs.js"></script>
 
 
 <div id="la-base-de-datos-de-open-street-maps" class="section level2">
 <h2>La base de datos de Open Street Maps</h2>
 <p>Recientemente creé un mapa de la distribución de gasolineras y estaciones de carga eléctrica en Europa.</p>
-<blockquote class="twitter-tweet"><p lang="en" dir="ltr">Population density through the number of gas stations in Europe. <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw">@AGE_Oficial</a> <a href="https://twitter.com/mipazos?ref_src=twsrc%5Etfw">@mipazos</a> <a href="https://twitter.com/simongerman600?ref_src=twsrc%5Etfw">@simongerman600</a> <a href="https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw">@openstreetmap</a> <a href="https://t.co/eIUx2yn7ej">pic.twitter.com/eIUx2yn7ej</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw">February 25, 2018</a></blockquote>
+<p><blockquote class="twitter-tweet"><p lang="en" dir="ltr">Population density through the number of gas stations in Europe. <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/AGE_Oficial?ref_src=twsrc%5Etfw">@AGE_Oficial</a> <a href="https://twitter.com/mipazos?ref_src=twsrc%5Etfw">@mipazos</a> <a href="https://twitter.com/simongerman600?ref_src=twsrc%5Etfw">@simongerman600</a> <a href="https://twitter.com/openstreetmap?ref_src=twsrc%5Etfw">@openstreetmap</a> <a href="https://t.co/eIUx2yn7ej">pic.twitter.com/eIUx2yn7ej</a></p>&mdash; Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/967811548646379521?ref_src=twsrc%5Etfw">February 25, 2018</a></blockquote>
 <script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
-
+</p>
 <p>¿Cómo se puede obtener estos datos?</p>
 <p>Pues, en este caso usé puntos de interés (PDIs) de la base de datos de <em>Open Street Maps</em> (OSM). Obviamente OSM no sólo contiene las carreteras, sino también información que nos puede ser útil a la hora de usar un mapa, como por ejemplo las ubicaciones de hospitales o gasolineras. Para evitar la descarga de todo el OSM y extraer la información requerida, se puede hacer uso de una <em>overpass API</em>, que nos permite hacer consultas a la base de datos de OSM con nuestros propios criterios.</p>
 <p>Una forma fácil de acceder a una <em>overpass API</em> es a través de <a href="http://overpass-turbo.eu">overpass-turbo.eu</a>, que incluso incluye un asistente para construir una consulta y muestra los resultados sobre un mapa interactivo. Una explicación detallada de la página anterior la podemos encontrar <a href="https://wiki.openstreetmap.org/wiki/ES:Overpass_turbo">aquí</a>.
@@ -654,11 +655,11 @@ library(ggmap)</code></pre>
 Por ejemplo, la característica <em>shop</em> contiene como categoría entre otros <em>supermarket</em>, <em>fishing</em>, <em>books</em>, etc.</p>
 <pre class="r"><code>#las primeras cinco características 
 head(available_features())</code></pre>
-<pre><code>## [1] &quot;4wd only&quot;  &quot;abandoned&quot; &quot;abutters&quot;  &quot;access&quot;    &quot;addr&quot;      &quot;addr:city&quot;</code></pre>
+<pre><code>## [1] &quot;4wd_only&quot;  &quot;abandoned&quot; &quot;abutters&quot;  &quot;access&quot;    &quot;addr&quot;      &quot;addr:city&quot;</code></pre>
 <pre class="r"><code>#instalaciones y establecimientos públicos
 head(available_tags(&quot;amenity&quot;))</code></pre>
-<pre><code>## [1] &quot;animal_boarding&quot; &quot;animal_shelter&quot;  &quot;arts_centre&quot;     &quot;atm&quot;            
-## [5] &quot;baby_hatch&quot;      &quot;baking_oven&quot;</code></pre>
+<pre><code>## [1] &quot;animal_boarding&quot; &quot;animal_breeding&quot; &quot;animal_shelter&quot;  &quot;arts_centre&quot;    
+## [5] &quot;atm&quot;             &quot;baby_hatch&quot;</code></pre>
 <pre class="r"><code>#tiendas
 head(available_tags(&quot;shop&quot;))</code></pre>
 <pre><code>## [1] &quot;agrarian&quot;  &quot;alcohol&quot;   &quot;anime&quot;     &quot;antiques&quot;  &quot;appliance&quot; &quot;art&quot;</code></pre>
@@ -677,7 +678,8 @@ str(q) #la estructura de la consulta</code></pre>
 ##  $ prefix  : chr &quot;[out:xml][timeout:25];\n(\n&quot;
 ##  $ suffix  : chr &quot;);\n(._;&gt;;);\nout body;&quot;
 ##  $ features: chr &quot; [\&quot;amenity\&quot;=\&quot;cinema\&quot;]&quot;
-##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;list&quot; &quot;overpass_query&quot;</code></pre>
+##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;list&quot; &quot;overpass_query&quot;
+##  - attr(*, &quot;nodes_only&quot;)= logi FALSE</code></pre>
 <pre class="r"><code>cinema &lt;- osmdata_sf(q)
 cinema</code></pre>
 <pre><code>## Object of class &#39;osmdata&#39; with:
@@ -686,7 +688,7 @@ cinema</code></pre>
 ##                  $meta : metadata including timestamp and version numbers
 ##            $osm_points : &#39;sf&#39; Simple Features Collection with 197 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 12 polygons
+##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 11 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL</code></pre>
 <p>Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría <em>osm_points</em>.</p>
@@ -706,7 +708,7 @@ ggmap(mad_map)+
           size = 4,
           shape = 21)+
   labs(x = &quot;&quot;, y = &quot;&quot;)</code></pre>
-<p><img src="/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/fig.width==5-1.png" width="672" /></p>
 </div>
 <div id="dónde-están-los-supermercados-de-mercadona" class="section level3">
 <h3>¿Dónde están los supermercados de Mercadona?</h3>
@@ -727,7 +729,8 @@ str(q) #estructura de la consulta</code></pre>
 ##  $ prefix  : chr &quot;[out:xml][timeout:2500];\n(\n&quot;
 ##  $ suffix  : chr &quot;);\n(._;&gt;;);\nout body;&quot;
 ##  $ features: chr [1:2] &quot; [\&quot;name\&quot;=\&quot;Mercadona\&quot;]&quot; &quot; [\&quot;shop\&quot;=\&quot;supermarket\&quot;]&quot;
-##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;list&quot; &quot;overpass_query&quot;</code></pre>
+##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;list&quot; &quot;overpass_query&quot;
+##  - attr(*, &quot;nodes_only&quot;)= logi FALSE</code></pre>
 <pre class="r"><code>#consulta 
 mercadona &lt;- osmdata_sf(q)
 
@@ -739,7 +742,7 @@ ggplot(mercadona$osm_points)+
           size = 1,
           shape = 21)+
   theme_void()</code></pre>
-<p><img src="/post/es/2018-11-03-acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 </div>
 

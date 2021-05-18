@@ -2665,12 +2665,13 @@ col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
       
       <guid>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de &lt;a href=&#34;https://dominicroye.github.io/es/graphs/climate/&#34;&gt;gráficos&lt;/a&gt; de este mismo blog.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
@@ -2770,7 +2771,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 ## resolution : 0.0585, 0.045  (x, y)
 ## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : C:/Users/xeo19/Documents/GitHub/blogR_update/content/post/es/2020-10-11-animacion-climatica-temperatura-maxima/tmax_pen.nc 
+## source     : tmax_pen.nc 
 ## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
 ## Time (days since 1901-01-01): 1, 41638 (min, max)
 ## varname    : tx&lt;/code&gt;&lt;/pre&gt;
@@ -2778,7 +2779,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 &lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
 plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
@@ -2817,7 +2818,7 @@ ggplot(df,
   scale_y_continuous(breaks = seq(5, 28, 2)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
   
@@ -2850,7 +2851,7 @@ ggplot(df,
   scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
 tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
@@ -2891,7 +2892,7 @@ map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code
 plot(map)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
 ## all&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
 &lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
@@ -3008,12 +3009,13 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
       
       <guid>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Recientemente creé una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
@@ -3125,13 +3127,13 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
 river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
                  st_zm() %&amp;gt;% 
                     st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
 ## Simple feature collection with 78 features and 6 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XYZ
-## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
-## z_range:        zmin: 0 zmax: 0
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+## Geometry type: MULTILINESTRING
+## Dimension:     XYZ
+## Bounding box:  xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:       zmin: 0 zmax: 0
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;extraer-los-ángulos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Extraer los ángulos&lt;/h2&gt;
@@ -3139,29 +3141,34 @@ river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&
 &lt;p&gt;Para ello, tenemos que tener instalado QGIS en OSGeo4W. El paquete &lt;code&gt;RQGIS3&lt;/code&gt; nos permite de forma muy fácil usar las funciones del programa en R. Primero empleamos la función &lt;code&gt;set_env()&lt;/code&gt; para definir todas las rutas necesarias de QGIS e inciamos la API con &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a QGIS
 set_env()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $root
-## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18&amp;quot;
 ## 
 ## $qgis_prefix_path
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis&amp;quot;
 ## 
 ## $python_plugins
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis/python/plugins&amp;quot;
 ## 
 ## $platform
 ## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# inicio de QGIS Python
 open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in check_for_server(): Hey there! According to our internal checks, you are trying to run RQGIS3 on a Windows server.
+## Please note that this is only possible if you imitate a x-display.
+## QGIS needs this in the background to be able to execute its processing modules.
+## Note that you need to start the x-display with admin rights&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función &lt;code&gt;find_algorithms()&lt;/code&gt; nos ayuda a buscar diferentes herramientas de QGIS. Además la función &lt;code&gt;get_usage()&lt;/code&gt; especifica la forma de uso con todos los argumentos requeridos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
 find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
-## [2] &amp;quot;native:extractvertices&amp;quot;                 
-## [3] &amp;quot;native:filterverticesbym&amp;quot;               
-## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
-## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
-## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:exportmeshvertices&amp;quot;              
+## [2] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [3] &amp;quot;native:extractvertices&amp;quot;                 
+## [4] &amp;quot;native:filterverticesbym&amp;quot;               
+## [5] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [6] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [7] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
 get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
@@ -3214,7 +3221,7 @@ get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
                load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpGurVm9/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpw5vYcG/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
   
 Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.
@@ -3235,16 +3242,11 @@ Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj
 
 river_vertices &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data
-
-## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 94,702 x 12
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## Geodetic CRS:  WGS 84
+## # A tibble: 94,702 x 12
 ##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
 ##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
 ##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
@@ -3353,8 +3355,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
   theme_polar&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -3366,24 +3367,28 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
       
       <guid>https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Tidyverse&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#guía-de-estilo&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Guía de estilo&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#pipe&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#paquetes-de-tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Paquetes de Tidyverse&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#paquetes-de-tidyverse&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Paquetes de Tidyverse&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#lectura-y-escritura&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.1&lt;/span&gt; Lectura y escritura&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#manipulación-de-caracteres&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.2&lt;/span&gt; Manipulación de caracteres&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#manejo-de-fechas-y-horas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.3&lt;/span&gt; Manejo de fechas y horas&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#manipulación-de-tablas-y-vectores&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4&lt;/span&gt; Manipulación de tablas y vectores&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#manipulación-de-tablas-y-vectores&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4&lt;/span&gt; Manipulación de tablas y vectores&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#selecionar-y-renombrar&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.1&lt;/span&gt; Selecionar y renombrar&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#filtrar-y-ordenar&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.2&lt;/span&gt; Filtrar y ordenar&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#agrupar-y-resumir&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.3&lt;/span&gt; Agrupar y resumir&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#unir-tablas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.4&lt;/span&gt; Unir tablas&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#tablas-largas-y-anchas&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.4.5&lt;/span&gt; Tablas largas y anchas&lt;/a&gt;&lt;/li&gt;
 &lt;/ul&gt;&lt;/li&gt;
-&lt;li&gt;&lt;a href=&#34;#visualizar-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5&lt;/span&gt; Visualizar datos&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#visualizar-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5&lt;/span&gt; Visualizar datos&lt;/a&gt;
+&lt;ul&gt;
 &lt;li&gt;&lt;a href=&#34;#gráfico-de-linea-y-puntos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.1&lt;/span&gt; Gráfico de linea y puntos&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#boxplot&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/a&gt;&lt;/li&gt;
 &lt;li&gt;&lt;a href=&#34;#heatmap&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/a&gt;&lt;/li&gt;
@@ -3393,7 +3398,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
 &lt;/ul&gt;
 &lt;/div&gt;
 
-&lt;div id=&#34;tidyverse&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;tidyverse&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Tidyverse&lt;/h1&gt;
 &lt;p&gt;El universo de los paquetes de &lt;code&gt;tidyverse&lt;/code&gt;, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de &lt;code&gt;tidyverse&lt;/code&gt;. Por ejemplo, el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;simple feature&lt;/a&gt;) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete &lt;code&gt;dplyr&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;El núcleo de la colección lo constituyen los siguientes paquetes:&lt;/p&gt;
@@ -3440,16 +3445,18 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;p&gt;Además de los paquetes menciondos, también se usa muy frecuentemente &lt;code&gt;lubridate&lt;/code&gt; para trabajar con fechas y horas, y también &lt;code&gt;readxl&lt;/code&gt; que nos permite importar archivos en formato Excel. Para conocer todos los paquetes disponibles podemos emplear la función &lt;code&gt;tidyverse_packages()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;broom&amp;quot;      &amp;quot;cli&amp;quot;        &amp;quot;crayon&amp;quot;     &amp;quot;dbplyr&amp;quot;     &amp;quot;dplyr&amp;quot;     
-##  [6] &amp;quot;forcats&amp;quot;    &amp;quot;ggplot2&amp;quot;    &amp;quot;haven&amp;quot;      &amp;quot;hms&amp;quot;        &amp;quot;httr&amp;quot;      
-## [11] &amp;quot;jsonlite&amp;quot;   &amp;quot;lubridate&amp;quot;  &amp;quot;magrittr&amp;quot;   &amp;quot;modelr&amp;quot;     &amp;quot;pillar&amp;quot;    
-## [16] &amp;quot;purrr&amp;quot;      &amp;quot;readr&amp;quot;      &amp;quot;readxl&amp;quot;     &amp;quot;reprex&amp;quot;     &amp;quot;rlang&amp;quot;     
-## [21] &amp;quot;rstudioapi&amp;quot; &amp;quot;rvest&amp;quot;      &amp;quot;stringr&amp;quot;    &amp;quot;tibble&amp;quot;     &amp;quot;tidyr&amp;quot;     
-## [26] &amp;quot;xml2&amp;quot;       &amp;quot;tidyverse&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] &amp;quot;broom&amp;quot;         &amp;quot;cli&amp;quot;           &amp;quot;crayon&amp;quot;        &amp;quot;dbplyr&amp;quot;       
+##  [5] &amp;quot;dplyr&amp;quot;         &amp;quot;dtplyr&amp;quot;        &amp;quot;forcats&amp;quot;       &amp;quot;googledrive&amp;quot;  
+##  [9] &amp;quot;googlesheets4&amp;quot; &amp;quot;ggplot2&amp;quot;       &amp;quot;haven&amp;quot;         &amp;quot;hms&amp;quot;          
+## [13] &amp;quot;httr&amp;quot;          &amp;quot;jsonlite&amp;quot;      &amp;quot;lubridate&amp;quot;     &amp;quot;magrittr&amp;quot;     
+## [17] &amp;quot;modelr&amp;quot;        &amp;quot;pillar&amp;quot;        &amp;quot;purrr&amp;quot;         &amp;quot;readr&amp;quot;        
+## [21] &amp;quot;readxl&amp;quot;        &amp;quot;reprex&amp;quot;        &amp;quot;rlang&amp;quot;         &amp;quot;rstudioapi&amp;quot;   
+## [25] &amp;quot;rvest&amp;quot;         &amp;quot;stringr&amp;quot;       &amp;quot;tibble&amp;quot;        &amp;quot;tidyr&amp;quot;        
+## [29] &amp;quot;xml2&amp;quot;          &amp;quot;tidyverse&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Es muy fácil encontrarnos con conflicos de funciones, o sea, que el mismo nombre de función exista en varios paquetes. Para evitarlo, podemos escribir el nombre del paquete delante de la función que queremos usar, separados por el símbolo de dos puntos escrito dos veces (&lt;code&gt;package_name::function_name&lt;/code&gt;).&lt;/p&gt;
 &lt;p&gt;Antes de empezar con los paquetes, espero que sea verdaderamente una breve introducción, algunos comentarios sobre el estilo al programar en R.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;guía-de-estilo&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;guía-de-estilo&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Guía de estilo&lt;/h1&gt;
 &lt;p&gt;En R no existe una guía de estilo universal, o sea, en la sintaxis de R no es necesario seguir normas concretas para nuestros scripts. Es recomendable trabajar de forma homogénea y clara a la hora de escribir con un estilo uniforme y legible. La colección de &lt;code&gt;tidyverse&lt;/code&gt; tiene una guia propia (&lt;a href=&#34;https://style.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://style.tidyverse.org/&lt;/a&gt;).&lt;/p&gt;
 &lt;p&gt;Las recomendaciones más importes son:&lt;/p&gt;
@@ -3465,15 +3472,15 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
 &lt;/ul&gt;
 &lt;p&gt;Es aconsejable usar una correcta &lt;em&gt;indentación&lt;/em&gt; para multiples argumentos de una función o funciones encadenadas por el operador &lt;code&gt;pipe&lt;/code&gt; (&lt;code&gt;%&amp;gt;%&lt;/code&gt;).&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;pipe&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;pipe&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Pipe %&amp;gt;%&lt;/h1&gt;
 &lt;p&gt;Para facilitar el trabajo en la gestión, manipulación y visualización de datos, el paquete &lt;code&gt;magrittr&lt;/code&gt; introduce el operador llamado &lt;em&gt;pipe&lt;/em&gt; en la forma &lt;code&gt;%&amp;gt;%&lt;/code&gt; con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador &lt;em&gt;pipe&lt;/em&gt; pasa a la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. En el siguiente ejemplo, muy sencillo, pasamos el vector &lt;code&gt;1:5&lt;/code&gt; a la función &lt;code&gt;mean()&lt;/code&gt; para calcular el promedio.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;1:5 %&amp;gt;% mean()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] 3&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;paquetes-de-tidyverse&#34; class=&#34;section level1&#34;&gt;
+&lt;div id=&#34;paquetes-de-tidyverse&#34; class=&#34;section level1&#34; number=&#34;4&#34;&gt;
 &lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Paquetes de Tidyverse&lt;/h1&gt;
-&lt;div id=&#34;lectura-y-escritura&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;lectura-y-escritura&#34; class=&#34;section level2&#34; number=&#34;4.1&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.1&lt;/span&gt; Lectura y escritura&lt;/h2&gt;
 &lt;p&gt;El paquete &lt;code&gt;readr&lt;/code&gt; facilita la lectura o escritura de múltiples formatos de archivo usando funciones que comienzan por &lt;code&gt;read_*&lt;/code&gt; o &lt;code&gt;write_*&lt;/code&gt;.
 En comparación con &lt;em&gt;R Base&lt;/em&gt; las funciones son más rápidas, ayudan a limpiar los nombres de las columnas y las fechas son convertidas automáticamente. Las tablas importadas son de clase &lt;code&gt;tibble&lt;/code&gt; (&lt;strong&gt;tbl_df&lt;/strong&gt;), una versión moderna de &lt;code&gt;data.frame&lt;/code&gt; del paquete &lt;code&gt;tibble&lt;/code&gt;. En el mismo sentido se puede usar la función &lt;code&gt;read_excel()&lt;/code&gt; del paquete &lt;code&gt;readxl&lt;/code&gt; para importar datos de hojas de Excel (más detalles también en esta &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;entrada de mi blog&lt;/a&gt;). En el siguiente ejemplo importamos los datos de la movilidad registrada por Google (&lt;a href=&#34;https://www.google.com/covid19/mobility/&#34;&gt;enlace&lt;/a&gt;) durante los últimos meses a causa de la pandemia COVID-19 (&lt;a href=&#34;https://dominicroye.github.io/files/Global_Mobility_Report.csv&#34;&gt;descarga&lt;/a&gt;).&lt;/p&gt;
@@ -3503,7 +3510,8 @@ En comparación con &lt;em&gt;R Base&lt;/em&gt; las funciones son más rápidas,
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   country_region_code = col_character(),
 ##   country_region = col_character(),
@@ -3530,18 +3538,18 @@ google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot
 ## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 516,697 x 13
-##    country_region_~ country_region sub_region_1 sub_region_2 iso_3166_2_code
-##    &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;        &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;          
-##  1 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  2 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  3 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  4 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  5 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  6 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  7 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  8 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  9 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-## 10 AE               United Arab E~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##    country_region_co~ country_region   sub_region_1 sub_region_2 iso_3166_2_code
+##    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;        &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  2 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  3 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  4 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  5 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  6 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  7 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  8 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+##  9 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
+## 10 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
 ## # ... with 516,687 more rows, and 8 more variables: census_fips_code &amp;lt;lgl&amp;gt;,
 ## #   date &amp;lt;date&amp;gt;, retail_and_recreation_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
 ## #   grocery_and_pharmacy_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
@@ -3551,7 +3559,7 @@ google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot
 ## #   residential_percent_change_from_baseline &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Debemos prestar atención a los nombres de los argumentos, ya que cambian en las funciones de &lt;code&gt;readr&lt;/code&gt;. Por ejemplo, el argumento conocido &lt;code&gt;header = TRUE&lt;/code&gt; de &lt;code&gt;read.csv()&lt;/code&gt; es en este caso &lt;code&gt;col_names = TRUE&lt;/code&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;readr&lt;/code&gt; .&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;manipulación-de-caracteres&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;manipulación-de-caracteres&#34; class=&#34;section level2&#34; number=&#34;4.2&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.2&lt;/span&gt; Manipulación de caracteres&lt;/h2&gt;
 &lt;p&gt;Cuando se requiere manipular cadenas de texto usamos el paquete &lt;code&gt;stringr&lt;/code&gt;, cuyas funciones siempre empiezan por &lt;code&gt;str_*&lt;/code&gt; seguidas por un verbo y el primer argumento.&lt;/p&gt;
 &lt;p&gt;Algunas de estas funciones son las siguientes:&lt;/p&gt;
@@ -3641,10 +3649,10 @@ str_glue(
   &amp;quot;I&amp;#39;am {age}, &amp;quot;,
   &amp;quot;and my birth year is {format(date_today-age*365, &amp;#39;%Y&amp;#39;)}.&amp;quot;
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## My name is Juan, I&amp;#39;am 50, and my birth year is 1970.
-## My name is Michael, I&amp;#39;am 80, and my birth year is 1940.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## My name is Juan, I&amp;#39;am 50, and my birth year is 1971.
+## My name is Michael, I&amp;#39;am 80, and my birth year is 1941.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;manejo-de-fechas-y-horas&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;manejo-de-fechas-y-horas&#34; class=&#34;section level2&#34; number=&#34;4.3&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.3&lt;/span&gt; Manejo de fechas y horas&lt;/h2&gt;
 &lt;p&gt;El paquete &lt;code&gt;lubridate&lt;/code&gt; ayuda en el manejo de fechas y horas. Nos permite crear los objetos reconocidos por R con funciones (como &lt;code&gt;ymd()&lt;/code&gt; ó &lt;code&gt;ymd_hms()&lt;/code&gt;) y hacer cálculos.&lt;/p&gt;
 &lt;p&gt;Debemos conocer las siguientes abreviaturas:&lt;/p&gt;
@@ -3718,7 +3726,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2005-05-23 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;lubridate&lt;/code&gt;.&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;manipulación-de-tablas-y-vectores&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;manipulación-de-tablas-y-vectores&#34; class=&#34;section level2&#34; number=&#34;4.4&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4&lt;/span&gt; Manipulación de tablas y vectores&lt;/h2&gt;
 &lt;p&gt;Los paquetes &lt;code&gt;dplyr&lt;/code&gt; y &lt;code&gt;tidyr&lt;/code&gt; nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:&lt;/p&gt;
 &lt;table&gt;
@@ -3761,7 +3769,8 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;En caso de que no lo hayas hecho antes, importamos los datos de movilidad.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   country_region_code = col_character(),
 ##   country_region = col_character(),
@@ -3786,7 +3795,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 ## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
 ## ...... ................ .................. .............. ............................
 ## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
-&lt;div id=&#34;selecionar-y-renombrar&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;selecionar-y-renombrar&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.1&lt;/span&gt; Selecionar y renombrar&lt;/h3&gt;
 &lt;p&gt;Podemos selecionar o eliminar columnas con la función &lt;code&gt;select()&lt;/code&gt;, usando el nombre o índice de la(s) columna(s). Para suprimir columnas hacemos uso del signo negativo. La función &lt;code&gt;rename&lt;/code&gt; ayuda en renombrar columnas o bien con el mismo nombre o con su índice.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;residential_mobility &amp;lt;- select(google_mobility, 
@@ -3795,7 +3804,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
                                residential_percent_change_from_baseline) %&amp;gt;% 
                         rename(resi = 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;filtrar-y-ordenar&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;filtrar-y-ordenar&#34; class=&#34;section level3&#34; number=&#34;4.4.2&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.2&lt;/span&gt; Filtrar y ordenar&lt;/h3&gt;
 &lt;p&gt;Para filtrar datos, empleamos &lt;code&gt;filter()&lt;/code&gt; con operadores lógicos (&lt;code&gt;|&lt;/code&gt;, &lt;code&gt;==&lt;/code&gt;, &lt;code&gt;&amp;gt;&lt;/code&gt;, etc) o funciones que devuelven un valor lógico (&lt;code&gt;str_detect()&lt;/code&gt;, &lt;code&gt;is.na()&lt;/code&gt;, etc.). La función &lt;code&gt;arrange()&lt;/code&gt; ordena de menor a mayor por una o múltiples variables (con el signo negativo &lt;code&gt;-&lt;/code&gt; se invierte el orden de mayor a menor).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(residential_mobility, 
@@ -3849,7 +3858,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 ## 10 SG                 Singapore      &amp;lt;NA&amp;gt;                       2020-04-10    53
 ## # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;agrupar-y-resumir&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;agrupar-y-resumir&#34; class=&#34;section level3&#34; number=&#34;4.4.3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.3&lt;/span&gt; Agrupar y resumir&lt;/h3&gt;
 &lt;p&gt;¿Dónde encontramos mayor variabilidad entre regiones en cada país el día 1 de abril de 2020?&lt;/p&gt;
 &lt;p&gt;Para responder a esta pregunta, primero filtramos los datos y después agrupamos por la columna de país. Cuando empleamos la función &lt;code&gt;summarise()&lt;/code&gt; posterior a la agrupación, nos permite resumir por estos grupos. Incluso, la combinación del &lt;code&gt;group_by()&lt;/code&gt; con la función &lt;code&gt;mutate()&lt;/code&gt; permite modificar columnas por grupos. En &lt;code&gt;summarise()&lt;/code&gt; calculamos el valor máximo, mínimo y la diferencia entre ambos extremos creando nuevas columnas.&lt;/p&gt;
@@ -3894,7 +3903,6 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 
 ## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
 ## Inf&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` ungrouping output (override with `.groups` argument)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;arrange(resi_variability, -range)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 94 x 4
 ##    country_region    mx   min range
@@ -3911,7 +3919,7 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 ## 10 Chile             30    14    16
 ## # ... with 84 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;unir-tablas&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;unir-tablas&#34; class=&#34;section level3&#34; number=&#34;4.4.4&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.4&lt;/span&gt; Unir tablas&lt;/h3&gt;
 &lt;p&gt;¿Cómo podemos filtrar los datos para obtener un subconjunto de Europa?&lt;/p&gt;
 &lt;p&gt;Para ello, importamos datos espaciales con el código de país y una columna de las regiones. Explicaciones detalladas sobre el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;em&gt;simple feature&lt;/em&gt;) para trabajar con datos vectoriales, lo dejaremos para otro post.&lt;/p&gt;
@@ -3925,7 +3933,7 @@ wld &amp;lt;- filter(wld, !is.na(iso_a2)) %&amp;gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Otras funciones de &lt;code&gt;dplyr&lt;/code&gt; nos permiten unir tablas: &lt;code&gt;*_join()&lt;/code&gt;. Según hacia qué tabla (izquierda o derecha) se quiere unir, cambia la función : &lt;code&gt;left_join()&lt;/code&gt;, &lt;code&gt;right_join()&lt;/code&gt; o incluso &lt;code&gt;full_join()&lt;/code&gt;. El argumento &lt;code&gt;by&lt;/code&gt; no es necesario siempre y cuando ambas tablas tienen una columna en común. No obstante, en este caso la columna de fusión es diferente, por eso, usamos el modo &lt;code&gt;c(&#34;country_region_code&#34;=&#34;iso_a2&#34;)&lt;/code&gt;. El paquete &lt;code&gt;forcats&lt;/code&gt; de &lt;code&gt;tidyverse&lt;/code&gt; tiene muchas funciones útiles para manejar variables categóricas (&lt;code&gt;factors&lt;/code&gt;), variables que tienen un conjunto fijo y conocido de valores posibles. Todas las funciones de &lt;code&gt;forcats&lt;/code&gt; tienen el prefijo &lt;code&gt;fct_*&lt;/code&gt;. Por ejemplo, en este caso usamos &lt;code&gt;fct_reorder()&lt;/code&gt; para reordenar las etiquetas de los países en orden de la máxima basada en los registros de movibilidad residencial. Finalmente, creamos una nueva columna ‘resi_real’ para cambiar el valor de referencia, el promedio (&lt;em&gt;baseline&lt;/em&gt;), fijado en 0 a 100.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;subset_europe &amp;lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -3958,7 +3966,7 @@ str(subset_europe)&lt;/code&gt;&lt;/pre&gt;
 ##   ..$ actual  : chr [1:597554] &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; ...
 ##   ..$ file    : chr [1:597554] &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;tablas-largas-y-anchas&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;tablas-largas-y-anchas&#34; class=&#34;section level3&#34; number=&#34;4.4.5&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.5&lt;/span&gt; Tablas largas y anchas&lt;/h3&gt;
 &lt;p&gt;Antes de pasar a la visualización con &lt;code&gt;ggplot2&lt;/code&gt;. Es muy habitual modificar la tabla entre dos formatos principales. Una tabla es &lt;em&gt;tidy&lt;/em&gt; cuando 1) cada variable es una columna 2) cada observación/caso es una fila y 3) cada tipo de unidad observacional forma una tabla.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subconjunto 
@@ -4022,7 +4030,7 @@ pivot_longer(mobi_wide,
 &lt;p&gt;Otro grupo de funciones a las que deberías echar un vistazo son: &lt;code&gt;separate()&lt;/code&gt;, &lt;code&gt;case_when()&lt;/code&gt;, &lt;code&gt;complete()&lt;/code&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;dplyr&lt;/code&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;visualizar-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;visualizar-datos&#34; class=&#34;section level2&#34; number=&#34;4.5&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5&lt;/span&gt; Visualizar datos&lt;/h2&gt;
 &lt;p&gt;&lt;code&gt;ggplot2&lt;/code&gt; es un sistema moderno, y con una enorme variedad de opciones, para visualización de datos. A diferencia del sistema gráfico de &lt;em&gt;R Base&lt;/em&gt; se utiliza una gramática diferente.
 La gramática de los gráficos (&lt;em&gt;grammar of graphics&lt;/em&gt;, de allí “gg”) consiste en la suma de varias capas u objetos independientes que se combinan usando &lt;code&gt;+&lt;/code&gt; para construir el gráfico final. &lt;code&gt;ggplot&lt;/code&gt; diferencia entre los datos, lo que se visualiza y la forma en que se visualiza.&lt;/p&gt;
@@ -4034,7 +4042,7 @@ La gramática de los gráficos (&lt;em&gt;grammar of graphics&lt;/em&gt;, de all
 &lt;li&gt;&lt;p&gt;&lt;em&gt;statistics&lt;/em&gt;: son objetos &lt;code&gt;stat_*&lt;/code&gt; (p.ej.: &lt;code&gt;stat_density()&lt;/code&gt;) que permiten aplicar transformaciones estadísticas.&lt;/p&gt;&lt;/li&gt;
 &lt;/ul&gt;
 &lt;p&gt;Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;ggplot2&lt;/code&gt;. &lt;code&gt;ggplot&lt;/code&gt; es complementado constantemente con extensiones para geometrías u otras opciones gráficas (&lt;a href=&#34;https://exts.ggplot2.tidyverse.org/ggiraph.html&#34; class=&#34;uri&#34;&gt;https://exts.ggplot2.tidyverse.org/ggiraph.html&lt;/a&gt;), para obtener ideas gráficas, debes echarle un vistazo a la Galería de Gráficos R (&lt;a href=&#34;https://www.r-graph-gallery.com/&#34; class=&#34;uri&#34;&gt;https://www.r-graph-gallery.com/&lt;/a&gt;).&lt;/p&gt;
-&lt;div id=&#34;gráfico-de-linea-y-puntos&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;gráfico-de-linea-y-puntos&#34; class=&#34;section level3&#34; number=&#34;4.5.1&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.1&lt;/span&gt; Gráfico de linea y puntos&lt;/h3&gt;
 &lt;p&gt;Creamos un subconjunto de nuestros datos de movilidad para residencias y parques, filtrando los registros de regiones italianas. Además, dividimos los valores de movilidad en porcentaje por 100 para obtener la fracción, ya que &lt;code&gt;ggplot2&lt;/code&gt; nos permite indicar la unidad de porcentaje en el argumento de las etiquetas (último gráfico de esta sección).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos el subconjunto
@@ -4049,14 +4057,14 @@ it &amp;lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# gráfico de dispersión con línea de correlación
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Para modificar los ejes, empleamos las diferentes funciones de &lt;code&gt;scale_*&lt;/code&gt; que debemos adpatar a las escalas de medición (&lt;em&gt;date&lt;/em&gt;, &lt;em&gt;discrete&lt;/em&gt;, &lt;em&gt;continuous&lt;/em&gt;, etc.). La función &lt;code&gt;labs()&lt;/code&gt; nos ayuda en definir los títulos de ejes, del gráfico y de la leyenda. Por último, añadimos con &lt;code&gt;theme_light()&lt;/code&gt; el estilo del gráfico (otros son &lt;code&gt;theme_bw()&lt;/code&gt;, &lt;code&gt;theme_minimal()&lt;/code&gt;, etc.). También podríamos hacer cambios de todos los elementos gráficos a través de &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time serie plot
 ggplot(it, 
@@ -4070,7 +4078,7 @@ ggplot(it,
        y = &amp;quot;Residential mobility&amp;quot;,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -4085,9 +4093,9 @@ ggplot(it,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34; number=&#34;4.5.2&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/h3&gt;
 &lt;p&gt;Podemos visualizar diferentes aspectos de los datos de movilidad con otras geometrías. Aquí creamos &lt;em&gt;boxplots&lt;/em&gt; por cada país europeo representando la variabilidad de movilidad entre y en los países durante la pandemia del COVID-19.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subconjunto
@@ -4114,9 +4122,9 @@ ggplot(subset_europe_reg,
        title = &amp;quot;Mobility during COVID-19&amp;quot;, 
        fill = &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
-&lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34;&gt;
+&lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34; number=&#34;4.5.3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/h3&gt;
 &lt;p&gt;Para visualizar la tendencia de todos los países europeos es recomendable usar un &lt;em&gt;heatmap&lt;/em&gt; en lugar de un bulto de líneas. Antes de constuir el gráfico, creamos un vector de fechas para las etiquetas con los domingos en el período de registros.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# secuencia de fechas
@@ -4160,10 +4168,10 @@ ggplot(subset_europe,
                                label.position = &amp;quot;top&amp;quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-06-06-una-muy-breve-introduccion-a-tidyverse/index.es_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/index.es_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
-&lt;div id=&#34;aplicar-funciones-sobre-vectores-o-listas&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;aplicar-funciones-sobre-vectores-o-listas&#34; class=&#34;section level2&#34; number=&#34;4.6&#34;&gt;
 &lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.6&lt;/span&gt; Aplicar funciones sobre vectores o listas&lt;/h2&gt;
 &lt;p&gt;El paquete &lt;code&gt;purrr&lt;/code&gt; contiene un conjunto de funciones avanzadas de programación funcional para trabajar con funciones y vectores. La familia de funciones &lt;code&gt;lapply()&lt;/code&gt; conocido de &lt;code&gt;R Base&lt;/code&gt;corresponde a las funciones de &lt;code&gt;map()&lt;/code&gt; en este paquete. Una de las mayores ventajas es poder reducir el uso de bucles (&lt;code&gt;for&lt;/code&gt;, etc.).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# lista con dos vectores
@@ -4377,13 +4385,13 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 27 x 9
 ##    country_code estimate statistic   p.value parameter conf.low conf.high method
 ##    &amp;lt;chr&amp;gt;           &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
-##  1 IT             -0.831    -71.0  0.             2250   -0.844    -0.818 Pears~
-##  2 ES             -0.825    -65.4  0.             2005   -0.839    -0.811 Pears~
+##  1 IT             -0.831    -71.0  0              2250   -0.844    -0.818 Pears~
+##  2 ES             -0.825    -65.4  0              2005   -0.839    -0.811 Pears~
 ##  3 PT             -0.729    -46.9  2.12e-321      1938   -0.749    -0.707 Pears~
 ##  4 FR             -0.698    -37.4  3.29e-216      1474   -0.723    -0.671 Pears~
 ##  5 GR             -0.692    -27.0  1.03e-114       796   -0.726    -0.654 Pears~
 ##  6 BG             -0.677    -37.8  1.47e-227      1694   -0.702    -0.650 Pears~
-##  7 RO             -0.640    -56.0  0.             4517   -0.657    -0.623 Pears~
+##  7 RO             -0.640    -56.0  0              4517   -0.657    -0.623 Pears~
 ##  8 SI             -0.627    -11.4  1.98e- 23       200   -0.704    -0.535 Pears~
 ##  9 HR             -0.579    -21.9  9.32e- 87       954   -0.620    -0.536 Pears~
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~

@@ -620,12 +620,17 @@
 
     <div class="article-style" itemprop="articleBody">
       
+<script src="https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/index.es_files/header-attrs/header-attrs.js"></script>
 
 
 <p>El primer post del año 2020, lo dedicaré a una consulta que me hicieron recientemente. Me plantearon la pregunta de cómo se podría calcular la distancia más corta entre diferentes puntos y cómo saber cúal es el punto más próximo a uno dado. Cuando trabajamos con datos espaciales en R, en la actualidad lo más fácil es usar el paquete <code>sf</code> en combinación con la colección de paquetes <code>tidyverse</code>. Además usamos el paquete <code>units</code> que es muy útil para trabajar con unidades de medida.</p>
 <div id="paquetes" class="section level2">
 <h2>Paquetes</h2>
 <table>
+<colgroup>
+<col width="13%" />
+<col width="86%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Paquete</th>
@@ -712,10 +717,10 @@ head(world.cities) # proviene del paquete maps</code></pre>
 cities &lt;- st_as_sf(world.cities, coords = c(&quot;long&quot;, &quot;lat&quot;), crs = 4326)
 cities</code></pre>
 <pre><code>## Simple feature collection with 43645 features and 4 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
-## CRS:            EPSG:4326
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
 ## First 10 features:
 ##                  name  country.etc   pop capital            geometry
 ## 1  &#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
@@ -737,10 +742,10 @@ capitals &lt;- mutate(capitals, city_country = str_c(name, &quot; (&quot;, count
 
 capitals </code></pre>
 <pre><code>## Simple feature collection with 230 features and 5 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
-## CRS:            EPSG:4326
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
 ## First 10 features:
 ##           name          country.etc     pop capital               geometry
 ## 1       &#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
@@ -771,27 +776,27 @@ capitals </code></pre>
 <table>
 <tbody>
 <tr class="odd">
-<td></td>
+<td align="left"></td>
 <td align="left">A</td>
 <td align="left">B</td>
 <td align="left">C</td>
 </tr>
 <tr class="even">
-<td>A</td>
+<td align="left">A</td>
 <td align="left">0</td>
-<td align="left">336</td>
-<td align="left">384</td>
+<td align="left">246</td>
+<td align="left">344</td>
 </tr>
 <tr class="odd">
-<td>B</td>
-<td align="left">336</td>
+<td align="left">B</td>
+<td align="left">246</td>
 <td align="left">0</td>
-<td align="left">374</td>
+<td align="left">118</td>
 </tr>
 <tr class="even">
-<td>C</td>
-<td align="left">384</td>
-<td align="left">374</td>
+<td align="left">C</td>
+<td align="left">344</td>
+<td align="left">118</td>
 <td align="left">0</td>
 </tr>
 </tbody>
@@ -860,7 +865,7 @@ ggplot(world) +
    coord_sf(crs = &quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&quot;) +
   labs(size = &quot;Distance (km)&quot;, title = &quot;Distance to the next capital&quot;) +
   theme_void()</code></pre>
-<p><img src="/post/es/2020-01-19-distancia-geografica/index.es_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/index.es_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
 </div>
 
     </div>

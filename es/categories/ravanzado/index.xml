@@ -299,12 +299,13 @@ p&lt;/code&gt;&lt;/pre&gt;
       
       <guid>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de &lt;a href=&#34;https://dominicroye.github.io/es/graphs/climate/&#34;&gt;gráficos&lt;/a&gt; de este mismo blog.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
@@ -404,7 +405,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 ## resolution : 0.0585, 0.045  (x, y)
 ## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : C:/Users/xeo19/Documents/GitHub/blogR_update/content/post/es/2020-10-11-animacion-climatica-temperatura-maxima/tmax_pen.nc 
+## source     : tmax_pen.nc 
 ## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
 ## Time (days since 1901-01-01): 1, 41638 (min, max)
 ## varname    : tx&lt;/code&gt;&lt;/pre&gt;
@@ -412,7 +413,7 @@ tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;
 &lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
 plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
@@ -451,7 +452,7 @@ ggplot(df,
   scale_y_continuous(breaks = seq(5, 28, 2)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
   
@@ -484,7 +485,7 @@ ggplot(df,
   scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
   labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
 tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
@@ -525,7 +526,7 @@ map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code
 plot(map)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
 ## all&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-10-11-animacion-climatica-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
 &lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
@@ -649,12 +650,13 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
       
       <guid>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Recientemente creé una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
-&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
-
+&lt;/p&gt;
 &lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
@@ -766,13 +768,13 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
 river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
                  st_zm() %&amp;gt;% 
                     st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
 ## Simple feature collection with 78 features and 6 fields
-## geometry type:  MULTILINESTRING
-## dimension:      XYZ
-## bbox:           xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
-## z_range:        zmin: 0 zmax: 0
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
+## Geometry type: MULTILINESTRING
+## Dimension:     XYZ
+## Bounding box:  xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:       zmin: 0 zmax: 0
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;extraer-los-ángulos&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Extraer los ángulos&lt;/h2&gt;
@@ -780,29 +782,34 @@ river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&
 &lt;p&gt;Para ello, tenemos que tener instalado QGIS en OSGeo4W. El paquete &lt;code&gt;RQGIS3&lt;/code&gt; nos permite de forma muy fácil usar las funciones del programa en R. Primero empleamos la función &lt;code&gt;set_env()&lt;/code&gt; para definir todas las rutas necesarias de QGIS e inciamos la API con &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a QGIS
 set_env()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/OSGEO4~1&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $root
-## [1] &amp;quot;C:/OSGeo4W64&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18&amp;quot;
 ## 
 ## $qgis_prefix_path
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis&amp;quot;
 ## 
 ## $python_plugins
-## [1] &amp;quot;C:/OSGeo4W64/apps/qgis/python/plugins&amp;quot;
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis/python/plugins&amp;quot;
 ## 
 ## $platform
 ## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# inicio de QGIS Python
 open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in check_for_server(): Hey there! According to our internal checks, you are trying to run RQGIS3 on a Windows server.
+## Please note that this is only possible if you imitate a x-display.
+## QGIS needs this in the background to be able to execute its processing modules.
+## Note that you need to start the x-display with admin rights&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función &lt;code&gt;find_algorithms()&lt;/code&gt; nos ayuda a buscar diferentes herramientas de QGIS. Además la función &lt;code&gt;get_usage()&lt;/code&gt; especifica la forma de uso con todos los argumentos requeridos.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
 find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:extractspecificvertices&amp;quot;         
-## [2] &amp;quot;native:extractvertices&amp;quot;                 
-## [3] &amp;quot;native:filterverticesbym&amp;quot;               
-## [4] &amp;quot;native:filterverticesbyz&amp;quot;               
-## [5] &amp;quot;native:removeduplicatevertices&amp;quot;         
-## [6] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:exportmeshvertices&amp;quot;              
+## [2] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [3] &amp;quot;native:extractvertices&amp;quot;                 
+## [4] &amp;quot;native:filterverticesbym&amp;quot;               
+## [5] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [6] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [7] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
 get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
@@ -855,7 +862,7 @@ get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
                load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpGurVm9/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpw5vYcG/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
   
 Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.
@@ -876,16 +883,11 @@ Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj
 
 river_vertices &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
-## geometry type:  POINT
-## dimension:      XY
-## bbox:           xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
-## geographic CRS: WGS 84&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data
-
-## Warning in st_is_longlat(x): bounding box has potentially an invalid value range
-## for longlat data&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 94,702 x 12
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## Geodetic CRS:  WGS 84
+## # A tibble: 94,702 x 12
 ##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
 ##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
 ##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
@@ -994,8 +996,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
   theme_polar&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2020-07-24-direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
@@ -1025,6 +1026,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
       
       <guid>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;https://dominicroye.github.io/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
@@ -1032,6 +1034,10 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
 &lt;h2&gt;Paquetes&lt;/h2&gt;
 &lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;90%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
@@ -1083,11 +1089,12 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#archivos de la precipitación
 files &amp;lt;- dir_ls(regexp = &amp;quot;txt&amp;quot;)
 files&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt 
-## RR_STAID003946.txt RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt RR_STAID003946.txt 
+## RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
 pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   STAID = col_double(),
 ##   SOUID = col_double(),
@@ -1095,7 +1102,9 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&g
 ##   RR = col_double(),
 ##   Q_RR = col_double()
 ## )
-## Parsed with column specification:
+## 
+## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   STAID = col_double(),
 ##   SOUID = col_double(),
@@ -1103,7 +1112,9 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&g
 ##   RR = col_double(),
 ##   Q_RR = col_double()
 ## )
-## Parsed with column specification:
+## 
+## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   STAID = col_double(),
 ##   SOUID = col_double(),
@@ -1111,7 +1122,9 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&g
 ##   RR = col_double(),
 ##   Q_RR = col_double()
 ## )
-## Parsed with column specification:
+## 
+## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   STAID = col_double(),
 ##   SOUID = col_double(),
@@ -1119,7 +1132,9 @@ pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&g
 ##   RR = col_double(),
 ##   Q_RR = col_double()
 ## )
-## Parsed with column specification:
+## 
+## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   STAID = col_double(),
 ##   SOUID = col_double(),
@@ -1172,8 +1187,9 @@ pr&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Lo que todavía nos hace falta es filtrar y calcular la suma anual de precipitación. En principio, no es lo más correcto sumar la precipitación sin tener en cuenta que haya valores ausentes, pero nos sirve igualmente para este ensayo. Después, cambiamos el formato de la tabla con la función &lt;code&gt;spread()&lt;/code&gt;, pasando de una tabla larga a una ancha, es decir, queremos obtener una columna por estación meteorológica.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
            group_by(STAID, yr) %&amp;gt;%
-             summarise(pr = sum(RR, na.rm = TRUE))
-pr_yr&lt;/code&gt;&lt;/pre&gt;
+             summarise(pr = sum(RR, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
 ##    STAID     yr    pr
@@ -1208,7 +1224,8 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
 telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Parsed with column specification:
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
 ## cols(
 ##   yr = col_double(),
 ##   NAO = col_double(),
@@ -1222,18 +1239,18 @@ telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/
 ## )&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 9
-##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND       AO
-##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
-##  1  1950  0.49  0.555 -0.332     0.0217     -0.0567 0.335  0.301   -1.99e-1
-##  2  1951 -0.07  0.379 -0.372     0.402      -0.419  0.149 -0.00667 -3.65e-1
-##  3  1952 -0.37  0.693 -0.688    -0.0117     -0.711  0.282  0.0642  -6.75e-1
-##  4  1953  0.4  -0.213 -0.727    -0.0567     -0.0508 0.216  0.0233  -1.64e-2
-##  5  1954  0.51  1.20  -0.912     0.142      -0.318  0.386  0.458   -5.83e-4
-##  6  1955 -0.64  0.138 -0.824    -0.0267      0.154  0.134  0.0392  -3.62e-1
-##  7  1956  0.17  0.617 -1.29     -0.197       0.0617 0.256  0.302   -1.63e-1
-##  8  1957 -0.02  0.321 -0.952    -0.638      -0.167  0.322 -0.134   -3.42e-1
-##  9  1958  0.12  0.941 -0.243     0.138       0.661  0.296  0.279   -8.68e-1
-## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -7.62e-2
+##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND        AO
+##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1  1950  0.49  0.555 -0.332     0.0217     -0.0567 0.335  0.301   -0.199   
+##  2  1951 -0.07  0.379 -0.372     0.402      -0.419  0.149 -0.00667 -0.365   
+##  3  1952 -0.37  0.693 -0.688    -0.0117     -0.711  0.282  0.0642  -0.675   
+##  4  1953  0.4  -0.213 -0.727    -0.0567     -0.0508 0.216  0.0233  -0.0164  
+##  5  1954  0.51  1.20  -0.912     0.142      -0.318  0.386  0.458   -0.000583
+##  6  1955 -0.64  0.138 -0.824    -0.0267      0.154  0.134  0.0392  -0.362   
+##  7  1956  0.17  0.617 -1.29     -0.197       0.0617 0.256  0.302   -0.163   
+##  8  1957 -0.02  0.321 -0.952    -0.638      -0.167  0.322 -0.134   -0.342   
+##  9  1958  0.12  0.941 -0.243     0.138       0.661  0.296  0.279   -0.868   
+## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -0.0762  
 ## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Por último nos falta unir ambas tablas por año.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
@@ -1251,16 +1268,16 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 ##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
 ##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
 ## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
-## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+## # ... with 58 more rows, and 5 more variables: POL-EUAS &amp;lt;dbl&amp;gt;, EATL/WRUS &amp;lt;dbl&amp;gt;,
+## #   MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;test-de-correlacion&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;test-de-correlación&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Test de correlación&lt;/h2&gt;
 &lt;p&gt;Un test de correlación lo podemos hacer con la función &lt;code&gt;cor.test()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;. En este caso entre la precipitación anual de Bilbao y el índice de NAO.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
                         method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method =
-## &amp;quot;spearman&amp;quot;): Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method = &amp;quot;spearman&amp;quot;):
+## Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
 ##  Spearman&amp;#39;s rank correlation rho
@@ -1292,7 +1309,7 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 ##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;      
 ## 1    0.153    44372.   0.213 Spearman&amp;#39;s rank correlation rho two.sided&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
-&lt;div id=&#34;aplicar-el-test-de-correlacion-a-multiples-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;div id=&#34;aplicar-el-test-de-correlación-a-múltiples-variables&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Aplicar el test de correlación a múltiples variables&lt;/h2&gt;
 &lt;p&gt;El objetivo es aplicar el test de correlación a todas las estaciones meteorológicas e índices de teleconexión.&lt;/p&gt;
 &lt;p&gt;Primero, debemos pasar la tabla al formato largo, o sea, crear una columna de la ciudad y el valor de la precipitación correspondiente. Después lo repetimos para las teleconexiones.&lt;/p&gt;
@@ -1317,6 +1334,7 @@ data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
+## # Groups:   city, telecon [40]
 ##    city      telecon data             
 ##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
 ##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
@@ -1331,20 +1349,223 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  3 variables:
-##  $ city   : chr &amp;quot;Bilbao&amp;quot;
-##  $ telecon: chr &amp;quot;NAO&amp;quot;
-##  $ data   :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
-##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## grouped_df [40 x 3] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##  $ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##  $ data   :List of 40
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [40 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##   ..$ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:40] 
+##   .. ..$ : int 1
+##   .. ..$ : int 2
+##   .. ..$ : int 3
+##   .. ..$ : int 4
+##   .. ..$ : int 5
+##   .. ..$ : int 6
+##   .. ..$ : int 7
+##   .. ..$ : int 8
+##   .. ..$ : int 9
+##   .. ..$ : int 10
+##   .. ..$ : int 11
+##   .. ..$ : int 12
+##   .. ..$ : int 13
+##   .. ..$ : int 14
+##   .. ..$ : int 15
+##   .. ..$ : int 16
+##   .. ..$ : int 17
+##   .. ..$ : int 18
+##   .. ..$ : int 19
+##   .. ..$ : int 20
+##   .. ..$ : int 21
+##   .. ..$ : int 22
+##   .. ..$ : int 23
+##   .. ..$ : int 24
+##   .. ..$ : int 25
+##   .. ..$ : int 26
+##   .. ..$ : int 27
+##   .. ..$ : int 28
+##   .. ..$ : int 29
+##   .. ..$ : int 30
+##   .. ..$ : int 31
+##   .. ..$ : int 32
+##   .. ..$ : int 33
+##   .. ..$ : int 34
+##   .. ..$ : int 35
+##   .. ..$ : int 36
+##   .. ..$ : int 37
+##   .. ..$ : int 38
+##   .. ..$ : int 39
+##   .. ..$ : int 40
+##   .. ..@ ptype: int(0) 
+##   ..- attr(*, &amp;quot;.drop&amp;quot;)= logi TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;El siguiente paso es crear una función, en la que definimos el test de correlación y lo pasamos al formato limpio, que aplicamos a cada agrupación.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method=&amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Ahora sólo nos queda por aplicar nuestra función a la columna que contiene las tablas por cada combinación entre ciudad y teleconexión. Para ello, usamos la función &lt;code&gt;map()&lt;/code&gt; que aplica otra función sobre un vector o lista. Lo que hacemos es crear una nueva columna que contiene el resultado, una tabla del resumen estadístico, por cada fila de cada combinación.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
 data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
+## # Groups:   city, telecon [40]
 ##    city      telecon data              model           
 ##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
 ##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
@@ -1359,38 +1580,557 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    1 obs. of  4 variables:
-##  $ city   : chr &amp;quot;Bilbao&amp;quot;
-##  $ telecon: chr &amp;quot;NAO&amp;quot;
-##  $ data   :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 68 obs. of  3 variables:
-##   .. ..$ yr   : num  1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num  1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num  0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##  $ model  :List of 1
-##   ..$ :Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;: 1 obs. of  5 variables:
-##   .. ..$ estimate   : num 0.153
-##   .. ..$ statistic  : num 44372
+&lt;pre&gt;&lt;code&gt;## grouped_df [40 x 4] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##  $ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##  $ data   :List of 40
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##  $ model  :List of 40
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.00989
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 52912
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.936
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.295
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 67832
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0147
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.161
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43966
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.19
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.255
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65754
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0361
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0203
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 53460
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.869
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.178
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43082
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.147
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.161
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43970
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.19
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0292
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 50862
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.813
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.185
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 62070
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.131
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.256
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65825
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0348
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0155
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 51584
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.9
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0457
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 54788
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.711
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.153
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 44372
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
 ##   .. ..$ p.value    : num 0.213
 ##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.147
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 44670
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.23
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.357
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 33688
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.00296
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.404
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 31242
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.000706
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.313
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65806
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0102
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.304
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65369
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0123
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0643
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 46893
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.605
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.497
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 75028
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 2.42e-05
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.291
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 64692
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0169
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0835
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 45930
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.501
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.306
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 34766
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.012
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.109
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 44660
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.38
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.443
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 75608
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.00018
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.01
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 52919
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.935
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.176
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43170
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.151
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.19
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 62364
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.12
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.181
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 61902
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.139
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0504
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 49752
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.682
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.44
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 29356
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.000203
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.332
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 35014
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.00594
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.211
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 19574
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.129
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0672
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 26472
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.632
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0542
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 23460
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.7
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0478
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 25990
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.733
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.113
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 27600
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.422
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0971
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 22396
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.488
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0795
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 26776
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.57
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.252
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 31056
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0688
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [40 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##   ..$ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:40] 
+##   .. ..$ : int 1
+##   .. ..$ : int 2
+##   .. ..$ : int 3
+##   .. ..$ : int 4
+##   .. ..$ : int 5
+##   .. ..$ : int 6
+##   .. ..$ : int 7
+##   .. ..$ : int 8
+##   .. ..$ : int 9
+##   .. ..$ : int 10
+##   .. ..$ : int 11
+##   .. ..$ : int 12
+##   .. ..$ : int 13
+##   .. ..$ : int 14
+##   .. ..$ : int 15
+##   .. ..$ : int 16
+##   .. ..$ : int 17
+##   .. ..$ : int 18
+##   .. ..$ : int 19
+##   .. ..$ : int 20
+##   .. ..$ : int 21
+##   .. ..$ : int 22
+##   .. ..$ : int 23
+##   .. ..$ : int 24
+##   .. ..$ : int 25
+##   .. ..$ : int 26
+##   .. ..$ : int 27
+##   .. ..$ : int 28
+##   .. ..$ : int 29
+##   .. ..$ : int 30
+##   .. ..$ : int 31
+##   .. ..$ : int 32
+##   .. ..$ : int 33
+##   .. ..$ : int 34
+##   .. ..$ : int 35
+##   .. ..$ : int 36
+##   .. ..$ : int 37
+##   .. ..$ : int 38
+##   .. ..$ : int 39
+##   .. ..$ : int 40
+##   .. ..@ ptype: int(0) 
+##   ..- attr(*, &amp;quot;.drop&amp;quot;)= logi TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;¿Cómo podemos deshacer la lista de tablas en cada fila de nuestra tabla?&lt;/p&gt;
 &lt;p&gt;Pues bien, primero eliminamos la columna con los datos y después aplicamos simplemente la función &lt;code&gt;unnest()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()
-corr_pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `cols` is now required when using unnest().
+## Please use `cols = c(model)`&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
-##    city    telecon estimate statistic  p.value method           alternative
-##    &amp;lt;chr&amp;gt;   &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;      
-##  1 Bilbao  NAO       0.153     44372. 0.213    Spearman&amp;#39;s rank~ two.sided  
-##  2 Santia~ NAO      -0.181     61902. 0.139    Spearman&amp;#39;s rank~ two.sided  
-##  3 Barcel~ NAO      -0.0203    53460. 0.869    Spearman&amp;#39;s rank~ two.sided  
-##  4 Madrid  NAO      -0.291     64692. 0.0169   Spearman&amp;#39;s rank~ two.sided  
-##  5 Valenc~ NAO      -0.113     27600. 0.422    Spearman&amp;#39;s rank~ two.sided  
-##  6 Bilbao  WeMO      0.404     31242. 0.000706 Spearman&amp;#39;s rank~ two.sided  
-##  7 Santia~ WeMO      0.332     35014. 0.00594  Spearman&amp;#39;s rank~ two.sided  
-##  8 Barcel~ WeMO      0.0292    50862  0.813    Spearman&amp;#39;s rank~ two.sided  
-##  9 Madrid  WeMO      0.109     44660  0.380    Spearman&amp;#39;s rank~ two.sided  
-## 10 Valenc~ WeMO     -0.252     31056. 0.0688   Spearman&amp;#39;s rank~ two.sided  
+## # Groups:   city, telecon [40]
+##    city     telecon estimate statistic p.value method                alternative
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
+##  1 Bilbao   NAO       0.153     44372. 2.13e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  2 Santiago NAO      -0.181     61902. 1.39e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  3 Barcelo~ NAO      -0.0203    53460. 8.69e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  4 Madrid   NAO      -0.291     64692. 1.69e-2 Spearman&amp;#39;s rank corr~ two.sided  
+##  5 Valencia NAO      -0.113     27600. 4.22e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  6 Bilbao   WeMO      0.404     31242  7.06e-4 Spearman&amp;#39;s rank corr~ two.sided  
+##  7 Santiago WeMO      0.332     35014  5.94e-3 Spearman&amp;#39;s rank corr~ two.sided  
+##  8 Barcelo~ WeMO      0.0292    50862  8.13e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  9 Madrid   WeMO      0.109     44660  3.80e-1 Spearman&amp;#39;s rank corr~ two.sided  
+## 10 Valencia WeMO     -0.252     31056  6.88e-2 Spearman&amp;#39;s rank corr~ two.sided  
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;El resultado es una tabla en la que podemos ver las correlaciones y su significación estadística para cada ciudad y teleconexiones.&lt;/p&gt;
 &lt;/div&gt;
@@ -1418,7 +2158,7 @@ corr_pr&lt;/code&gt;&lt;/pre&gt;
         panel.border = element_blank(),
         panel.background = element_blank(),
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/es/2019-04-17-resumir-tests-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
       
