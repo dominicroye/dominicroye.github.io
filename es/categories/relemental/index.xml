@@ -600,61 +600,21 @@ ggplot(mercadona$osm_points)+
     </item>
     
     <item>
-      <title>El gráfico de tarta</title>
-      <link>https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/</link>
-      <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
+      <title>gráfico de tarta</title>
+      <link>https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/</link>
+      <pubDate>Wed, 22 Aug 2018 00:00:00 +0000</pubDate>
       
-      <guid>https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/</guid>
+      <guid>https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/</guid>
       <description>
-&lt;script src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
-&lt;table&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;categories: [“visualización,”“R,”“R:elemental”]&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;date: “2018-08-22T11:23:32+01:00”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;draft: false&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;header:&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;caption: &#34;&#34;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;image: “vaccination_pie.png”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;tags: [“gráfico de tarta,”“datos,”“circular,”“proporciones,”“primera entrada,”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;“treemap,”“waffle,”“barra,”“visualización”]&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;title: El gráfico de tarta&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;bibliography: bibliography.bib&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;lang: es&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;slug: “grafico-de-tarta”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
 &lt;p&gt;Bienvenido a mi blog! Soy Dominic Royé, investigador y docente de geografía física en la Universidad de Santiago de Compostela. Una de mis pasiones es la programación en R para visualizar y analizar cualquier tipo de datos. Por eso, mi idea de iniciar este blog tiene su origen en las publicaciones que he ido haciendo en el útimo año en Twitter sobre diferentes temas visualizando datos que describen el mundo. Además, me gustaría aprovechar la posibilidad del blog e ir publicando breves ensayos sobre visualización, gestión y manipulación de datos en R. Espero que os guste. Cualquier sugerencia o idea, será bienvenida.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;preámbulo&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Preámbulo&lt;/h2&gt;
 &lt;p&gt;Siempre he querido escribir sobre el uso del gráfico de tarta. El gráfico circular es ampliamente usado en investigación, docencia, periodismo o en informes técnicos. Es más, no sé si es debido a Excel, pero todavía peor que el mismo gráfico de tarta es su versión en 3D (también para el gráfico de barras). Sobre las versiones 3D únicamente debo decir que no es recomendable, ya que en estos casos la tercera dimensión no contiene ninguna información y por tanto no ayuda en leer correctamente la información del gráfico. Respecto al gráfico de tarta, entre muchos expertos no se aconseja claramente su uso. Pero, ¿por qué?&lt;/p&gt;
-&lt;p&gt;Ya en un estudio hecho por &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-Simkin1987&#34; role=&#34;doc-biblioref&#34;&gt;&lt;strong&gt;Simkin1987?&lt;/strong&gt;&lt;/a&gt;)&lt;/span&gt; encontraron que la interpretación y el procesamiento de ángulos es más díficil que el de formas lineales. Mayormente es más fácil leer un gráfico de barras que uno de tarta. Un problema que se hace muy visible cuando nos encontramos con; 1) demasiadas categorías 2) pocas diferencias entre las categorías 3) un mal uso de colores como leyenda ó 4) comparaciones entre varios gráficos de tarta.&lt;/p&gt;
+&lt;p&gt;Ya en un estudio hecho por Simkin (1987) encontraron que la interpretación y el procesamiento de ángulos es más díficil que el de formas lineales. Mayormente es más fácil leer un gráfico de barras que uno de tarta. Un problema que se hace muy visible cuando nos encontramos con; 1) demasiadas categorías 2) pocas diferencias entre las categorías 3) un mal uso de colores como leyenda ó 4) comparaciones entre varios gráficos de tarta.&lt;/p&gt;
 &lt;p&gt;Para decidir qué posibles representaciones gráficas existen para nuestros datos, recomiendo ir a la página web &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; o usar &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Ahora bien, ¿qué alternativas podemos usar en R?&lt;/p&gt;
@@ -718,7 +678,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -726,7 +686,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#definiciones sobre el theme que usamos
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -752,7 +712,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #ponemos 1 en x para crear una barra úni
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#ampliamos los datos con las cifras de Italia
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -770,7 +730,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;gráfico-de-waffle&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Gráfico de Waffle&lt;/h3&gt;
@@ -784,7 +744,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #datos
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colores
         rows=5) #número de filas &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;El gráfico de Waffle me parece muy interesante cuando queramos mostrar una proporción de una categoría individual.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;medida &amp;lt;- c(41,59) #datos de la OECD 2015
 names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otros estudios&amp;quot;)
@@ -792,7 +752,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;mapa-de-arbol-treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Mapa de arbol (&lt;em&gt;treemap&lt;/em&gt;)&lt;/h3&gt;
@@ -806,8 +766,8 @@ type=&amp;quot;index&amp;quot;,        #estilo más en ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/el-gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-Robbins2013&#34; role=&#34;doc-biblioref&#34;&gt;&lt;strong&gt;Robbins2013?&lt;/strong&gt;&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/gr%C3%A1fico-de-tarta/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Personalmente, creo que todos los tipos de representaciones gráficas tienen sus ventajas y desventajas. No obstante, en la actualidad tenemos una gran variedad de alternativas para evitar el uso del gráfico de tarta. Si aún así se quiere hacer un gráfico de tarta, algo que tampoco descartaría, recomiendo seguir ciertas reglas que ha resumido muy bien &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt; en un reciente &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt;. Por ejemplo, debemos ordenar de mayor a menor a no ser que haya un orden natural o usar como máximo cinco categorías. Por último, os dejo un enlace a un &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;&lt;em&gt;cheatsheet&lt;/em&gt;&lt;/a&gt; de &lt;em&gt;policyviz&lt;/em&gt; sobre normas básicas de visualización de datos. Una buena referencia sobre gráficos, usando diferentes programas desde Excel hasta R, podéis encontrar en &lt;em&gt;Creating more effective graphs&lt;/em&gt; (Robbins 2013).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;referencias&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Referencias&lt;/h3&gt;

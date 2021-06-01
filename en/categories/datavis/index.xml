@@ -210,59 +210,19 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
     <item>
       <title>the pie chart</title>
       <link>https://dominicroye.github.io/en/2018/the-pie-chart/</link>
-      <pubDate>Wed, 22 Aug 2018 11:23:32 +0100</pubDate>
+      <pubDate>Wed, 22 Aug 2018 00:00:00 +0000</pubDate>
       
       <guid>https://dominicroye.github.io/en/2018/the-pie-chart/</guid>
       <description>
 &lt;script src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
-&lt;table&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;categories: [“datavis,”“R,”“R:elementary”]&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;date: “2018-08-22T11:23:32+01:00”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;draft: false&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;header:&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;caption: &#34;&#34;&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;image: “vaccination_pie.png”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;tags: [“pie chart,”“data,”“circular,”“proportions,”“first post,”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;“treemap,”“waffle,”“bar”]&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;title: the pie chart&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;bibliography: bibliography.bib&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td&gt;lang: en&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td&gt;slug: “pie-chart”&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
 &lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
 &lt;hr /&gt;
 &lt;div id=&#34;background&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Background&lt;/h2&gt;
 &lt;p&gt;I have always wanted to write about the use of the pie chart. The pie chart is widely used in research, teaching, journalism or technical reports. I do not know if it is due to Excel, but even worse than the pie chart itself, is its 3D version (the same for the bar chart). About the 3D versions, I only want to say that they are not recommended, since in these cases the third dimension does not contain any information and therefore it does not help to correctly read the information of the graphic. Regarding the pie chart, among many experts its use is not advised. But why?&lt;/p&gt;
-&lt;p&gt;Already in a study conducted by &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-Simkin1987&#34; role=&#34;doc-biblioref&#34;&gt;&lt;strong&gt;Simkin1987?&lt;/strong&gt;&lt;/a&gt;)&lt;/span&gt; they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
+&lt;p&gt;Already in a study conducted by Simkin (1987) they found that the interpretation and processing of angles is more difficult than that of linear forms. Mostly it is easier to read a bar chart than a pie chart. A problem that becomes very visible when we have; 1) too many categories 2) few differences between categories 3) a misuse of colors as legend or 4) comparisons between various pie charts.&lt;/p&gt;
 &lt;p&gt;In general, to decide what possible graphic representations exist for our data, I recommend using the website &lt;a href=&#34;https://www.data-to-viz.com&#34;&gt;www.data-to-viz.com&lt;/a&gt; or the &lt;em&gt;Financial Times Visual Vocabulary&lt;/em&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://github.com/ft-interactive/chart-doctor/tree/master/visual-vocabulary&#34;&gt;&lt;img src=&#34;https://dominicroye.github.io/img/poster_piepost.png&#34; /&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;p&gt;Well, now what alternative ways can we use in R?&lt;/p&gt;
@@ -420,7 +380,7 @@ title=&amp;quot;&amp;quot;,
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
 )&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; &lt;span class=&#34;citation&#34;&gt;(&lt;a href=&#34;#ref-Robbins2013&#34; role=&#34;doc-biblioref&#34;&gt;&lt;strong&gt;Robbins2013?&lt;/strong&gt;&lt;/a&gt;)&lt;/span&gt;.&lt;/p&gt;
+&lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; (Robbins 2013).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;references&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;References&lt;/h3&gt;

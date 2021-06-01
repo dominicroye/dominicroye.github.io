@@ -5,10 +5,312 @@
     <description>Recent content in R:intermedio on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 20 Dec 2020 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Tue, 01 Jun 2021 00:00:00 +0000</lastBuildDate>
     
         <atom:link href="https://dominicroye.github.io/es/categories/rintermedio/index.xml" rel="self" type="application/rss+xml" />
     
+    
+    <item>
+      <title>Cartografía firefly</title>
+      <link>https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/</link>
+      <pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;cartografía-firefly&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cartografía &lt;em&gt;firefly&lt;/em&gt;&lt;/h1&gt;
+&lt;p&gt;Los mapas &lt;em&gt;firefly&lt;/em&gt; (lampíridos ingl.) son promocionados y descritos por
+&lt;a href=&#34;https://twitter.com/John_M_Nelson&#34;&gt;John Nelson&lt;/a&gt; quien publicó un &lt;a href=&#34;https://adventuresinmapping.com/2016/10/17/firefly-cartography/&#34;&gt;post&lt;/a&gt; en 2016 sobre sus características. No obstante, este tipo de mapas están vinculados a ArcGIS, lo que me ha llevado a intentar recrearlos en R. La reciente extensión de &lt;code&gt;ggplot2&lt;/code&gt; con el paquete &lt;a href=&#34;https://github.com/marcmenem/ggshadow&#34;&gt;&lt;code&gt;ggshadow&lt;/code&gt;&lt;/a&gt; nos facilitará la creación de este estilo cartográfico. Se caracteriza por tres elementos 1) un mapa base oscuro y desaturado (p.j. imágenes satelitales) 2) una viñeta y área resaltada enmascarada y 3) una única capa temática brillante. Lo esencial son los colores y el brillo que se logra con colores fríos, habitualmente colores neón. John Nelson explica más detalles en este &lt;a href=&#34;https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;¿Para qué sirve el estilo &lt;em&gt;firefly&lt;/em&gt;? En palabras de &lt;a href=&#34;https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/&#34;&gt;John Nelson&lt;/a&gt;: “the map style that captures our attention and dutifully honors the First Law of Geography”. John hace referencia a lo dicho por Waldo Tobler
+“everything is related to everything else, but near things are more related than distant things” (Tobler 1970).&lt;/p&gt;
+&lt;p&gt;En este post visualizaremos todos los terremotos registrados en el suroeste de Europa con una magnitud mayor de 3.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;p&gt;Usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;plotwidgets&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Contiene funciones para la conversión de colores (RGB, HSL)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster (paquete sucesor de raster)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggshadow&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extensión de ggplot2 para geometrías con sombreado&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggspatial&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extensión de ggplot2 para objetos espaciales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extensión de ggplot2 para crear multiples scalas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Funciones sencillas para examinar y limpiar datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;plotwidgets&amp;quot;)) install.packages(&amp;quot;plotwidgets&amp;quot;)
+if(!require(&amp;quot;ggshadow&amp;quot;)) install.packages(&amp;quot;ggshadow&amp;quot;)
+if(!require(&amp;quot;ggspatial&amp;quot;)) install.packages(&amp;quot;ggspatial&amp;quot;)
+if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
+if(!require(&amp;quot;janitor&amp;quot;)) install.packages(&amp;quot;janitor&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# paquetes
+
+library(raster)
+library(terra)
+library(sf)
+library(tidyverse)
+library(plotwidgets)
+library(ggshadow)
+library(ggspatial)
+library(ggnewscale)
+library(janitor)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Primero descargamos todos los datos necesarios. Para el mapa de base usaremos la Blue Marble vía el acceso a worldview.earthdata.nasa.gov donde me he descargado una selección del área de interés en formato geoTiff con una resolución de 1 km. Es importante ajustar la resolución al detalle necesario del mapa.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Selección de Blue Marble via &lt;a href=&#34;worldview.earthdata.nasa.gov&#34;&gt;worldview.earthdata.nasa.gov&lt;/a&gt; (~66 MB) &lt;a href=&#34;https://www.dropbox.com/s/bt8qfkzw339q13l/snapshot-2017-11-30T00_00_00Z.tiff?dl=0&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Registros de terremotos históricos en el suroeste de Europa del &lt;a href=&#34;https://www.ign.es/web/ign/portal/sis-catalogo-terremotos&#34;&gt;IGN&lt;/a&gt; &lt;a href=&#34;https://dominicroye.github.io/files/catalogoComunSV_1621713848556.csv&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar&lt;/h2&gt;
+&lt;p&gt;Lo primero que hacemos es importar el raster RGB &lt;em&gt;Blue Marble&lt;/em&gt; y los datos de los terremotos. Para importar el raster hago uso del nuevo paquete &lt;a href=&#34;https://rspatial.org/terra/pkg/index.html&#34;&gt;&lt;code&gt;terra&lt;/code&gt;&lt;/a&gt; que es el sucesor del paquete &lt;code&gt;raster&lt;/code&gt;. Podéis encontrar una comparación reciente &lt;a href=&#34;https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-raster-packages/&#34;&gt;aquí&lt;/a&gt;. No todos los paquetes son compatibles todavía con la nueva clase de &lt;code&gt;SpatRaster&lt;/code&gt;, por eso, nos hace falta también el paquete &lt;code&gt;raster&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# terremotos
+
+terremotos &amp;lt;- read.csv2(&amp;quot;catalogoComunSV_1621713848556.csv&amp;quot;)
+str(terremotos)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    149724 obs. of  10 variables:
+##  $ Evento       : chr  &amp;quot;          33&amp;quot; &amp;quot;          34&amp;quot; &amp;quot;          35&amp;quot; &amp;quot;          36&amp;quot; ...
+##  $ Fecha        : chr  &amp;quot;  02/03/1373&amp;quot; &amp;quot;  03/03/1373&amp;quot; &amp;quot;  08/03/1373&amp;quot; &amp;quot;  19/03/1373&amp;quot; ...
+##  $ Hora         : chr  &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; ...
+##  $ Latitud      : chr  &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; ...
+##  $ Longitud     : chr  &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; ...
+##  $ Prof...Km.   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Inten.       : chr  &amp;quot;     VIII-IX&amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Mag.         : chr  &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Tipo.Mag.    : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ LocalizaciÃ³n: chr  &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Blue Marble RGB raster
+
+bm &amp;lt;- rast(&amp;quot;snapshot-2017-11-30T00_00_00Z.tiff&amp;quot;)
+bm # contiene tres capas (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 7156, 7156, 3  (nrow, ncol, nlyr)
+## resolution  : 0.008789272, 0.008789272  (x, y)
+## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+## source      : snapshot-2017-11-30T00_00_00Z.tiff 
+## red-grn-blue: 1, 2, 3 
+## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot
+
+plotRGB(bm)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# límites países
+
+limits &amp;lt;- ne_countries(scale = 50, returnclass = &amp;quot;sf&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;terremotos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Terremotos&lt;/h2&gt;
+&lt;p&gt;En este paso limpiamos los datos importados de los terremotos. 1) Convertimos en númerico longitud, latitud y magnitud usando la función &lt;code&gt;parse_number()&lt;/code&gt; y limpiampos los nombres de las columnas con la función &lt;code&gt;clean_names()&lt;/code&gt;, 2) Creamos un objeto espacial &lt;code&gt;sf&lt;/code&gt; y lo proyectamos usando el EPSG:3035 correspondiendo a ETRS89-extended/LAEA Europe.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# limpiamos los datos y creamos un objeto sf
+
+terremotos &amp;lt;-  terremotos %&amp;gt;% clean_names() %&amp;gt;%
+               mutate(across(c(mag, latitud, longitud),                                                                                                  parse_number)) %&amp;gt;%
+               st_as_sf(coords = c(&amp;quot;longitud&amp;quot;, &amp;quot;latitud&amp;quot;), 
+                       crs = 4326) %&amp;gt;% 
+               st_transform(3035) # proyectamos a Laea &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-fondo-blue-marble&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa de fondo Blue Marble&lt;/h2&gt;
+&lt;p&gt;Recortamos el mapa de fondo a una extensión menor, pero todavía no limitamos el área final.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# recortamos al área deseada
+
+bm &amp;lt;- crop(bm, extent(-20, 10, 30, 50))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para obtener una versión desaturada del raster RGB de Blue Marble, debemos aplicar una función creada con este fin. En ésta usamos la función &lt;code&gt;rgb2hsl()&lt;/code&gt; del paquete &lt;code&gt;plotwidgets&lt;/code&gt;, que nos ayuda en convertir RGB a HSL y viceversa. El modelo HSL se define con Hue (tono), Saturation (saturación), Lightness (luminosidad). Los últimos dos parametros se expresan en ratio o porcentaje. El tono está definido en una rueda de color de 0 a 360º. 0 es rojo, 120 es verde, 240 es azul. Para cambiar la saturación únicamente debemos bajar el valor de S.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# función para cambiar la saturación desde RGB
+
+saturation &amp;lt;- function(rgb, s = .5){
+  
+  hsl &amp;lt;- rgb2hsl(as.matrix(rgb))
+  hsl[2, ] &amp;lt;- s
+  
+  rgb_new &amp;lt;- as.vector(t(hsl2rgb(hsl)))
+  
+  return(rgb_new)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Empleamos nuestra función &lt;code&gt;saturation()&lt;/code&gt; usando otra función &lt;code&gt;app()&lt;/code&gt; que la aplica a cada píxel con las tres capas de RGB. Añadimos el argumento &lt;code&gt;s&lt;/code&gt;, el que define el nivel de saturación deseada. Este paso puede tardar varios minutos. Después proyectamos nuestra imagen RGB.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# aplicamos la función para desaturar con un 5%
+
+bm_desat &amp;lt;- app(bm, saturation, s = .05)
+
+# plot nuevo imagen RGB
+
+plotRGB(bm_desat)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos 
+
+bm_desat &amp;lt;- terra::project(bm_desat, &amp;quot;epsg:3035&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construcción-del-mapa-firefly&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Construcción del mapa &lt;em&gt;firefly&lt;/em&gt;&lt;/h1&gt;
+&lt;div id=&#34;límites-y-gradícula&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Límites y gradícula&lt;/h2&gt;
+&lt;p&gt;Antes de empezar a construir el mapa, creamos una gradícula y estabelecemos la extensión final del mapa.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# definimos los límites finales del mapa
+
+bx &amp;lt;- tibble(x = c(-13, 6.7), y = c(31, 47)) %&amp;gt;% 
+       st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326) %&amp;gt;%
+        st_transform(3035) %&amp;gt;% 
+         st_bbox()
+
+# crearmos una gradícula del mapa
+
+grid &amp;lt;- st_graticule(terremotos) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-con-fondo-de-imagen&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa con fondo de imagen&lt;/h2&gt;
+&lt;p&gt;La función &lt;code&gt;layer_spatial()&lt;/code&gt; de &lt;code&gt;ggspatial&lt;/code&gt; nos permite añadir un raster RGB sin grandes problemas, no obstante, todavía no apoya la nueva clase &lt;code&gt;SpatRaster&lt;/code&gt;. Por eso, debemos convertirlo en la clase &lt;code&gt;stack&lt;/code&gt; con la función &lt;code&gt;stack()&lt;/code&gt;. También es posible usar en lugar de &lt;code&gt;geom_sf()&lt;/code&gt;, la función &lt;code&gt;layer_spatial()&lt;/code&gt; para objetos vectoriales de clase &lt;code&gt;sf&lt;/code&gt; o &lt;code&gt;sp&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) + # mapa de fondo Blue Marble
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) + # límites países
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-con-fondo-y-los-terremotos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa con fondo y los terremotos&lt;/h2&gt;
+&lt;p&gt;Para crear el efecto del brillo en los mapas &lt;em&gt;firefly&lt;/em&gt;, hacemos uso de la función &lt;code&gt;geom_glowpoint()&lt;/code&gt; del paquete &lt;code&gt;ggshadow&lt;/code&gt;. También existe la misma función para líneas. Dado que nuestros datos son espaciales de clase &lt;code&gt;sf&lt;/code&gt; y la geometría no apoya directamente el uso de &lt;code&gt;sf&lt;/code&gt;, debemos indicar como argumento &lt;code&gt;stats = &#34;sf_coordinates&#34;&lt;/code&gt; y dentro de &lt;code&gt;aes()&lt;/code&gt; indicar &lt;code&gt;geometry = geometry&lt;/code&gt;. Mapearemos el tamaño de los puntos en función de la magnitud. Además, filtramos aquellos terremotos con una magnitud mayor del 3.&lt;/p&gt;
+&lt;p&gt;Dentro de la función &lt;code&gt;geom_glowpoint()&lt;/code&gt;, 1) definimos el color deseado para el punto y el brillo, 2) el grado de transparencia con &lt;code&gt;alpha&lt;/code&gt; bien para el punto o bien para el brillo. Por último, en la función &lt;code&gt;scale_size()&lt;/code&gt; estabelecemos el rango (mínimo, máximo) del tamaño que tendrán los puntos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) +
+  geom_sf(data = grid, colour = &amp;quot;white&amp;quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(terremotos, mag &amp;gt; 3),
+                 aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &amp;quot;#6bb857&amp;quot;,
+                   shadowcolour = &amp;quot;#6bb857&amp;quot;,
+                   shadowalpha = .1,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-final&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa final&lt;/h2&gt;
+&lt;p&gt;El brillo de los mapas &lt;em&gt;firefly&lt;/em&gt; se caracteriza por tener un tono blanco o un tono más claro en el centro de los puntos. Para lograrlo, debemos duplicar la capa anterior creada, cambiando únicamente el color y hacer los puntos con su brillo más pequeños.&lt;/p&gt;
+&lt;p&gt;Por defecto, &lt;code&gt;ggplot2&lt;/code&gt; no permite emplear diferentes escalas para la misma caracteristica (tamaño, color, etc) de distintas capas. Pero el paquete &lt;code&gt;ggnewscale&lt;/code&gt; nos da la posibilidad de incorporar múltiples escalas de una característica de distintas capas. Lo único importante para lograrlo es el orden en el que se añade cada capa y escala. Primero debemos poner la geometría y despúes su escala correspondiente. Indicamos con &lt;code&gt;new_scale(&#39;size&#39;)&lt;/code&gt; que la siguiente capa y escala es una nueva independiente de la anterior. Si usaramos &lt;code&gt;colour&lt;/code&gt; o &lt;code&gt;fill&lt;/code&gt; sería con &lt;code&gt;new_scale_*()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) +
+  geom_sf(data = grid, colour = &amp;quot;white&amp;quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(terremotos, mag &amp;gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &amp;quot;#6bb857&amp;quot;,
+                   shadowcolour = &amp;quot;#6bb857&amp;quot;,
+                   shadowalpha = .1,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  new_scale(&amp;quot;size&amp;quot;) +
+  geom_glowpoint(data = filter(terremotos, mag &amp;gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .6,
+                   shadowalpha = .05,
+                   color = &amp;quot;#ffffff&amp;quot;,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.01, .7)) +
+  labs(title = &amp;quot;TERREMOTOS&amp;quot;) +
+  coord_sf(xlim = bx[c(1, 3)], ylim = bx[c(2, 4)], crs = 3035,
+           expand = FALSE) +
+  theme_void() +
+  theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>firefly</category>
+      
+            <category>mapa</category>
+      
+            <category>terremotos</category>
+      
+            <category>cartografía</category>
+      
+      
+            <category>sig</category>
+      
+            <category>R</category>
+      
+            <category>R:intermedio</category>
+      
+            <category>visualización</category>
+      
+    </item>
     
     <item>
       <title>Un heatmap como calendario</title>
