@@ -5,8 +5,26 @@
     <description>Recent content in Dominic Royé on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Sun, 11 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 17 Jul 2021 00:00:00 +0000</lastBuildDate>
     <atom:link href="/es/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Temperature-related effects on respiratory medical prescriptions in Spain</title>
+      <link>https://dominicroye.github.io/es/publication/prescriptions_spain_er_2021/</link>
+      <pubDate>Sat, 17 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/publication/prescriptions_spain_er_2021/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Intensidad y duración del estrés térmico en verano en el área urbana de Madrid</title>
+      <link>https://dominicroye.github.io/es/publication/hotnights_madrid_2021/</link>
+      <pubDate>Thu, 15 Jul 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/publication/hotnights_madrid_2021/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Global, regional, and national burden of mortality associated with non-optimal ambient temperatures from 2000 to 2019: a three-stage modelling study</title>
@@ -2796,185 +2814,6 @@ p&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Thu, 07 Jan 2021 00:00:00 +0000</pubDate>
       
       <guid>https://dominicroye.github.io/es/publication/glossary_electricity_2020/</guid>
-      <description></description>
-    </item>
-    
-    <item>
-      <title>Un heatmap como calendario</title>
-      <link>https://dominicroye.github.io/es/2020/un-heatmap-como-calendario/</link>
-      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/es/2020/un-heatmap-como-calendario/</guid>
-      <description>
-&lt;script src=&#34;https://dominicroye.github.io/es/2020/un-heatmap-como-calendario/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-
-&lt;p&gt;Recientemente buscaba una representación visual para mostrar los cambios diarios de la temperatura, precipitación y el viento en una aplicación &lt;a href=&#34;https://xeo81.shinyapps.io/MeteoExtremosGalicia/&#34;&gt;xeo81.shinyapps.io/MeteoExtremosGalicia&lt;/a&gt;, lo que me llevó a usar un heatmap en forma de calendario. La aplicación &lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;shiny&lt;/a&gt; se actualiza cada cuatro horas con nuevos datos mostrando calendarios de cada estación meteorológica. El heatmap como calendario permite visualizar cualquier variable con una referencia temporal diaria.&lt;/p&gt;
-&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Paquetes&lt;/h2&gt;
-&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
-&lt;table&gt;
-&lt;colgroup&gt;
-&lt;col width=&#34;10%&#34; /&gt;
-&lt;col width=&#34;89%&#34; /&gt;
-&lt;/colgroup&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;ragg&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Salidas gráficas para R basados en la librería AGG&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;ragg&amp;quot;)) install.packages(&amp;quot;ragg&amp;quot;)
-if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
-
-# paquetes
-library(tidyverse)
-library(lubridate)
-library(ragg)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Para aquellos con menos experiencia con &lt;code&gt;tidyverse&lt;/code&gt;, recomiendo una breve introducción en este blog &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;En este ejemplo usaremos la precipitación diaria de Santiago de Compostela de este año 2020 (hasta el 20 de diciembre) &lt;a href=&#34;https://dominicroye.github.io/files/precipitation_santiago.csv&#34;&gt;descarga&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los datos
-dat_pr &amp;lt;- read_csv(&amp;quot;precipitation_santiago.csv&amp;quot;)
-dat_pr&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 355 x 2
-##    date          pr
-##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
-##  1 2020-01-01   0  
-##  2 2020-01-02   0  
-##  3 2020-01-03   5.4
-##  4 2020-01-04   0  
-##  5 2020-01-05   0  
-##  6 2020-01-06   0  
-##  7 2020-01-07   0  
-##  8 2020-01-08   1  
-##  9 2020-01-09   3.8
-## 10 2020-01-10   0  
-## # ... with 345 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;preparación&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Preparación&lt;/h2&gt;
-&lt;p&gt;En el primer paso debemos 1) complementar la serie temporal desde el 21 al 31 de diciembre con &lt;code&gt;NA&lt;/code&gt;, 2) añadir el día de la semana, el mes, el número de la semana y el día. En función de si queremos que cada semana comience por Domingo o Lunes debemos indicarlo en la función &lt;code&gt;wday()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- dat_pr %&amp;gt;% 
-          complete(date = seq(ymd(&amp;quot;2020-01-01&amp;quot;), 
-                              ymd(&amp;quot;2020-12-31&amp;quot;), 
-                              &amp;quot;day&amp;quot;)) %&amp;gt;%
-          mutate(weekday = wday(date, label = T, week_start = 1), 
-                 month = month(date, label = T, abbr = F),
-                 week = isoweek(date),
-                 day = day(date))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En el siguiente paso corregimos las etiquetas de los días de la semana, es un bug dentro del paquete &lt;code&gt;lubridate&lt;/code&gt;. Además debemos hacer un cambio en la semana del año, lo que se debe a que en ciertos años pueden quedar, por ejemplo, unos días al final de año como primera semana del siguiente año. También creamos dos nuevas columnas. Por una parte, categorizamos la precipitación en 14 clases y por otra definimos un color de texto blanco para tonos más oscuros.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- mutate(dat_pr, 
-                 weekday = factor(weekday, 
-                                  levels(weekday),
-                                  str_sub(levels(weekday), 1, 2)),
-                 week = case_when(month == &amp;quot;diciembre&amp;quot; &amp;amp; week == 1 ~ 53,
-                                  month == &amp;quot;enero&amp;quot; &amp;amp; week %in% 52:53 ~ 0,
-                                  TRUE ~ week),
-                 pcat = cut(pr, c(-1, 0, .5, 1:5, 7, 9, 15, 20, 25, 30, 300)),
-                 text_col = ifelse(pcat %in% c(&amp;quot;(15,20]&amp;quot;, &amp;quot;(20,25]&amp;quot;, &amp;quot;(25,30]&amp;quot;, &amp;quot;(30,300]&amp;quot;), 
-                                   &amp;quot;white&amp;quot;, &amp;quot;black&amp;quot;)) 
-      
-dat_pr  &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 8
-##    date          pr weekday month  week   day pcat    text_col
-##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;   &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;   &amp;lt;chr&amp;gt;   
-##  1 2020-01-01   0   mi      enero     1     1 (-1,0]  black   
-##  2 2020-01-02   0   ju      enero     1     2 (-1,0]  black   
-##  3 2020-01-03   5.4 vi      enero     1     3 (5,7]   black   
-##  4 2020-01-04   0   sá      enero     1     4 (-1,0]  black   
-##  5 2020-01-05   0   do      enero     1     5 (-1,0]  black   
-##  6 2020-01-06   0   lu      enero     2     6 (-1,0]  black   
-##  7 2020-01-07   0   ma      enero     2     7 (-1,0]  black   
-##  8 2020-01-08   1   mi      enero     2     8 (0.5,1] black   
-##  9 2020-01-09   3.8 ju      enero     2     9 (3,4]   black   
-## 10 2020-01-10   0   vi      enero     2    10 (-1,0]  black   
-## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;visualización&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Visualización&lt;/h2&gt;
-&lt;p&gt;Primero creamos una rampa de color a partir de colores Brewer.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rampa de color
-pubu &amp;lt;- RColorBrewer::brewer.pal(9, &amp;quot;PuBu&amp;quot;)
-col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Antes de construir el gráfico definimos un estilo personalizado como función. Para ello, especificamos todos los elementos y sus modificaciones con ayuda de la función &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_calendar &amp;lt;- function(){
-
- theme(aspect.ratio = 1/2,
-       
-       axis.title = element_blank(),
-       axis.ticks = element_blank(),
-       axis.text.y = element_blank(),
-       axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
-       
-       panel.grid = element_blank(),
-       panel.background = element_blank(),
-       
-       strip.background = element_blank(),
-       strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 15),
-       
-       legend.position = &amp;quot;top&amp;quot;,
-       legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5),
-       legend.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 9, hjust = 1),
-       
-       plot.caption =  element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = 1, size = 8),
-       panel.border = element_rect(colour = &amp;quot;grey&amp;quot;, fill=NA, size=1),
-       plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 26, 
-                                 face = &amp;quot;bold&amp;quot;, 
-                                 margin = margin(0,0,0.5,0, unit = &amp;quot;cm&amp;quot;)),
-       plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 16)
-  )
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Finalmente, creamos el gráfico usando &lt;code&gt;geom_tile()&lt;/code&gt; y especificamos como eje X el día de la semana y como eje Y el número de la semana. Como podéis observar en la variable de la semana (&lt;code&gt;-week&lt;/code&gt;) cambio el signo con el objetivo de que el primer día de cada mes este en la primera fila. Con &lt;code&gt;geom_text()&lt;/code&gt; añadimos el número de cada día con su color según lo que definimos anteriormente. En &lt;code&gt;guides&lt;/code&gt; hacemos los ajustes de la barra de color y en &lt;code&gt;scale_fill/colour_manual()&lt;/code&gt; definimos los colores correspondientes. Un importante paso lo encontramos en &lt;code&gt;facet_wrap()&lt;/code&gt; donde especificamos las facetas de cada mes. Las facetas deben tener escalas libres y lo óptimo sería una distribución de 4x3 facetas. Es posible modificar la posición del número de día a otra posición usando los argumentos &lt;code&gt;nudge_*&lt;/code&gt; en &lt;code&gt;geom_text()&lt;/code&gt; (por ej. esquina abajo derecha: nudge_x = .35, nudge_y = -.25).&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;    ggplot(dat_pr, 
-           aes(weekday, -week, fill = pcat)) +
-      geom_tile(colour = &amp;quot;white&amp;quot;, size = .4)  + 
-      geom_text(aes(label = day, colour = text_col), size = 2.5) +
-      guides(fill = guide_colorsteps(barwidth = 25, 
-                                     barheight = .4,
-                                    title.position = &amp;quot;top&amp;quot;)) +
-       scale_fill_manual(values = c(&amp;quot;white&amp;quot;, col_p(13)),
-                         na.value = &amp;quot;grey90&amp;quot;, drop = FALSE) +
-       scale_colour_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;), guide = FALSE) + 
-       facet_wrap(~ month, nrow = 4, ncol = 3, scales = &amp;quot;free&amp;quot;) +
-       labs(title = &amp;quot;¿Cómo está siendo el 2020 en Santiago?&amp;quot;, 
-             subtitle = &amp;quot;Precipitación&amp;quot;,
-             caption = &amp;quot;Datos: Meteogalicia&amp;quot;,
-             fill = &amp;quot;mm&amp;quot;) +
-       theme_calendar()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/un-heatmap-como-calendario/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;Para exportar haremos uso del paquete &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt;, que proporciona mayor rendimiento y mayor calidad que los dispositivos ráster estándar proporcionados por grDevices.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En otros calendarios he añadido la dirección predominante del viento de cada día como flecha usando &lt;code&gt;geom_arrow()&lt;/code&gt; del paquete &lt;code&gt;metR&lt;/code&gt; (se puede ver en la mencionada aplicación).&lt;/p&gt;
-&lt;/div&gt;
-</description>
-    </item>
-    
-    <item>
-      <title>Impact of Extreme Temperatures on Ambulance Dispatches Due to Cardiovascular Causes in North-West Spain</title>
-      <link>https://dominicroye.github.io/es/publication/emergency_calls_spain_2020/</link>
-      <pubDate>Tue, 01 Dec 2020 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/es/publication/emergency_calls_spain_2020/</guid>
       <description></description>
     </item>
     
