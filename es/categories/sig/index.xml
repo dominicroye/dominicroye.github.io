@@ -719,7 +719,9 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
 river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
                  st_zm() %&amp;gt;% 
                     st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source 
+##   `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; 
+##   using driver `ESRI Shapefile&amp;#39;
 ## Simple feature collection with 78 features and 6 fields
 ## Geometry type: MULTILINESTRING
 ## Dimension:     XYZ
@@ -813,7 +815,7 @@ get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
                load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## $OUTPUT
-## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpw5vYcG/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpUlxGVM/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
   
 Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.
@@ -905,7 +907,8 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
                  xend = seq(0, 360 - 22.5, by = 22.5), 
                  yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;A continuación definimos todos los estilos del gráfico. Lo más importante en este paso es la función &lt;code&gt;element_textbox()&lt;/code&gt; del paquete &lt;code&gt;ggtext&lt;/code&gt; para poder interpretar nuestro código html incorporado al título.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- theme_minimal() +
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- function(){ 
+               theme_minimal() %+replace%
                theme(axis.title.y = element_blank(),
                      axis.text.y = element_blank(),
                      legend.title = element_blank(),
@@ -923,11 +926,12 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
                      panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
                      plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
                      panel.grid = element_blank()
-                    )&lt;/code&gt;&lt;/pre&gt;
+                    )
+}&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Para terminar construimos el gráfico: 1) Usamos la función &lt;code&gt;geom_hline()&lt;/code&gt; con diferentes puntos de intersección en &lt;em&gt;y&lt;/em&gt; para crear la cuadrícula de fondo. La función &lt;code&gt;geom_segment()&lt;/code&gt; crea la cuadrícula en &lt;em&gt;x&lt;/em&gt;. 2) El área de densidad la creamos usando la función &lt;code&gt;geom_area()&lt;/code&gt;. 3) En &lt;code&gt;scale_x_continous()&lt;/code&gt; definimos un límite inferior
 negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho direcciones principales las indicamos en la función &lt;code&gt;scale_y_continous()&lt;/code&gt;, y 4) Por último, cambiamos a un sistema de coordenadas polar y fijamos la variable para crear facetas.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
-  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
+  geom_hline(yintercept = c(0, .2, .4, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
   geom_segment(data = grid_x , 
                aes(x = x, y = y, xend = xend, yend = yend), 
                linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
@@ -946,7 +950,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   coord_polar() + 
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
-  theme_polar&lt;/code&gt;&lt;/pre&gt;
+  theme_polar()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>

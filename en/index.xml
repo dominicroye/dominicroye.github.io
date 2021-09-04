@@ -5,8 +5,279 @@
     <description>Recent content in Dominic Royé on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Thu, 22 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 Sep 2021 00:00:00 +0000</lastBuildDate>
     <atom:link href="/en/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Climate circles</title>
+      <link>https://dominicroye.github.io/en/2021/climate-circles/</link>
+      <pubDate>Sat, 04 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2021/climate-circles/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The climate of a place is usually presented through climographs that combine monthly precipitation and temperature in a single chart. However, it is also interesting to visualize the climate on a daily scale showing the thermal amplitude and the daily average temperature. To do this, the averages for each day of the year of the daily minimums, maximums and averages are calculated.&lt;/p&gt;
+&lt;p&gt;The annual climate cycle presents a good opportunity to use a radial or polar which allows us to clearly visualize seasonal patterns.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;We will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Provides a cross-platform, uniform interface to file system operations&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple functions to examine and clean data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+# packages
+
+library(tidyverse)
+library(lubridate)
+library(fs)
+library(janitor)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;We downloaded the temperature data for a selection of US cities &lt;a href=&#34;https://dominicroye.github.io/files/weather_stats_usa.zip&#34;&gt;download&lt;/a&gt;. You can download other cities of the entire world through the WMO or GHCN datasets at &lt;a href=&#34;https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily&#34;&gt;NCDC/NOAA&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import&lt;/h2&gt;
+&lt;p&gt;To import the temperature time series of each city, which we find in several files, we apply the &lt;code&gt;read_csv()&lt;/code&gt; function using &lt;code&gt;map_df()&lt;/code&gt;. The &lt;code&gt;dir_ls()&lt;/code&gt; function of the &lt;code&gt;fs&lt;/code&gt; package returns the list of files with &lt;em&gt;csv&lt;/em&gt; extension. The suffix of &lt;code&gt;map()&lt;/code&gt; indicates that we want to join all the imported tables into a single one. For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend a short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Then we obtain the names of the weather stations and define a new vector with the new city names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import data
+meteo &amp;lt;- dir_ls(regexp = &amp;quot;.csv$&amp;quot;) %&amp;gt;% 
+          map_df(read_csv)
+meteo&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 211,825 x 12
+##    STATION     NAME    LATITUDE LONGITUDE ELEVATION DATE        TAVG  TMAX  TMIN
+##    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-01   6.8    NA    NA
+##  2 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-02   8.4    NA    NA
+##  3 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-03  11      NA    NA
+##  4 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-04  -7.2    NA    NA
+##  5 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-05 -10.2    NA    NA
+##  6 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-06  -4.6    NA    NA
+##  7 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-07  -7.1    NA    NA
+##  8 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-08  -5.8    NA    NA
+##  9 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-09   2.9    NA    NA
+## 10 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-10   3.9    NA    NA
+## # ... with 211,815 more rows, and 3 more variables: TAVG_ATTRIBUTES &amp;lt;chr&amp;gt;,
+## #   TMAX_ATTRIBUTES &amp;lt;chr&amp;gt;, TMIN_ATTRIBUTES &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# station names
+stats_names &amp;lt;- unique(meteo$NAME)
+stats_names&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;CHICAGO OHARE INTERNATIONAL AIRPORT, IL US&amp;quot;             
+## [2] &amp;quot;LAGUARDIA AIRPORT, NY US&amp;quot;                               
+## [3] &amp;quot;MIAMI INTERNATIONAL AIRPORT, FL US&amp;quot;                     
+## [4] &amp;quot;HOUSTON INTERCONTINENTAL AIRPORT, TX US&amp;quot;                
+## [5] &amp;quot;ATLANTA HARTSFIELD JACKSON INTERNATIONAL AIRPORT, GA US&amp;quot;
+## [6] &amp;quot;SAN FRANCISCO INTERNATIONAL AIRPORT, CA US&amp;quot;             
+## [7] &amp;quot;SEATTLE TACOMA AIRPORT, WA US&amp;quot;                          
+## [8] &amp;quot;DENVER INTERNATIONAL AIRPORT, CO US&amp;quot;                    
+## [9] &amp;quot;MCCARRAN INTERNATIONAL AIRPORT, NV US&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# new city names
+cities &amp;lt;- c(&amp;quot;CHICAGO&amp;quot;, &amp;quot;NEW YORK&amp;quot;, &amp;quot;MIAMI&amp;quot;, 
+            &amp;quot;HOUSTON&amp;quot;, &amp;quot;ATLANTA&amp;quot;, &amp;quot;SAN FRANCISCO&amp;quot;, 
+            &amp;quot;SEATTLE&amp;quot;, &amp;quot;DENVER&amp;quot;, &amp;quot;LAS VEGAS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modify&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Modify&lt;/h2&gt;
+&lt;p&gt;In the first step we will modify the original data, 1) selecting only the columns of interest, 2) filtering the period 1991-2020, 3) defining the new city names, 4) calculating the average temperature where it is absent, 5) cleaning the column names, and 6) creating a new variable with the days of the year. The &lt;code&gt;clean_names()&lt;/code&gt; function of the &lt;code&gt;janitor&lt;/code&gt; package is very useful for getting clean column names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo &amp;lt;- select(meteo, NAME, DATE, TAVG:TMIN) %&amp;gt;%  
+           filter(DATE &amp;gt;= &amp;quot;1991-01-01&amp;quot;, DATE &amp;lt;= &amp;quot;2020-12-31&amp;quot;) %&amp;gt;% 
+            mutate(NAME = factor(NAME, stats_names, cities),
+                   TAVG = ifelse(is.na(TAVG), (TMAX+TMIN)/2, TAVG),
+                   yd = yday(DATE)) %&amp;gt;% 
+            clean_names()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we calculate the average of the daily maximum, minimum and mean temperature for each day of the year. It now only remains to convert the days of the year into a dummy date. Here we use the year 2000 since it is a leap year and we have a total of 366 days.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimate the daily averages
+meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;% 
+                  summarise(ta = mean(tavg, na.rm = TRUE),
+                            tmx = mean(tmax, na.rm = TRUE),
+                            tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
+## # Groups:   name [9]
+##    name       yd    ta    tmx  tmin
+##    &amp;lt;fct&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 CHICAGO     1 -3.77  0.537 -7.86
+##  2 CHICAGO     2 -2.64  1.03  -6.68
+##  3 CHICAGO     3 -2.88  0.78  -6.93
+##  4 CHICAGO     4 -2.86  0.753 -7.10
+##  5 CHICAGO     5 -4.13 -0.137 -8.33
+##  6 CHICAGO     6 -4.50 -1.15  -8.05
+##  7 CHICAGO     7 -4.70 -0.493 -8.57
+##  8 CHICAGO     8 -3.97  0.147 -8.02
+##  9 CHICAGO     9 -3.47  0.547 -7.49
+## 10 CHICAGO    10 -3.41  1.09  -7.64
+## # ... with 3,284 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the days of the year into a dummy date
+meteo_yday &amp;lt;- mutate(meteo_yday, yd = as_date(yd, origin = &amp;quot;1999-12-31&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-climate-circles&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Creating the climate circles&lt;/h1&gt;
+&lt;div id=&#34;predefinitions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Predefinitions&lt;/h2&gt;
+&lt;p&gt;We define a divergent vector of various hues.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;col_temp &amp;lt;- c(&amp;quot;#cbebf6&amp;quot;,&amp;quot;#a7bfd9&amp;quot;,&amp;quot;#8c99bc&amp;quot;,&amp;quot;#974ea8&amp;quot;,&amp;quot;#830f74&amp;quot;,
+              &amp;quot;#0b144f&amp;quot;,&amp;quot;#0e2680&amp;quot;,&amp;quot;#223b97&amp;quot;,&amp;quot;#1c499a&amp;quot;,&amp;quot;#2859a5&amp;quot;,
+              &amp;quot;#1b6aa3&amp;quot;,&amp;quot;#1d9bc4&amp;quot;,&amp;quot;#1ca4bc&amp;quot;,&amp;quot;#64c6c7&amp;quot;,&amp;quot;#86cabb&amp;quot;,
+              &amp;quot;#91e0a7&amp;quot;,&amp;quot;#c7eebf&amp;quot;,&amp;quot;#ebf8da&amp;quot;,&amp;quot;#f6fdd1&amp;quot;,&amp;quot;#fdeca7&amp;quot;,
+              &amp;quot;#f8da77&amp;quot;,&amp;quot;#fcb34d&amp;quot;,&amp;quot;#fc8c44&amp;quot;,&amp;quot;#f85127&amp;quot;,&amp;quot;#f52f26&amp;quot;,
+              &amp;quot;#d10b26&amp;quot;,&amp;quot;#9c042a&amp;quot;,&amp;quot;#760324&amp;quot;,&amp;quot;#18000c&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We create a table with the x-axis grid lines.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(ymd(&amp;quot;2000-01-01&amp;quot;), ymd(&amp;quot;2000-12-31&amp;quot;), &amp;quot;month&amp;quot;), 
+                 y = rep(-10, 12), 
+                 xend = seq(ymd(&amp;quot;2000-01-01&amp;quot;), ymd(&amp;quot;2000-12-31&amp;quot;), &amp;quot;month&amp;quot;), 
+                 yend = rep(41, 12))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We define all the style elements of the graph in our own theme &lt;code&gt;theme_cc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_cc &amp;lt;- function(){ 
+  
+ theme_minimal(base_family = &amp;quot;Montserrat&amp;quot;) %+replace%
+  theme(plot.title = element_text(hjust = 0.5, colour = &amp;quot;white&amp;quot;, size = 30, margin = margin(b = 20)),
+        plot.caption = element_text(colour = &amp;quot;white&amp;quot;, size = 9, hjust = .5, vjust = -30),
+        plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        plot.margin = margin(1, 1, 2, 1, unit = &amp;quot;cm&amp;quot;),
+  
+        axis.text.x = element_text(face = &amp;quot;italic&amp;quot;, colour = &amp;quot;white&amp;quot;),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        
+        legend.title = element_text(colour = &amp;quot;white&amp;quot;),
+        legend.position = &amp;quot;bottom&amp;quot;,
+        legend.justification = 0.5,
+        legend.text = element_text(colour = &amp;quot;white&amp;quot;),
+       
+        
+        strip.text = element_text(colour = &amp;quot;white&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 14),
+        
+        panel.spacing.y = unit(1, &amp;quot;lines&amp;quot;),
+        panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        panel.grid = element_blank()
+      ) 
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Graph&lt;/h2&gt;
+&lt;p&gt;We start by building a chart for New York City only. We will use &lt;code&gt;geom_linerange()&lt;/code&gt; defining the range with the daily maximum and minimum temperature. Also, we will draw the range line color based on the mean temperature. We can adjust &lt;em&gt;alpha&lt;/em&gt; and &lt;em&gt;size&lt;/em&gt; to get a nicer look.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter New York
+ny_city &amp;lt;- filter(meteo_yday, name == &amp;quot;NEW YORK&amp;quot;) 
+
+# graph
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;,
+               date_labels = &amp;quot;%b&amp;quot;) +
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To get the polar graph it would only be necessary to add the function &lt;code&gt;coord_polar()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# polar chart
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;,
+               date_labels = &amp;quot;%b&amp;quot;) +
+  coord_polar() +
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the final graph we add the grid defining the lines on the y-axis with &lt;code&gt;geom_hline()&lt;/code&gt;, and those on the x-axis with &lt;code&gt;geom_segement()&lt;/code&gt;. The most important thing here is the &lt;code&gt;facet_wrap()&lt;/code&gt; function, which allows the creation of multiple facets of charts. The formula format is used to specify how the facets are created: &lt;code&gt;row ~ column&lt;/code&gt;. In case we do not have a second variable, a point &lt;code&gt;.&lt;/code&gt; is indicated in the formula. In addition, we make changes to the appearance of the color bar with &lt;code&gt;guides()&lt;/code&gt; and &lt;code&gt;guide_colourbar()&lt;/code&gt;, and we include the &lt;code&gt;theme_cc()&lt;/code&gt; style.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(meteo_yday) + 
+  geom_hline(yintercept = c(-10, 0, 10, 20, 30, 40), 
+             colour = &amp;quot;white&amp;quot;, 
+             size = .4) +
+  geom_segment(data = grid_x , 
+               aes(x = x, 
+                   y = y, 
+                   xend = xend, 
+                   yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, 
+               colour = &amp;quot;white&amp;quot;, 
+               size = .2) +
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion())+
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, 
+               date_labels = &amp;quot;%b&amp;quot;) +
+  guides(colour = guide_colourbar(barwidth = 15,
+                                  barheight = 0.5, 
+                                  title.position = &amp;quot;top&amp;quot;)
+         ) +
+  facet_wrap(~name, nrow = 3) +
+  coord_polar() + 
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) +
+  theme_cc()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Mediterranean-Scale Drought: Regional Datasets for Exceptional Meteorological Drought Events during 1975-2019</title>
@@ -473,6 +744,19 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
   
 
 
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Where do we find more droughts in mainland Spain and the Balearic Islands?&#34; href=&#34;https://dominicroye.github.io/img/album/sequia.png&#34;&gt;
+    &lt;img src=&#34;https://dominicroye.github.io/img/album/sequia.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Where do we find more droughts in mainland Spain and the Balearic Islands? Idea based on John Nelson  &lt;a href=&#34;https://t.co/L3ADdpz7Ho?amp=1&#34; target=&#34;_blank&#34;&gt;more&lt;/a&gt;. Data: &lt;a href=&#34;https://t.co/tPbUlNRbnh?amp=1&#34; target=&#34;_blank&#34;&gt;CSIC&lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;
   
   
   
@@ -2567,267 +2851,6 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
       <guid>https://dominicroye.github.io/en/publication/megafires_australia_2021/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>Bivariate dasymetric map</title>
-      <link>https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/</link>
-      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/</guid>
-      <description>
-&lt;script src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-
-&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Initial considerations&lt;/h1&gt;
-&lt;p&gt;A disadvantage of choropleth maps is that they tend to distort the relationship between the true underlying geography and the represented variable. It is because the administrative divisions do not usually coincide with the geographical reality where people live. Besides, large areas appear to have a weight that they do not really have because of sparsely populated regions. To better reflect reality, more realistic population distributions are used, such as land use. With Geographic Information Systems techniques, it is possible to redistribute the variable of interest as a function of a variable with a smaller spatial unit.&lt;/p&gt;
-&lt;p&gt;With point data, the redistribution process is simply clipping points with population based on land use, usually classified as urban. We could also crop and mask with land use polygons when we have a vectorial polygon layer, but an interesting alternative is the same data in raster format. We will see how we can make a dasymetric map using raster data with a resolution of 100 m. This post will use data from census sections of the median income and the Gini index for Spain. We will make a dasymetric and bivariate map, representing both variables with two ranges of colours on the same map.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Packages&lt;/h1&gt;
-&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
-&lt;table&gt;
-&lt;colgroup&gt;
-&lt;col width=&#34;10%&#34; /&gt;
-&lt;col width=&#34;89%&#34; /&gt;
-&lt;/colgroup&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Simple grammar to combine separate ggplots into the same graphic&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;biscale&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Tools and Palettes for Bivariate Thematic Mapping&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Load fonts in R&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Use fonts more easily in R graphs&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
-if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
-if(!require(&amp;quot;biscale&amp;quot;)) install.packages(&amp;quot;biscale&amp;quot;)
-if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
-if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
-
-# packages
-library(tidyverse)
-library(sf)
-library(readxl)
-library(biscale)
-library(patchwork)
-library(raster)
-library(sysfonts)
-library(showtext)
-library(raster)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Preparation&lt;/h1&gt;
-&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Data&lt;/h2&gt;
-&lt;p&gt;First we download all the necessary data. With the exception of the CORINE Land Cover (~ 200 MB), the data stored on this blog can be obtained directly via the indicated links.&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;CORINE Land Cover 2018 (geotiff): &lt;a href=&#34;https://land.copernicus.eu/pan-european/corine-land-cover/clc2018?tab=download&#34;&gt;COPERNICUS&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Income data and Gini index (excel) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/renta.zip&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Census limits of Spain (vectorial) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/SECC_CE_20200101.zip&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Import&lt;/h2&gt;
-&lt;p&gt;The first thing we do is to import the land use raster, the income and Gini index data, and the census boundaries.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster of CORINE LAND COVER 2018
-urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
-## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
-## definition&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# income data and Gini index
-renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
-gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
-
-# census boundaries
-limits &amp;lt;- read_sf(&amp;quot;SECC_CE_20200101.shp&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;land-uses&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Land uses&lt;/h2&gt;
-&lt;p&gt;In this first step we filter the census sections to obtain those of the Autonomous Community of Madrid, and we create the municipal limits. To dissolve the polygons of census tracts we apply the function &lt;code&gt;group_by()&lt;/code&gt; in combination with &lt;code&gt;summarise()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the Autonomous Community of Madrid
-limits &amp;lt;- filter(limits, NCA == &amp;quot;Comunidad de Madrid&amp;quot;)
-
-# obtain the municipal limits
-mun_limit &amp;lt;- group_by(limits, CUMUN) %&amp;gt;% summarise()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the next step we cut the land use raster with the limits of Madrid. I recommend always using the &lt;code&gt;crop()&lt;/code&gt; function first and then &lt;code&gt;mask()&lt;/code&gt;, the first function crop to the required extent and the second mask the values. Subsequently, we remove all the cells that correspond to 1 or 2 (urban continuous, discontinuous). Finally, we project the raster.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project the limits
-limits_prj &amp;lt;- st_transform(limits, projection(urb))
-
-# crop and mask 
-urb_mad &amp;lt;- crop(urb, limits_prj) %&amp;gt;% 
-              mask(limits_prj)
-
-# remove non-urban pixels
-urb_mad[!urb_mad %in% 1:2] &amp;lt;- NA 
-
-# plot the raster
-plot(urb_mad)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project
-urb_mad &amp;lt;- projectRaster(urb_mad, crs = CRS(&amp;quot;+proj=longlat +datum=WGS84 +no_defs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In this step, we convert the raster data into a point &lt;code&gt;sf&lt;/code&gt; object.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# transform the raster to xyz and a sf object
-urb_mad &amp;lt;- as.data.frame(urb_mad, xy = TRUE, na.rm = TRUE) %&amp;gt;%
-                st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326)
-
-# add the columns of the coordinates
-urb_mad &amp;lt;- urb_mad %&amp;gt;% rename(urb = 1) %&amp;gt;% cbind(st_coordinates(urb_mad))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;income-data-and-gini-index&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Income data and Gini index&lt;/h2&gt;
-&lt;p&gt;The format of the Excels does not coincide with the original of the INE, since I have cleaned the format before in order to make this post easier. What remains is to create a column with the codes of the census sections and exclude data that correspond to another administrative level.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## income and Gini index data
-
-renta_sec &amp;lt;- mutate(renta, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
-                nc_len = str_length(NATCODE),
-                mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
-             filter(nc_len &amp;gt; 5)
-
-gini_sec &amp;lt;- mutate(gini, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
-               nc_len = str_length(NATCODE),
-               mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
-             filter(nc_len &amp;gt; 5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the next step we join both tables with the census tracts using &lt;code&gt;left_join()&lt;/code&gt; and convert columns of interest in numerical mode.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# join both the income and Gini tables with the census limits
-mad &amp;lt;- left_join(limits, renta_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;)) %&amp;gt;% 
-          left_join(gini_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;))
-
-# convert selected columns to numeric
-mad &amp;lt;- mutate_at(mad, c(23:27, 30:31), as.numeric)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;bivariate-variable&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Bivariate variable&lt;/h2&gt;
-&lt;p&gt;To create a bivariate map we must construct a single variable that combines different classes of two variables. Usually we make three classes of each variable which leads to nine combinations; in our case, the average income and the Gini index. The &lt;code&gt;biscale&lt;/code&gt; package includes helper functions to carry out this process. With the &lt;code&gt;bi_class()&lt;/code&gt; function we create the classification variable using quantiles as algorithm. Since in both variables we find missing values, we correct those combinations between both variables where an &lt;code&gt;NA&lt;/code&gt; appears.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create bivariate classification
-mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantile&amp;quot;, dim = 3) %&amp;gt;% 
-             mutate(bi_class = ifelse(str_detect(bi_class, &amp;quot;NA&amp;quot;), NA, bi_class))
-
-# results
-head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
-## projected CRS:  ETRS89 / UTM zone 30N
-## # A tibble: 6 x 4
-##   GINI_2017 RNMP_2017 bi_class                                          geometry
-##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
-## 1      NA          NA &amp;lt;NA&amp;gt;     (((446007.9 4552348, 446133.7 4552288, 446207.8 ~
-## 2      31       13581 2-2      (((460243.8 4487756, 460322.4 4487739, 460279 44~
-## 3      30       12407 2-2      (((457392.5 4486262, 457391.6 4486269, 457391.1 ~
-## 4      34.3     13779 3-2      (((468720.8 4481374, 468695.5 4481361, 468664.6 ~
-## 5      33.5      9176 3-1      (((417140.2 4451736, 416867.5 4451737, 416436.8 ~
-## 6      26.2     10879 1-1      (((469251.9 4480826, 469268.1 4480797, 469292.6 ~&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We finish by redistributing the inequality variable over the pixels of urban land use. The &lt;code&gt;st_join()&lt;/code&gt; function joins the data with the land use points.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# redistribute urban pixels to inequality
-mapdasi &amp;lt;- st_join(urb_mad, st_transform(mapbivar, 4326))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;map-building&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Map building&lt;/h1&gt;
-&lt;div id=&#34;legend-and-font&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Legend and font&lt;/h2&gt;
-&lt;p&gt;Before constructing both maps we must create the legend using the &lt;code&gt;bi_legend()&lt;/code&gt; function. In the function we define the titles for each variable, the number of dimensions and the color scale. Finally, we add the Montserrat font for the final titles in the graphic.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# bivariate legend
-legend2 &amp;lt;- bi_legend(pal = &amp;quot;DkViolet&amp;quot;,
-                     dim = 3,
-                     xlab = &amp;quot;Higher inequality&amp;quot;,
-                     ylab = &amp;quot;Higher income&amp;quot;,
-                     size = 9)
-
-
-# download font
-font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
-showtext_auto()&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;dasymetric-map&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Dasymetric map&lt;/h2&gt;
-&lt;p&gt;We build this map using &lt;code&gt;geom_tile()&lt;/code&gt; for the pixels and &lt;code&gt;geom_sf()&lt;/code&gt; for the municipal boundaries. In addition, it will be the map on the right where we also place the legend. To add the legend we use the &lt;code&gt;annotation_custom()&lt;/code&gt; function indicating the position in the geographical coordinates of the map. The &lt;code&gt;biscale&lt;/code&gt; package also helps us with the color definition via the &lt;code&gt;bi_scale_fill()&lt;/code&gt; function.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- ggplot(mapdasi) + 
-  geom_tile(aes(X, Y, 
-                fill = bi_class), 
-            show.legend = FALSE) +
-  geom_sf(data = mun_limit,  
-          color = &amp;quot;grey80&amp;quot;, 
-          fill = NA, 
-          size = 0.2) +
-  annotation_custom(ggplotGrob(legend2), 
-                    xmin = -3.25, xmax = -2.65,
-                    ymin = 40.55, ymax = 40.95) +
-  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
-                dim = 3, 
-                na.value = &amp;quot;grey90&amp;quot;) +
-  labs(title = &amp;quot;dasymetric&amp;quot;, x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
-  bi_theme() +
-  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
-  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;choropleth-map&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Choropleth map&lt;/h2&gt;
-&lt;p&gt;The choropleth map is built in a similar way to the previous map with the difference that we use &lt;code&gt;geom_sf()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- ggplot(mapbivar) + 
-  geom_sf(aes(fill = bi_class), 
-          colour = NA, 
-          size = .1, 
-          show.legend = FALSE) +
-  geom_sf(data = mun_limit,  
-          color = &amp;quot;white&amp;quot;, 
-          fill = NA, 
-          size = 0.2) +
-  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
-                dim = 3, 
-                na.value = &amp;quot;grey90&amp;quot;) +
-  labs(title = &amp;quot;choropleth&amp;quot;,  x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
-  bi_theme() +
-  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
-  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;merge-both-maps&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Merge both maps&lt;/h2&gt;
-&lt;p&gt;With the help of the &lt;code&gt;patchwork&lt;/code&gt; package, we combine both maps in a single row, first the choropleth map and on its right the dasymmetric map. More details of the grammar used for the combination of graphics &lt;a href=&#34;https://patchwork.data-imaginist.com/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# combine 
-p &amp;lt;- p1 | p2
-
-# final map
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
     </item>
     
   </channel>

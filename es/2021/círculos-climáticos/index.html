@@ -1,0 +1,1172 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="generator" content="Source Themes Academic 3.2.0">
+  <meta name="generator" content="Hugo 0.55.4" />
+  <meta name="author" content="Dr. Dominic Royé">
+
+  
+  
+  
+  
+    
+  
+  <meta name="description" content="El clima de un lugar se suele presentar a través de climogramas que combinan la precipitación y temperatura mensual en un único gráfico. No obstante, también es interesante visualizar el clima a nivel diario mostrando la amplitud térmica y la temperatura media diaria. Para ello, se calculan las medias de cada día del año de las mínimas, máximas y medias diarias. El ciclo anual del clima presenta una buena oportunidad para usar un gráfico radial, polar o circular lo que nos permite visualizar de forma clara los patrones estacionales.">
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/">
+
+  
+
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+
+  
+  
+  
+  <meta name="theme-color" content="#2962ff">
+  
+
+  
+  
+  
+  
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+      
+    
+
+    
+
+    
+
+  
+
+  
+  
+
+  <link rel="stylesheet" href="/es/styles.css">
+  
+  <link rel="stylesheet" href="/css/override.css">
+  
+
+  
+  
+    <script>
+      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
+      ga('create', 'UA-27463794-2', 'auto');
+      ga('set', 'anonymizeIp', true);
+      ga('require', 'eventTracker');
+      ga('require', 'outboundLinkTracker');
+      ga('require', 'urlChangeTracker');
+      ga('send', 'pageview');
+    </script>
+    <script async src="//www.google-analytics.com/analytics.js"></script>
+    
+    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+  
+  
+
+  
+  <link rel="alternate" href="https://dominicroye.github.io/index.xml" type="application/rss+xml" title="Dominic Royé">
+  <link rel="feed" href="https://dominicroye.github.io/index.xml" type="application/rss+xml" title="Dominic Royé">
+  
+
+  <link rel="manifest" href="/site.webmanifest">
+  <link rel="icon" type="image/png" href="/img/icon.png">
+  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
+
+  <link rel="canonical" href="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/">
+
+  
+  
+  
+  
+    
+  
+  <meta property="twitter:card" content="summary_large_image">
+  
+  <meta property="og:site_name" content="Dominic Royé">
+  <meta property="og:url" content="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/">
+  <meta property="og:title" content="Círculos climáticos | Dominic Royé">
+  <meta property="og:description" content="El clima de un lugar se suele presentar a través de climogramas que combinan la precipitación y temperatura mensual en un único gráfico. No obstante, también es interesante visualizar el clima a nivel diario mostrando la amplitud térmica y la temperatura media diaria. Para ello, se calculan las medias de cada día del año de las mínimas, máximas y medias diarias. El ciclo anual del clima presenta una buena oportunidad para usar un gráfico radial, polar o circular lo que nos permite visualizar de forma clara los patrones estacionales."><meta property="og:image" content="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/featured.png">
+  <meta property="og:locale" content="en-us">
+  
+  <meta property="article:published_time" content="2021-09-04T00:00:00&#43;00:00">
+  
+  <meta property="article:modified_time" content="2021-09-04T00:00:00&#43;00:00">
+  
+
+  
+
+<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
+<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+<script>
+  window.addEventListener("load", function(){
+    window.cookieconsent.initialise({
+      "palette": {
+        "popup": {
+          "background": "#2962ff",
+          "text": "#fff"
+        },
+        "button": {
+          "background": "#fff",
+          "text": "#2962ff"
+        }
+      },
+      "theme": "classic",
+      "content": {
+        "message": "Este sitio web utiliza cookies para garantizarle una mejor experiencia.",
+        "dismiss": "Entendido!",
+        "link": "Más información",
+        "href": "https://cookies.insites.com"
+      }
+    })});
+</script>
+
+
+  
+
+  <title>Círculos climáticos | Dominic Royé</title>
+
+</head>
+<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
+  <aside class="search-results" id="search">
+  <div class="container">
+    <section class="search-header">
+
+      <div class="row no-gutters justify-content-between mb-3">
+        <div class="col-6">
+          <h1>Search</h1>
+        </div>
+        <div class="col-6 col-search-close">
+          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
+        </div>
+      </div>
+
+      <div id="search-box">
+        
+        
+        
+      </div>
+
+    </section>
+    <section class="section-search-results">
+
+      <div id="search-hits">
+        
+      </div>
+
+    </section>
+  </div>
+</aside>
+
+<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
+  <div class="container">
+
+    
+      <a class="navbar-brand" href="/es/"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Barra de navegación">
+        <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+    
+    <div class="collapse navbar-collapse" id="navbar">
+
+      
+      
+      <ul class="navbar-nav ml-auto">
+        
+
+        
+
+        
+        
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#">
+            
+            <span>inicio</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#posts">
+            
+            <span>blog</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#publications_selected">
+            
+            <span>publicaciones</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#graphs">
+            
+            <span>gráficos</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#about">
+            
+            <span>mí</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+        
+
+        
+        
+        
+          
+        
+
+        <li class="nav-item">
+          <a class="nav-link" href="/es/#teaching">
+            
+            <span>más</span>
+            
+          </a>
+        </li>
+
+        
+        
+
+      
+
+        
+
+        
+
+        
+
+        
+
+      </ul>
+
+    </div>
+  </div>
+</nav>
+
+
+<article class="article" itemscope itemtype="http://schema.org/Article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="article-header d-xl-none">
+  <div class="featured-image" style="background-image: url('/es/2021/c%C3%ADrculos-clim%C3%A1ticos/featured_hucf545943ee9a8776ede44ba4616bdedb_3024821_800x0_resize_box_2.png');"></div>
+  
+</div>
+
+
+<div class="container-fluid split-header d-none d-xl-block">
+  <div class="row">
+    <div class="col-6">
+      <div class="split-header-content">
+        <h1 itemprop="name">Círculos climáticos</h1>
+
+        
+
+        
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2021-09-04 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2021-09-04 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2021-09-04
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2021/c%C3%ADrculos-clim%C3%A1ticos/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="">R:principante</a>, 
+    
+    <a href="/es/categories/visualizaci%C3%B3n/">visualización</a>
+    
+  </span>
+  
+  
+
+  
+
+</div>
+
+
+        
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+
+        
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=C%c3%adrculos%20clim%c3%a1ticos&amp;url=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f&amp;title=C%c3%adrculos%20clim%c3%a1ticos"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f&amp;title=C%c3%adrculos%20clim%c3%a1ticos"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=C%c3%adrculos%20clim%c3%a1ticos&amp;body=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+      </div>
+    </div>
+    <div class="col-6">
+      <div class="split-header-image">
+        <img src="/es/2021/c%C3%ADrculos-clim%C3%A1ticos/featured_hucf545943ee9a8776ede44ba4616bdedb_3024821_680x500_fill_q90_box_smart1_2.png" itemprop="image" alt="">
+        
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="article-container d-xl-none">
+  <h1 itemprop="name">Círculos climáticos</h1>
+
+  
+
+  
+
+<div class="article-metadata">
+
+  
+  
+  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+  
+
+  <span class="article-date">
+    
+    <meta content="2021-09-04 00:00:00 &#43;0000 UTC" itemprop="datePublished">
+    <time datetime="2021-09-04 00:00:00 &#43;0000 UTC" itemprop="dateModified">
+      2021-09-04
+    </time>
+  </span>
+  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
+    <meta itemprop="name" content="Dr. Dominic Royé">
+  </span>
+
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <a href="/es/2021/c%C3%ADrculos-clim%C3%A1ticos/#disqus_thread"></a>
+  
+
+  
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder"></i>
+    
+    <a href="/es/categories/r/">R</a>, 
+    
+    <a href="">R:principante</a>, 
+    
+    <a href="/es/categories/visualizaci%C3%B3n/">visualización</a>
+    
+  </span>
+  
+  
+
+  
+  
+<div class="share-box" aria-hidden="true">
+  <ul class="share">
+    <li>
+      <a class="twitter"
+         href="https://twitter.com/intent/tweet?text=C%c3%adrculos%20clim%c3%a1ticos&amp;url=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+    <li>
+      <a class="facebook"
+         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f"
+         target="_blank" rel="noopener">
+        <i class="fab fa-facebook-f"></i>
+      </a>
+    </li>
+    <li>
+      <a class="linkedin"
+         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f&amp;title=C%c3%adrculos%20clim%c3%a1ticos"
+         target="_blank" rel="noopener">
+        <i class="fab fa-linkedin-in"></i>
+      </a>
+    </li>
+    <li>
+      <a class="weibo"
+         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f&amp;title=C%c3%adrculos%20clim%c3%a1ticos"
+         target="_blank" rel="noopener">
+        <i class="fab fa-weibo"></i>
+      </a>
+    </li>
+    <li>
+      <a class="email"
+         href="mailto:?subject=C%c3%adrculos%20clim%c3%a1ticos&amp;body=https%3a%2f%2fdominicroye.github.io%2fes%2f2021%2fc%25C3%25ADrculos-clim%25C3%25A1ticos%2f">
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  </ul>
+</div>
+
+
+  
+
+</div>
+
+
+  
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style" itemprop="articleBody">
+      
+<script src="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/header-attrs/header-attrs.js"></script>
+
+
+<p>El clima de un lugar se suele presentar a través de climogramas que combinan la precipitación y temperatura mensual en un único gráfico. No obstante, también es interesante visualizar el clima a nivel diario mostrando la amplitud térmica y la temperatura media diaria. Para ello, se calculan las medias de cada día del año de las mínimas, máximas y medias diarias.</p>
+<p>El ciclo anual del clima presenta una buena oportunidad para usar un gráfico radial, polar o circular lo que nos permite visualizar de forma clara los patrones estacionales.</p>
+<div id="paquetes" class="section level1">
+<h1>Paquetes</h1>
+<p>Usaremos los siguientes paquetes:</p>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.</td>
+</tr>
+<tr class="even">
+<td align="left">fs</td>
+<td align="left">Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos</td>
+</tr>
+<tr class="odd">
+<td align="left">lubridate</td>
+<td align="left">Fácil manipulación de fechas y tiempos</td>
+</tr>
+<tr class="even">
+<td align="left">janitor</td>
+<td align="left">Funciones sencillas para examinar y limpiar datos</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># instalamos los paquetes si hace falta
+
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;fs&quot;)) install.packages(&quot;fs&quot;)
+if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
+
+# paquetes
+
+library(tidyverse)
+library(lubridate)
+library(fs)
+library(janitor)</code></pre>
+</div>
+<div id="preparación" class="section level1">
+<h1>Preparación</h1>
+<div id="datos" class="section level2">
+<h2>Datos</h2>
+<p>Descargamos los datos de temperatura de una selección de ciudades estadounidenses <a href="/files/weather_stats_usa.zip">descarga</a>. Podéis descargar otras ciudades del mundo a través de los datasets WMO o GHCN en <a href="https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily">NCDC/NOAA</a>.</p>
+</div>
+<div id="importar" class="section level2">
+<h2>Importar</h2>
+<p>Para importar las series temporales de temperatura de cada ciudad, que encontramos en varios archivos, aplicamos la función <code>read_csv()</code> usando <code>map_df()</code>. La función <code>dir_ls()</code> del paquete <code>fs</code> nos devuelve el listado de archivos con la extensión <em>csv</em>. El suffijo de <code>map()</code> indica que queremos unir todas las tablas importadas en una única. Para aquellos con menos experiencia con <code>tidyverse</code>, recomiendo una breve introducción en este blog <a href="https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/">post</a>.</p>
+<p>Después obtenemos los nombres de las estaciones meteorologicas y definimos un nuevo vector con los nuevos nombres.</p>
+<pre class="r"><code># importamos los datos
+meteo &lt;- dir_ls(regexp = &quot;.csv$&quot;) %&gt;% 
+          map_df(read_csv)
+meteo</code></pre>
+<pre><code>## # A tibble: 211,825 x 12
+##    STATION     NAME    LATITUDE LONGITUDE ELEVATION DATE        TAVG  TMAX  TMIN
+##    &lt;chr&gt;       &lt;chr&gt;      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt; &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
+##  1 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-01   6.8    NA    NA
+##  2 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-02   8.4    NA    NA
+##  3 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-03  11      NA    NA
+##  4 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-04  -7.2    NA    NA
+##  5 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-05 -10.2    NA    NA
+##  6 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-06  -4.6    NA    NA
+##  7 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-07  -7.1    NA    NA
+##  8 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-08  -5.8    NA    NA
+##  9 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-09   2.9    NA    NA
+## 10 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-10   3.9    NA    NA
+## # ... with 211,815 more rows, and 3 more variables: TAVG_ATTRIBUTES &lt;chr&gt;,
+## #   TMAX_ATTRIBUTES &lt;chr&gt;, TMIN_ATTRIBUTES &lt;chr&gt;</code></pre>
+<pre class="r"><code># nombres de las estaciones
+stats_names &lt;- unique(meteo$NAME)
+stats_names</code></pre>
+<pre><code>## [1] &quot;CHICAGO OHARE INTERNATIONAL AIRPORT, IL US&quot;             
+## [2] &quot;LAGUARDIA AIRPORT, NY US&quot;                               
+## [3] &quot;MIAMI INTERNATIONAL AIRPORT, FL US&quot;                     
+## [4] &quot;HOUSTON INTERCONTINENTAL AIRPORT, TX US&quot;                
+## [5] &quot;ATLANTA HARTSFIELD JACKSON INTERNATIONAL AIRPORT, GA US&quot;
+## [6] &quot;SAN FRANCISCO INTERNATIONAL AIRPORT, CA US&quot;             
+## [7] &quot;SEATTLE TACOMA AIRPORT, WA US&quot;                          
+## [8] &quot;DENVER INTERNATIONAL AIRPORT, CO US&quot;                    
+## [9] &quot;MCCARRAN INTERNATIONAL AIRPORT, NV US&quot;</code></pre>
+<pre class="r"><code># nuevos nombres de las ciudades
+cities &lt;- c(&quot;CHICAGO&quot;, &quot;NEW YORK&quot;, &quot;MIAMI&quot;, 
+            &quot;HOUSTON&quot;, &quot;ATLANTA&quot;, &quot;SAN FRANCISCO&quot;, 
+            &quot;SEATTLE&quot;, &quot;DENVER&quot;, &quot;LAS VEGAS&quot;)</code></pre>
+</div>
+<div id="modificar" class="section level2">
+<h2>Modificar</h2>
+<p>En el primer paso modificaremos los datos originales, 1) seleccionando únicamente las columnas de interés, 2) filtrando al período 1991-2020, 3) definiendo los nuevos nombres de las estaciones, 4) calculando la temperatura media allí donde esté ausente, 5) limpiando los nombres de las columnas, y 6) creando una nueva variable con los días del año. La función <code>clean_names()</code> de <code>janitor</code> es muy útil para obtener nombres de columnas limpios.</p>
+<pre class="r"><code>meteo &lt;- select(meteo, NAME, DATE, TAVG:TMIN) %&gt;%  
+           filter(DATE &gt;= &quot;1991-01-01&quot;, DATE &lt;= &quot;2020-12-31&quot;) %&gt;% 
+            mutate(NAME = factor(NAME, stats_names, cities),
+                   TAVG = ifelse(is.na(TAVG), (TMAX+TMIN)/2, TAVG),
+                   yd = yday(DATE)) %&gt;% 
+            clean_names()</code></pre>
+<p>En el siguiente paso calculamos el promedio de las máximas, mínimas y media diarias para cada día del año. Después únicamente falta por convertir los días del año en una fecha dummy. Aquí usamos el año 2000 dado que es bisiesto y tenemos en total 366 días.</p>
+<pre class="r"><code># estimamos los promedios diarios
+meteo_yday &lt;- group_by(meteo, name, yd) %&gt;% 
+                  summarise(ta = mean(tavg, na.rm = TRUE),
+                            tmx = mean(tmax, na.rm = TRUE),
+                            tmin = mean(tmin, na.rm = TRUE))</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;name&#39;. You can override using the `.groups` argument.</code></pre>
+<pre class="r"><code>meteo_yday</code></pre>
+<pre><code>## # A tibble: 3,294 x 5
+## # Groups:   name [9]
+##    name       yd    ta    tmx  tmin
+##    &lt;fct&gt;   &lt;dbl&gt; &lt;dbl&gt;  &lt;dbl&gt; &lt;dbl&gt;
+##  1 CHICAGO     1 -3.77  0.537 -7.86
+##  2 CHICAGO     2 -2.64  1.03  -6.68
+##  3 CHICAGO     3 -2.88  0.78  -6.93
+##  4 CHICAGO     4 -2.86  0.753 -7.10
+##  5 CHICAGO     5 -4.13 -0.137 -8.33
+##  6 CHICAGO     6 -4.50 -1.15  -8.05
+##  7 CHICAGO     7 -4.70 -0.493 -8.57
+##  8 CHICAGO     8 -3.97  0.147 -8.02
+##  9 CHICAGO     9 -3.47  0.547 -7.49
+## 10 CHICAGO    10 -3.41  1.09  -7.64
+## # ... with 3,284 more rows</code></pre>
+<pre class="r"><code># convertimos los días del año en una fecha dummy
+meteo_yday &lt;- mutate(meteo_yday, yd = as_date(yd, origin = &quot;1999-12-31&quot;))</code></pre>
+</div>
+</div>
+<div id="cear-los-círculos-climáticos" class="section level1">
+<h1>Cear los círculos climáticos</h1>
+<div id="predefiniciones" class="section level2">
+<h2>Predefiniciones</h2>
+<p>Definimos un vector divergente de varios colores.</p>
+<pre class="r"><code>col_temp &lt;- c(&quot;#cbebf6&quot;,&quot;#a7bfd9&quot;,&quot;#8c99bc&quot;,&quot;#974ea8&quot;,&quot;#830f74&quot;,
+              &quot;#0b144f&quot;,&quot;#0e2680&quot;,&quot;#223b97&quot;,&quot;#1c499a&quot;,&quot;#2859a5&quot;,
+              &quot;#1b6aa3&quot;,&quot;#1d9bc4&quot;,&quot;#1ca4bc&quot;,&quot;#64c6c7&quot;,&quot;#86cabb&quot;,
+              &quot;#91e0a7&quot;,&quot;#c7eebf&quot;,&quot;#ebf8da&quot;,&quot;#f6fdd1&quot;,&quot;#fdeca7&quot;,
+              &quot;#f8da77&quot;,&quot;#fcb34d&quot;,&quot;#fc8c44&quot;,&quot;#f85127&quot;,&quot;#f52f26&quot;,
+              &quot;#d10b26&quot;,&quot;#9c042a&quot;,&quot;#760324&quot;,&quot;#18000c&quot;)</code></pre>
+<p>Creamos una tabla con las líneas de la rejilla en sentido eje x.</p>
+<pre class="r"><code>grid_x &lt;- tibble(x = seq(ymd(&quot;2000-01-01&quot;), ymd(&quot;2000-12-31&quot;), &quot;month&quot;), 
+                 y = rep(-10, 12), 
+                 xend = seq(ymd(&quot;2000-01-01&quot;), ymd(&quot;2000-12-31&quot;), &quot;month&quot;), 
+                 yend = rep(41, 12))</code></pre>
+<p>Definimos todos los elementos de estilo del gráfico en nuestro propio tema <code>theme_cc()</code>.</p>
+<pre class="r"><code>theme_cc &lt;- function(){ 
+  
+ theme_minimal(base_family = &quot;Montserrat&quot;) %+replace%
+  theme(plot.title = element_text(hjust = 0.5, colour = &quot;white&quot;, size = 30, margin = margin(b = 20)),
+        plot.caption = element_text(colour = &quot;white&quot;, size = 9, hjust = .5, vjust = -30),
+        plot.background = element_rect(fill = &quot;black&quot;),
+        plot.margin = margin(1, 1, 2, 1, unit = &quot;cm&quot;),
+  
+        axis.text.x = element_text(face = &quot;italic&quot;, colour = &quot;white&quot;),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        
+        legend.title = element_text(colour = &quot;white&quot;),
+        legend.position = &quot;bottom&quot;,
+        legend.justification = 0.5,
+        legend.text = element_text(colour = &quot;white&quot;),
+       
+        
+        strip.text = element_text(colour = &quot;white&quot;, face = &quot;bold&quot;, size = 14),
+        
+        panel.spacing.y = unit(1, &quot;lines&quot;),
+        panel.background = element_rect(fill = &quot;black&quot;),
+        panel.grid = element_blank()
+      ) 
+}</code></pre>
+</div>
+<div id="gráfico" class="section level2">
+<h2>Gráfico</h2>
+<p>Empezamos por crear un gráfico únicamente para la ciudad de Nueva York. Usaremos <code>geom_linerange()</code> definiendo el rango con las máximas y mínimas. Además, dibujaremos las líneas de rango en función de la temperatura media. Podemos ajustar <em>alpha</em> y <em>size</em> para obtener un aspecto más bonito.</p>
+<pre class="r"><code># filtramos Nueva York
+ny_city &lt;- filter(meteo_yday, name == &quot;NEW YORK&quot;) 
+
+# gráfico
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &quot;month&quot;,
+               date_labels = &quot;%b&quot;) +
+  labs(title = &quot;CLIMATE CIRCLES&quot;, 
+       colour = &quot;Daily average temperature&quot;) </code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/figure-html/unnamed-chunk-10-1.png" width="2100" /></p>
+<p>Para conseguir el gráfico polar únicamente haría falta añadir la función <code>coord_polar()</code>.</p>
+<pre class="r"><code># gráfico polar
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &quot;month&quot;,
+               date_labels = &quot;%b&quot;) +
+  coord_polar() +
+  labs(title = &quot;CLIMATE CIRCLES&quot;, 
+       colour = &quot;Daily average temperature&quot;) </code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/figure-html/unnamed-chunk-11-1.png" width="2100" /></p>
+<p>Cambiamos la lengua del sistema operativo para obtener los nombres de meses en inglés. Para volver a la lengua de origen podemos usar simplemente la función <code>Sys.setlocale("LC_TIME", old_lc)</code>.</p>
+<pre class="r"><code>old_lc &lt;- Sys.getlocale(&quot;LC_TIME&quot;)
+
+Sys.setlocale(&quot;LC_TIME&quot;, &quot;English&quot;)</code></pre>
+<pre><code>## [1] &quot;English_United States.1252&quot;</code></pre>
+<p>En el gráfico final añadimos la rejilla definiendo las lineas en el eje y con <code>geom_hline()</code>, y aquellas del eje x con <code>geom_segement()</code>. Lo más importante aquí es la función <code>facet_wrap()</code>, la que permite la creación de múltiples facetas de gráficos. Se usa el formato de formula para especificar en que forma se crean las facetas: <code>fila ~ columna</code>. En caso de que no dispongamos de una segunda variable, se indica en la formula un punto <code>.</code>. Además, hacemos cambios de aspecto en la bara de color con <code>guides()</code> y <code>guide_colourbar()</code>, y incluimos los estilos <code>theme_cc()</code>.</p>
+<pre class="r"><code>ggplot(meteo_yday) + 
+  geom_hline(yintercept = c(-10, 0, 10, 20, 30, 40), 
+             colour = &quot;white&quot;, 
+             size = .4) +
+  geom_segment(data = grid_x , 
+               aes(x = x, 
+                   y = y, 
+                   xend = xend, 
+                   yend = yend), 
+               linetype = &quot;dashed&quot;, 
+               colour = &quot;white&quot;, 
+               size = .2) +
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion())+
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &quot;month&quot;, 
+               date_labels = &quot;%b&quot;) +
+  guides(colour = guide_colourbar(barwidth = 15,
+                                  barheight = 0.5, 
+                                  title.position = &quot;top&quot;)
+         ) +
+  facet_wrap(~name, nrow = 3) +
+  coord_polar() + 
+  labs(title = &quot;CLIMATE CIRCLES&quot;, 
+       colour = &quot;Daily average temperature&quot;) +
+  theme_cc()</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/figure-html/unnamed-chunk-13-1.png" width="3540" /></p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/es/tags/clima/">clima</a>
+  
+  <a class="badge badge-light" href="/es/tags/radial/">radial</a>
+  
+  <a class="badge badge-light" href="/es/tags/temperaturas/">temperaturas</a>
+  
+</div>
+
+
+
+    
+
+
+
+
+
+
+<div class="media author-card" itemscope itemtype="http://schema.org/Person">
+  
+  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
+  
+  <div class="media-body">
+    <h5 class="card-title" itemprop="name"><a href="/es/">Dr. Dominic Royé</a></h5>
+    
+    
+    <ul class="network-icon" aria-hidden="true">
+      
+      
+      
+      
+      
+      
+      
+      
+      <li>
+        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
+          <i class="fa fa-envelope"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+          <i class="ai ai-researchgate"></i>
+        </a>
+      </li>
+      
+      
+      
+      
+        
+      
+      
+      
+      
+      
+        
+      
+      <li>
+        <a itemprop="sameAs" href="//github.com/dominicroye" >
+          <i class="fab fa-github"></i>
+        </a>
+      </li>
+      
+    </ul>
+  </div>
+</div>
+
+
+
+
+    
+    
+    <div class="article-widget">
+      <div class="hr-light"></div>
+      <h3>Relacionado</h3>
+      <ul>
+        
+        <li><a href="/es/graphs/climate/">Clima y tiempo</a></li>
+        
+        <li><a href="/es/2020/un-heatmap-como-calendario/">Un heatmap como calendario</a></li>
+        
+        <li><a href="/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/">Animación climática de la temperatura máxima</a></li>
+        
+        <li><a href="/es/2020/visualizar-anomal%C3%ADas-clim%C3%A1ticas/">Visualizar anomalías climáticas</a></li>
+        
+        <li><a href="/es/2019/visualizar-anomal%C3%ADas-de-precipitaci%C3%B3n-mensual/">Visualizar anomalías de precipitación mensual</a></li>
+        
+      </ul>
+    </div>
+    
+
+    
+    <div class="article-widget">
+      <div class="post-nav">
+  
+  
+  <div class="post-nav-item">
+    <div class="meta-nav">Anterior</div>
+    <a href="https://dominicroye.github.io/es/2021/cartograf%C3%ADa-firefly/" rel="prev">Cartografía firefly</a>
+  </div>
+  
+</div>
+
+    </div>
+    
+
+    
+<section id="comments">
+  <div id="disqus_thread"></div>
+<script type="application/javascript">
+    var disqus_config = function () {
+    
+    
+    
+    };
+    (function() {
+        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
+            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
+            return;
+        }
+        var d = document, s = d.createElement('script'); s.async = true;
+        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
+        s.setAttribute('data-timestamp', +new Date());
+        (d.head || d.body).appendChild(s);
+    })();
+</script>
+<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
+<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
+</section>
+
+
+
+  </div>
+</article>
+
+<div class="container">
+  <footer class="site-footer">
+  
+
+  <p class="powered-by">
+    &copy; 2018-2021 Dominic Royé. All rights reserved. &middot; 
+
+    Powered by the
+    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
+    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+
+    
+    <span class="float-right" aria-hidden="true">
+      <a href="#" id="back_to_top">
+        <span class="button_icon">
+          <i class="fas fa-chevron-up fa-2x"></i>
+        </span>
+      </a>
+    </span>
+    
+  </p>
+</footer>
+
+</div>
+
+
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+    
+
+    
+    
+    
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+
+      
+        
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        
+        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+      
+
+      
+      
+    
+
+    
+    
+
+    
+    
+    
+    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
+    
+
+    
+    
+    <script>hljs.initHighlightingOnLoad();</script>
+    
+
+    
+
+    
+    
+
+    
+
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
+
+    
+
+  </body>
+</html>
+

@@ -160,47 +160,30 @@ In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; th
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
+## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
+## date (1): date&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   country_region_code = col_character(),
-##   country_region = col_character(),
-##   sub_region_1 = col_character(),
-##   sub_region_2 = col_logical(),
-##   iso_3166_2_code = col_character(),
-##   census_fips_code = col_logical(),
-##   date = col_date(format = &amp;quot;&amp;quot;),
-##   retail_and_recreation_percent_change_from_baseline = col_double(),
-##   grocery_and_pharmacy_percent_change_from_baseline = col_double(),
-##   parks_percent_change_from_baseline = col_double(),
-##   transit_stations_percent_change_from_baseline = col_double(),
-##   workplaces_percent_change_from_baseline = col_double(),
-##   residential_percent_change_from_baseline = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 597554 parsing failures.
-##    row              col           expected         actual                         file
-## 200119 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200119 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200120 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200120 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## ...... ................ .................. .............. ............................
-## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 516,697 x 13
-##    country_region_co~ country_region   sub_region_1 sub_region_2 iso_3166_2_code
-##    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;            &amp;lt;chr&amp;gt;        &amp;lt;lgl&amp;gt;        &amp;lt;chr&amp;gt;          
-##  1 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  2 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  3 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  4 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  5 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  6 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  7 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  8 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-##  9 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-## 10 AE                 United Arab Emi~ &amp;lt;NA&amp;gt;         NA           &amp;lt;NA&amp;gt;           
-## # ... with 516,687 more rows, and 8 more variables: census_fips_code &amp;lt;lgl&amp;gt;,
+##    country_region_code country_region  sub_region_1 sub_region_2 iso_3166_2_code
+##    &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  2 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  3 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  4 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  5 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  6 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  7 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  8 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+##  9 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+## 10 AE                  United Arab Em~ &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;         &amp;lt;NA&amp;gt;           
+## # ... with 516,687 more rows, and 8 more variables: census_fips_code &amp;lt;chr&amp;gt;,
 ## #   date &amp;lt;date&amp;gt;, retail_and_recreation_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
 ## #   grocery_and_pharmacy_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
 ## #   parks_percent_change_from_baseline &amp;lt;dbl&amp;gt;,
@@ -419,32 +402,15 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;In case you haven’t done it before, we import the mobility data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
+## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
+## date (1): date&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   country_region_code = col_character(),
-##   country_region = col_character(),
-##   sub_region_1 = col_character(),
-##   sub_region_2 = col_logical(),
-##   iso_3166_2_code = col_character(),
-##   census_fips_code = col_logical(),
-##   date = col_date(format = &amp;quot;&amp;quot;),
-##   retail_and_recreation_percent_change_from_baseline = col_double(),
-##   grocery_and_pharmacy_percent_change_from_baseline = col_double(),
-##   parks_percent_change_from_baseline = col_double(),
-##   transit_stations_percent_change_from_baseline = col_double(),
-##   workplaces_percent_change_from_baseline = col_double(),
-##   residential_percent_change_from_baseline = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 597554 parsing failures.
-##    row              col           expected         actual                         file
-## 200119 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200119 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200120 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200120 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &amp;#39;Global_Mobility_Report.csv&amp;#39;
-## ...... ................ .................. .............. ............................
-## See problems(...) for more details.&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;select-and-rename&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.1&lt;/span&gt; Select and rename&lt;/h3&gt;
 &lt;p&gt;We can select or remove columns with the &lt;code&gt;select()&lt;/code&gt; function, using the name or index of the column. To delete columns we make use of the negative sign. The &lt;code&gt;rename&lt;/code&gt; function helps in renaming columns with either the same name or their index.&lt;/p&gt;
@@ -494,18 +460,18 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
        resi &amp;gt; 50) %&amp;gt;% 
           arrange(-resi)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 32 x 5
-##    country_region_co~ country_region sub_region_1               date        resi
-##    &amp;lt;chr&amp;gt;              &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                      &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
-##  1 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-14    56
-##  2 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-21    55
-##  3 SG                 Singapore      &amp;lt;NA&amp;gt;                       2020-05-01    55
-##  4 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-28    54
-##  5 PE                 Peru           Metropolitan Municipality~ 2020-04-10    54
-##  6 EC                 Ecuador        Pichincha                  2020-03-27    53
-##  7 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-11    53
-##  8 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-13    53
-##  9 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-20    53
-## 10 SG                 Singapore      &amp;lt;NA&amp;gt;                       2020-04-10    53
+##    country_region_code country_region sub_region_1              date        resi
+##    &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                     &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-14    56
+##  2 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-21    55
+##  3 SG                  Singapore      &amp;lt;NA&amp;gt;                      2020-05-01    55
+##  4 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-28    54
+##  5 PE                  Peru           Metropolitan Municipalit~ 2020-04-10    54
+##  6 EC                  Ecuador        Pichincha                 2020-03-27    53
+##  7 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-11    53
+##  8 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-13    53
+##  9 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-20    53
+## 10 SG                  Singapore      &amp;lt;NA&amp;gt;                      2020-04-10    53
 ## # ... with 22 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;group-and-summarize&#34; class=&#34;section level3&#34; number=&#34;4.4.3&#34;&gt;
@@ -575,13 +541,7 @@ str(subset_europe)&lt;/code&gt;&lt;/pre&gt;
 ##  $ resi               : num [1:3988] -2 -2 0 0 1 0 1 -2 0 -1 ...
 ##  $ subregion          : chr [1:3988] &amp;quot;Western Europe&amp;quot; &amp;quot;Western Europe&amp;quot; &amp;quot;Western Europe&amp;quot; &amp;quot;Western Europe&amp;quot; ...
 ##  $ resi_real          : num [1:3988] 98 98 100 100 101 100 101 98 100 99 ...
-##  $ region             : Factor w/ 35 levels &amp;quot;Belarus&amp;quot;,&amp;quot;Ukraine&amp;quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
-##  - attr(*, &amp;quot;problems&amp;quot;)= tibble [597,554 x 5] (S3: tbl_df/tbl/data.frame)
-##   ..$ row     : int [1:597554] 200119 200119 200120 200120 200121 200121 200122 200122 200123 200123 ...
-##   ..$ col     : chr [1:597554] &amp;quot;sub_region_2&amp;quot; &amp;quot;census_fips_code&amp;quot; &amp;quot;sub_region_2&amp;quot; &amp;quot;census_fips_code&amp;quot; ...
-##   ..$ expected: chr [1:597554] &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; &amp;quot;1/0/T/F/TRUE/FALSE&amp;quot; ...
-##   ..$ actual  : chr [1:597554] &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; &amp;quot;Autauga County&amp;quot; &amp;quot;01001&amp;quot; ...
-##   ..$ file    : chr [1:597554] &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; &amp;quot;&amp;#39;Global_Mobility_Report.csv&amp;#39;&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+##  $ region             : Factor w/ 35 levels &amp;quot;Belarus&amp;quot;,&amp;quot;Ukraine&amp;quot;,..: 18 18 18 18 18 18 18 18 18 18 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;long-and-wide-tables&#34; class=&#34;section level3&#34; number=&#34;4.4.5&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.4.5&lt;/span&gt; Long and wide tables&lt;/h3&gt;
@@ -836,9 +796,9 @@ cor_mobility[1:5]&lt;/code&gt;&lt;/pre&gt;
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&amp;#39;~ two.sided  
+##   estimate statistic       p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;         &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.312     -6.06 0.00000000367       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8

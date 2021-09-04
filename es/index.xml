@@ -5,8 +5,284 @@
     <description>Recent content in Dominic Royé on Dominic Royé</description>
     <generator>Hugo -- gohugo.io</generator>
     <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
-    <lastBuildDate>Thu, 22 Jul 2021 00:00:00 +0000</lastBuildDate>
+    <lastBuildDate>Sat, 04 Sep 2021 00:00:00 +0000</lastBuildDate>
     <atom:link href="/es/" rel="self" type="application/rss+xml" />
+    
+    <item>
+      <title>Círculos climáticos</title>
+      <link>https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/</link>
+      <pubDate>Sat, 04 Sep 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;El clima de un lugar se suele presentar a través de climogramas que combinan la precipitación y temperatura mensual en un único gráfico. No obstante, también es interesante visualizar el clima a nivel diario mostrando la amplitud térmica y la temperatura media diaria. Para ello, se calculan las medias de cada día del año de las mínimas, máximas y medias diarias.&lt;/p&gt;
+&lt;p&gt;El ciclo anual del clima presenta una buena oportunidad para usar un gráfico radial, polar o circular lo que nos permite visualizar de forma clara los patrones estacionales.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;p&gt;Usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;90%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Funciones sencillas para examinar y limpiar datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+# paquetes
+
+library(tidyverse)
+library(lubridate)
+library(fs)
+library(janitor)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Descargamos los datos de temperatura de una selección de ciudades estadounidenses &lt;a href=&#34;https://dominicroye.github.io/files/weather_stats_usa.zip&#34;&gt;descarga&lt;/a&gt;. Podéis descargar otras ciudades del mundo a través de los datasets WMO o GHCN en &lt;a href=&#34;https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily&#34;&gt;NCDC/NOAA&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar&lt;/h2&gt;
+&lt;p&gt;Para importar las series temporales de temperatura de cada ciudad, que encontramos en varios archivos, aplicamos la función &lt;code&gt;read_csv()&lt;/code&gt; usando &lt;code&gt;map_df()&lt;/code&gt;. La función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;code&gt;fs&lt;/code&gt; nos devuelve el listado de archivos con la extensión &lt;em&gt;csv&lt;/em&gt;. El suffijo de &lt;code&gt;map()&lt;/code&gt; indica que queremos unir todas las tablas importadas en una única. Para aquellos con menos experiencia con &lt;code&gt;tidyverse&lt;/code&gt;, recomiendo una breve introducción en este blog &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Después obtenemos los nombres de las estaciones meteorologicas y definimos un nuevo vector con los nuevos nombres.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los datos
+meteo &amp;lt;- dir_ls(regexp = &amp;quot;.csv$&amp;quot;) %&amp;gt;% 
+          map_df(read_csv)
+meteo&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 211,825 x 12
+##    STATION     NAME    LATITUDE LONGITUDE ELEVATION DATE        TAVG  TMAX  TMIN
+##    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-01   6.8    NA    NA
+##  2 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-02   8.4    NA    NA
+##  3 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-03  11      NA    NA
+##  4 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-04  -7.2    NA    NA
+##  5 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-05 -10.2    NA    NA
+##  6 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-06  -4.6    NA    NA
+##  7 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-07  -7.1    NA    NA
+##  8 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-08  -5.8    NA    NA
+##  9 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-09   2.9    NA    NA
+## 10 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-10   3.9    NA    NA
+## # ... with 211,815 more rows, and 3 more variables: TAVG_ATTRIBUTES &amp;lt;chr&amp;gt;,
+## #   TMAX_ATTRIBUTES &amp;lt;chr&amp;gt;, TMIN_ATTRIBUTES &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# nombres de las estaciones
+stats_names &amp;lt;- unique(meteo$NAME)
+stats_names&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;CHICAGO OHARE INTERNATIONAL AIRPORT, IL US&amp;quot;             
+## [2] &amp;quot;LAGUARDIA AIRPORT, NY US&amp;quot;                               
+## [3] &amp;quot;MIAMI INTERNATIONAL AIRPORT, FL US&amp;quot;                     
+## [4] &amp;quot;HOUSTON INTERCONTINENTAL AIRPORT, TX US&amp;quot;                
+## [5] &amp;quot;ATLANTA HARTSFIELD JACKSON INTERNATIONAL AIRPORT, GA US&amp;quot;
+## [6] &amp;quot;SAN FRANCISCO INTERNATIONAL AIRPORT, CA US&amp;quot;             
+## [7] &amp;quot;SEATTLE TACOMA AIRPORT, WA US&amp;quot;                          
+## [8] &amp;quot;DENVER INTERNATIONAL AIRPORT, CO US&amp;quot;                    
+## [9] &amp;quot;MCCARRAN INTERNATIONAL AIRPORT, NV US&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# nuevos nombres de las ciudades
+cities &amp;lt;- c(&amp;quot;CHICAGO&amp;quot;, &amp;quot;NEW YORK&amp;quot;, &amp;quot;MIAMI&amp;quot;, 
+            &amp;quot;HOUSTON&amp;quot;, &amp;quot;ATLANTA&amp;quot;, &amp;quot;SAN FRANCISCO&amp;quot;, 
+            &amp;quot;SEATTLE&amp;quot;, &amp;quot;DENVER&amp;quot;, &amp;quot;LAS VEGAS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modificar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Modificar&lt;/h2&gt;
+&lt;p&gt;En el primer paso modificaremos los datos originales, 1) seleccionando únicamente las columnas de interés, 2) filtrando al período 1991-2020, 3) definiendo los nuevos nombres de las estaciones, 4) calculando la temperatura media allí donde esté ausente, 5) limpiando los nombres de las columnas, y 6) creando una nueva variable con los días del año. La función &lt;code&gt;clean_names()&lt;/code&gt; de &lt;code&gt;janitor&lt;/code&gt; es muy útil para obtener nombres de columnas limpios.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo &amp;lt;- select(meteo, NAME, DATE, TAVG:TMIN) %&amp;gt;%  
+           filter(DATE &amp;gt;= &amp;quot;1991-01-01&amp;quot;, DATE &amp;lt;= &amp;quot;2020-12-31&amp;quot;) %&amp;gt;% 
+            mutate(NAME = factor(NAME, stats_names, cities),
+                   TAVG = ifelse(is.na(TAVG), (TMAX+TMIN)/2, TAVG),
+                   yd = yday(DATE)) %&amp;gt;% 
+            clean_names()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso calculamos el promedio de las máximas, mínimas y media diarias para cada día del año. Después únicamente falta por convertir los días del año en una fecha dummy. Aquí usamos el año 2000 dado que es bisiesto y tenemos en total 366 días.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimamos los promedios diarios
+meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;% 
+                  summarise(ta = mean(tavg, na.rm = TRUE),
+                            tmx = mean(tmax, na.rm = TRUE),
+                            tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
+## # Groups:   name [9]
+##    name       yd    ta    tmx  tmin
+##    &amp;lt;fct&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 CHICAGO     1 -3.77  0.537 -7.86
+##  2 CHICAGO     2 -2.64  1.03  -6.68
+##  3 CHICAGO     3 -2.88  0.78  -6.93
+##  4 CHICAGO     4 -2.86  0.753 -7.10
+##  5 CHICAGO     5 -4.13 -0.137 -8.33
+##  6 CHICAGO     6 -4.50 -1.15  -8.05
+##  7 CHICAGO     7 -4.70 -0.493 -8.57
+##  8 CHICAGO     8 -3.97  0.147 -8.02
+##  9 CHICAGO     9 -3.47  0.547 -7.49
+## 10 CHICAGO    10 -3.41  1.09  -7.64
+## # ... with 3,284 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos los días del año en una fecha dummy
+meteo_yday &amp;lt;- mutate(meteo_yday, yd = as_date(yd, origin = &amp;quot;1999-12-31&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cear-los-círculos-climáticos&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cear los círculos climáticos&lt;/h1&gt;
+&lt;div id=&#34;predefiniciones&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Predefiniciones&lt;/h2&gt;
+&lt;p&gt;Definimos un vector divergente de varios colores.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;col_temp &amp;lt;- c(&amp;quot;#cbebf6&amp;quot;,&amp;quot;#a7bfd9&amp;quot;,&amp;quot;#8c99bc&amp;quot;,&amp;quot;#974ea8&amp;quot;,&amp;quot;#830f74&amp;quot;,
+              &amp;quot;#0b144f&amp;quot;,&amp;quot;#0e2680&amp;quot;,&amp;quot;#223b97&amp;quot;,&amp;quot;#1c499a&amp;quot;,&amp;quot;#2859a5&amp;quot;,
+              &amp;quot;#1b6aa3&amp;quot;,&amp;quot;#1d9bc4&amp;quot;,&amp;quot;#1ca4bc&amp;quot;,&amp;quot;#64c6c7&amp;quot;,&amp;quot;#86cabb&amp;quot;,
+              &amp;quot;#91e0a7&amp;quot;,&amp;quot;#c7eebf&amp;quot;,&amp;quot;#ebf8da&amp;quot;,&amp;quot;#f6fdd1&amp;quot;,&amp;quot;#fdeca7&amp;quot;,
+              &amp;quot;#f8da77&amp;quot;,&amp;quot;#fcb34d&amp;quot;,&amp;quot;#fc8c44&amp;quot;,&amp;quot;#f85127&amp;quot;,&amp;quot;#f52f26&amp;quot;,
+              &amp;quot;#d10b26&amp;quot;,&amp;quot;#9c042a&amp;quot;,&amp;quot;#760324&amp;quot;,&amp;quot;#18000c&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Creamos una tabla con las líneas de la rejilla en sentido eje x.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(ymd(&amp;quot;2000-01-01&amp;quot;), ymd(&amp;quot;2000-12-31&amp;quot;), &amp;quot;month&amp;quot;), 
+                 y = rep(-10, 12), 
+                 xend = seq(ymd(&amp;quot;2000-01-01&amp;quot;), ymd(&amp;quot;2000-12-31&amp;quot;), &amp;quot;month&amp;quot;), 
+                 yend = rep(41, 12))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Definimos todos los elementos de estilo del gráfico en nuestro propio tema &lt;code&gt;theme_cc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_cc &amp;lt;- function(){ 
+  
+ theme_minimal(base_family = &amp;quot;Montserrat&amp;quot;) %+replace%
+  theme(plot.title = element_text(hjust = 0.5, colour = &amp;quot;white&amp;quot;, size = 30, margin = margin(b = 20)),
+        plot.caption = element_text(colour = &amp;quot;white&amp;quot;, size = 9, hjust = .5, vjust = -30),
+        plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        plot.margin = margin(1, 1, 2, 1, unit = &amp;quot;cm&amp;quot;),
+  
+        axis.text.x = element_text(face = &amp;quot;italic&amp;quot;, colour = &amp;quot;white&amp;quot;),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        
+        legend.title = element_text(colour = &amp;quot;white&amp;quot;),
+        legend.position = &amp;quot;bottom&amp;quot;,
+        legend.justification = 0.5,
+        legend.text = element_text(colour = &amp;quot;white&amp;quot;),
+       
+        
+        strip.text = element_text(colour = &amp;quot;white&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 14),
+        
+        panel.spacing.y = unit(1, &amp;quot;lines&amp;quot;),
+        panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        panel.grid = element_blank()
+      ) 
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gráfico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Gráfico&lt;/h2&gt;
+&lt;p&gt;Empezamos por crear un gráfico únicamente para la ciudad de Nueva York. Usaremos &lt;code&gt;geom_linerange()&lt;/code&gt; definiendo el rango con las máximas y mínimas. Además, dibujaremos las líneas de rango en función de la temperatura media. Podemos ajustar &lt;em&gt;alpha&lt;/em&gt; y &lt;em&gt;size&lt;/em&gt; para obtener un aspecto más bonito.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos Nueva York
+ny_city &amp;lt;- filter(meteo_yday, name == &amp;quot;NEW YORK&amp;quot;) 
+
+# gráfico
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;,
+               date_labels = &amp;quot;%b&amp;quot;) +
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Para conseguir el gráfico polar únicamente haría falta añadir la función &lt;code&gt;coord_polar()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# gráfico polar
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;,
+               date_labels = &amp;quot;%b&amp;quot;) +
+  coord_polar() +
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Cambiamos la lengua del sistema operativo para obtener los nombres de meses en inglés. Para volver a la lengua de origen podemos usar simplemente la función &lt;code&gt;Sys.setlocale(&#34;LC_TIME&#34;, old_lc)&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;old_lc &amp;lt;- Sys.getlocale(&amp;quot;LC_TIME&amp;quot;)
+
+Sys.setlocale(&amp;quot;LC_TIME&amp;quot;, &amp;quot;English&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;English_United States.1252&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el gráfico final añadimos la rejilla definiendo las lineas en el eje y con &lt;code&gt;geom_hline()&lt;/code&gt;, y aquellas del eje x con &lt;code&gt;geom_segement()&lt;/code&gt;. Lo más importante aquí es la función &lt;code&gt;facet_wrap()&lt;/code&gt;, la que permite la creación de múltiples facetas de gráficos. Se usa el formato de formula para especificar en que forma se crean las facetas: &lt;code&gt;fila ~ columna&lt;/code&gt;. En caso de que no dispongamos de una segunda variable, se indica en la formula un punto &lt;code&gt;.&lt;/code&gt;. Además, hacemos cambios de aspecto en la bara de color con &lt;code&gt;guides()&lt;/code&gt; y &lt;code&gt;guide_colourbar()&lt;/code&gt;, y incluimos los estilos &lt;code&gt;theme_cc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(meteo_yday) + 
+  geom_hline(yintercept = c(-10, 0, 10, 20, 30, 40), 
+             colour = &amp;quot;white&amp;quot;, 
+             size = .4) +
+  geom_segment(data = grid_x , 
+               aes(x = x, 
+                   y = y, 
+                   xend = xend, 
+                   yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, 
+               colour = &amp;quot;white&amp;quot;, 
+               size = .2) +
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion())+
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, 
+               date_labels = &amp;quot;%b&amp;quot;) +
+  guides(colour = guide_colourbar(barwidth = 15,
+                                  barheight = 0.5, 
+                                  title.position = &amp;quot;top&amp;quot;)
+         ) +
+  facet_wrap(~name, nrow = 3) +
+  coord_polar() + 
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) +
+  theme_cc()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/c%C3%ADrculos-clim%C3%A1ticos/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Mediterranean-Scale Drought: Regional Datasets for Exceptional Meteorological Drought Events during 1975-2019</title>
@@ -474,6 +750,19 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
   
 
 
+  
+  
+  
+  
+    
+      
+    
+  
+  &lt;div class=&#34;box&#34;&gt;&lt;a data-fancybox=&#34;gallery-gallery&#34; data-caption=&#34;Where do we find more droughts in mainland Spain and the Balearic Islands?&#34; href=&#34;https://dominicroye.github.io/img/album/sequia.png&#34;&gt;
+    &lt;img src=&#34;https://dominicroye.github.io/img/album/sequia.png&#34; alt=&#34;&#34;&gt;
+  &lt;/a&gt;
+&lt;div class=&#34;imgcap&#34;&gt;Where do we find more droughts in mainland Spain and the Balearic Islands? Idea based on John Nelson  &lt;a href=&#34;https://t.co/L3ADdpz7Ho?amp=1&#34; target=&#34;_blank&#34;&gt;more&lt;/a&gt;. Data: &lt;a href=&#34;https://t.co/tPbUlNRbnh?amp=1&#34; target=&#34;_blank&#34;&gt;CSIC&lt;/a&gt;&lt;/div&gt;
+&lt;/div&gt;
   
   
   
@@ -2568,266 +2857,6 @@ Probability of a frost day (minimum temperature less than 0ºC/32ºF) through th
       
       <guid>https://dominicroye.github.io/es/publication/megafires_australia_2021/</guid>
       <description></description>
-    </item>
-    
-    <item>
-      <title>Mapa dasimétrico bivariante</title>
-      <link>https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/</link>
-      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
-      
-      <guid>https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/</guid>
-      <description>
-&lt;script src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
-
-
-&lt;div id=&#34;consideraciones-iniciales&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Consideraciones iniciales&lt;/h1&gt;
-&lt;p&gt;Una desventaja de los mapas coropletas es que estos suelen distorsionar la relación entre la verdadera geografía subyacente y la variable representada. Se debe a que las divisiones administrativas no suelen coincidir con la realidad geográfica, donde la gente vive. Además, grandes áreas aparentan tener un peso con poca población que no tienen realmente. Para reflejar mejor la realidad se hace uso de distribuciones más realista de la población como puede ser el uso de suelo. Con técnicas de Sistemas de Información Geográfica es posible redistribuir la variable de interés en función de una variable a menor unidad espacial.&lt;/p&gt;
-&lt;p&gt;Cuando disponemos de datos de puntos, el proceso de redistribución simplemente es recortar áreas de puntos con población a base del uso de suelo, normalmente clasificado como urbano. En caso de polígonos también podríamos recortar con polígonos de uso de suelo, pero una alternativa interesante son los mismos datos en formato raster. Veremos cómo podemos realizar un mapa dasimétrico usando datos raster con una resolución de 100 m. En este post usaremos datos de secciones censales de la renta media y el índice de Gini de España. No sólo haremos un mapa dasimétrico, sino también bivariante, representando con dos gamas de colores ambas variables en el mismo mapa.&lt;/p&gt;
-&lt;/div&gt;
-&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Paquetes&lt;/h1&gt;
-&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
-&lt;table&gt;
-&lt;colgroup&gt;
-&lt;col width=&#34;10%&#34; /&gt;
-&lt;col width=&#34;89%&#34; /&gt;
-&lt;/colgroup&gt;
-&lt;thead&gt;
-&lt;tr class=&#34;header&#34;&gt;
-&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
-&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
-&lt;/tr&gt;
-&lt;/thead&gt;
-&lt;tbody&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Simple gramática para combinar ggplots separados en el mismo gráfico&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;biscale&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Herramientas y paletas para mapeo temático bivariado&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Cargar fuentes en R&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
-&lt;/tr&gt;
-&lt;/tbody&gt;
-&lt;/table&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
-if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
-if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
-if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
-if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
-if(!require(&amp;quot;biscale&amp;quot;)) install.packages(&amp;quot;biscale&amp;quot;)
-if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
-if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
-
-# paquetes
-library(tidyverse)
-library(sf)
-library(readxl)
-library(biscale)
-library(patchwork)
-library(raster)
-library(sysfonts)
-library(showtext)
-library(raster)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Preparación&lt;/h1&gt;
-&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Datos&lt;/h2&gt;
-&lt;p&gt;Primero descargamos todos los datos necesarios. Con excepción de los datos CORINE Land Cover (~200 MB), se pueden obtener los datos almacenados en este blog directamente vía los enlaces indicados .&lt;/p&gt;
-&lt;ul&gt;
-&lt;li&gt;CORINE Land Cover 2018 (geotiff): &lt;a href=&#34;https://land.copernicus.eu/pan-european/corine-land-cover/clc2018?tab=download&#34;&gt;COPERNICUS&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Datos de renta e índice Gini (excel) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/renta.zip&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
-&lt;li&gt;Límites censales de España (vectorial) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/SECC_CE_20200101.zip&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
-&lt;/ul&gt;
-&lt;/div&gt;
-&lt;div id=&#34;importar&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Importar&lt;/h2&gt;
-&lt;p&gt;Lo primero que hacemos es importar el raster del uso de suelo, los datos de renta e índice de Gini y los límites censales.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster de CORINE LAND COVER 2018
-urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
-## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
-## definition&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# datos de renta y Gini
-renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
-gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
-
-# límites censales del INE
-limits &amp;lt;- read_sf(&amp;quot;SECC_CE_20200101.shp&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;usos-de-suelo&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Usos de suelo&lt;/h2&gt;
-&lt;p&gt;En este primer paso filtramos las secciones censales para obtener aquellas de la Comunidad Autónoma de Madrid, y creamos los límites municipales. Para disolver los polígonos de secciones censales aplicamos la función &lt;code&gt;group_by()&lt;/code&gt; en combinación con &lt;code&gt;summarise()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la Comunidad Autónoma de Madrid
-limits &amp;lt;- filter(limits, NCA == &amp;quot;Comunidad de Madrid&amp;quot;)
-
-# obtenemos los límites municipales
-mun_limit &amp;lt;- group_by(limits, CUMUN) %&amp;gt;% summarise()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En el siguiente paso recortamos el raster de uso de suelo con los límites de Madrid. Recomiendo usar siempre primero la función &lt;code&gt;crop()&lt;/code&gt; y después &lt;code&gt;mask()&lt;/code&gt;, la primera recorta a la extensión requerida y la segunda enmascara. Posteriormente, eliminamos todos los valores que correspondan a 1 o 2 (urbano continuo, discontinuo). Por último, proyectamos el raster.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos los límites 
-limits_prj &amp;lt;- st_transform(limits, projection(urb))
-
-# acortamos y enmascaramos 
-urb_mad &amp;lt;- crop(urb, limits_prj) %&amp;gt;% 
-              mask(limits_prj)
-
-# eliminamos píxeles no urbanos 
-urb_mad[!urb_mad %in% 1:2] &amp;lt;- NA 
-
-# plot del raster
-plot(urb_mad)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos 
-urb_mad &amp;lt;- projectRaster(urb_mad, crs = CRS(&amp;quot;+proj=longlat +datum=WGS84 +no_defs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En este siguiente paso, convertimos los datos raster en un objeto &lt;code&gt;sf&lt;/code&gt; de puntos.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# transformamos el raster a xyz y objeto sf 
-urb_mad &amp;lt;- as.data.frame(urb_mad, xy = TRUE, na.rm = TRUE) %&amp;gt;%
-                st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326)
-
-# añadimos las columnas de las coordinadas
-urb_mad &amp;lt;- urb_mad %&amp;gt;% rename(urb = 1) %&amp;gt;% cbind(st_coordinates(urb_mad))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;renta-media-e-índice-de-gini&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Renta media e índice de Gini&lt;/h2&gt;
-&lt;p&gt;El formato de los Excels no coincide con el original del INE, dado que he limpiado el formato antes con el objetivo de hacer más fácil este post. Lo que nos queda es crear una columna con los códigos de las secciones censales y excluir datos que corresponden a otro nivel administrativo.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## datos renta y gini INE
-
-renta_sec &amp;lt;- mutate(renta, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
-                nc_len = str_length(NATCODE),
-                mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
-             filter(nc_len &amp;gt; 5)
-
-gini_sec &amp;lt;- mutate(gini, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
-               nc_len = str_length(NATCODE),
-               mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
-             filter(nc_len &amp;gt; 5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;En el siguiente paso unimos ambas tablas con las secciones censales usando &lt;code&gt;left_join()&lt;/code&gt; y convertimos columnas de interés en modo numérico.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# unimos ambas tablas de renta y Gini con los límites censales
-mad &amp;lt;- left_join(limits, renta_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;)) %&amp;gt;% 
-          left_join(gini_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;))
-
-# convertimos columnas en numérico 
-mad &amp;lt;- mutate_at(mad, c(23:27, 30:31), as.numeric)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;variable-bivariante&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Variable bivariante&lt;/h2&gt;
-&lt;p&gt;Para crear un mapa bivariante debemos construir una única variable que combina diferentes clases de dos variables. Normalmente son tres de cada una lo que lleva a nueve clases en total. En nuestro caso, la renta media y el índice Gini. El paquete &lt;code&gt;biscale&lt;/code&gt; incluye funciones auxiliares para llevar a cabo este proceso. Con la función &lt;code&gt;bi_class()&lt;/code&gt; creamos esta variable de clasificación usando cuantiles como algoritmo. Dado que en ambas variables encontramos valores ausentes, corregimos aquellas combinaciones entre ambas variables donde aparece un &lt;code&gt;NA&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## creamos clasificación bivariante
-mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantile&amp;quot;, dim = 3) %&amp;gt;% 
-             mutate(bi_class = ifelse(str_detect(bi_class, &amp;quot;NA&amp;quot;), NA, bi_class))
-
-# resultado
-head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
-## projected CRS:  ETRS89 / UTM zone 30N
-## # A tibble: 6 x 4
-##   GINI_2017 RNMP_2017 bi_class                                          geometry
-##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
-## 1      NA          NA &amp;lt;NA&amp;gt;     (((446007.9 4552348, 446133.7 4552288, 446207.8 ~
-## 2      31       13581 2-2      (((460243.8 4487756, 460322.4 4487739, 460279 44~
-## 3      30       12407 2-2      (((457392.5 4486262, 457391.6 4486269, 457391.1 ~
-## 4      34.3     13779 3-2      (((468720.8 4481374, 468695.5 4481361, 468664.6 ~
-## 5      33.5      9176 3-1      (((417140.2 4451736, 416867.5 4451737, 416436.8 ~
-## 6      26.2     10879 1-1      (((469251.9 4480826, 469268.1 4480797, 469292.6 ~&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;Terminamos redistribuyendo la variable de desigualdad sobre los píxeles del uso de suelo urbano. La función &lt;code&gt;st_join()&lt;/code&gt; une los datos con los puntos del uso de suelo.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## redistribuimos los píxeles urbanos a la desigualdad
-mapdasi &amp;lt;- st_join(urb_mad, st_transform(mapbivar, 4326))&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-&lt;div id=&#34;construcción-del-mapa&#34; class=&#34;section level1&#34;&gt;
-&lt;h1&gt;Construcción del mapa&lt;/h1&gt;
-&lt;div id=&#34;leyenda-y-fuente&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Leyenda y fuente&lt;/h2&gt;
-&lt;p&gt;Antes de construir ambos mapas debemos crear la leyenda usando la función &lt;code&gt;bi_legend()&lt;/code&gt;. En la función definimos los títulos para cada variable, el número de dimensiones y la gama de colores. Por último, añadimos la fuente de Montserrat para los títulos del gráfico final.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# leyenda bivariante
-legend2 &amp;lt;- bi_legend(pal = &amp;quot;DkViolet&amp;quot;,
-                     dim = 3,
-                     xlab = &amp;quot;Más desigual&amp;quot;,
-                     ylab = &amp;quot;Más renta&amp;quot;,
-                     size = 9)
-
-
-#descarga de fuente
-font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
-showtext_auto()&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;mapa-dasimétrico&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Mapa dasimétrico&lt;/h2&gt;
-&lt;p&gt;Este mapa construimos usando &lt;code&gt;geom_tile()&lt;/code&gt; para los píxeles y &lt;code&gt;geom_sf()&lt;/code&gt; para los límites municipales. Además, será el mapa de la derecha donde ubicamos también la leyenda. Para añadir la leyenda hacemos uso de la función &lt;code&gt;annotation_custom()&lt;/code&gt; indicando la posición en las coordenadas geográficas del mapa. El paquete &lt;code&gt;biscale&lt;/code&gt; también nos ayuda con la definición del color a través de la función &lt;code&gt;bi_scale_fill()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- ggplot(mapdasi) + 
-  geom_tile(aes(X, Y, 
-                fill = bi_class), 
-            show.legend = FALSE) +
-  geom_sf(data = mun_limit,  
-          color = &amp;quot;grey80&amp;quot;, 
-          fill = NA, 
-          size = 0.2) +
-  annotation_custom(ggplotGrob(legend2), 
-                    xmin = -3.25, xmax = -2.65,
-                    ymin = 40.55, ymax = 40.95) +
-  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
-                dim = 3, 
-                na.value = &amp;quot;grey90&amp;quot;) +
-  labs(title = &amp;quot;dasimétrico&amp;quot;, x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
-  bi_theme() +
-  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
-  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;mapa-coropleta&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Mapa coropleta&lt;/h2&gt;
-&lt;p&gt;El mapa coropleta se construye de forma similar al mapa anterior con la diferencia de que usamos &lt;code&gt;geom_sf()&lt;/code&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- ggplot(mapbivar) + 
-  geom_sf(aes(fill = bi_class), 
-          colour = NA, 
-          size = .1, 
-          show.legend = FALSE) +
-  geom_sf(data = mun_limit,  
-          color = &amp;quot;white&amp;quot;, 
-          fill = NA, 
-          size = 0.2) +
-  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
-                dim = 3, 
-                na.value = &amp;quot;grey90&amp;quot;) +
-  labs(title = &amp;quot;coroplético&amp;quot;,  x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
-  bi_theme() +
-  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
-  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;combinar-ambos-mapas&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Combinar ambos mapas&lt;/h2&gt;
-&lt;p&gt;Con ayuda del paquete &lt;code&gt;patchwork&lt;/code&gt; combinamos ambos mapas en una única fila, primero el mapa coropleta y a su derecha el mapa dasimétrico. Más detalles de la gramática que se usa para la combinación de gráficos &lt;a href=&#34;https://patchwork.data-imaginist.com/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Combinamos 
-p &amp;lt;- p1 | p2
-
-p&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
-&lt;/div&gt;
-&lt;/div&gt;
-</description>
     </item>
     
   </channel>

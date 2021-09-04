@@ -734,7 +734,9 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180</code></pre>
 river_line &lt;- st_read(&quot;RiverHRCenterlinesCombo.shp&quot;) %&gt;% 
                  st_zm() %&gt;% 
                     st_transform(proj_rob)</code></pre>
-<pre><code>## Reading layer `RiverHRCenterlinesCombo&#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&#39; using driver `ESRI Shapefile&#39;
+<pre><code>## Reading layer `RiverHRCenterlinesCombo&#39; from data source 
+##   `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 78 features and 6 fields
 ## Geometry type: MULTILINESTRING
 ## Dimension:     XYZ
@@ -828,7 +830,7 @@ get_usage(alg = &quot;native:extractvertices&quot;)</code></pre>
                OUTPUT = file.path(tempdir(), &quot;rivers_world_vertices.geojson&quot;),
                load_output = TRUE)</code></pre>
 <pre><code>## $OUTPUT
-## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/RtmpigHIXu/rivers_world_vertices.geojson&quot;</code></pre>
+## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/RtmpageMET/rivers_world_vertices.geojson&quot;</code></pre>
 <p><div class="alert alert-note">
   
 Currently on Windows there seem to be problems with the <em>proj</em> library. In principle, if the function ends up creating the <code>river_vertices</code> object, you should not worry. Otherwise, I recommend looking at the discussion in the issue opened at <a href="https://github.com/r-spatial/RQGIS3/issues/20">gitbub</a>.
@@ -920,7 +922,8 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
                  xend = seq(0, 360 - 22.5, by = 22.5), 
                  yend = rep(Inf, 16))</code></pre>
 <p>Next we define all the styles of the graph. The most important thing in this step is the <code>element_textbox()</code> function of the <code>ggtext</code> package to be able to interpret our html code incorporated into the title.</p>
-<pre class="r"><code>theme_polar &lt;- theme_minimal() +
+<pre class="r"><code>theme_polar &lt;- function(){
+               theme_minimal() %+replace%
                theme(axis.title.y = element_blank(),
                      axis.text.y = element_blank(),
                      legend.title = element_blank(),
@@ -938,10 +941,11 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
                      panel.background = element_rect(fill = &quot;black&quot;),
                      plot.background = element_rect(fill = &quot;black&quot;),
                      panel.grid = element_blank()
-                    )</code></pre>
+                    )
+}</code></pre>
 <p>Finally we build the graph: 1) We use the <code>geom_hline()</code> function with different y intersection points to create the background grid. The <code>geom_segment()</code> function creates the x grid. 2) We create the density area using the <code>geom_area()</code> function. 3) In <code>scale_x_continous()</code> we define a negative lower limit so that it does not collapse at a small point. The labels of the eight main directions are indicated in the <code>scale_y_continous()</code> function, and 4) Finally, we change to a polar coordinate system and set the variable to create facets.</p>
 <pre class="r"><code>ggplot() +
-  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &quot;white&quot;) +
+  geom_hline(yintercept = c(0, .2, .4, .6, .8, 1), colour = &quot;white&quot;) +
   geom_segment(data = grid_x , 
                aes(x = x, y = y, xend = xend, yend = yend), 
                linetype = &quot;dashed&quot;, col = &quot;white&quot;) +
@@ -960,7 +964,7 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
   coord_polar() + 
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &quot;&quot;) +
-  theme_polar</code></pre>
+  theme_polar()</code></pre>
 <p><img src="https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 
@@ -1086,7 +1090,7 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
   
   <div class="post-nav-item">
     <div class="meta-nav">Previous</div>
-    <a href="https://dominicroye.github.io/en/2020/visualize-climate-anomalies/" rel="prev">Visualize climate anomalies</a>
+    <a href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/" rel="prev">A very short introduction to Tidyverse</a>
   </div>
   
 </div>

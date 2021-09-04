@@ -759,47 +759,30 @@ In comparison to R Base, <code>readr</code> functions are faster; they handle pr
 library(tidyverse)
 
 google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
+<pre><code>## Rows: 516697 Columns: 13</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
+## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
+## date (1): date</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   country_region_code = col_character(),
-##   country_region = col_character(),
-##   sub_region_1 = col_character(),
-##   sub_region_2 = col_logical(),
-##   iso_3166_2_code = col_character(),
-##   census_fips_code = col_logical(),
-##   date = col_date(format = &quot;&quot;),
-##   retail_and_recreation_percent_change_from_baseline = col_double(),
-##   grocery_and_pharmacy_percent_change_from_baseline = col_double(),
-##   parks_percent_change_from_baseline = col_double(),
-##   transit_stations_percent_change_from_baseline = col_double(),
-##   workplaces_percent_change_from_baseline = col_double(),
-##   residential_percent_change_from_baseline = col_double()
-## )</code></pre>
-<pre><code>## Warning: 597554 parsing failures.
-##    row              col           expected         actual                         file
-## 200119 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
-## 200119 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &#39;Global_Mobility_Report.csv&#39;
-## 200120 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
-## 200120 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &#39;Global_Mobility_Report.csv&#39;
-## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
-## ...... ................ .................. .............. ............................
-## See problems(...) for more details.</code></pre>
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>google_mobility</code></pre>
 <pre><code>## # A tibble: 516,697 x 13
-##    country_region_co~ country_region   sub_region_1 sub_region_2 iso_3166_2_code
-##    &lt;chr&gt;              &lt;chr&gt;            &lt;chr&gt;        &lt;lgl&gt;        &lt;chr&gt;          
-##  1 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  2 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  3 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  4 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  5 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  6 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  7 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  8 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-##  9 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-## 10 AE                 United Arab Emi~ &lt;NA&gt;         NA           &lt;NA&gt;           
-## # ... with 516,687 more rows, and 8 more variables: census_fips_code &lt;lgl&gt;,
+##    country_region_code country_region  sub_region_1 sub_region_2 iso_3166_2_code
+##    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;          
+##  1 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  2 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  3 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  4 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  5 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  6 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  7 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  8 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  9 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+## 10 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+## # ... with 516,687 more rows, and 8 more variables: census_fips_code &lt;chr&gt;,
 ## #   date &lt;date&gt;, retail_and_recreation_percent_change_from_baseline &lt;dbl&gt;,
 ## #   grocery_and_pharmacy_percent_change_from_baseline &lt;dbl&gt;,
 ## #   parks_percent_change_from_baseline &lt;dbl&gt;,
@@ -1018,32 +1001,15 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 </table>
 <p>In case you haven’t done it before, we import the mobility data.</p>
 <pre class="r"><code>google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
+<pre><code>## Rows: 516697 Columns: 13</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
+## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
+## date (1): date</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   country_region_code = col_character(),
-##   country_region = col_character(),
-##   sub_region_1 = col_character(),
-##   sub_region_2 = col_logical(),
-##   iso_3166_2_code = col_character(),
-##   census_fips_code = col_logical(),
-##   date = col_date(format = &quot;&quot;),
-##   retail_and_recreation_percent_change_from_baseline = col_double(),
-##   grocery_and_pharmacy_percent_change_from_baseline = col_double(),
-##   parks_percent_change_from_baseline = col_double(),
-##   transit_stations_percent_change_from_baseline = col_double(),
-##   workplaces_percent_change_from_baseline = col_double(),
-##   residential_percent_change_from_baseline = col_double()
-## )</code></pre>
-<pre><code>## Warning: 597554 parsing failures.
-##    row              col           expected         actual                         file
-## 200119 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
-## 200119 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &#39;Global_Mobility_Report.csv&#39;
-## 200120 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
-## 200120 census_fips_code 1/0/T/F/TRUE/FALSE 01001          &#39;Global_Mobility_Report.csv&#39;
-## 200121 sub_region_2     1/0/T/F/TRUE/FALSE Autauga County &#39;Global_Mobility_Report.csv&#39;
-## ...... ................ .................. .............. ............................
-## See problems(...) for more details.</code></pre>
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div id="select-and-rename" class="section level3" number="4.4.1">
 <h3><span class="header-section-number">4.4.1</span> Select and rename</h3>
 <p>We can select or remove columns with the <code>select()</code> function, using the name or index of the column. To delete columns we make use of the negative sign. The <code>rename</code> function helps in renaming columns with either the same name or their index.</p>
@@ -1093,18 +1059,18 @@ make_datetime(2005, 5, 23, 5)</code></pre>
        resi &gt; 50) %&gt;% 
           arrange(-resi)</code></pre>
 <pre><code>## # A tibble: 32 x 5
-##    country_region_co~ country_region sub_region_1               date        resi
-##    &lt;chr&gt;              &lt;chr&gt;          &lt;chr&gt;                      &lt;date&gt;     &lt;dbl&gt;
-##  1 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-14    56
-##  2 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-21    55
-##  3 SG                 Singapore      &lt;NA&gt;                       2020-05-01    55
-##  4 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-28    54
-##  5 PE                 Peru           Metropolitan Municipality~ 2020-04-10    54
-##  6 EC                 Ecuador        Pichincha                  2020-03-27    53
-##  7 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-11    53
-##  8 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-13    53
-##  9 KW                 Kuwait         Al Farwaniyah Governorate  2020-05-20    53
-## 10 SG                 Singapore      &lt;NA&gt;                       2020-04-10    53
+##    country_region_code country_region sub_region_1              date        resi
+##    &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;                     &lt;date&gt;     &lt;dbl&gt;
+##  1 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-14    56
+##  2 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-21    55
+##  3 SG                  Singapore      &lt;NA&gt;                      2020-05-01    55
+##  4 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-28    54
+##  5 PE                  Peru           Metropolitan Municipalit~ 2020-04-10    54
+##  6 EC                  Ecuador        Pichincha                 2020-03-27    53
+##  7 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-11    53
+##  8 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-13    53
+##  9 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-20    53
+## 10 SG                  Singapore      &lt;NA&gt;                      2020-04-10    53
 ## # ... with 22 more rows</code></pre>
 </div>
 <div id="group-and-summarize" class="section level3" number="4.4.3">
@@ -1174,13 +1140,7 @@ str(subset_europe)</code></pre>
 ##  $ resi               : num [1:3988] -2 -2 0 0 1 0 1 -2 0 -1 ...
 ##  $ subregion          : chr [1:3988] &quot;Western Europe&quot; &quot;Western Europe&quot; &quot;Western Europe&quot; &quot;Western Europe&quot; ...
 ##  $ resi_real          : num [1:3988] 98 98 100 100 101 100 101 98 100 99 ...
-##  $ region             : Factor w/ 35 levels &quot;Belarus&quot;,&quot;Ukraine&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...
-##  - attr(*, &quot;problems&quot;)= tibble [597,554 x 5] (S3: tbl_df/tbl/data.frame)
-##   ..$ row     : int [1:597554] 200119 200119 200120 200120 200121 200121 200122 200122 200123 200123 ...
-##   ..$ col     : chr [1:597554] &quot;sub_region_2&quot; &quot;census_fips_code&quot; &quot;sub_region_2&quot; &quot;census_fips_code&quot; ...
-##   ..$ expected: chr [1:597554] &quot;1/0/T/F/TRUE/FALSE&quot; &quot;1/0/T/F/TRUE/FALSE&quot; &quot;1/0/T/F/TRUE/FALSE&quot; &quot;1/0/T/F/TRUE/FALSE&quot; ...
-##   ..$ actual  : chr [1:597554] &quot;Autauga County&quot; &quot;01001&quot; &quot;Autauga County&quot; &quot;01001&quot; ...
-##   ..$ file    : chr [1:597554] &quot;&#39;Global_Mobility_Report.csv&#39;&quot; &quot;&#39;Global_Mobility_Report.csv&#39;&quot; &quot;&#39;Global_Mobility_Report.csv&#39;&quot; &quot;&#39;Global_Mobility_Report.csv&#39;&quot; ...</code></pre>
+##  $ region             : Factor w/ 35 levels &quot;Belarus&quot;,&quot;Ukraine&quot;,..: 18 18 18 18 18 18 18 18 18 18 ...</code></pre>
 </div>
 <div id="long-and-wide-tables" class="section level3" number="4.4.5">
 <h3><span class="header-section-number">4.4.5</span> Long and wide tables</h3>
@@ -1435,9 +1395,9 @@ cor_mobility[1:5]</code></pre>
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&#39;~ two.sided  
+##   estimate statistic       p.value parameter conf.low conf.high method alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+## 1   -0.312     -6.06 0.00000000367       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8

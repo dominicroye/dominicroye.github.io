@@ -734,7 +734,9 @@ bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180</code></pre>
 river_line &lt;- st_read(&quot;RiverHRCenterlinesCombo.shp&quot;) %&gt;% 
                  st_zm() %&gt;% 
                     st_transform(proj_rob)</code></pre>
-<pre><code>## Reading layer `RiverHRCenterlinesCombo&#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&#39; using driver `ESRI Shapefile&#39;
+<pre><code>## Reading layer `RiverHRCenterlinesCombo&#39; from data source 
+##   `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
 ## Simple feature collection with 78 features and 6 fields
 ## Geometry type: MULTILINESTRING
 ## Dimension:     XYZ
@@ -828,7 +830,7 @@ get_usage(alg = &quot;native:extractvertices&quot;)</code></pre>
                OUTPUT = file.path(tempdir(), &quot;rivers_world_vertices.geojson&quot;),
                load_output = TRUE)</code></pre>
 <pre><code>## $OUTPUT
-## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/Rtmpw5vYcG/rivers_world_vertices.geojson&quot;</code></pre>
+## [1] &quot;C:/Users/xeo19/AppData/Local/Temp/RtmpUlxGVM/rivers_world_vertices.geojson&quot;</code></pre>
 <p><div class="alert alert-note">
   
 Actualmente en Windows parece haber problemas con la librería de <em>proj</em>. En principio si termina creando el objeto <code>river_vertices</code> no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el <em>issue</em> abierto en <a href="https://github.com/r-spatial/RQGIS3/issues/20">gitbub</a>.
@@ -920,7 +922,8 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
                  xend = seq(0, 360 - 22.5, by = 22.5), 
                  yend = rep(Inf, 16))</code></pre>
 <p>A continuación definimos todos los estilos del gráfico. Lo más importante en este paso es la función <code>element_textbox()</code> del paquete <code>ggtext</code> para poder interpretar nuestro código html incorporado al título.</p>
-<pre class="r"><code>theme_polar &lt;- theme_minimal() +
+<pre class="r"><code>theme_polar &lt;- function(){ 
+               theme_minimal() %+replace%
                theme(axis.title.y = element_blank(),
                      axis.text.y = element_blank(),
                      legend.title = element_blank(),
@@ -938,11 +941,12 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
                      panel.background = element_rect(fill = &quot;black&quot;),
                      plot.background = element_rect(fill = &quot;black&quot;),
                      panel.grid = element_blank()
-                    )</code></pre>
+                    )
+}</code></pre>
 <p>Para terminar construimos el gráfico: 1) Usamos la función <code>geom_hline()</code> con diferentes puntos de intersección en <em>y</em> para crear la cuadrícula de fondo. La función <code>geom_segment()</code> crea la cuadrícula en <em>x</em>. 2) El área de densidad la creamos usando la función <code>geom_area()</code>. 3) En <code>scale_x_continous()</code> definimos un límite inferior
 negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho direcciones principales las indicamos en la función <code>scale_y_continous()</code>, y 4) Por último, cambiamos a un sistema de coordenadas polar y fijamos la variable para crear facetas.</p>
 <pre class="r"><code>ggplot() +
-  geom_hline(yintercept = c(0, .2, .6, .8, 1), colour = &quot;white&quot;) +
+  geom_hline(yintercept = c(0, .2, .4, .6, .8, 1), colour = &quot;white&quot;) +
   geom_segment(data = grid_x , 
                aes(x = x, y = y, xend = xend, yend = yend), 
                linetype = &quot;dashed&quot;, col = &quot;white&quot;) +
@@ -961,7 +965,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   coord_polar() + 
   facet_wrap(river ~ ., ncol = 4) +
   labs(title = title, caption = caption, x = &quot;&quot;) +
-  theme_polar</code></pre>
+  theme_polar()</code></pre>
 <p><img src="https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
 </div>
 
