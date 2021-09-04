@@ -18,8 +18,8 @@
 &lt;script src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
-&lt;p&gt;The climate of a place is usually presented through climographs that combine monthly precipitation and temperature in a single chart. However, it is also interesting to visualize the climate on a daily scale showing the thermal amplitude and the daily average temperature. To do this, the averages for each day of the year of the daily minimums, maximums and averages are calculated.&lt;/p&gt;
-&lt;p&gt;The annual climate cycle presents a good opportunity to use a radial or polar which allows us to clearly visualize seasonal patterns.&lt;/p&gt;
+&lt;p&gt;The climate of a place is usually presented through climographs that combine monthly precipitation and temperature in a single chart. However, it is also interesting to visualize the climate on a daily scale showing the thermal amplitude and the daily average temperature. To do this, the averages for each day of the year of daily minimums, maximums and means are calculated.&lt;/p&gt;
+&lt;p&gt;The annual climate cycle presents a good opportunity to use a radial or polar chart which allows us to clearly visualize seasonal patterns.&lt;/p&gt;
 &lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Packages&lt;/h1&gt;
 &lt;p&gt;We will use the following packages:&lt;/p&gt;
@@ -70,11 +70,11 @@ library(janitor)&lt;/code&gt;&lt;/pre&gt;
 &lt;h1&gt;Preparation&lt;/h1&gt;
 &lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Data&lt;/h2&gt;
-&lt;p&gt;We downloaded the temperature data for a selection of US cities &lt;a href=&#34;https://dominicroye.github.io/files/weather_stats_usa.zip&#34;&gt;download&lt;/a&gt;. You can download other cities of the entire world through the WMO or GHCN datasets at &lt;a href=&#34;https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily&#34;&gt;NCDC/NOAA&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;We download the temperature data for a selection of US cities &lt;a href=&#34;https://dominicroye.github.io/files/weather_stats_usa.zip&#34;&gt;here&lt;/a&gt;. You can access other cities of the entire world through the WMO or GHCN datasets at &lt;a href=&#34;https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily&#34;&gt;NCDC/NOAA&lt;/a&gt;.&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Import&lt;/h2&gt;
-&lt;p&gt;To import the temperature time series of each city, which we find in several files, we apply the &lt;code&gt;read_csv()&lt;/code&gt; function using &lt;code&gt;map_df()&lt;/code&gt;. The &lt;code&gt;dir_ls()&lt;/code&gt; function of the &lt;code&gt;fs&lt;/code&gt; package returns the list of files with &lt;em&gt;csv&lt;/em&gt; extension. The suffix of &lt;code&gt;map()&lt;/code&gt; indicates that we want to join all the imported tables into a single one. For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend a short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;To import the temperature time series of each city, which we find in several files, we apply the &lt;code&gt;read_csv()&lt;/code&gt; function using &lt;code&gt;map_df()&lt;/code&gt;. The &lt;code&gt;dir_ls()&lt;/code&gt; function of the &lt;code&gt;fs&lt;/code&gt; package returns the list of files with &lt;em&gt;csv&lt;/em&gt; extension. The suffix &lt;em&gt;df&lt;/em&gt; of &lt;code&gt;map()&lt;/code&gt; indicates that we want to join all imported tables into a single one. For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend a short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
 &lt;p&gt;Then we obtain the names of the weather stations and define a new vector with the new city names.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import data
 meteo &amp;lt;- dir_ls(regexp = &amp;quot;.csv$&amp;quot;) %&amp;gt;% 
@@ -114,14 +114,14 @@ cities &amp;lt;- c(&amp;quot;CHICAGO&amp;quot;, &amp;quot;NEW YORK&amp;quot;, &a
 &lt;/div&gt;
 &lt;div id=&#34;modify&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Modify&lt;/h2&gt;
-&lt;p&gt;In the first step we will modify the original data, 1) selecting only the columns of interest, 2) filtering the period 1991-2020, 3) defining the new city names, 4) calculating the average temperature where it is absent, 5) cleaning the column names, and 6) creating a new variable with the days of the year. The &lt;code&gt;clean_names()&lt;/code&gt; function of the &lt;code&gt;janitor&lt;/code&gt; package is very useful for getting clean column names.&lt;/p&gt;
+&lt;p&gt;In the first step, we will modify the original data, 1) selecting only the columns of interest, 2) filtering the period 1991-2020, 3) defining the new city names, 4) calculating the average temperature where it is absent, 5) cleaning the column names, and 6) creating a new variable with the days of the year. The &lt;code&gt;clean_names()&lt;/code&gt; function of the &lt;code&gt;janitor&lt;/code&gt; package is very useful for getting clean column names.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo &amp;lt;- select(meteo, NAME, DATE, TAVG:TMIN) %&amp;gt;%  
            filter(DATE &amp;gt;= &amp;quot;1991-01-01&amp;quot;, DATE &amp;lt;= &amp;quot;2020-12-31&amp;quot;) %&amp;gt;% 
             mutate(NAME = factor(NAME, stats_names, cities),
                    TAVG = ifelse(is.na(TAVG), (TMAX+TMIN)/2, TAVG),
                    yd = yday(DATE)) %&amp;gt;% 
             clean_names()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;In the next step we calculate the average of the daily maximum, minimum and mean temperature for each day of the year. It now only remains to convert the days of the year into a dummy date. Here we use the year 2000 since it is a leap year and we have a total of 366 days.&lt;/p&gt;
+&lt;p&gt;In the next step, we calculate the daily maximum, minimum and mean temperature for each day of the year. It now only remains to convert the days of the year into a dummy date. Here we use the year 2000 since it is a leap year, and we have a total of 366 days.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimate the daily averages
 meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;% 
                   summarise(ta = mean(tavg, na.rm = TRUE),
@@ -193,7 +193,7 @@ meteo_yday &amp;lt;- mutate(meteo_yday, yd = as_date(yd, origin = &amp;quot;1999
 &lt;/div&gt;
 &lt;div id=&#34;graph&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Graph&lt;/h2&gt;
-&lt;p&gt;We start by building a chart for New York City only. We will use &lt;code&gt;geom_linerange()&lt;/code&gt; defining the range with the daily maximum and minimum temperature. Also, we will draw the range line color based on the mean temperature. We can adjust &lt;em&gt;alpha&lt;/em&gt; and &lt;em&gt;size&lt;/em&gt; to get a nicer look.&lt;/p&gt;
+&lt;p&gt;We start by building a chart for New York City only. We will use &lt;code&gt;geom_linerange()&lt;/code&gt; to define line range with the daily maximum and minimum temperature. Also, we will draw the range line colour based on the mean temperature. Finally, we can adjust &lt;em&gt;alpha&lt;/em&gt; and &lt;em&gt;size&lt;/em&gt; to get a nicer look.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter New York
 ny_city &amp;lt;- filter(meteo_yday, name == &amp;quot;NEW YORK&amp;quot;) 
 
@@ -216,7 +216,7 @@ ggplot(ny_city) +
   labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
        colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;To get the polar graph it would only be necessary to add the function &lt;code&gt;coord_polar()&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;To get the polar graph it would only be necessary to add the &lt;code&gt;coord_polar()&lt;/code&gt; function.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# polar chart
 ggplot(ny_city) + 
   geom_linerange(aes(yd, 
@@ -237,7 +237,7 @@ ggplot(ny_city) +
   labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
        colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
-&lt;p&gt;In the final graph we add the grid defining the lines on the y-axis with &lt;code&gt;geom_hline()&lt;/code&gt;, and those on the x-axis with &lt;code&gt;geom_segement()&lt;/code&gt;. The most important thing here is the &lt;code&gt;facet_wrap()&lt;/code&gt; function, which allows the creation of multiple facets of charts. The formula format is used to specify how the facets are created: &lt;code&gt;row ~ column&lt;/code&gt;. In case we do not have a second variable, a point &lt;code&gt;.&lt;/code&gt; is indicated in the formula. In addition, we make changes to the appearance of the color bar with &lt;code&gt;guides()&lt;/code&gt; and &lt;code&gt;guide_colourbar()&lt;/code&gt;, and we include the &lt;code&gt;theme_cc()&lt;/code&gt; style.&lt;/p&gt;
+&lt;p&gt;In the final graph, we add the grid defining the lines on the y-axis with &lt;code&gt;geom_hline()&lt;/code&gt; and those on the x-axis with &lt;code&gt;geom_segement()&lt;/code&gt;. The most important thing here is the &lt;code&gt;facet_wrap()&lt;/code&gt; function, which allows multiple facets of charts. The formula format is used to specify how the facets are created: &lt;code&gt;row ~ column&lt;/code&gt;. If we do not have a second variable, a point &lt;code&gt;.&lt;/code&gt; is indicated in the formula. In addition, we make changes to the appearance of the colour bar with &lt;code&gt;guides()&lt;/code&gt; and &lt;code&gt;guide_colourbar()&lt;/code&gt;, and we include the &lt;code&gt;theme_cc()&lt;/code&gt; style.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(meteo_yday) + 
   geom_hline(yintercept = c(-10, 0, 10, 20, 30, 40), 
              colour = &amp;quot;white&amp;quot;, 
