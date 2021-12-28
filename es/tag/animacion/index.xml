@@ -1,0 +1,675 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>animación | Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/es/tag/animacion/</link>
+      <atom:link href="https://dominicroye.github.io/es/tag/animacion/index.xml" rel="self" type="application/rss+xml" />
+    <description>animación</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Mon, 20 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
+      <title>animación</title>
+      <link>https://dominicroye.github.io/es/tag/animacion/</link>
+    </image>
+    
+    <item>
+      <title>Visualizar el ciclo de día-noche en un mapamundi</title>
+      <link>https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/</link>
+      <pubDate>Mon, 20 Dec 2021 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;En abril de este año he hecho una animación de la temperatura media de 24 horas de enero 2020 mostrando también el ciclo día-noche.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;The average temperature of 24 hours in January 2020 with the day/night cycle. You can see a lot of geographic patterns. I love this kind of hypnotic temperature gifs. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/rspatial?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rspatial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/NA5haUlnie&#34;&gt;pic.twitter.com/NA5haUlnie&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1383486611707494406?ref_src=twsrc%5Etfw&#34;&gt;April 17, 2021&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;Mi mayor problema consistía en encontrar una forma para proyectar correctamente el área de noche sin que rompa la geometría. La solución más fácil que encontré fue rasterizar el polígono de noche y posteriormente, reproyectarlo. Seguramente se podría usar un enfoque vectorial, pero aquí he preferido el uso de datos raster.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;p&gt;Usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;hms&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una clase simple para almacenar duraciones o valores de hora del día y mostrarlos en el formato hh:mm:ss&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster (paquete sucesor de raster)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lwgeom&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Acceso a la librería liblwgeom con funciones vectoriales adicionales para sf&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;gifski&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Creación de animaciones en formato gif&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;hms&amp;quot;)) install.packages(&amp;quot;hms&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;lwgeom&amp;quot;)) install.packages(&amp;quot;lwgeom&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+if(!require(&amp;quot;gifski&amp;quot;)) install.packages(&amp;quot;gifski&amp;quot;)
+
+
+
+# paquetes
+library(rnaturalearth)
+library(tidyverse)
+library(lwgeom)
+library(sf)
+library(terra)
+library(lubridate)
+library(hms)
+library(gifski)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Para usar la resolución de 50 y 10 m del paquete &lt;code&gt;{rnaturalearth}&lt;/code&gt; es necesario instalar los siguientes paquetes adicionales. Debe estar instalado el paquete &lt;code&gt;{devtools}&lt;/code&gt;.
+&lt;code&gt;devtools::install_github(&amp;ldquo;ropensci/rnaturalearthdata&amp;rdquo;)&lt;/code&gt;
+&lt;code&gt;devtools::install_github(&amp;ldquo;ropensci/rnaturalearthhires&amp;rdquo;)&lt;/code&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;funciones-externas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Funciones externas&lt;/h2&gt;
+&lt;p&gt;Las funciones para estimar la línea separador entre día y noche se basan en un javascript &lt;em&gt;L.Terminator.js&lt;/em&gt; del paquete &lt;code&gt;{Leaflet}&lt;/code&gt; que encontré en &lt;a href=&#34;https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions&#34;&gt;stackoverflow&lt;/a&gt;. El script con las funciones lo podéis descargar &lt;a href=&#34;https://dominicroye.github.io/files/terminator.R&#34;&gt;aquí&lt;/a&gt; o acceder en &lt;a href=&#34;https://github.com/JoGall/terminator/blob/master/terminator.R&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;source(&amp;quot;terminator.R&amp;quot;) # importamos las funciones&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;funciones-personalizadas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Funciones personalizadas&lt;/h2&gt;
+&lt;p&gt;La función principal &lt;code&gt;terminator()&lt;/code&gt; basada en el javascript de &lt;code&gt;{Leaflet}&lt;/code&gt; necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # fecha y hora de nuestro sistema operativo
+t0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2021-12-23 11:33:08 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
+
+# lo convertimos en un objecto espacial de clase sf
+line_nightday &amp;lt;- st_linestring(as.matrix(coord_nightday)) %&amp;gt;% st_sfc(crs = 4326) 
+
+# ploteamos
+plot(line_nightday)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;En el sigiente paso obtenemos los polígonos que corresponden al día y la noche que separa la línea estimada anteriormente. Para ello creamos un rectángulo cubriendo todo el planeta y empleamos la función &lt;code&gt;st_split()&lt;/code&gt; del paquete &lt;code&gt;{lwgeom}&lt;/code&gt; que divide el rectángulo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rectángulo 
+wld_bbx &amp;lt;- st_bbox(c(xmin = -180, xmax = 180,
+                       ymin = -90, ymax = 90), 
+                     crs = 4326) %&amp;gt;% 
+             st_as_sfc()
+
+# divisón con la línea día-noche
+poly_nightday &amp;lt;-  st_split(wld_bbx, line_nightday) %&amp;gt;% 
+                      st_collection_extract(c(&amp;quot;POLYGON&amp;quot;)) %&amp;gt;% 
+                       st_sf() 
+
+# ploteamos 
+plot(poly_nightday)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;La pregunta que ahora surge es cuál de los dos poligonos corresponde a la noche y cúal al día. Eso dependerá en qué día del año estamos, dado los cambios de posición de la Tierra con respecto al Sol. Entre el equinoccio de primeravera y el equinoccio de otoño corresponde con el primer polígono, cuándo también podemos observar el día polar en el polo norte, y en el caso contrario sería el segundo. El paquete &lt;code&gt;{terra}&lt;/code&gt; sólo acepta la clase vectorial propia llamada &lt;code&gt;SpatVector&lt;/code&gt;, por eso convertimos el objeto vectorial sf con la función &lt;code&gt;vect()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# selecionamos el segundo polígono
+poly_nightday &amp;lt;- slice(poly_nightday, 2) %&amp;gt;% 
+                    mutate(daynight = 1)
+
+# creamos el raster con una resolución de 0,5º y la extensión del mundo
+r &amp;lt;- rast(vect(wld_bbx), resolution = .5)
+
+# rasterizamos el polígono de noche 
+night_rast &amp;lt;- rasterize(vect(poly_nightday), r) 
+
+# resultado en formato raster
+plot(night_rast)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;En el último paso reproyectamos el raster a &lt;a href=&#34;https://epsg.io/54009&#34;&gt;Mollweide&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# definimos la proyección del raster (WGS84)
+crs(night_rast) &amp;lt;- &amp;quot;EPSG:4326&amp;quot;
+
+# reproyectamos
+night_rast_prj &amp;lt;- project(night_rast, &amp;quot;ESRI:54009&amp;quot;, 
+                          mask = TRUE, 
+                          method = &amp;quot;near&amp;quot;)
+# mapa
+plot(night_rast_prj)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finalmente incluimos los pasos individuales que hemos hecho en una función personalizada.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rast_determiner &amp;lt;- function(x_min, date, res) {
+  
+  # crea fecha con hora añadiendo el número de minutos
+  t0 &amp;lt;- as_date(date) + minutes(x_min) 
+  # estimamos las coordenadas de la línea que separa día y noche 
+  night_step &amp;lt;- terminator(t0, -180, 180, 0.2) %&amp;gt;% as.matrix()
+  # pasamos los puntos a línea
+  night_line &amp;lt;- st_linestring(night_step) %&amp;gt;% st_sfc(crs = 4326)
+  
+  # definimos el rectángulo del planeta
+  wld_bbx &amp;lt;- st_bbox(c(xmin = -180, xmax = 180,
+                       ymin = -90, ymax = 90), 
+                     crs = 4326) %&amp;gt;% 
+             st_as_sfc()
+  
+  # dividimos el polígono con la línea de día-noche
+  poly_nightday &amp;lt;-  st_split(wld_bbx, night_line) %&amp;gt;% 
+                      st_collection_extract(c(&amp;quot;POLYGON&amp;quot;)) %&amp;gt;% 
+                       st_sf()  
+  
+  # seleccionamos el polígono según la fecha
+  if(date &amp;lt;= make_date(year(date), 3, 20) | date &amp;gt;= make_date(year(date), 9, 23)) {
+    
+    poly_nightday &amp;lt;- slice(poly_nightday, 2) %&amp;gt;% 
+      mutate(daynight = 1)
+    
+  } else {
+    
+    poly_nightday &amp;lt;- slice(poly_nightday, 1) %&amp;gt;% 
+      mutate(daynight = 1)
+  }
+  
+  # creamos el raster con la resolución del argumento res
+  r &amp;lt;- rast(vect(wld_bbx), resolution = res)
+  
+  # rasterizamos el polígono de noche
+  night_rast &amp;lt;- rasterize(vect(poly_nightday), r) 
+  
+  return(night_rast)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Dado que queremos obtener el área de noche para diferentes horas del día construimos una segunda función para aplicar la primera sobre diferentes intervalos del día (en minutos).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;night_determinator &amp;lt;- function(time_seq, # minutos 
+                               date = Sys.Date(), # fecha (por defecto del sistema)
+                               res = .5) { # resolución del raster 0.5º
+
+# aplicamos la primera función sobre un vector de minutos
+night_raster &amp;lt;-  map(time_seq, 
+                     rast_determiner,
+                     date = date, 
+                     res = res)
+
+# convertimos el raster en un objeto de tantas capas como unidades de minutos
+night_raster &amp;lt;- rast(night_raster)
+
+# definimos la proyección WGS84
+crs(night_raster) &amp;lt;- &amp;quot;EPSG:4326&amp;quot;
+
+return(night_raster)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;cear-un-ciclo-día-noche&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cear un ciclo día-noche&lt;/h1&gt;
+&lt;p&gt;Primero creamos el área de noches para el día de nuestro sistema operativo con intervalos de 30 minutos. Después lo reproyectamos a &lt;a href=&#34;https://epsg.io/54019&#34;&gt;Winkel II&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# aplicamos nuestra función para un día de 24 horas en intervalos de 30 minutos
+night_rast &amp;lt;- night_determinator(seq(0, 1410, 30), Sys.Date(), res = .5)
+
+# proyectamos a Winkel II
+night_raster_winkel &amp;lt;- project(night_rast, 
+                               &amp;quot;ESRI:54019&amp;quot;, 
+                                mask = TRUE,
+                                method = &amp;quot;near&amp;quot;)
+# mapa de los primeros 5
+plot(night_raster_winkel, maxnl = 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animación-del-ciclo-día-noche&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Animación del ciclo día-noche&lt;/h1&gt;
+&lt;div id=&#34;preparación-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación&lt;/h2&gt;
+&lt;p&gt;Para crear una animación de 24 horas mostrando el movimiento de la noche sobre la Tierra debemos hacer unos pasos previos. Primero obtenemos los límites del mundo con la función &lt;code&gt;ne_countries()&lt;/code&gt; y los reproyectamos a la nueva proyección Winkel II. Después convertimos los datos raster en un &lt;code&gt;data.frame&lt;/code&gt; indicando que mantenga valores ausentes. Podemos observar que cada capa del raster (de cada intervalo de 30 minutos) es una columna en el &lt;code&gt;data.frame&lt;/code&gt;. Renombramos las columnas y convertimos la tabla en un formato largo empleando la función &lt;code&gt;pivot_longer()&lt;/code&gt;. Lo que hacemos es fusionar todas las columnas de las capas en una única. Como último paso excluimos los valores ausentes con la función &lt;code&gt;filter()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# límites de países
+wld &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;) %&amp;gt;% 
+         st_transform(&amp;quot;ESRI:54019&amp;quot;)
+
+# convertimos el raster a un data.frame con xyz
+df_winkel &amp;lt;- as.data.frame(night_raster_winkel, xy = TRUE, na.rm = FALSE)
+
+# renombramos todas las columnas correspondientes a los intervalos del día
+names(df_winkel)[3:length(df_winkel)] &amp;lt;- str_c(&amp;quot;H&amp;quot;, as_hms(seq(0, 1410, 30)*60))
+
+# cambiamos a un formato largo de tabla
+df_winkel &amp;lt;- pivot_longer(df_winkel, 3:length(df_winkel), names_to = &amp;quot;hour&amp;quot;, values_to = &amp;quot;night&amp;quot;) 
+
+# excluimos los valores ausentes para reducir el tamaño de la tabla
+df_winkel &amp;lt;- filter(df_winkel, !is.na(night))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sólo resta crear una retícula y obtener la extensión del mapamundi.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# retícula
+grid &amp;lt;- st_graticule() %&amp;gt;%   st_transform(&amp;quot;ESRI:54019&amp;quot;)
+
+# obtenemos la extensión del mundo
+bbx &amp;lt;- st_bbox(wld)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa&lt;/h2&gt;
+&lt;p&gt;El mapa de cualquier hora lo construimos con &lt;code&gt;ggplot2&lt;/code&gt; añadiendo la geometría vectorial con &lt;code&gt;geom_sf()&lt;/code&gt; (los límites y la retícula) y con &lt;code&gt;geom_raster()&lt;/code&gt; los datos raster. En el título estamos usando un símbolo unicode como reloj. Además definimos la extensión del mapa en &lt;code&gt;coord_sf()&lt;/code&gt; para mantenerlo constante sobre todos los mapas en la animación. Por último, hacemos uso de &lt;code&gt;{{ }}&lt;/code&gt; de &lt;a href=&#34;https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/&#34;&gt;{rlang}&lt;/a&gt; dentro de la función &lt;code&gt;filter()&lt;/code&gt; para poder filtrar nuestros datos raster en forma de tabla. Con el objetivo de que nuestra función pueda evaluar correctamente los valores que pasamos en &lt;code&gt;x&lt;/code&gt; (los intervalos del día) es necesario usar esta gramatica de &lt;em&gt;tidy evaluation&lt;/em&gt; por &lt;em&gt;data masking&lt;/em&gt; de &lt;code&gt;tidyverse&lt;/code&gt;. Es un tema para otro post.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ejemplo 5 UTC
+x &amp;lt;- &amp;quot;H05:00:00&amp;quot;
+
+# mapa
+ggplot() +
+  # límites
+  geom_sf(data = wld,
+        fill = &amp;quot;#74a9cf&amp;quot;, 
+        colour = &amp;quot;white&amp;quot;,
+          size = .1) +
+  # retícula
+  geom_sf(data = grid, size = .1) +
+  # datos raster filtrados 
+  geom_raster(data = filter(df_winkel, hour == {{x}}), 
+              aes(x, y), 
+            fill = &amp;quot;grey90&amp;quot;,
+            alpha = .6) +
+  # título
+  labs(title = str_c(&amp;quot;\U1F551&amp;quot;, str_remove(x, &amp;quot;H&amp;quot;), &amp;quot; UTC&amp;quot;)) + 
+  # límites de extensión
+  coord_sf(xlim = bbx[c(1, 3)], 
+           ylim = bbx[c(2, 4)])  +
+  # estilo del mapa
+  theme_void() +
+  theme(plot.title = element_text(hjust = .1, vjust = .9))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animación&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Animación&lt;/h2&gt;
+&lt;p&gt;Creamos la animación aplicando la función &lt;code&gt;walk()&lt;/code&gt;, que a su vez pasará por el vector de intervalos para filtrar nuestros datos y mapear cada paso haciendo uso de &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;walk(str_c(&amp;quot;H&amp;quot;, as_hms(seq(0, 1410, 30)*60)), function(step){
+  
+g &amp;lt;- ggplot() +
+  geom_sf(data = wld,
+        fill = &amp;quot;#74a9cf&amp;quot;, 
+        colour = &amp;quot;white&amp;quot;,
+          size = .1) +
+  geom_sf(data = grid,
+          size = .1) +
+  geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+            fill = &amp;quot;grey90&amp;quot;,
+            alpha = .6) +
+  labs(title = str_c(&amp;quot;\U1F551&amp;quot;, str_remove(x, &amp;quot;H&amp;quot;), &amp;quot; UTC&amp;quot;)) + 
+  coord_sf(xlim = bbx[c(1, 3)], ylim = bbx[c(2, 4)])  +
+  theme_void() +
+  theme(plot.title = element_text(hjust = .1, vjust = .9))
+
+
+ggsave(str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(step, &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;), g,
+       height = 4.3, width = 8.4, bg = &amp;quot;white&amp;quot;, dpi = 300, units = &amp;quot;in&amp;quot;)
+
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La creación del gif final lo hacemos con &lt;code&gt;gifski()&lt;/code&gt; pasándole los nombres de las imagenes en el orden como deben aparecer en la animación.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(as_hms(seq(0, 710, 30)*60), &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;)
+
+gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Animación climática de la temperatura máxima</title>
+      <link>https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/</link>
+      <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de &lt;a href=&#34;https://dominicroye.github.io/es/graphs/climate/&#34;&gt;gráficos&lt;/a&gt; de este mismo blog.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Estilos para ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;gifski&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Crear gifs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes del sistema y fuentes de Google&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;ggthemes&amp;quot;)
+if(!require(&amp;quot;gifski&amp;quot;)) install.packages(&amp;quot;gifski&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(raster)
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(sf)
+library(rnaturalearth)
+library(extrafont)
+library(showtext)
+library(RColorBrewer)
+library(gifski)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para aquellos con menos experiencia con &lt;code&gt;tidyverse&lt;/code&gt;, recomiendo la breve introducción en este blog &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Descargamos los datos STEAD de la temperatura máxima (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) en formato &lt;em&gt;netCDF&lt;/em&gt; desde el repositario del CSIC &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;aquí&lt;/a&gt; (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos &lt;em&gt;netCDF&lt;/em&gt;, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (&lt;em&gt;array&lt;/em&gt;) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://dominicroye.github.io/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar los datos&lt;/h2&gt;
+&lt;p&gt;El formato &lt;em&gt;netCDF&lt;/em&gt; con extensión &lt;em&gt;.nc&lt;/em&gt; lo podemos importar vía dos paquetes principales: 1) &lt;code&gt;ncdf4&lt;/code&gt; y 2) &lt;code&gt;raster&lt;/code&gt;. Aunque el paquete &lt;code&gt;raster&lt;/code&gt; realmente lo que hace es usar el primer paquete para importar los datos. En este post usaremos el paquete &lt;code&gt;raster&lt;/code&gt; dado que es algo más fácil, con algunas funciones muy útiles y más universales para todo tipo de formato &lt;em&gt;raster&lt;/em&gt;. Las funciones principales de importación son: &lt;code&gt;raster()&lt;/code&gt;, &lt;code&gt;stack()&lt;/code&gt; y &lt;code&gt;brick()&lt;/code&gt;. La primera función sólo permite importar una única capa, en cambio, las últimas dos funciones se emplean para datos multidimensionales. En nuestro caso sólo tenemos una variable, por tanto no sería necesario hacer uso del argumento &lt;code&gt;varname&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los datos ncdf
+tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required namespace: ncdf4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tmx # metadatos&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterBrick 
+## dimensions : 190, 230, 43700, 41638  (nrow, ncol, ncell, nlayers)
+## resolution : 0.0585, 0.045  (x, y)
+## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : tmax_pen.nc 
+## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
+## Time (days since 1901-01-01): 1, 41638 (min, max)
+## varname    : tx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En la estructura del objeto &lt;code&gt;RasterBrick&lt;/code&gt; vemos todos los metadatos necesarios: desde la resolución, las dimensiones o el tipo de proyección, hasta el nombre de la variable. Además nos indica que únicamente apunta a los datos (&lt;em&gt;source&lt;/em&gt;) y no los ha importado a la memoria RAM lo que facilita el trabajo con grandes conjuntos de datos.&lt;/p&gt;
+&lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
+plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
+&lt;p&gt;En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete &lt;code&gt;raster&lt;/code&gt; disponemos de la función &lt;code&gt;stackApply()&lt;/code&gt; que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.&lt;/p&gt;
+&lt;p&gt;Empezamos con las funciones &lt;code&gt;beginClusterr()&lt;/code&gt; y &lt;code&gt;endCluster()&lt;/code&gt; que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función &lt;code&gt;clusterR&lt;/code&gt; permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función &lt;code&gt;stackApply()&lt;/code&gt;, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento &lt;code&gt;progress = &#39;text&#39;&lt;/code&gt; se muestra una barra de progreso del cálculo.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de &lt;a href=&#34;https://earthengine.google.com/&#34;&gt;Google Earth Engine&lt;/a&gt; lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos las fechas entre 1901 y 2014 a días del año
+time_days &amp;lt;- yday(seq(as_date(&amp;quot;1901-01-01&amp;quot;), as_date(&amp;quot;2014-12-31&amp;quot;), &amp;quot;day&amp;quot;))
+
+# calculamos el promedio 
+beginCluster(4)
+tmx_mean &amp;lt;- clusterR(tmx, stackApply, args = list(indices = time_days, fun = mean))
+endCluster()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;suavizar-la-variabilidad-de-las-temperaturas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Suavizar la variabilidad de las temperaturas&lt;/h2&gt;
+&lt;p&gt;Antes de pasar a suavizar las series temporales de nuestro &lt;em&gt;RasterBrick&lt;/em&gt;, un ejemplo del por qué lo hacemos. Extraemos un píxel de nuestro conjunto de datos en las coordenadas -1º de longitud y 40º de latitud usando la función &lt;code&gt;extract()&lt;/code&gt;. Dado que la función con el mismo nombre aparece en varios paquetes, debemos cambiar a la forma &lt;code&gt;nombre_paquete::nombre_función&lt;/code&gt;. El resultado es una matriz con una fila correspondiente al píxel y 366 columnas de los días del año. El siguiente paso es la creación de un &lt;em&gt;data.frame&lt;/em&gt; con una fecha &lt;em&gt;dummy&lt;/em&gt; y la temperatura máxima extraída.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos un píxel
+point_ts &amp;lt;- raster::extract(tmx_mean, matrix(c(-1, 40), nrow = 1))
+dim(point_ts) # dimensiones &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   1 366&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos un data.frame
+df &amp;lt;- data.frame(date = seq(as_date(&amp;quot;2000-01-01&amp;quot;), as_date(&amp;quot;2000-12-31&amp;quot;), &amp;quot;day&amp;quot;),
+                 tmx = point_ts[1,])
+
+# visualizamos la temperatura máxima 
+ggplot(df, 
+       aes(date, tmx)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
+  
+  if(all(is.na(x))){
+   
+    return(x) 
+   
+  } else {
+    
+  df &amp;lt;- data.frame(yd = 1:366, ta = x)
+  m &amp;lt;- loess(ta ~ yd, span = span, data = df)
+  est &amp;lt;- predict(m, 1:366)
+
+  return(est)
+  
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aplicamos nuestra nueva función de suavizado a la serie temporal extraída y hacemos algunos cambios para poder visualizar la diferencia entre los datos originales y suavizados.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizamos la temperatura
+df &amp;lt;- mutate(df, tmx_smoothed = daily_smooth(tmx)) %&amp;gt;% 
+          pivot_longer(2:3, names_to = &amp;quot;var&amp;quot;, values_to = &amp;quot;temp&amp;quot;)
+
+# visualizamos la diferencia 
+ggplot(df, 
+       aes(date, temp, 
+           colour = var)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
+tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualización&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualización&lt;/h1&gt;
+&lt;div id=&#34;preparación-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación&lt;/h2&gt;
+&lt;p&gt;Para visualizar las temperaturas máximas durante todo el año, primero, convertimos el &lt;em&gt;RasterBrick&lt;/em&gt; a un &lt;em&gt;data.frame&lt;/em&gt;, incluyendo longitud y latitud, pero eliminando todas las series temporales sin valores (&lt;code&gt;NA&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a data.frame
+tmx_mat &amp;lt;- as.data.frame(tmx_smooth, xy = TRUE, na.rm = TRUE)
+
+# renombrar las columnas
+tmx_mat &amp;lt;- set_names(tmx_mat, c(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, str_c(&amp;quot;D&amp;quot;, 1:366)))
+str(tmx_mat[, 1:10])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    20676 obs. of  10 variables:
+##  $ lon: num  -8.03 -7.98 -7.92 -7.86 -7.8 ...
+##  $ lat: num  43.8 43.8 43.8 43.8 43.8 ...
+##  $ D1 : num  10.5 10.3 10 10.9 11.5 ...
+##  $ D2 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D3 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D4 : num  10.6 10.4 10.1 10.9 11.5 ...
+##  $ D5 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D6 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D7 : num  10.6 10.4 10.2 11 11.6 ...
+##  $ D8 : num  10.6 10.4 10.2 11 11.6 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Segundo, importamos los límites administrativos con la función &lt;code&gt;ne_countries()&lt;/code&gt; del paquete &lt;code&gt;rnaturalearth&lt;/code&gt; limitando la extensión a la región de la Península Ibérica, el sur de Francia y el norte de África.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los límites globales
+map &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;) %&amp;gt;% st_cast(&amp;quot;MULTILINESTRING&amp;quot;)
+
+# limitamos la extensión
+map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapa de los límites
+plot(map)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
+## all&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animacion-climatica-de-la-temperatura-maxima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
+&lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
+lab &amp;lt;- as_date(0:365, &amp;quot;2000-01-01&amp;quot;) %&amp;gt;% format(&amp;quot;%d %B&amp;quot;)
+
+# cortes para la temperatura
+ct &amp;lt;- c(-5, 0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 40, 45)
+
+# datos categorizados con los cortes fijados
+tmx_mat_cat &amp;lt;- mutate_at(tmx_mat, 3:368, cut, breaks = ct)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Quinto, descargamos la fuente Montserrat y definimos los colores correspondientes a las clases creadas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# descarga de la fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# uso de showtext con DPI 300
+showtext_opts(dpi = 300)
+showtext_auto()
+
+# definimos una rampa de colores
+col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-estático&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa estático&lt;/h2&gt;
+&lt;p&gt;En esta primera visualización hacemos un mapa del 29 de mayo (día 150). No voy a explicar todos los detalles de la construcción con &lt;code&gt;ggplot2&lt;/code&gt;, no obstante, es importante destacar que hago uso de la función &lt;code&gt;aes_string()&lt;/code&gt; en lugar de &lt;code&gt;aes()&lt;/code&gt; para poder usar los nombres de las columnas en formato de carácter. Con la función &lt;code&gt;geom_raster()&lt;/code&gt; añadimos los datos en rejilla de temperatura como primera capa del gráfico y con &lt;code&gt;geom_sf()&lt;/code&gt; los límites de clase &lt;code&gt;sf&lt;/code&gt;. Por último, la función &lt;code&gt;guide_colorsteps()&lt;/code&gt; permite crear una bonita leyenda basada en las clases creadas por la función &lt;code&gt;cut()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = &amp;quot;D150&amp;quot;)) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[150], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animación-de-todo-el-año&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Animación de todo el año&lt;/h2&gt;
+&lt;p&gt;La animación final consiste en crear un gif a partir de todas las imágenes de los 366 días, en principio, se podría usar el paquete &lt;code&gt;gganimate&lt;/code&gt;, pero en mi experiencia es más lento, dado que requiere un &lt;code&gt;data.frame&lt;/code&gt; en formato largo. En este ejemplo una tabla larga tendría más de siete millones de filas, por eso, lo que hacemos es usar un bucle sobre las columnas y unir todas las imágenes creadas con el paquete &lt;code&gt;gifski&lt;/code&gt; que también usa &lt;code&gt;gganimate&lt;/code&gt; para la reproducción en formato gif.&lt;/p&gt;
+&lt;p&gt;Antes del bucle creamos un vector con los pasos temporales o nombres de las columnas y otro vector con el nombre de las imágenes, incluida el nombre de la carpeta. Con el objetivo de obtener una lista de imágenes ordenadas por su número debemos mantener tres cifras rellenando las posiciones a la izquierda con ceros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;time_step &amp;lt;- str_c(&amp;quot;D&amp;quot;, 1:366)
+
+files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;quot;left&amp;quot;, &amp;quot;0&amp;quot;), &amp;quot;.png&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último, incluimos la construcción anterior del gráfico en un bucle &lt;em&gt;for&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in 1:366){
+
+ ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = time_step[i])) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[i], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)
+  
+  ggsave(files[i], width = 8.28, height = 7.33, type = &amp;quot;cairo&amp;quot;)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

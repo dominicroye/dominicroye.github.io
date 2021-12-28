@@ -1,0 +1,491 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>puntos | Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/es/tag/puntos/</link>
+      <atom:link href="https://dominicroye.github.io/es/tag/puntos/index.xml" rel="self" type="application/rss+xml" />
+    <description>puntos</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Sun, 29 Mar 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
+      <title>puntos</title>
+      <link>https://dominicroye.github.io/es/tag/puntos/</link>
+    </image>
+    
+    <item>
+      <title>Visualizar anomalías climáticas</title>
+      <link>https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Cuando visualizamos anomalías de precipitación y temperatura, simplemente usamos series temporales en un gráfico de barras indicando con color rojo y azul valores negativos y positivos. No obstante, para tener una imagen global necesitamos ambas anomalías en un único gráfico. Así podríamos responder directamente a la pregunta de si una estación del año o un mes en concreto fue seco-cálido o húmedo-frío, e incluso comparar estas anomalías en el contexto de años anteriores.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggrepel&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Etiquetas sin superposición con ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggrepel&amp;quot;)) install.packages(&amp;quot;ggrepel&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#paquetes
+library(tidyverse)
+library(lubridate)
+library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparar los datos&lt;/h2&gt;
+&lt;p&gt;Primero importamos la precipitación y temperatura diaria de la estación meteorológica seleccionada (&lt;a href=&#34;https://dominicroye.github.io/files/meteo_tenerife.csv&#34;&gt;descarga&lt;/a&gt;). Usaremos los datos de Tenerife Sur (España) [1981-2020] accesible a través de &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. En R existe un paquete &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; que facilita la descarga con funciones específicas para acceder a los datos de AEMET, Meteogalicia y Meteocat.&lt;/p&gt;
+&lt;div id=&#34;paso-1-importar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
+&lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-2-preparar-los-datos&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 2: preparar los datos&lt;/h3&gt;
+&lt;p&gt;En el segundo paso preparamos los datos para calcular las anomalías. Para ello, creamos tres nuevas columnas: el mes, el año y la estación del año. Como nuestro objetivo son las anomalías invernales no podemos usar el año natural, ya que el invierno comprende el mes de diciembre de un año y los meses de enero y febrero del siguiente. La función personalizada &lt;code&gt;meteo_yr()&lt;/code&gt; extrae el año de una fecha indicando el mes inicial. El concepto es similar al año hidrológico en el que se empieza en octubre.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yr &amp;lt;- function(dates, start_month = NULL) {
+  # convertir a POSIXlt
+  dates.posix &amp;lt;- as.POSIXlt(dates)
+  # la compensación
+  offset &amp;lt;- ifelse(dates.posix$mon &amp;gt;= start_month - 1, 1, 0)
+  # nuevo año
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Usaremos las funciones de la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt; (&lt;a href=&#34;https://www.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://www.tidyverse.org/&lt;/a&gt;). La función &lt;code&gt;mutate()&lt;/code&gt; ayuda a añadir nuevas columnas o a cambiar otras existentes. Para definir las estaciones del año, empleamos la función &lt;code&gt;case_when()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; lo que tiene muchas ventajas en comparación con una cadena de &lt;code&gt;ifelse()&lt;/code&gt;. En la función &lt;code&gt;case_when()&lt;/code&gt; usamos fórmulas en dos tiempos, por un lado la condición y por otro la acción cuando se cumpla esa condición. En R una fórmula de dos tiempos o dos lados se consistuye con el operador &lt;code&gt;~&lt;/code&gt;. El operador binario &lt;code&gt;%in%&lt;/code&gt; nos permite filtrar varios valores en un conjunto.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &amp;quot;Winter&amp;quot;,
+                                  month %in% 3:5 ~ &amp;quot;Spring&amp;quot;,
+                                  month %in% 6:8 ~ &amp;quot;Summer&amp;quot;,
+                                  month %in% 9:11 ~ &amp;quot;Autum&amp;quot;))
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paso-3-estimar-las-anomalías-invernales&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Paso 3: estimar las anomalías invernales&lt;/h3&gt;
+&lt;p&gt;En el siguiente paso creamos un subset del invierno. Después agrupamos por el año meteorológico y calculamos la suma y el promedio para la precipitación y la temperatura, respectivamente. Para facilitar el trabajo el paquete &lt;code&gt;magrittr&lt;/code&gt; introduce el operador llamado &lt;em&gt;pipe&lt;/em&gt; en la forma &lt;code&gt;%&amp;gt;%&lt;/code&gt; con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador &lt;em&gt;pipe&lt;/em&gt; pasa la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. Se debe entender y pronunciar el &lt;code&gt;%&amp;gt;%&lt;/code&gt; como &lt;em&gt;“luego”&lt;/em&gt; (&lt;em&gt;then&lt;/em&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;- filter(data, 
+                   season == &amp;quot;Winter&amp;quot;) %&amp;gt;% 
+              group_by(winter_yr) %&amp;gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Sólo nos quedan por calcular las anomalías de precipitación y temperatura. Las columnas &lt;code&gt;pr_mean&lt;/code&gt; y &lt;code&gt;ta_mean&lt;/code&gt; contendrán el promedio climatico, la referencia de las anomalías respecto al periodo normal 1981-2010. Por eso debemos filtrar los valores al periodo antes de 2010, lo que haremos de la forma habitual de filtrado de vectores en R. Una vez que tenemos las referencias estimamos las anomalías &lt;code&gt;pr_anom&lt;/code&gt; y &lt;code&gt;ta_anom&lt;/code&gt;. Para facilitar la interpretación, en el caso de la precipitación lo expresamos en porcentaje, pero poniendo el promedio en 0% en lugar del 100%.&lt;/p&gt;
+&lt;p&gt;Además, añadimmos tres columnas con información necesaria en la creación del gráfico. 1) &lt;code&gt;labyr&lt;/code&gt; contiene el año de cada anomalía siempre y cuando haya sido mayor/menor del -+10% o -+0,5ºC, respectivamente (lo hago para que no haya demasiadas etiquetas), 2) &lt;code&gt;symb_point&lt;/code&gt; una variable dummy para poder crear un simbolo diferencial entre los casos de (1), y 3) &lt;code&gt;lab_font&lt;/code&gt; destacaremos en negrita el año 2020.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &amp;lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &amp;lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;),
+                              lab_font = ifelse(labyr == 2020, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;crear-el-gráfico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Crear el gráfico&lt;/h2&gt;
+&lt;p&gt;El gráfico lo construiremos añadiendo capa por capa los diferentes elementos: 1) el fondo con las diferentes cuadrículas (Seco-Cálido, Seco-Frío, etc.) 2) los puntos y etiquetas, y 3) los últimos ajustes de estilo.&lt;/p&gt;
+&lt;div id=&#34;parte-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 1&lt;/h3&gt;
+&lt;p&gt;La idea es que tengamos los puntos con anomalías seco-cálido en el cuadrante I (arriba-derecha) y los de húmedo-frío en el cuadrante III (abajo-izquierda). Por eso, debemos invertir el signo en las anomalías de precipitación. Después creamos un &lt;code&gt;data.frame&lt;/code&gt; con las posiciones de las etiquetas de los cuatro cuadrantes. Para las posiciones en &lt;em&gt;x&lt;/em&gt; y &lt;em&gt;y&lt;/em&gt; se usan &lt;code&gt;Inf&lt;/code&gt; y &lt;code&gt;-Inf&lt;/code&gt; lo que equivale al punto máximo dentro del &lt;em&gt;panel&lt;/em&gt;. No obstante, es necesario ajustar la posición hacia los puntos extremos dentro del marco gráfico con los argumentos conocidos de &lt;code&gt;ggplot2&lt;/code&gt;: &lt;em&gt;hjust&lt;/em&gt; y &lt;em&gt;vjust&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv_p &amp;lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &amp;lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&amp;quot;Húmedo-Cálido&amp;quot;, &amp;quot;Seco-Cálido&amp;quot;,
+                              &amp;quot;Húmedo-Frío&amp;quot;, &amp;quot;Seco-Frío&amp;quot;))
+
+  
+bglab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      x    y hjust vjust           lab
+## 1 -Inf  Inf     1     1 Húmedo-Cálido
+## 2  Inf  Inf     1     0   Seco-Cálido
+## 3 -Inf -Inf     0     1   Húmedo-Frío
+## 4  Inf -Inf     0     0     Seco-Frío&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 2&lt;/h3&gt;
+&lt;p&gt;En la segunda podemos empezar a construir el gráfico añadiendo todos los elementos gráficos. En esta parte creamos el fondo con los diferentes colores de cada cuadrante. La función &lt;code&gt;annotate()&lt;/code&gt; permite añadir capas de geometría sin el uso de variables dentro de un &lt;code&gt;data.frame&lt;/code&gt;. Con la función &lt;code&gt;geom_hline()&lt;/code&gt; y &lt;code&gt;geom_vline()&lt;/code&gt; marcamos los cuadrantes en horizontal y vertical usando una linea discontinua. Por último, dibujamos las etiquetas de cada cuadrante, empleando la función &lt;code&gt;geom_text()&lt;/code&gt;. Cuando usamos diferentes fuentes de &lt;code&gt;data.frames&lt;/code&gt;, uno diferente al principal usado en &lt;code&gt;ggplot()&lt;/code&gt;, debemos indicarlo con el argumento &lt;code&gt;data&lt;/code&gt; en la función de geomtría correspondiente.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &amp;quot;#fc9272&amp;quot;, alpha = .6) + #humedo-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &amp;quot;#cb181d&amp;quot;, alpha = .6) + #seco-calido
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &amp;quot;#2171b5&amp;quot;, alpha = .6) + #humedo-frio
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &amp;quot;#c6dbef&amp;quot;, alpha = .6) + #seco-frio
+       geom_hline(yintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &amp;quot;italic&amp;quot;, size = 5, 
+                     angle = 90, colour = &amp;quot;white&amp;quot;)
+
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 3&lt;/h3&gt;
+&lt;p&gt;En la tercera parte simplemente añadimos los puntos de las anomalías y las etiquetas de los años. La función &lt;code&gt;geom_text_repel()&lt;/code&gt; es similar a la que conocemos por defecto en &lt;code&gt;ggplot2&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, pero evita el sobrlapso entre sí.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-4&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Parte 4&lt;/h3&gt;
+&lt;p&gt;En la última parte ajustamos, además del estilo general, los ejes, el tipo de color y el (sub)título. Recuerda que cambiamos el signo en las anomalías de precipitación. Por eso, debemos usar los argumentos &lt;code&gt;breaks&lt;/code&gt; y &lt;code&gt;labels&lt;/code&gt; en la función &lt;code&gt;scale_x_continouous()&lt;/code&gt; para revertir el signo en las etiquetas correspondientes a los cortes.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g3 &amp;lt;- g2 + scale_x_continuous(&amp;quot;Anomalía de precipitación en %&amp;quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&amp;quot;Anomalía de temperatura media en ºC&amp;quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;)) +
+           scale_colour_manual(values = rev(c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;))) +
+           labs(title = &amp;quot;Anomalías invernales en Tenerife Sur&amp;quot;, 
+                caption = &amp;quot;Datos: AEMET\nPeriodo normal 1981-2010&amp;quot;) +
+           theme_bw()
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Distancias geográficas</title>
+      <link>https://dominicroye.github.io/es/2020/distancias-geograficas/</link>
+      <pubDate>Sun, 19 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/2020/distancias-geograficas/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/distancias-geograficas/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;El primer post del año 2020, lo dedicaré a una consulta que me hicieron recientemente. Me plantearon la pregunta de cómo se podría calcular la distancia más corta entre diferentes puntos y cómo saber cúal es el punto más próximo a uno dado. Cuando trabajamos con datos espaciales en R, en la actualidad lo más fácil es usar el paquete &lt;code&gt;sf&lt;/code&gt; en combinación con la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt;. Además usamos el paquete &lt;code&gt;units&lt;/code&gt; que es muy útil para trabajar con unidades de medida.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;units&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona unidades de medida para vectores R: conversión, derivación, simplificación&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;maps&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas geográficos y conjuntos de datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes necesarios
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;units&amp;quot;)) install.packages(&amp;quot;units&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;maps&amp;quot;)) install.packages(&amp;quot;maps&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# cargamos los paquetes
+library(maps)
+library(sf) 
+library(tidyverse)
+library(units)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;unidades-de-medida&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Unidades de medida&lt;/h2&gt;
+&lt;p&gt;El uso de vectores y matrices de clase &lt;code&gt;units&lt;/code&gt; nos permite calcular y transformar unidades de medida.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# longitud
+l &amp;lt;- set_units(1:10, m)
+l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##  [1]  1  2  3  4  5  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a otras unidades
+set_units(l, cm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  100  200  300  400  500  600  700  800  900 1000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sumar diferentes unidades
+set_units(l, cm) + l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  200  400  600  800 1000 1200 1400 1600 1800 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# area
+a &amp;lt;- set_units(355, ha)
+set_units(a, km2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 3.55 [km2]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# velocidad
+vel &amp;lt;- set_units(seq(20, 50, 10), km/h)
+set_units(vel, m/s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m/s]
+## [1]  5.555556  8.333333 11.111111 13.888889&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;capitales-del-mundo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Capitales del mundo&lt;/h2&gt;
+&lt;p&gt;Vamos a usar las capitales de todo el mundo con el objetivo de calcular la distancia a la capital más próxima y indicar el nombre de la ciudad.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# conjunto de ciudades del mundo con coordenadas
+head(world.cities) # proviene del paquete maps&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                 name country.etc   pop   lat  long capital
+## 1 &amp;#39;Abasan al-Jadidah   Palestine  5629 31.31 34.34       0
+## 2 &amp;#39;Abasan al-Kabirah   Palestine 18999 31.32 34.35       0
+## 3       &amp;#39;Abdul Hakim    Pakistan 47788 30.55 72.11       0
+## 4 &amp;#39;Abdullah-as-Salam      Kuwait 21817 29.36 47.98       0
+## 5              &amp;#39;Abud   Palestine  2456 32.03 35.07       0
+## 6            &amp;#39;Abwein   Palestine  3434 32.03 35.20       0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para convertir puntos con longitud y latitud en un objeto espacial de clase &lt;code&gt;sf&lt;/code&gt;, empleamos la función &lt;code&gt;st_as_sf()&lt;/code&gt;, indicando las columnas de las coordenadas y el sistema de referencia de coordenadas (WSG84, epsg:4326).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos los puntos en un objeto sf con CRS WSG84
+cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
+cities&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##                  name  country.etc   pop capital            geometry
+## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
+## 2  &amp;#39;Abasan al-Kabirah    Palestine 18999       0 POINT (34.35 31.32)
+## 3        &amp;#39;Abdul Hakim     Pakistan 47788       0 POINT (72.11 30.55)
+## 4  &amp;#39;Abdullah-as-Salam       Kuwait 21817       0 POINT (47.98 29.36)
+## 5               &amp;#39;Abud    Palestine  2456       0 POINT (35.07 32.03)
+## 6             &amp;#39;Abwein    Palestine  3434       0  POINT (35.2 32.03)
+## 7            &amp;#39;Adadlay      Somalia  9198       0  POINT (44.65 9.77)
+## 8              &amp;#39;Adale      Somalia  5492       0   POINT (46.3 2.75)
+## 9               &amp;#39;Afak         Iraq 22706       0 POINT (45.26 32.07)
+## 10              &amp;#39;Afif Saudi Arabia 41731       0 POINT (42.93 23.92)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el próximo paso, simplemente filtramos por las capitales codificadas en la columna &lt;code&gt;capital&lt;/code&gt; con 1. La ventaja del paquete &lt;code&gt;sf&lt;/code&gt; es la posibilidad de aplicar funciones de la colección &lt;code&gt;tidyverse&lt;/code&gt; para manipular los atributos. Además, añadimos una columna con nuevas etiquetas usando la función &lt;code&gt;str_c()&lt;/code&gt; del paquete &lt;code&gt;stringr&lt;/code&gt;, la cúal es similar a la de &lt;em&gt;R Base&lt;/em&gt; &lt;code&gt;paste()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos por las capitales
+capitals &amp;lt;- filter(cities, capital == 1)
+
+# creamos una nueva etiqueta combinando nombre y país
+capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;quot;, country.etc, &amp;quot;)&amp;quot;))
+
+capitals &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##           name          country.etc     pop capital               geometry
+## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
+## 2    Abu Dhabi United Arab Emirates  619316       1    POINT (54.37 24.48)
+## 3        Abuja              Nigeria  178462       1      POINT (7.17 9.18)
+## 4        Accra                Ghana 2029143       1      POINT (-0.2 5.56)
+## 5    Adamstown             Pitcairn      51       1  POINT (-130.1 -25.05)
+## 6  Addis Abeba             Ethiopia 2823167       1     POINT (38.74 9.03)
+## 7        Agana                 Guam    1041       1   POINT (144.75 13.47)
+## 8      Algiers              Algeria 2029936       1     POINT (3.04 36.77)
+## 9        Alofi                 Niue     627       1 POINT (-169.92 -19.05)
+## 10   Amsterdam          Netherlands  744159       1     POINT (4.89 52.37)
+##                        city_country
+## 1                   &amp;#39;Amman (Jordan)
+## 2  Abu Dhabi (United Arab Emirates)
+## 3                   Abuja (Nigeria)
+## 4                     Accra (Ghana)
+## 5              Adamstown (Pitcairn)
+## 6            Addis Abeba (Ethiopia)
+## 7                      Agana (Guam)
+## 8                 Algiers (Algeria)
+## 9                      Alofi (Niue)
+## 10          Amsterdam (Netherlands)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-distancias&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular distancias&lt;/h2&gt;
+&lt;p&gt;La distancia geográfica (euclidiana o de gran círculo) se calcula con la función &lt;code&gt;st_distance()&lt;/code&gt;, o bien entre dos puntos, entre un punto y otros múltiples o entre todos. En el último caso obtenemos una matriz simétrica de distancias (NxN), tomados por pares de un conjunto. En la diagonal encontramos las combinaciones entre los mismos puntos dando todas nulas.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;261&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;260&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;261&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;356&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;260&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;356&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Cuando queremos saber, por ejemplo, la distancia de Amsterdam a Abu Dhabi, Washington y Tokyo pasamos dos objetos espaciales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calcular la distancia
+dist_amsterdam &amp;lt;- st_distance(slice(capitals, 10), 
+                              slice(capitals, c(2, 220, 205)))
+
+dist_amsterdam # distancia en metros&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##         [,1]    [,2]    [,3]
+## [1,] 5163124 6187634 9293710&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una matriz de una fila o de una columna (en función del orden de los objetos) con clase de &lt;code&gt;units&lt;/code&gt;. Así es posible cambiar fácilmente a otra unidad de medida. Si queremos obtener un vector sin clase &lt;code&gt;units&lt;/code&gt;, únicamente aplicamos la función &lt;code&gt;as.vector()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cambiamos de m a km
+set_units(dist_amsterdam, &amp;quot;km&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [km]
+##          [,1]     [,2]    [,3]
+## [1,] 5163.124 6187.634 9293.71&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# units class a vector
+as.vector(dist_amsterdam)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5163124 6187634 9293710&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A continuación estimamos la matriz de distancia entre todas las capitales. Es importante convertir los valores nulos a &lt;code&gt;NA&lt;/code&gt; para obtener posteriormente el índice correcto de la matriz.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calcular la distancia
+m_distance &amp;lt;- st_distance(capitals)
+
+# matriz
+dim(m_distance)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 230 230&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cambiamos de m a km
+m_distance_km &amp;lt;- set_units(m_distance, km)
+
+# reemplazamos la distance de 0 con NA
+m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Cuando el resultado es de clase &lt;code&gt;units&lt;/code&gt; es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;Con el objetivo de obtener la distancia más corta, además de la posición de la misma, usamos la función &lt;code&gt;apply()&lt;/code&gt; que a su vez nos permite aplicar la función &lt;code&gt;which.min()&lt;/code&gt; y &lt;code&gt;min()&lt;/code&gt; sobre cada fila. También sería posible emplear la función sobre columnas que daría el mismo resulado. Para finalizar, añadimos los resultados como nuevas columnas con la función &lt;code&gt;mutate()&lt;/code&gt;. Las posiciones en &lt;em&gt;pos&lt;/em&gt; nos permiten obtener los nombres de las ciudades más próximas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos la posición de la ciudad y la distancia
+pos &amp;lt;- apply(m_distance_km, 1, which.min)
+dist &amp;lt;- apply(m_distance_km, 1, min, na.rm = TRUE)
+
+# añadimos la distancia y obtenemos el nombre de la ciudad
+capitals &amp;lt;- mutate(capitals, nearest_city =  city_country[pos], 
+                             geometry_nearest = geometry[pos],
+                             distance_city = dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-distancias-a-la-próxima-capital&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa de distancias a la próxima capital&lt;/h2&gt;
+&lt;p&gt;Por último, construimos un mapa representando la distancia en circulos proporcionales. Para ello, usamos la gramática habitual de &lt;code&gt;ggplot()&lt;/code&gt; añadiendo la geometría &lt;code&gt;geom_sf()&lt;/code&gt;, primero para el mapamundi de fondo y después para los circulos de las ciudades. En &lt;code&gt;aes()&lt;/code&gt; indicamos con el argumento &lt;code&gt;size = distance_city&lt;/code&gt; la variable que debe ser mapeado proporcionalmente. La función &lt;code&gt;theme_void()&lt;/code&gt; elimina todos los elementos de estilo. Además, definimos con la función &lt;code&gt;coord_sf()&lt;/code&gt; una nueva proyección indicando el formato &lt;em&gt;proj4&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapamundi
+world &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;)
+
+# mapa 
+ggplot(world) +
+   geom_sf(fill = &amp;quot;black&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+   geom_sf(data = capitals, 
+           aes(size = distance_city),
+           alpha = 0.7,
+           fill = &amp;quot;#bd0026&amp;quot;,
+           shape = 21,
+           show.legend = &amp;#39;point&amp;#39;) +
+   coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
+  labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/distancias-geograficas/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

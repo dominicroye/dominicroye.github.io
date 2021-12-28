@@ -1,0 +1,1596 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>climate | Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/en/tag/climate/</link>
+      <atom:link href="https://dominicroye.github.io/en/tag/climate/index.xml" rel="self" type="application/rss+xml" />
+    <description>climate</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Sat, 04 Sep 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
+      <title>climate</title>
+      <link>https://dominicroye.github.io/en/tag/climate/</link>
+    </image>
+    
+    <item>
+      <title>Climate circles</title>
+      <link>https://dominicroye.github.io/en/2021/climate-circles/</link>
+      <pubDate>Sat, 04 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2021/climate-circles/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The climate of a place is usually presented through climographs that combine monthly precipitation and temperature in a single chart. However, it is also interesting to visualize the climate on a daily scale showing the thermal amplitude and the daily average temperature. To do this, the averages for each day of the year of daily minimums, maximums and means are calculated.&lt;/p&gt;
+&lt;p&gt;The annual climate cycle presents a good opportunity to use a radial or polar chart which allows us to clearly visualize seasonal patterns.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;We will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Provides a cross-platform, uniform interface to file system operations&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple functions to examine and clean data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+# packages
+
+library(tidyverse)
+library(lubridate)
+library(fs)
+library(janitor)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;We download the temperature data for a selection of US cities &lt;a href=&#34;https://dominicroye.github.io/files/weather_stats_usa.zip&#34;&gt;here&lt;/a&gt;. You can access other cities of the entire world through the WMO or GHCN datasets at &lt;a href=&#34;https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily&#34;&gt;NCDC/NOAA&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import&lt;/h2&gt;
+&lt;p&gt;To import the temperature time series of each city, which we find in several files, we apply the &lt;code&gt;read_csv()&lt;/code&gt; function using &lt;code&gt;map_df()&lt;/code&gt;. The &lt;code&gt;dir_ls()&lt;/code&gt; function of the &lt;code&gt;fs&lt;/code&gt; package returns the list of files with &lt;em&gt;csv&lt;/em&gt; extension. The suffix &lt;em&gt;df&lt;/em&gt; of &lt;code&gt;map()&lt;/code&gt; indicates that we want to join all imported tables into a single one. For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend a short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;Then we obtain the names of the weather stations and define a new vector with the new city names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import data
+meteo &amp;lt;- dir_ls(regexp = &amp;quot;.csv$&amp;quot;) %&amp;gt;% 
+          map_df(read_csv)
+meteo&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 211,825 x 12
+##    STATION     NAME    LATITUDE LONGITUDE ELEVATION DATE        TAVG  TMAX  TMIN
+##    &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-01   6.8    NA    NA
+##  2 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-02   8.4    NA    NA
+##  3 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-03  11      NA    NA
+##  4 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-04  -7.2    NA    NA
+##  5 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-05 -10.2    NA    NA
+##  6 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-06  -4.6    NA    NA
+##  7 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-07  -7.1    NA    NA
+##  8 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-08  -5.8    NA    NA
+##  9 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-09   2.9    NA    NA
+## 10 USW00094846 CHICAG~     42.0     -87.9      202. 1950-01-10   3.9    NA    NA
+## # ... with 211,815 more rows, and 3 more variables: TAVG_ATTRIBUTES &amp;lt;chr&amp;gt;,
+## #   TMAX_ATTRIBUTES &amp;lt;chr&amp;gt;, TMIN_ATTRIBUTES &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# station names
+stats_names &amp;lt;- unique(meteo$NAME)
+stats_names&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;CHICAGO OHARE INTERNATIONAL AIRPORT, IL US&amp;quot;             
+## [2] &amp;quot;LAGUARDIA AIRPORT, NY US&amp;quot;                               
+## [3] &amp;quot;MIAMI INTERNATIONAL AIRPORT, FL US&amp;quot;                     
+## [4] &amp;quot;HOUSTON INTERCONTINENTAL AIRPORT, TX US&amp;quot;                
+## [5] &amp;quot;ATLANTA HARTSFIELD JACKSON INTERNATIONAL AIRPORT, GA US&amp;quot;
+## [6] &amp;quot;SAN FRANCISCO INTERNATIONAL AIRPORT, CA US&amp;quot;             
+## [7] &amp;quot;SEATTLE TACOMA AIRPORT, WA US&amp;quot;                          
+## [8] &amp;quot;DENVER INTERNATIONAL AIRPORT, CO US&amp;quot;                    
+## [9] &amp;quot;MCCARRAN INTERNATIONAL AIRPORT, NV US&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# new city names
+cities &amp;lt;- c(&amp;quot;CHICAGO&amp;quot;, &amp;quot;NEW YORK&amp;quot;, &amp;quot;MIAMI&amp;quot;, 
+            &amp;quot;HOUSTON&amp;quot;, &amp;quot;ATLANTA&amp;quot;, &amp;quot;SAN FRANCISCO&amp;quot;, 
+            &amp;quot;SEATTLE&amp;quot;, &amp;quot;DENVER&amp;quot;, &amp;quot;LAS VEGAS&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modify&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Modify&lt;/h2&gt;
+&lt;p&gt;In the first step, we will modify the original data, 1) selecting only the columns of interest, 2) filtering the period 1991-2020, 3) defining the new city names, 4) calculating the average temperature where it is absent, 5) cleaning the column names, and 6) creating a new variable with the days of the year. The &lt;code&gt;clean_names()&lt;/code&gt; function of the &lt;code&gt;janitor&lt;/code&gt; package is very useful for getting clean column names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo &amp;lt;- select(meteo, NAME, DATE, TAVG:TMIN) %&amp;gt;%  
+           filter(DATE &amp;gt;= &amp;quot;1991-01-01&amp;quot;, DATE &amp;lt;= &amp;quot;2020-12-31&amp;quot;) %&amp;gt;% 
+            mutate(NAME = factor(NAME, stats_names, cities),
+                   TAVG = ifelse(is.na(TAVG), (TMAX+TMIN)/2, TAVG),
+                   yd = yday(DATE)) %&amp;gt;% 
+            clean_names()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step, we calculate the daily maximum, minimum and mean temperature for each day of the year. It now only remains to convert the days of the year into a dummy date. Here we use the year 2000 since it is a leap year, and we have a total of 366 days.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimate the daily averages
+meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;% 
+                  summarise(ta = mean(tavg, na.rm = TRUE),
+                            tmx = mean(tmax, na.rm = TRUE),
+                            tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
+## # Groups:   name [9]
+##    name       yd    ta    tmx  tmin
+##    &amp;lt;fct&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 CHICAGO     1 -3.77  0.537 -7.86
+##  2 CHICAGO     2 -2.64  1.03  -6.68
+##  3 CHICAGO     3 -2.88  0.78  -6.93
+##  4 CHICAGO     4 -2.86  0.753 -7.10
+##  5 CHICAGO     5 -4.13 -0.137 -8.33
+##  6 CHICAGO     6 -4.50 -1.15  -8.05
+##  7 CHICAGO     7 -4.70 -0.493 -8.57
+##  8 CHICAGO     8 -3.97  0.147 -8.02
+##  9 CHICAGO     9 -3.47  0.547 -7.49
+## 10 CHICAGO    10 -3.41  1.09  -7.64
+## # ... with 3,284 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the days of the year into a dummy date
+meteo_yday &amp;lt;- mutate(meteo_yday, yd = as_date(yd, origin = &amp;quot;1999-12-31&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-climate-circles&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Creating the climate circles&lt;/h1&gt;
+&lt;div id=&#34;predefinitions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Predefinitions&lt;/h2&gt;
+&lt;p&gt;We define a divergent vector of various hues.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;col_temp &amp;lt;- c(&amp;quot;#cbebf6&amp;quot;,&amp;quot;#a7bfd9&amp;quot;,&amp;quot;#8c99bc&amp;quot;,&amp;quot;#974ea8&amp;quot;,&amp;quot;#830f74&amp;quot;,
+              &amp;quot;#0b144f&amp;quot;,&amp;quot;#0e2680&amp;quot;,&amp;quot;#223b97&amp;quot;,&amp;quot;#1c499a&amp;quot;,&amp;quot;#2859a5&amp;quot;,
+              &amp;quot;#1b6aa3&amp;quot;,&amp;quot;#1d9bc4&amp;quot;,&amp;quot;#1ca4bc&amp;quot;,&amp;quot;#64c6c7&amp;quot;,&amp;quot;#86cabb&amp;quot;,
+              &amp;quot;#91e0a7&amp;quot;,&amp;quot;#c7eebf&amp;quot;,&amp;quot;#ebf8da&amp;quot;,&amp;quot;#f6fdd1&amp;quot;,&amp;quot;#fdeca7&amp;quot;,
+              &amp;quot;#f8da77&amp;quot;,&amp;quot;#fcb34d&amp;quot;,&amp;quot;#fc8c44&amp;quot;,&amp;quot;#f85127&amp;quot;,&amp;quot;#f52f26&amp;quot;,
+              &amp;quot;#d10b26&amp;quot;,&amp;quot;#9c042a&amp;quot;,&amp;quot;#760324&amp;quot;,&amp;quot;#18000c&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We create a table with the x-axis grid lines.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(ymd(&amp;quot;2000-01-01&amp;quot;), ymd(&amp;quot;2000-12-31&amp;quot;), &amp;quot;month&amp;quot;), 
+                 y = rep(-10, 12), 
+                 xend = seq(ymd(&amp;quot;2000-01-01&amp;quot;), ymd(&amp;quot;2000-12-31&amp;quot;), &amp;quot;month&amp;quot;), 
+                 yend = rep(41, 12))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We define all the style elements of the graph in our own theme &lt;code&gt;theme_cc()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_cc &amp;lt;- function(){ 
+  
+ theme_minimal(base_family = &amp;quot;Montserrat&amp;quot;) %+replace%
+  theme(plot.title = element_text(hjust = 0.5, colour = &amp;quot;white&amp;quot;, size = 30, margin = margin(b = 20)),
+        plot.caption = element_text(colour = &amp;quot;white&amp;quot;, size = 9, hjust = .5, vjust = -30),
+        plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        plot.margin = margin(1, 1, 2, 1, unit = &amp;quot;cm&amp;quot;),
+  
+        axis.text.x = element_text(face = &amp;quot;italic&amp;quot;, colour = &amp;quot;white&amp;quot;),
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        
+        legend.title = element_text(colour = &amp;quot;white&amp;quot;),
+        legend.position = &amp;quot;bottom&amp;quot;,
+        legend.justification = 0.5,
+        legend.text = element_text(colour = &amp;quot;white&amp;quot;),
+       
+        
+        strip.text = element_text(colour = &amp;quot;white&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 14),
+        
+        panel.spacing.y = unit(1, &amp;quot;lines&amp;quot;),
+        panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+        panel.grid = element_blank()
+      ) 
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Graph&lt;/h2&gt;
+&lt;p&gt;We start by building a chart for New York City only. We will use &lt;code&gt;geom_linerange()&lt;/code&gt; to define line range with the daily maximum and minimum temperature. Also, we will draw the range line colour based on the mean temperature. Finally, we can adjust &lt;em&gt;alpha&lt;/em&gt; and &lt;em&gt;size&lt;/em&gt; to get a nicer look.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter New York
+ny_city &amp;lt;- filter(meteo_yday, name == &amp;quot;NEW YORK&amp;quot;) 
+
+# graph
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;,
+               date_labels = &amp;quot;%b&amp;quot;) +
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To get the polar graph it would only be necessary to add the &lt;code&gt;coord_polar()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# polar chart
+ggplot(ny_city) + 
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion()) +
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;,
+               date_labels = &amp;quot;%b&amp;quot;) +
+  coord_polar() +
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the final graph, we add the grid defining the lines on the y-axis with &lt;code&gt;geom_hline()&lt;/code&gt; and those on the x-axis with &lt;code&gt;geom_segement()&lt;/code&gt;. The most important thing here is the &lt;code&gt;facet_wrap()&lt;/code&gt; function, which allows multiple facets of charts. The formula format is used to specify how the facets are created: &lt;code&gt;row ~ column&lt;/code&gt;. If we do not have a second variable, a point &lt;code&gt;.&lt;/code&gt; is indicated in the formula. In addition, we make changes to the appearance of the colour bar with &lt;code&gt;guides()&lt;/code&gt; and &lt;code&gt;guide_colourbar()&lt;/code&gt;, and we include the &lt;code&gt;theme_cc()&lt;/code&gt; style.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(meteo_yday) + 
+  geom_hline(yintercept = c(-10, 0, 10, 20, 30, 40), 
+             colour = &amp;quot;white&amp;quot;, 
+             size = .4) +
+  geom_segment(data = grid_x , 
+               aes(x = x, 
+                   y = y, 
+                   xend = xend, 
+                   yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, 
+               colour = &amp;quot;white&amp;quot;, 
+               size = .2) +
+  geom_linerange(aes(yd, 
+                     ymax = tmx, 
+                     ymin = tmin, 
+                     colour = ta),
+                 size=0.5, 
+                 alpha = .7) + 
+  scale_y_continuous(breaks = seq(-30, 50, 10), 
+                     limits = c(-11, 42), 
+                     expand = expansion())+
+  scale_colour_gradientn(colours = col_temp, 
+                         limits = c(-12, 35), 
+                         breaks = seq(-12, 34, 5)) + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, 
+               date_labels = &amp;quot;%b&amp;quot;) +
+  guides(colour = guide_colourbar(barwidth = 15,
+                                  barheight = 0.5, 
+                                  title.position = &amp;quot;top&amp;quot;)
+         ) +
+  facet_wrap(~name, nrow = 3) +
+  coord_polar() + 
+  labs(title = &amp;quot;CLIMATE CIRCLES&amp;quot;, 
+       colour = &amp;quot;Daily average temperature&amp;quot;) +
+  theme_cc()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Geographical Variations of the Minimum Mortality Temperature at a Global Scale</title>
+      <link>https://dominicroye.github.io/en/publication/2021-minimum-mortality-temperature-environmental-epidemiology/</link>
+      <pubDate>Wed, 01 Sep 2021 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/publication/2021-minimum-mortality-temperature-environmental-epidemiology/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>A heatmap as calendar</title>
+      <link>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</link>
+      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Recently I was looking for a visual representation to show the daily changes of temperature, precipitation and wind in an application &lt;a href=&#34;https://xeo81.shinyapps.io/MeteoExtremosGalicia/&#34;&gt;xeo81.shinyapps.io/MeteoExtremosGalicia&lt;/a&gt; (in Spanish), which led me to use a heatmap in the form of a calendar. The &lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;shiny&lt;/a&gt; application is updated every four hours with new data showing calendars for each weather station. The heatmap as a calendar allows you to visualize any variable with a daily time reference.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ragg&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ragg provides a set of high quality and high performance raster devices&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ragg&amp;quot;)) install.packages(&amp;quot;ragg&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+# paquetes
+library(tidyverse)
+library(lubridate)
+library(ragg)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend the short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20) &lt;a href=&#34;https://dominicroye.github.io/files/precipitation_santiago.csv&#34;&gt;download&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import the data
+dat_pr &amp;lt;- read_csv(&amp;quot;precipitation_santiago.csv&amp;quot;)
+dat_pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 355 x 2
+##    date          pr
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 2020-01-01   0  
+##  2 2020-01-02   0  
+##  3 2020-01-03   5.4
+##  4 2020-01-04   0  
+##  5 2020-01-05   0  
+##  6 2020-01-06   0  
+##  7 2020-01-07   0  
+##  8 2020-01-08   1  
+##  9 2020-01-09   3.8
+## 10 2020-01-10   0  
+## # ... with 345 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparation&lt;/h2&gt;
+&lt;p&gt;In the first step we must 1) complement the time series from December 21 to December 31 with &lt;code&gt;NA&lt;/code&gt;, 2) add the day of the week, the month, the week number and the day. Depending on whether we want each week to start on Sunday or Monday, we indicate it in the &lt;code&gt;wday()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- dat_pr %&amp;gt;% 
+          complete(date = seq(ymd(&amp;quot;2020-01-01&amp;quot;), 
+                              ymd(&amp;quot;2020-12-31&amp;quot;), 
+                              &amp;quot;day&amp;quot;)) %&amp;gt;%
+          mutate(weekday = wday(date, label = T, week_start = 1), 
+                 month = month(date, label = T, abbr = F),
+                 week = isoweek(date),
+                 day = day(date))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we need to make a change in the week of the year, which is because in certain years there may be, for example, a few days at the end of the year as the first week of the following year. We also create two new columns. On the one hand, we categorize precipitation into 14 classes and on the other, we define a white text color for darker tones in the heatmap.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- mutate(dat_pr, 
+                 week = case_when(month == &amp;quot;December&amp;quot; &amp;amp; week == 1 ~ 53,
+                                  month == &amp;quot;January&amp;quot; &amp;amp; week %in% 52:53 ~ 0,
+                                  TRUE ~ week),
+                 pcat = cut(pr, c(-1, 0, .5, 1:5, 7, 9, 15, 20, 25, 30, 300)),
+                 text_col = ifelse(pcat %in% c(&amp;quot;(15,20]&amp;quot;, &amp;quot;(20,25]&amp;quot;, &amp;quot;(25,30]&amp;quot;, &amp;quot;(30,300]&amp;quot;), 
+                                   &amp;quot;white&amp;quot;, &amp;quot;black&amp;quot;)) 
+      
+dat_pr  &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 8
+##    date          pr weekday month    week   day pcat    text_col
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;   &amp;lt;ord&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;   &amp;lt;chr&amp;gt;   
+##  1 2020-01-01   0   Wed     January     1     1 (-1,0]  black   
+##  2 2020-01-02   0   Thu     January     1     2 (-1,0]  black   
+##  3 2020-01-03   5.4 Fri     January     1     3 (5,7]   black   
+##  4 2020-01-04   0   Sat     January     1     4 (-1,0]  black   
+##  5 2020-01-05   0   Sun     January     1     5 (-1,0]  black   
+##  6 2020-01-06   0   Mon     January     2     6 (-1,0]  black   
+##  7 2020-01-07   0   Tue     January     2     7 (-1,0]  black   
+##  8 2020-01-08   1   Wed     January     2     8 (0.5,1] black   
+##  9 2020-01-09   3.8 Thu     January     2     9 (3,4]   black   
+## 10 2020-01-10   0   Fri     January     2    10 (-1,0]  black   
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualization&lt;/h2&gt;
+&lt;p&gt;First we create a color ramp from Brewer colors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# color ramp
+pubu &amp;lt;- RColorBrewer::brewer.pal(9, &amp;quot;PuBu&amp;quot;)
+col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Second, before building the chart, we define a custom theme as a function. To do this, we specify all the elements and their modifications with the help of the &lt;code&gt;theme()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_calendar &amp;lt;- function(){
+
+ theme(aspect.ratio = 1/2,
+       
+       axis.title = element_blank(),
+       axis.ticks = element_blank(),
+       axis.text.y = element_blank(),
+       axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+       
+       panel.grid = element_blank(),
+       panel.background = element_blank(),
+       
+       strip.background = element_blank(),
+       strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 15),
+       
+       legend.position = &amp;quot;top&amp;quot;,
+       legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5),
+       legend.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 9, hjust = 1),
+       
+       plot.caption =  element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = 1, size = 8),
+       panel.border = element_rect(colour = &amp;quot;grey&amp;quot;, fill=NA, size=1),
+       plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 26, 
+                                 face = &amp;quot;bold&amp;quot;, 
+                                 margin = margin(0,0,0.5,0, unit = &amp;quot;cm&amp;quot;)),
+       plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 16)
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we build the final chart using &lt;code&gt;geom_tile()&lt;/code&gt; and specify the day of the week as the X axis and the week number as the Y axis. As you can see in the variable of the week number (&lt;code&gt;-week&lt;/code&gt;), I change the sign so that the first day of each month is in the first row. With &lt;code&gt;geom_text()&lt;/code&gt; we add the number of each day with its color according to what we defined previously. In &lt;code&gt;guides&lt;/code&gt; we make the adjustments of the colorbar and in &lt;code&gt;scale_fill/colour_manual()&lt;/code&gt; we define the corresponding colors. An important step is found in &lt;code&gt;facet_wrap()&lt;/code&gt; where we specify the facets composition of each month. The facets should have free scales and the ideal would be a 4 x 3 facet distribution. It is possible to modify the position of the day number to another using the arguments &lt;code&gt;nudge_*&lt;/code&gt; in &lt;code&gt;geom_text()&lt;/code&gt; (eg bottom-right corner: nudge_x = .35, nudge_y = -.25).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;    ggplot(dat_pr, 
+           aes(weekday, -week, fill = pcat)) +
+      geom_tile(colour = &amp;quot;white&amp;quot;, size = .4)  + 
+      geom_text(aes(label = day, colour = text_col), size = 2.5) +
+      guides(fill = guide_colorsteps(barwidth = 25, 
+                                     barheight = .4,
+                                    title.position = &amp;quot;top&amp;quot;)) +
+       scale_fill_manual(values = c(&amp;quot;white&amp;quot;, col_p(13)),
+                         na.value = &amp;quot;grey90&amp;quot;, drop = FALSE) +
+       scale_colour_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;), guide = FALSE) + 
+       facet_wrap(~ month, nrow = 4, ncol = 3, scales = &amp;quot;free&amp;quot;) +
+       labs(title = &amp;quot;How is 2020 being in Santiago?&amp;quot;, 
+             subtitle = &amp;quot;Precipitation&amp;quot;,
+             caption = &amp;quot;Data: Meteogalicia&amp;quot;,
+             fill = &amp;quot;mm&amp;quot;) +
+       theme_calendar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To export we will use the &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt; package, which provides higher performance and quality than the standard raster devices provided by grDevices.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In other heatmap calendars I have added the predominant wind direction of each day as an arrow using &lt;code&gt;geom_arrow()&lt;/code&gt; from the &lt;code&gt;metR&lt;/code&gt; package (it can be seen in the aforementioned application).&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Visualize climate anomalies</title>
+      <link>https://dominicroye.github.io/en/2020/visualize-climate-anomalies/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2020/visualize-climate-anomalies/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;When we visualize precipitation and temperature anomalies, we simply use time series as bar graph indicating negative and positive values in red and blue. However, in order to have a better overview we need both anomalies in a single graph. In this way we could more easly answer the question of whether a particular season or month was dry-warm or wet-cold, and even compare these anomalies in the context of previous years.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggrepel&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Repel overlapping text labels in ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggrepel&amp;quot;)) install.packages(&amp;quot;ggrepel&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#packages
+library(tidyverse)
+library(lubridate)
+library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparing the data&lt;/h2&gt;
+&lt;p&gt;First we import the daily precipitation and temperature data from the selected weather station (&lt;a href=&#34;https://dominicroye.github.io/files/meteo_tenerife.csv&#34;&gt;download&lt;/a&gt;). We will use the data from Tenerife South (Spain) [1981-2020] accessible through &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. In R there is a package called &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; that facilitates the download with specific functions to access data from AEMET (Spanish State Meteorological Agency), Meteogalicia (Galician Meteorological Service) and Meteocat (Catalan Meteorological Service).&lt;/p&gt;
+&lt;div id=&#34;step-1-import-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 1: import the data&lt;/h3&gt;
+&lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-2-preparing-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 2: preparing the data&lt;/h3&gt;
+&lt;p&gt;In the second step we prepare the data to calculate the anomalies. To do this, we create three new columns: the month, the year, and the season of the year. Since our objective is to analyse winter anomalies, we cannot use the calendar year, because winter includes the month of December of one year and the months of January and February of the following. The custom function &lt;code&gt;meteo_yr()&lt;/code&gt; extracts the year from a date indicating the starting month. The concept is similar to the hydrological year in which it starts on October 1.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yr &amp;lt;- function(dates, start_month = NULL) {
+  # convert to POSIXlt
+  dates.posix &amp;lt;- as.POSIXlt(dates)
+  # year offset
+  offset &amp;lt;- ifelse(dates.posix$mon &amp;gt;= start_month - 1, 1, 0)
+  # new year
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will use many functions of the package collection &lt;code&gt;tidyverse&lt;/code&gt; (&lt;a href=&#34;https://www.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://www.tidyverse.org/&lt;/a&gt;). The &lt;code&gt;mutate()&lt;/code&gt; function helps to add new columns or change existing ones. To define the seasons, we use the &lt;code&gt;case_when()&lt;/code&gt; function from the &lt;code&gt;dplyr&lt;/code&gt; package, which has many advantages compared to a chain of &lt;code&gt;ifelse()&lt;/code&gt;. In &lt;code&gt;case_when()&lt;/code&gt; we use two-side formulas, on the one hand the condition and on the other the action when that condition is met. A two-sided formula in R consists of the operator &lt;code&gt;~&lt;/code&gt;. The binary operator &lt;code&gt;%in%&lt;/code&gt; allows us to filter several values in a greater set.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &amp;quot;Winter&amp;quot;,
+                                  month %in% 3:5 ~ &amp;quot;Spring&amp;quot;,
+                                  month %in% 6:8 ~ &amp;quot;Summer&amp;quot;,
+                                  month %in% 9:11 ~ &amp;quot;Autum&amp;quot;))
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-3-estimate-winter-anomalies&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 3: estimate winter anomalies&lt;/h3&gt;
+&lt;p&gt;In the next step we create a subset of the winter months. Then we group by the defined meteorological year and calculate the sum and average for precipitation and temperature, respectively. To facilitate the work, the &lt;code&gt;magrittr&lt;/code&gt; package introduces the operator called &lt;em&gt;pipe&lt;/em&gt; in the form &lt;code&gt;%&amp;gt;%&lt;/code&gt; with the aim of combining several functions without the need to assign the result to a new object. The &lt;em&gt;pipe&lt;/em&gt; operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously. The &lt;code&gt;%&amp;gt;%&lt;/code&gt; must be understood and pronounced as &lt;em&gt;then&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;- filter(data, 
+                   season == &amp;quot;Winter&amp;quot;) %&amp;gt;% 
+              group_by(winter_yr) %&amp;gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we only have to calculate the anomalies of precipitation and temperature. The columns &lt;code&gt;pr_mean&lt;/code&gt; and &lt;code&gt;ta_mean&lt;/code&gt; will contain the climate average, the reference for the anomalies with respect to the normal period 1981-2010. Therefore, we need to filter the values to the period before 2010, which we will do in the usual way of filtering vectors in R. Once we have the references we estimate the anomalies &lt;code&gt;pr_anom&lt;/code&gt; and &lt;code&gt;ta_anom&lt;/code&gt;. To facilitate the interpretation, in the case of precipitation we express the anomalies as percentage, with the average set at 0% instead of 100%.&lt;/p&gt;
+&lt;p&gt;In addition, we add three required columns with information for the creation of the graph: 1) &lt;code&gt;labyr&lt;/code&gt; contains the year of each anomaly as long as it has been greater/less than -+10% or -+0.5ºC, respectively (this is for reducing the number of labels), 2) &lt;code&gt;symb_point&lt;/code&gt; is a dummy variable in order to be able to create different symbols between the cases of (1), and 3) &lt;code&gt;lab_font&lt;/code&gt; for highlighting in bold the year 2020.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &amp;lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &amp;lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;),
+                              lab_font = ifelse(labyr == 2020, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the graph&lt;/h2&gt;
+&lt;p&gt;We will build the chart adding layer by layer the distinctive elements: 1) the background with the different grids (Dry-Warm, Dry-Cold, etc.), 2) the points and labels, and 3) the style adjustments.&lt;/p&gt;
+&lt;div id=&#34;part-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 1&lt;/h3&gt;
+&lt;p&gt;The idea is that the points with dry-warm anomalies are located in quadrant I (top-right) and those with wet-cold in quadrant III (bottom-left). Therefore, we must invert the sign in the precipitation anomalies. Then we create a &lt;code&gt;data.frame&lt;/code&gt; with the label positions of the four quadrants. For the positions in &lt;em&gt;x&lt;/em&gt; and &lt;em&gt;y&lt;/em&gt; &lt;code&gt;Inf&lt;/code&gt; and &lt;code&gt;-Inf&lt;/code&gt; are used, which is equivalent to the maximum panel sides with respect to the data. However, it is necessary to adjust the position towards the extreme points within the panel with the known arguments of &lt;code&gt;ggplot2&lt;/code&gt;: &lt;em&gt;hjust&lt;/em&gt; and &lt;em&gt;vjust&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv_p &amp;lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &amp;lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&amp;quot;Wet-Warm&amp;quot;, &amp;quot;Dry-Warm&amp;quot;,
+                              &amp;quot;Wet-Cold&amp;quot;, &amp;quot;Dry-Cold&amp;quot;))
+
+  
+bglab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      x    y hjust vjust      lab
+## 1 -Inf  Inf     1     1 Wet-Warm
+## 2  Inf  Inf     1     0 Dry-Warm
+## 3 -Inf -Inf     0     1 Wet-Cold
+## 4  Inf -Inf     0     0 Dry-Cold&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 2&lt;/h3&gt;
+&lt;p&gt;In the second part we can start building the chart by adding all graphical elements. First we create the background with different colors of each quadrant. The function &lt;code&gt;annotate()&lt;/code&gt; allows adding geometry layers without the use of variables within &lt;code&gt;data.frames&lt;/code&gt;. With the &lt;code&gt;geom_hline()&lt;/code&gt; and &lt;code&gt;geom_vline()&lt;/code&gt; function we mark the quadrants horizontally and vertically using a dashed line. Finally, we draw the labels of each quadrant, using the function &lt;code&gt;geom_text()&lt;/code&gt;. When we use other data sources than the main one used in &lt;code&gt;ggplot()&lt;/code&gt;, we must indicate it with the argument &lt;code&gt;data&lt;/code&gt; in the corresponding geometry function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &amp;quot;#fc9272&amp;quot;, alpha = .6) + #wet-warm
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &amp;quot;#cb181d&amp;quot;, alpha = .6) + #dry-warm
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &amp;quot;#2171b5&amp;quot;, alpha = .6) + #wet-cold
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &amp;quot;#c6dbef&amp;quot;, alpha = .6) + #dry-cold
+       geom_hline(yintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &amp;quot;italic&amp;quot;, size = 5, 
+                     angle = 90, colour = &amp;quot;white&amp;quot;)
+
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 3&lt;/h3&gt;
+&lt;p&gt;In the third part we simply add the points of the anomalies and the labels of the years. The &lt;code&gt;geom_text_repel()&lt;/code&gt; function is similar to the one known by default in &lt;code&gt;ggplot2&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, but it repels overlapping text labels away from each other.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-4&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 4&lt;/h3&gt;
+&lt;p&gt;In the last part we adjust, in addition to the general style, the axes, the color type and the (sub)title. Remember that we changed the sign on precipitation anomalies. Hence, we must use the arguments &lt;code&gt;breaks&lt;/code&gt; and &lt;code&gt;labels&lt;/code&gt; in the function &lt;code&gt;scale_x_continouous()&lt;/code&gt; to reverse the sign in the labels corresponding to the breaks.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g3 &amp;lt;- g2 + scale_x_continuous(&amp;quot;Precipitation anomaly in %&amp;quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&amp;quot;Mean temperature anomaly in ºC&amp;quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;)) +
+           scale_colour_manual(values = rev(c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;))) +
+           labs(title = &amp;quot;Winter anomalies in Tenerife South&amp;quot;, 
+                caption = &amp;quot;Data: AEMET\nNormal period 1981-2010&amp;quot;) +
+           theme_bw()
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Visualize monthly precipitation anomalies</title>
+      <link>https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/</link>
+      <pubDate>Sun, 07 Jul 2019 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Normally when we visualize monthly precipitation anomalies, we simply use a bar graph indicating negative and positive values with red and blue. However, it does not explain the general context of these anomalies. For example, what was the highest or lowest anomaly in each month? In principle, we could use a &lt;em&gt;boxplot&lt;/em&gt; to visualize the distribution of the anomalies, but in this particular case they would not fit aesthetically, so we should look for an alternative. Here I present a very useful graphic form.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Themes for ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;cowplot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy creation of multiple graphics with ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
+if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;cowplot&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#packages
+library(tidyverse) #include readr
+library(ggthemes)
+library(cowplot)
+library(lubridate)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparing the data&lt;/h2&gt;
+&lt;p&gt;First we import the daily precipitation of the selected weather station (&lt;a href=&#34;https://dominicroye.github.io/files/RR_STAID001394.txt&#34;&gt;download&lt;/a&gt;). We will use data from Santiago de Compostela (Spain) accessible through &lt;a href=&#34;https://eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;step-1-import-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 1: import the data&lt;/h3&gt;
+&lt;p&gt;We not only import the data in &lt;em&gt;csv&lt;/em&gt; format, but we also make the first changes. We skip the first 21 rows that contain information about the weather station. In addition, we convert the date to the &lt;code&gt;date&lt;/code&gt; class and replace missing values (-9999) with &lt;code&gt;NA&lt;/code&gt;. The precipitation is given in 0.1 mm, therefore, we must divide the values by 10. Then we select the columns &lt;em&gt;DATE&lt;/em&gt; and &lt;em&gt;RR&lt;/em&gt;, and rename them.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;RR_STAID001394.txt&amp;quot;, skip = 21) %&amp;gt;%
+             mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
+               select(DATE:RR) %&amp;gt;% 
+             rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 27,606 x 2
+##    date          pr
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 1943-11-01   0.6
+##  2 1943-11-02   0  
+##  3 1943-11-03   0  
+##  4 1943-11-04   0  
+##  5 1943-11-05   0  
+##  6 1943-11-06   0  
+##  7 1943-11-07   0  
+##  8 1943-11-08   0  
+##  9 1943-11-09   0  
+## 10 1943-11-10   0  
+## # ... with 27,596 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-2-creating-monthly-values&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 2: creating monthly values&lt;/h3&gt;
+&lt;p&gt;In the second step we calculate the monthly amounts of precipitation. To do this, a) we limit the period to the years after 1950, b) we add the month with its labels and the year as variables.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, mo = month(date, label = TRUE), yr = year(date)) %&amp;gt;%
+            filter(date &amp;gt;= &amp;quot;1950-01-01&amp;quot;) %&amp;gt;%
+                group_by(yr, mo) %&amp;gt;% 
+                   summarise(prs = sum(pr, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;yr&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
+## # Groups:   yr [70]
+##       yr mo      prs
+##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;
+##  1  1950 Jan    55.6
+##  2  1950 Feb   349. 
+##  3  1950 Mar    85.8
+##  4  1950 Apr    33.4
+##  5  1950 May   272. 
+##  6  1950 Jun   111. 
+##  7  1950 Jul    35.4
+##  8  1950 Aug    76.4
+##  9  1950 Sep    85  
+## 10  1950 Oct    53  
+## # ... with 823 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-3-estimating-anomalies&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 3: estimating anomalies&lt;/h3&gt;
+&lt;p&gt;Now we must estimate the normals of each month and join this table to our main data in order to calculate the monthly anomaly. We express the anomalies in percentage and subtract 100 to set the average to 0. In addition, we create a variable which indicates if the anomaly is negative or positive, and another with the date.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_ref &amp;lt;- filter(data, yr &amp;gt; 1981, yr &amp;lt;= 2010) %&amp;gt;%
+                   group_by(mo) %&amp;gt;%
+                      summarise(pr_ref = mean(prs))
+
+data &amp;lt;- left_join(data, pr_ref, by = &amp;quot;mo&amp;quot;)
+
+data &amp;lt;- mutate(data, 
+               anom = (prs*100/pr_ref)-100, 
+               date = str_c(yr, as.numeric(mo), 1, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd(),
+               sign= ifelse(anom &amp;gt; 0, &amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;) %&amp;gt;% factor(c(&amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can do a first test graph of anomalies (the classic one), for that we filter the year 2018. In this case we use a bar graph, remember that by default the function &lt;code&gt;geom_bar()&lt;/code&gt; applies the counting of the variable. However, in this case we know &lt;code&gt;y&lt;/code&gt;, hence we indicate with the argument &lt;code&gt;stat = &#34;identity&#34;&lt;/code&gt; that it should use the given value in &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(data, yr == 2018) %&amp;gt;%
+   ggplot(aes(date, anom, fill = sign)) + 
+       geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
+    scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+    scale_y_continuous(breaks = seq(-100, 100, 20)) +
+    scale_fill_manual(values = c(&amp;quot;#99000d&amp;quot;, &amp;quot;#034e7b&amp;quot;)) +
+         labs(y = &amp;quot;Precipitation anomaly (%)&amp;quot;, x = &amp;quot;&amp;quot;) +
+          theme_hc()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-4-calculating-the-statistical-metrics&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 4: calculating the statistical metrics&lt;/h3&gt;
+&lt;p&gt;In this last step we estimate the maximum, minimum value, the 25%/75% quantiles and the interquartile range per month of the entire time series.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_norm &amp;lt;-     group_by(data, mo) %&amp;gt;%
+                     summarise(mx = max(anom),
+                               min = min(anom),
+                               q25 = quantile(anom, .25),
+                               q75 = quantile(anom, .75),
+                               iqr = q75-q25)
+data_norm&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 6
+##    mo       mx    min   q25   q75   iqr
+##    &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Jan    193.  -89.6 -43.6 56.3   99.9
+##  2 Feb    320.  -96.5 -51.2 77.7  129. 
+##  3 Mar    381. -100   -40.6 88.2  129. 
+##  4 Apr    198.  -93.6 -51.2 17.1   68.3
+##  5 May    141.  -90.1 -45.2 17.0   62.2
+##  6 Jun    419.  -99.3 -58.2 50.0  108. 
+##  7 Jul    311.  -98.2 -77.3 27.1  104. 
+##  8 Aug    264. -100   -68.2 39.8  108. 
+##  9 Sep    241.  -99.2 -64.9 48.6  113. 
+## 10 Oct    220.  -99.0 -54.5  4.69  59.2
+## 11 Nov    137.  -98.8 -44.0 39.7   83.7
+## 12 Dec    245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the graph&lt;/h2&gt;
+&lt;p&gt;To create the anomaly graph with legend it is necessary to separate the main graph from the legends.&lt;/p&gt;
+&lt;div id=&#34;part-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 1&lt;/h3&gt;
+&lt;p&gt;In this first part we are adding layer by layer the different elements: 1) the range of anomalies maximum-minimum 2) the interquartile range and 3) the anomalies of the year 2018.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#range of anomalies maximum-minimum
+g1.1 &amp;lt;- ggplot(data_norm)+
+           geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
+                        fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;)
+
+g1.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding interquartile range
+g1.2 &amp;lt;- g1.1 + geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
+                              fatten = 0, fill = &amp;quot;grey70&amp;quot;)
+
+g1.2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-9-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding anomalies of the year 2018 
+
+g1.3 &amp;lt;- g1.2 + geom_crossbar(data = filter(data, yr == 2018),
+                aes(x = mo, y = 0, ymin = 0, ymax = anom, fill = sign),
+                fatten = 0, width = 0.7, alpha = .7, colour = &amp;quot;NA&amp;quot;,
+                show.legend = FALSE)
+g1.3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-9-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally we change some last style settings.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- g1.3 + geom_hline(yintercept = 0)+
+               scale_fill_manual(values=c(&amp;quot;#99000d&amp;quot;,&amp;quot;#034e7b&amp;quot;))+
+               scale_y_continuous(&amp;quot;Precipitation anomaly (%)&amp;quot;,
+                                   breaks = seq(-100, 500, 25),
+                                   expand = c(0, 5))+
+            labs(x = &amp;quot;&amp;quot;,
+                 title = &amp;quot;Precipitation anomaly in Santiago de Compostela 2018&amp;quot;,
+                 caption=&amp;quot;Dominic Royé (@dr_xeo) | Data: eca.knmi.nl&amp;quot;)+
+            theme_hc()
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 2&lt;/h3&gt;
+&lt;p&gt;We still need a legend. First we create it for the normals.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#legend data
+legend &amp;lt;- filter(data_norm, mo == &amp;quot;Jan&amp;quot;)
+
+legend_lab &amp;lt;- gather(legend, stat, y, mx:q75) %&amp;gt;%
+                 mutate(stat = factor(stat, stat, c(&amp;quot;maximum&amp;quot;,
+                                                   &amp;quot;minimum&amp;quot;,
+                                                   &amp;quot;Quantile 25%&amp;quot;,
+                                                   &amp;quot;Quantile 75%&amp;quot;)) %&amp;gt;%
+                                            as.character())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attributes are not identical across measure variables;
+## they will be dropped&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#legend graph
+g2 &amp;lt;- legend %&amp;gt;% ggplot()+
+                  geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
+                                fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;, width = 0.2) +
+                  geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
+                                fatten = 0, fill = &amp;quot;grey70&amp;quot;, width = 0.2) +
+                  geom_text(data = legend_lab, 
+                            aes(x = mo, y = y+c(12,-8,-10,12), label = stat), 
+                            fontface = &amp;quot;bold&amp;quot;, size = 2) +
+                   annotate(&amp;quot;text&amp;quot;, x = 1.18, y = 40, 
+                            label = &amp;quot;Period 1950-2018&amp;quot;, angle = 90, size = 3) +
+              theme_void() + 
+                theme(plot.margin = unit(c(0, 0, 0, 0), &amp;quot;cm&amp;quot;))
+
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Second, we create another legend for the current anomalies.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#legend data
+legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;Jan&amp;quot;,&amp;quot;Feb&amp;quot;)) %&amp;gt;% 
+              ungroup() %&amp;gt;% 
+            select(mo, anom, sign)
+
+legend2[2,1] &amp;lt;- &amp;quot;Jan&amp;quot;
+
+legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;Jan&amp;quot;, 3), 
+                          anom= c(110, 3, -70), 
+                          label = c(&amp;quot;Positive anomaly&amp;quot;, &amp;quot;Average&amp;quot;, &amp;quot;Negative anomaly&amp;quot;))
+
+#legend graph
+g3 &amp;lt;-  ggplot() + 
+         geom_bar(data = legend2,
+                aes(x = mo, y = anom, fill = sign),
+                   alpha = .6, colour = &amp;quot;NA&amp;quot;, stat = &amp;quot;identity&amp;quot;, show.legend = FALSE, width = 0.2) +
+         geom_segment(aes(x = .85, y = 0, xend = 1.15, yend = 0), linetype = &amp;quot;dashed&amp;quot;) +
+         geom_text(data = legend_lab2, 
+                   aes(x = mo, y = anom+c(10,5,-13), label = label), 
+                   fontface = &amp;quot;bold&amp;quot;, size = 2) +
+         annotate(&amp;quot;text&amp;quot;, x = 1.25, y = 20, 
+                  label =&amp;quot;Reference 1971-2010&amp;quot;, angle = 90, size = 3) +
+         scale_fill_manual(values = c(&amp;quot;#99000d&amp;quot;, &amp;quot;#034e7b&amp;quot;)) +
+        theme_void() +
+         theme(plot.margin = unit(c(0, 0, 0, 0), &amp;quot;cm&amp;quot;))
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 3&lt;/h3&gt;
+&lt;p&gt;Finally, we only have to join the graph and the legends with the help of the &lt;code&gt;cowplot&lt;/code&gt; package. The main function of &lt;code&gt;cowplot&lt;/code&gt; is &lt;code&gt;plot_grid()&lt;/code&gt; which is used for combining different graphs. However, in this case it is necessary to use more flexible functions to create less common formats. The &lt;code&gt;ggdraw()&lt;/code&gt; function configures the basic layer of the graph, and the functions that are intended to operate on this layer start with &lt;code&gt;draw_*&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggdraw() +
+       draw_plot(g1, x = 0, y = .3, width = 1, height = 0.6) +
+       draw_plot(g2, x = 0, y = .15, width = .2, height = .15) +
+       draw_plot(g3, x = 0.08, y = .15, width = .2, height = .15)
+
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomaly2016_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-facets&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Multiple facets&lt;/h2&gt;
+&lt;p&gt;In this section we will make the same graph as in the previous one, but for several years.&lt;/p&gt;
+&lt;div id=&#34;part-1-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 1&lt;/h3&gt;
+&lt;p&gt;First we need to filter again by set of years, in this case from 2016 to 2018, using the operator &lt;code&gt;%in%&lt;/code&gt;, we also add the function &lt;code&gt;facet_grid()&lt;/code&gt; to &lt;code&gt;ggplot&lt;/code&gt;, which allows us to plot the graph according to a variable. The formula used for the facet function is similar to the use in models: &lt;code&gt;variable_by_row ~ variable_by_column&lt;/code&gt;. When we do not have a variable in the column, we should use the &lt;code&gt;.&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#range of anomalies maximum-minimum
+g1.1 &amp;lt;- ggplot(data_norm)+
+           geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
+                        fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;)
+
+g1.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding the interquartile range
+g1.2 &amp;lt;- g1.1 + geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
+                              fatten = 0, fill = &amp;quot;grey70&amp;quot;)
+
+g1.2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-14-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding the anomalies of the year 2016-2018
+
+g1.3 &amp;lt;- g1.2 + geom_crossbar(data = filter(data, yr %in% 2016:2018),
+                aes(x = mo, y = 0, ymin = 0, ymax = anom, fill = sign),
+                fatten = 0, width = 0.7, alpha = .7, colour = &amp;quot;NA&amp;quot;,
+                show.legend = FALSE) +
+               facet_grid(yr ~ .)
+g1.3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-14-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally we change some last style settings.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- g1.3 + geom_hline(yintercept = 0)+
+               scale_fill_manual(values=c(&amp;quot;#99000d&amp;quot;,&amp;quot;#034e7b&amp;quot;))+
+               scale_y_continuous(&amp;quot;Anomalía de precipitación (%)&amp;quot;,
+                                   breaks = seq(-100, 500, 50),
+                                   expand = c(0, 5))+
+            labs(x = &amp;quot;&amp;quot;,
+                 title = &amp;quot;Anomalía de precipitación en Santiago de Compostela&amp;quot;,
+                 caption=&amp;quot;Dominic Royé (@dr_xeo) | Datos: eca.knmi.nl&amp;quot;)+
+            theme_hc()
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We use the same legend created for the previous graph.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 2&lt;/h2&gt;
+&lt;p&gt;Finally, we join the graph and the legends with the help of the &lt;code&gt;cowplot&lt;/code&gt; package. The only thing we must adjust here are the arguments in the &lt;code&gt;draw_plot()&lt;/code&gt; function to correctly place the different parts.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggdraw() +
+       draw_plot(g1, x = 0, y = .18, width = 1, height = 0.8) +
+       draw_plot(g2, x = 0, y = .08, width = .2, height = .15) +
+       draw_plot(g3, x = 0.08, y = .08, width = .2, height = .15)
+
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomaly20162018_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Os tempos e o clima de Galicia</title>
+      <link>https://dominicroye.github.io/en/publication/2019-book-os-tempos-galicia-xerais/</link>
+      <pubDate>Thu, 13 Jun 2019 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/publication/2019-book-os-tempos-galicia-xerais/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Climate and Weather</title>
+      <link>https://dominicroye.github.io/en/project/climate/</link>
+      <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/project/climate/</guid>
+      <description>
+
+
+
+
+
+
+
+
+
+
+&lt;div class=&#34;gallery&#34;&gt;
+
+  
+  
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/001_snow_prob.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/001_snow_prob_hu86e7fba3c7543bd88d84d900955bdb5a_745930_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;001_snow_prob.jpg&#34; width=&#34;194&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/002_CC_Barcelona_SSP585.gif&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/002_CC_Barcelona_SSP585_hu03e49e09f29afd5bae1f79bed50aa7cd_1650726_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;002_CC_Barcelona_SSP585.gif&#34; width=&#34;161&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/003_climate_circles_eu.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/003_climate_circles_eu_hu55695133366a4ef27ec0474577288291_2755892_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;003_climate_circles_eu.png&#34; width=&#34;143&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/004_climate_circles_US.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/004_climate_circles_US_hu11943e13b6168c38aa1ebb734bccae2a_2600316_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;004_climate_circles_US.png&#34; width=&#34;146&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/005_sequias_optimistas2.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/005_sequias_optimistas2_hu75392e4b8e8575bbcb6ae4453fd14b3f_3473856_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;005_sequias_optimistas2.png&#34; width=&#34;285&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/006_sequias2.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/006_sequias2_huacafd61604f53e14ee632cf66b8e8691_3344140_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;006_sequias2.png&#34; width=&#34;285&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/acces_mapa_esp.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/acces_mapa_esp_hu972bfcfbc66db74c6800d5cd0e8cb38b_242466_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;acces_mapa_esp.png&#34; width=&#34;192&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_barcelona.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_barcelona_hu0bd99db1e6f1e55a921acff7bffe48e6_299060_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;anomalias_barcelona.png&#34; width=&#34;309&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_Madrid.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_Madrid_hu63b6c369e4ef81ddbf9c3485e1a2164d_307708_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;anomalias_Madrid.png&#34; width=&#34;281&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_Santiago.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_Santiago_hu0bd99db1e6f1e55a921acff7bffe48e6_293696_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;anomalias_Santiago.png&#34; width=&#34;309&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/Barcelona_invierno.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/Barcelona_invierno_hu37e32c3c0e70b9be0c482f652b1f85b1_139483_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Barcelona_invierno.png&#34; width=&#34;289&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/borrasca_2017.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/borrasca_2017_hu6feb6f43a07377f2a81776c10e43c4ac_1572317_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;borrasca_2017.png&#34; width=&#34;331&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/CI_prism.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/CI_prism_hu5b729d5f4c9569aaf22affb73448b5e0_317761_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;CI_prism.jpg&#34; width=&#34;269&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/clima_circulos.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/clima_circulos_hu34e84c2b4260520656d09f1db7743b35_1365819_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;clima_circulos.png&#34; width=&#34;281&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/climate_chile.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/climate_chile_hu22f4db6d50cb69f9ef5ec606ab6f2fd4_362725_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;climate_chile.png&#34; width=&#34;217&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/distribution_graph_bcn.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/distribution_graph_bcn_hua42de54457247d81fb6781e3eeb4cf3a_71108_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;distribution_graph_bcn.png&#34; width=&#34;250&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/distribution_temp.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/distribution_temp_hu3599f236f174ab18522d331bb2e3183e_79401_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;distribution_temp.png&#34; width=&#34;247&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/d%C3%ADas_calorosos.gif&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/d%C3%ADas_calorosos_hue72a26de609e2e0fe7e972c7d5d09549_428847_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;días_calorosos.gif&#34; width=&#34;212&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/europe_max_year_time.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/europe_max_year_time_hu9cbb776dbf7cfc8f6ad7970aa4c371ae_1490065_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;europe_max_year_time.png&#34; width=&#34;206&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/europe_tropical.gif&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/europe_tropical_hu96758340c03b74d6dc9e3bebc16ca78f_422563_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;europe_tropical.gif&#34; width=&#34;254&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/extreme_temperature_espa%C3%B1a.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/extreme_temperature_espa%C3%B1a_hu0a3ba271f4043aaa0493818aacfacdf3_408549_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;extreme_temperature_españa.jpg&#34; width=&#34;194&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/first_summer.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/first_summer_hubc1b5198bd7e665fd6b42e7d6b4a1df3_109874_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;first_summer.png&#34; width=&#34;256&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/gradosdia.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/gradosdia_hu32a3e47e0b0bf2d55a63dba5844d5308_189167_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;gradosdia.png&#34; width=&#34;239&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_mx_min_SCQ.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_mx_min_SCQ_hu8989fe5a64f604de631bc5fc6d13799a_509232_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_mx_min_SCQ.png&#34; width=&#34;173&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_mx_min_VIGO.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_mx_min_VIGO_huf95d53c928eeb8a73862bd329b76c19f_504862_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_mx_min_VIGO.png&#34; width=&#34;172&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_hub86c06637abfa96aea046367c222cbcc_3883904_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias.jpg&#34; width=&#34;225&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2017.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2017_hu41fc0110ca3ba0ba34f503bce65cecdb_254006_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_2017.png&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_fr.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_fr_hu43cf02e47f2da1e8ec4ad95821a9334a_2658446_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_fr.jpg&#34; width=&#34;196&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_ger.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_ger_hu2b071b050c113fd4b1f3924197e152b2_970455_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_ger.jpg&#34; width=&#34;271&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horasdesol2017.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horasdesol2017_hu60831b41b7f2cf2bc0b217c84e9546c4_63097_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horasdesol2017.png&#34; width=&#34;161&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/leslie_stream.gif&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/leslie_stream_hu399641d68d7d25b2aacaeca99066e0c9_3013906_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;leslie_stream.gif&#34; width=&#34;224&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/nieve_peninsula.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/nieve_peninsula_hu2480a96dfd633ed996de29890352af1d_278979_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;nieve_peninsula.jpg&#34; width=&#34;248&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/noches_tropicales.gif&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/noches_tropicales_hub2ed584becef58e9ddd1a1f13d13ecd3_541053_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;noches_tropicales.gif&#34; width=&#34;212&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/nubosidad_abril2020.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/nubosidad_abril2020_hue776a334b902d7828bf5c7a8aa11ccb3_193676_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;nubosidad_abril2020.jpg&#34; width=&#34;328&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/oleaje_galicia.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/oleaje_galicia_hud51b6f85087bd7b092aeda29691c6eaa_425605_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;oleaje_galicia.jpg&#34; width=&#34;183&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/pluvi_regimes_usa.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/pluvi_regimes_usa_hu087a37dedfa32bbdf68e8e3675cb64bc_76222_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;pluvi_regimes_usa.png&#34; width=&#34;361&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/pr_anomalia2017_scq.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/pr_anomalia2017_scq_hu27ff1b2e2c3b95d43f5596930aedcebc_80099_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;pr_anomalia2017_scq.png&#34; width=&#34;369&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/pr_anomalia2018.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/pr_anomalia2018_hua56fb437efd0f1f930fc3cc036ac0985_78927_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;pr_anomalia2018.png&#34; width=&#34;368&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/rachas_estaciones.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/rachas_estaciones_hu5acbc6e1c1fc3331d84eebb27c63579c_489686_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;rachas_estaciones.png&#34; width=&#34;197&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/rachas_secas.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/rachas_secas_hu8791db0f547495f67a795820c682449f_131804_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;rachas_secas.png&#34; width=&#34;196&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/Santander_invierno.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/Santander_invierno_huc592bbdd939345a408a12073e89544fe_137364_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Santander_invierno.png&#34; width=&#34;289&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_invierno.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_invierno_hue3d57a207ec93234bc5560129c5a71c2_140090_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Santiago_invierno.png&#34; width=&#34;289&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_precip_diaria_2019.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_precip_diaria_2019_hua83da6cf222b97da01d147090d7d44b3_360092_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Santiago_precip_diaria_2019.png&#34; width=&#34;152&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_tmax_2019.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_tmax_2019_hua83da6cf222b97da01d147090d7d44b3_404911_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Santiago_tmax_2019.png&#34; width=&#34;152&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_viento_2019.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/Santiago_viento_2019_hua83da6cf222b97da01d147090d7d44b3_566812_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Santiago_viento_2019.png&#34; width=&#34;152&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/sequia.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/sequia_hu0c6650d595303ea8a58ca4d45123e2f0_3756184_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;sequia.png&#34; width=&#34;223&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/ss_anomaly2017_scq.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/ss_anomaly2017_scq_hu1da600b47f0181010d65dd8d7fdd14a4_265908_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;ss_anomaly2017_scq.png&#34; width=&#34;303&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/tiras_lisboa.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/tiras_lisboa_hu16db9f9df0ff2da9db957db9d87ae3f3_14607_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;tiras_lisboa.png&#34; width=&#34;937&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/trayectios_ciclones.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/trayectios_ciclones_hu909087ce66bfde2a0e0ca88d495eaa71_721165_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;trayectios_ciclones.png&#34; width=&#34;654&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/warming_stripes_madrid.jpg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/warming_stripes_madrid_hu4cfa8317745d86f474be304fcc1e100b_155776_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;warming_stripes_madrid.jpg&#34; width=&#34;561&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Animations</title>
+      <link>https://dominicroye.github.io/en/project/animations/</link>
+      <pubDate>Sun, 27 Apr 2014 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/project/animations/</guid>
+      <description>&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/547991537&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+The average temperature of 24 hours in August 2020 for Europe. Data: &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land?tab=overview&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ERA5-Land&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/547988062&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+The average temperature of 24 hours in January 2020. Data: &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-land?tab=overview&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;ERA5-Land&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/463433737&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Smoothed daily rainfall throughout the year in Australia. Data: &lt;a href=&#34;https://www.longpaddock.qld.gov.au/silo/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;SILO&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/456174777&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Smoothed daily maximum temperature throughout the year in Australia. Data: &lt;a href=&#34;https://www.longpaddock.qld.gov.au/silo/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;SILO&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423985141&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+How do the spatial patterns of daily precipitation change throughout the year in Europe? Data: &lt;a href=&#34;https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;E-OBS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423994388&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Smoothed daily maximum temperature throughout the year in the contiguous USA. Data: &lt;a href=&#34;http://www.prism.oregonstate.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;PRISM&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423985180&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Smoothed daily maximum temperature throughout the year in Europe. Data: &lt;a href=&#34;https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;E-OBS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423985224&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+How do the spatial patterns of daily precipitation change throughout the year in mainland Spain and the Balearic Islands? Data: &lt;a href=&#34;https://digital.csic.es/handle/10261/141218&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;SPREAD&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423985381&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Smoothed daily sea surface temperature throughout the year for the Northeast Atlantic, the Mediterranean, North and Black Sea. Data: &lt;a href=&#34;https://data.nodc.noaa.gov/cgi-bin/iso?id=gov.noaa.ncdc:C00680&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;NOAA/NODC&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423986810&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Probability of a summer day (maximum temperature greater than 25ºC/77ºF) through the year in Europe. Data: &lt;a href=&#34;https://surfobs.climate.copernicus.eu/dataaccess/access_eobs.php&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;E-OBS&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/423984146&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Probability of a summer day (maximum temperature greater than 25ºC/77ºF) through the year in the Contiguous United States. Data: &lt;a href=&#34;http://www.prism.oregonstate.edu/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;PRISM&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/361834516&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Probability of a summer day (maximum temperature greater than 25ºC) through the year in Australia. Data: &lt;a href=&#34;https://www.longpaddock.qld.gov.au/silo/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;SILO&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/310077447&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Probability of a frost day (minimum temperature less than 0ºC) through the year in Europe. Data: &lt;a href=&#34;http://c3surf.knmi.nl/dataaccess/access_eobs.php&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;E-OBS 18e&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;
+&lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
+  &lt;iframe src=&#34;https://player.vimeo.com/video/310070253&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
+&lt;/div&gt;
+
+Probability of a frost day (minimum temperature less than 0ºC/32ºF) through the year in the Contiguous United States. Data: &lt;a href=&#34;https://developers.google.com/earth-engine/datasets/catalog/OREGONSTATE_PRISM_AN81m&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;PRISM&lt;/a&gt;. Platform: &lt;a href=&#34;https://earthengine.google.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google Earth Engine&lt;/a&gt;.&lt;/p&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

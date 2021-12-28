@@ -1,0 +1,1551 @@
+<!DOCTYPE html><html lang="es-ES" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dr. Dominic Royé" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="En abril de este año he hecho una animación de la temperatura media de 24 horas de enero 2020 mostrando también el ciclo día-noche. Mi mayor problema consistía en encontrar una forma para proyectar correctamente el área de noche sin que rompa la geometría. La solución más fácil que encontré fue rasterizar el polígono de noche y posteriormente, reproyectarlo. Seguramente se podría usar un enfoque vectorial, pero aquí he preferido el uso de datos raster." />
+
+  
+  <link rel="alternate" hreflang="es-ES" href="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.css" integrity="" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.b48d89910a3f8560bb2d78fedea8d682.css" />
+
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27463794-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-27463794-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/es/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@@dr_xeo" />
+    <meta property="twitter:creator" content="@@dr_xeo" />
+  
+  <meta property="og:site_name" content="Dr. Dominic Royé" />
+  <meta property="og:url" content="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/" />
+  <meta property="og:title" content="Visualizar el ciclo de día-noche en un mapamundi | Dr. Dominic Royé" />
+  <meta property="og:description" content="En abril de este año he hecho una animación de la temperatura media de 24 horas de enero 2020 mostrando también el ciclo día-noche. Mi mayor problema consistía en encontrar una forma para proyectar correctamente el área de noche sin que rompa la geometría. La solución más fácil que encontré fue rasterizar el polígono de noche y posteriormente, reproyectarlo. Seguramente se podría usar un enfoque vectorial, pero aquí he preferido el uso de datos raster." /><meta property="og:image" content="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/featured.png" />
+    <meta property="twitter:image" content="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/featured.png" /><meta property="og:locale" content="es-ES" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2021-12-20T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2021-12-20T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/"
+  },
+  "headline": "Visualizar el ciclo de día-noche en un mapamundi",
+  
+  "image": [
+    "https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/featured.png"
+  ],
+  
+  "datePublished": "2021-12-20T00:00:00Z",
+  "dateModified": "2021-12-20T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Dominic Royé"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Santiago de Compostela",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_192x192_fit_lanczos_3.png"
+    }
+  },
+  "description": "En abril de este año he hecho una animación de la temperatura media de 24 horas de enero 2020 mostrando también el ciclo día-noche. Mi mayor problema consistía en encontrar una forma para proyectar correctamente el área de noche sin que rompa la geometría. La solución más fácil que encontré fue rasterizar el polígono de noche y posteriormente, reproyectarlo. Seguramente se podría usar un enfoque vectorial, pero aquí he preferido el uso de datos raster."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Visualizar el ciclo de día-noche en un mapamundi | Dr. Dominic Royé</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="e36ffde72e50520315f5cab806aa260a" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.2da3b1fa37e894630bf6de39b1b694b3.js"></script>
+
+  
+
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/es/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+            
+            >
+             <div style = "padding-top:0.5em;">Dr. Dominic Royé</div></a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Barra de navegación">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/es/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+          
+          ></a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#"><span>inicio</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#posts"><span>blog</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#featured"><span>publicaciones</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#projects"><span>gráficos</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#about"><span>mí</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+            
+            <li class="nav-item d-none d-lg-inline-flex">
+              <a class="nav-link" href="https://twitter.com/dr_xeo" data-toggle="tooltip" data-placement="bottom" title="Sígueme en Twitter" target="_blank" rel="noopener" aria-label="Sígueme en Twitter">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        
+
+        
+        
+
+        
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+
+<div class="article-container pt-3">
+  <h1>Visualizar el ciclo de día-noche en un mapamundi</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    2021-12-20
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min de lectura
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/es/category/sig/">sig</a>, <a href="/es/category/r/">R</a>, <a href="/es/category/rintermedio/">R:intermedio</a>, <a href="/es/category/visualizacion/">visualización</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 365px;">
+  <div style="position: relative">
+    <img src="/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/featured_hu3c463fd02e2559f14cd83f13dfc0e503_563001_720x0_resize_lanczos_3.png" width="720" height="365" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/header-attrs/header-attrs.js"></script>
+
+
+<p>En abril de este año he hecho una animación de la temperatura media de 24 horas de enero 2020 mostrando también el ciclo día-noche.</p>
+<p><blockquote class="twitter-tweet"><p lang="en" dir="ltr">The average temperature of 24 hours in January 2020 with the day/night cycle. You can see a lot of geographic patterns. I love this kind of hypnotic temperature gifs. <a href="https://twitter.com/hashtag/rstats?src=hash&amp;ref_src=twsrc%5Etfw">#rstats</a> <a href="https://twitter.com/hashtag/rspatial?src=hash&amp;ref_src=twsrc%5Etfw">#rspatial</a> <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/climate?src=hash&amp;ref_src=twsrc%5Etfw">#climate</a> <a href="https://t.co/NA5haUlnie">pic.twitter.com/NA5haUlnie</a></p>&mdash; Dr. Dominic Royé (@dr_xeo) <a href="https://twitter.com/dr_xeo/status/1383486611707494406?ref_src=twsrc%5Etfw">April 17, 2021</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+</p>
+<p>Mi mayor problema consistía en encontrar una forma para proyectar correctamente el área de noche sin que rompa la geometría. La solución más fácil que encontré fue rasterizar el polígono de noche y posteriormente, reproyectarlo. Seguramente se podría usar un enfoque vectorial, pero aquí he preferido el uso de datos raster.</p>
+<div id="paquetes" class="section level1">
+<h1>Paquetes</h1>
+<p>Usaremos los siguientes paquetes:</p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.</td>
+</tr>
+<tr class="even">
+<td align="left">sf</td>
+<td align="left">Simple Feature: importar, exportar y manipular datos vectoriales</td>
+</tr>
+<tr class="odd">
+<td align="left">lubridate</td>
+<td align="left">Fácil manipulación de fechas y tiempos</td>
+</tr>
+<tr class="even">
+<td align="left">hms</td>
+<td align="left">Proporciona una clase simple para almacenar duraciones o valores de hora del día y mostrarlos en el formato hh:mm:ss</td>
+</tr>
+<tr class="odd">
+<td align="left">terra</td>
+<td align="left">Importar, exportar y manipular raster (paquete sucesor de raster)</td>
+</tr>
+<tr class="even">
+<td align="left">lwgeom</td>
+<td align="left">Acceso a la librería liblwgeom con funciones vectoriales adicionales para sf</td>
+</tr>
+<tr class="odd">
+<td align="left">rnaturalearth</td>
+<td align="left">Mapas vectoriales del mundo ‘Natural Earth’</td>
+</tr>
+<tr class="even">
+<td align="left">gifski</td>
+<td align="left">Creación de animaciones en formato gif</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># instalamos los paquetes si hace falta
+
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
+if(!require(&quot;hms&quot;)) install.packages(&quot;hms&quot;)
+if(!require(&quot;terra&quot;)) install.packages(&quot;terra&quot;)
+if(!require(&quot;lwgeom&quot;)) install.packages(&quot;lwgeom&quot;)
+if(!require(&quot;rnaturalearth&quot;)) install.packages(&quot;rnaturalearth&quot;)
+if(!require(&quot;gifski&quot;)) install.packages(&quot;gifski&quot;)
+
+
+
+# paquetes
+library(rnaturalearth)
+library(tidyverse)
+library(lwgeom)
+library(sf)
+library(terra)
+library(lubridate)
+library(hms)
+library(gifski)</code></pre>
+<p><div class="alert alert-note">
+  <div>
+    Para usar la resolución de 50 y 10 m del paquete <code>{rnaturalearth}</code> es necesario instalar los siguientes paquetes adicionales. Debe estar instalado el paquete <code>{devtools}</code>.
+<code>devtools::install_github(&ldquo;ropensci/rnaturalearthdata&rdquo;)</code>
+<code>devtools::install_github(&ldquo;ropensci/rnaturalearthhires&rdquo;)</code>
+  </div>
+</div>
+</p>
+</div>
+<div id="preparación" class="section level1">
+<h1>Preparación</h1>
+<div id="funciones-externas" class="section level2">
+<h2>Funciones externas</h2>
+<p>Las funciones para estimar la línea separador entre día y noche se basan en un javascript <em>L.Terminator.js</em> del paquete <code>{Leaflet}</code> que encontré en <a href="https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions">stackoverflow</a>. El script con las funciones lo podéis descargar <a href="/files/terminator.R">aquí</a> o acceder en <a href="https://github.com/JoGall/terminator/blob/master/terminator.R">github</a>.</p>
+<pre class="r"><code>source(&quot;terminator.R&quot;) # importamos las funciones</code></pre>
+</div>
+<div id="funciones-personalizadas" class="section level2">
+<h2>Funciones personalizadas</h2>
+<p>La función principal <code>terminator()</code> basada en el javascript de <code>{Leaflet}</code> necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.</p>
+<pre class="r"><code>t0 &lt;- Sys.time() # fecha y hora de nuestro sistema operativo
+t0</code></pre>
+<pre><code>## [1] &quot;2021-12-23 11:33:08 CET&quot;</code></pre>
+<pre class="r"><code>coord_nightday &lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
+
+# lo convertimos en un objecto espacial de clase sf
+line_nightday &lt;- st_linestring(as.matrix(coord_nightday)) %&gt;% st_sfc(crs = 4326) 
+
+# ploteamos
+plot(line_nightday)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p>En el sigiente paso obtenemos los polígonos que corresponden al día y la noche que separa la línea estimada anteriormente. Para ello creamos un rectángulo cubriendo todo el planeta y empleamos la función <code>st_split()</code> del paquete <code>{lwgeom}</code> que divide el rectángulo.</p>
+<pre class="r"><code># rectángulo 
+wld_bbx &lt;- st_bbox(c(xmin = -180, xmax = 180,
+                       ymin = -90, ymax = 90), 
+                     crs = 4326) %&gt;% 
+             st_as_sfc()
+
+# divisón con la línea día-noche
+poly_nightday &lt;-  st_split(wld_bbx, line_nightday) %&gt;% 
+                      st_collection_extract(c(&quot;POLYGON&quot;)) %&gt;% 
+                       st_sf() 
+
+# ploteamos 
+plot(poly_nightday)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p>La pregunta que ahora surge es cuál de los dos poligonos corresponde a la noche y cúal al día. Eso dependerá en qué día del año estamos, dado los cambios de posición de la Tierra con respecto al Sol. Entre el equinoccio de primeravera y el equinoccio de otoño corresponde con el primer polígono, cuándo también podemos observar el día polar en el polo norte, y en el caso contrario sería el segundo. El paquete <code>{terra}</code> sólo acepta la clase vectorial propia llamada <code>SpatVector</code>, por eso convertimos el objeto vectorial sf con la función <code>vect()</code>.</p>
+<pre class="r"><code># selecionamos el segundo polígono
+poly_nightday &lt;- slice(poly_nightday, 2) %&gt;% 
+                    mutate(daynight = 1)
+
+# creamos el raster con una resolución de 0,5º y la extensión del mundo
+r &lt;- rast(vect(wld_bbx), resolution = .5)
+
+# rasterizamos el polígono de noche 
+night_rast &lt;- rasterize(vect(poly_nightday), r) 
+
+# resultado en formato raster
+plot(night_rast)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p>En el último paso reproyectamos el raster a <a href="https://epsg.io/54009">Mollweide</a>.</p>
+<pre class="r"><code># definimos la proyección del raster (WGS84)
+crs(night_rast) &lt;- &quot;EPSG:4326&quot;
+
+# reproyectamos
+night_rast_prj &lt;- project(night_rast, &quot;ESRI:54009&quot;, 
+                          mask = TRUE, 
+                          method = &quot;near&quot;)
+# mapa
+plot(night_rast_prj)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Finalmente incluimos los pasos individuales que hemos hecho en una función personalizada.</p>
+<pre class="r"><code>rast_determiner &lt;- function(x_min, date, res) {
+  
+  # crea fecha con hora añadiendo el número de minutos
+  t0 &lt;- as_date(date) + minutes(x_min) 
+  # estimamos las coordenadas de la línea que separa día y noche 
+  night_step &lt;- terminator(t0, -180, 180, 0.2) %&gt;% as.matrix()
+  # pasamos los puntos a línea
+  night_line &lt;- st_linestring(night_step) %&gt;% st_sfc(crs = 4326)
+  
+  # definimos el rectángulo del planeta
+  wld_bbx &lt;- st_bbox(c(xmin = -180, xmax = 180,
+                       ymin = -90, ymax = 90), 
+                     crs = 4326) %&gt;% 
+             st_as_sfc()
+  
+  # dividimos el polígono con la línea de día-noche
+  poly_nightday &lt;-  st_split(wld_bbx, night_line) %&gt;% 
+                      st_collection_extract(c(&quot;POLYGON&quot;)) %&gt;% 
+                       st_sf()  
+  
+  # seleccionamos el polígono según la fecha
+  if(date &lt;= make_date(year(date), 3, 20) | date &gt;= make_date(year(date), 9, 23)) {
+    
+    poly_nightday &lt;- slice(poly_nightday, 2) %&gt;% 
+      mutate(daynight = 1)
+    
+  } else {
+    
+    poly_nightday &lt;- slice(poly_nightday, 1) %&gt;% 
+      mutate(daynight = 1)
+  }
+  
+  # creamos el raster con la resolución del argumento res
+  r &lt;- rast(vect(wld_bbx), resolution = res)
+  
+  # rasterizamos el polígono de noche
+  night_rast &lt;- rasterize(vect(poly_nightday), r) 
+  
+  return(night_rast)
+  
+}</code></pre>
+<p>Dado que queremos obtener el área de noche para diferentes horas del día construimos una segunda función para aplicar la primera sobre diferentes intervalos del día (en minutos).</p>
+<pre class="r"><code>night_determinator &lt;- function(time_seq, # minutos 
+                               date = Sys.Date(), # fecha (por defecto del sistema)
+                               res = .5) { # resolución del raster 0.5º
+
+# aplicamos la primera función sobre un vector de minutos
+night_raster &lt;-  map(time_seq, 
+                     rast_determiner,
+                     date = date, 
+                     res = res)
+
+# convertimos el raster en un objeto de tantas capas como unidades de minutos
+night_raster &lt;- rast(night_raster)
+
+# definimos la proyección WGS84
+crs(night_raster) &lt;- &quot;EPSG:4326&quot;
+
+return(night_raster)
+  
+}</code></pre>
+</div>
+</div>
+<div id="cear-un-ciclo-día-noche" class="section level1">
+<h1>Cear un ciclo día-noche</h1>
+<p>Primero creamos el área de noches para el día de nuestro sistema operativo con intervalos de 30 minutos. Después lo reproyectamos a <a href="https://epsg.io/54019">Winkel II</a>.</p>
+<pre class="r"><code># aplicamos nuestra función para un día de 24 horas en intervalos de 30 minutos
+night_rast &lt;- night_determinator(seq(0, 1410, 30), Sys.Date(), res = .5)
+
+# proyectamos a Winkel II
+night_raster_winkel &lt;- project(night_rast, 
+                               &quot;ESRI:54019&quot;, 
+                                mask = TRUE,
+                                method = &quot;near&quot;)
+# mapa de los primeros 5
+plot(night_raster_winkel, maxnl = 5)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-11-1.png" width="672" /></p>
+</div>
+<div id="animación-del-ciclo-día-noche" class="section level1">
+<h1>Animación del ciclo día-noche</h1>
+<div id="preparación-1" class="section level2">
+<h2>Preparación</h2>
+<p>Para crear una animación de 24 horas mostrando el movimiento de la noche sobre la Tierra debemos hacer unos pasos previos. Primero obtenemos los límites del mundo con la función <code>ne_countries()</code> y los reproyectamos a la nueva proyección Winkel II. Después convertimos los datos raster en un <code>data.frame</code> indicando que mantenga valores ausentes. Podemos observar que cada capa del raster (de cada intervalo de 30 minutos) es una columna en el <code>data.frame</code>. Renombramos las columnas y convertimos la tabla en un formato largo empleando la función <code>pivot_longer()</code>. Lo que hacemos es fusionar todas las columnas de las capas en una única. Como último paso excluimos los valores ausentes con la función <code>filter()</code>.</p>
+<pre class="r"><code># límites de países
+wld &lt;- ne_countries(scale = 10, returnclass = &quot;sf&quot;) %&gt;% 
+         st_transform(&quot;ESRI:54019&quot;)
+
+# convertimos el raster a un data.frame con xyz
+df_winkel &lt;- as.data.frame(night_raster_winkel, xy = TRUE, na.rm = FALSE)
+
+# renombramos todas las columnas correspondientes a los intervalos del día
+names(df_winkel)[3:length(df_winkel)] &lt;- str_c(&quot;H&quot;, as_hms(seq(0, 1410, 30)*60))
+
+# cambiamos a un formato largo de tabla
+df_winkel &lt;- pivot_longer(df_winkel, 3:length(df_winkel), names_to = &quot;hour&quot;, values_to = &quot;night&quot;) 
+
+# excluimos los valores ausentes para reducir el tamaño de la tabla
+df_winkel &lt;- filter(df_winkel, !is.na(night))</code></pre>
+<p>Sólo resta crear una retícula y obtener la extensión del mapamundi.</p>
+<pre class="r"><code># retícula
+grid &lt;- st_graticule() %&gt;%   st_transform(&quot;ESRI:54019&quot;)
+
+# obtenemos la extensión del mundo
+bbx &lt;- st_bbox(wld)</code></pre>
+</div>
+<div id="mapa" class="section level2">
+<h2>Mapa</h2>
+<p>El mapa de cualquier hora lo construimos con <code>ggplot2</code> añadiendo la geometría vectorial con <code>geom_sf()</code> (los límites y la retícula) y con <code>geom_raster()</code> los datos raster. En el título estamos usando un símbolo unicode como reloj. Además definimos la extensión del mapa en <code>coord_sf()</code> para mantenerlo constante sobre todos los mapas en la animación. Por último, hacemos uso de <code>{{ }}</code> de <a href="https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/">{rlang}</a> dentro de la función <code>filter()</code> para poder filtrar nuestros datos raster en forma de tabla. Con el objetivo de que nuestra función pueda evaluar correctamente los valores que pasamos en <code>x</code> (los intervalos del día) es necesario usar esta gramatica de <em>tidy evaluation</em> por <em>data masking</em> de <code>tidyverse</code>. Es un tema para otro post.</p>
+<pre class="r"><code># ejemplo 5 UTC
+x &lt;- &quot;H05:00:00&quot;
+
+# mapa
+ggplot() +
+  # límites
+  geom_sf(data = wld,
+        fill = &quot;#74a9cf&quot;, 
+        colour = &quot;white&quot;,
+          size = .1) +
+  # retícula
+  geom_sf(data = grid, size = .1) +
+  # datos raster filtrados 
+  geom_raster(data = filter(df_winkel, hour == {{x}}), 
+              aes(x, y), 
+            fill = &quot;grey90&quot;,
+            alpha = .6) +
+  # título
+  labs(title = str_c(&quot;\U1F551&quot;, str_remove(x, &quot;H&quot;), &quot; UTC&quot;)) + 
+  # límites de extensión
+  coord_sf(xlim = bbx[c(1, 3)], 
+           ylim = bbx[c(2, 4)])  +
+  # estilo del mapa
+  theme_void() +
+  theme(plot.title = element_text(hjust = .1, vjust = .9))</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+</div>
+<div id="animación" class="section level2">
+<h2>Animación</h2>
+<p>Creamos la animación aplicando la función <code>walk()</code>, que a su vez pasará por el vector de intervalos para filtrar nuestros datos y mapear cada paso haciendo uso de <code>ggplot</code>.</p>
+<pre class="r"><code>walk(str_c(&quot;H&quot;, as_hms(seq(0, 1410, 30)*60)), function(step){
+  
+g &lt;- ggplot() +
+  geom_sf(data = wld,
+        fill = &quot;#74a9cf&quot;, 
+        colour = &quot;white&quot;,
+          size = .1) +
+  geom_sf(data = grid,
+          size = .1) +
+  geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+            fill = &quot;grey90&quot;,
+            alpha = .6) +
+  labs(title = str_c(&quot;\U1F551&quot;, str_remove(x, &quot;H&quot;), &quot; UTC&quot;)) + 
+  coord_sf(xlim = bbx[c(1, 3)], ylim = bbx[c(2, 4)])  +
+  theme_void() +
+  theme(plot.title = element_text(hjust = .1, vjust = .9))
+
+
+ggsave(str_c(&quot;wld_night_&quot;, str_remove_all(step, &quot;:&quot;), &quot;.png&quot;), g,
+       height = 4.3, width = 8.4, bg = &quot;white&quot;, dpi = 300, units = &quot;in&quot;)
+
+})</code></pre>
+<p>La creación del gif final lo hacemos con <code>gifski()</code> pasándole los nombres de las imagenes en el orden como deben aparecer en la animación.</p>
+<pre class="r"><code>files &lt;- str_c(&quot;wld_night_&quot;, str_remove_all(as_hms(seq(0, 710, 30)*60), &quot;:&quot;), &quot;.png&quot;)
+
+gifski(files, &quot;night_day.gif&quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)</code></pre>
+<p><img src="night_day.gif" /><!-- --></p>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/es/tag/mapamundi/">mapamundi</a>
+  
+  <a class="badge badge-light" href="/es/tag/noche-dia/">noche-dia</a>
+  
+  <a class="badge badge-light" href="/es/tag/animacion/">animación</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/&amp;text=Visualizar%20el%20ciclo%20de%20d%c3%ada-noche%20en%20un%20mapamundi" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/&amp;t=Visualizar%20el%20ciclo%20de%20d%c3%ada-noche%20en%20un%20mapamundi" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Visualizar%20el%20ciclo%20de%20d%c3%ada-noche%20en%20un%20mapamundi&amp;body=https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/&amp;title=Visualizar%20el%20ciclo%20de%20d%c3%ada-noche%20en%20un%20mapamundi" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Visualizar%20el%20ciclo%20de%20d%c3%ada-noche%20en%20un%20mapamundi%20https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/&amp;title=Visualizar%20el%20ciclo%20de%20d%c3%ada-noche%20en%20un%20mapamundi" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://dominicroye.github.io/"><img class="avatar mr-3 avatar-circle" src="/es/author/dr.-dominic-roye/avatar_hu930bec32484cd86675af8880de95caa2_508993_270x270_fill_q75_lanczos_center.jpg" alt="Dr. Dominic Royé"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://dominicroye.github.io/">Dr. Dominic Royé</a></h5>
+      <h6 class="card-subtitle">Investigador postdoctoral senior</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dr_xeo" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/es/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/dominicroye" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dominicroye/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+        <i class="ai ai-researchgate"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Relacionado</h3>
+    <ul>
+      
+      <li><a href="/es/2021/cartografia-firefly/">Cartografía firefly</a></li>
+      
+      <li><a href="/es/2020/animacion-climatica-de-la-temperatura-maxima/">Animación climática de la temperatura máxima</a></li>
+      
+      <li><a href="/es/2021/mapa-dasimetrico-bivariante/">Mapa dasimétrico bivariante</a></li>
+      
+      <li><a href="/es/2020/un-heatmap-como-calendario/">Un heatmap como calendario</a></li>
+      
+      <li><a href="/es/2020/visualizar-anomalias-climaticas/">Visualizar anomalías climáticas</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+  <p class="powered-by">
+    © 2018-2022 Dominic Royé. All rights reserved
+  </p>
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdn.jsdelivr.net/gh/desandro/imagesloaded@v4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/metafizzy/isotope@v3.0.6/dist/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.js" integrity="" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/es/js/wowchemy.min.50d3bf3df0c53b31631bb48a62b35f92.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

@@ -1,55 +1,100 @@
-<!DOCTYPE html>
-<html lang="en-us">
+<!DOCTYPE html><html lang="en-us" >
+
+
 <head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
 
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta http-equiv="X-UA-Compatible" content="IE=edge">
-  <meta name="generator" content="Source Themes Academic 3.2.0">
-  <meta name="generator" content="Hugo 0.55.4" />
-  <meta name="author" content="Dr. Dominic Royé">
+  
+  
 
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
   
   
   
   
     
+    
+    
   
-  <meta name="description" content="The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse.">
-
-  
-  <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">
-
   
 
+  <meta name="author" content="Dr. Dominic Royé" />
 
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-
-  
-  
-  
-  <meta name="theme-color" content="#2962ff">
-  
-
-  
   
   
   
     
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/academicons/1.8.6/css/academicons.min.css" integrity="sha256-uFVgMKfistnJAfoCUQigIl+JfUaP47GrRKjf6CTPVmw=" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.6.0/css/all.css" integrity="sha384-aOkxzJ5uQz7WBObEZcHvV5JvRW3TUc2rNPA7pe3AwnsUohiw1Vj2Rgx2KSOkF5+h" crossorigin="anonymous">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.css" integrity="sha256-ygkqlh3CYSUri3LhQxzdcm0n1EQvH2Y+U5S2idbLtxs=" crossorigin="anonymous">
+  
+  <meta name="description" content="The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
 
     
     
@@ -59,286 +104,604 @@
     
       
       
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/dracula.min.css" crossorigin="anonymous">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
       
     
 
     
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.css" integrity="" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
 
     
 
-  
-
-  
-  
-
-  <link rel="stylesheet" href="/en/styles.css">
-  
-  <link rel="stylesheet" href="/css/override.css">
-  
-
-  
-  
-    <script>
-      window.ga=window.ga||function(){(ga.q=ga.q||[]).push(arguments)};ga.l=+new Date;
-      ga('create', 'UA-27463794-2', 'auto');
-      ga('set', 'anonymizeIp', true);
-      ga('require', 'eventTracker');
-      ga('require', 'outboundLinkTracker');
-      ga('require', 'urlChangeTracker');
-      ga('send', 'pageview');
-    </script>
-    <script async src="//www.google-analytics.com/analytics.js"></script>
     
-    <script async src="https://cdnjs.cloudflare.com/ajax/libs/autotrack/2.4.1/autotrack.js" integrity="sha512-HUmooslVKj4m6OBu0OgzjXXr+QuFYy/k7eLI5jdeEy/F4RSgMn6XRWRGkFi5IFaFgy7uFTkegp3Z0XnJf3Jq+g==" crossorigin="anonymous"></script>
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
     
   
-  
-
-  
-  <link rel="alternate" href="https://dominicroye.github.io/index.xml" type="application/rss+xml" title="Dominic Royé">
-  <link rel="feed" href="https://dominicroye.github.io/index.xml" type="application/rss+xml" title="Dominic Royé">
-  
-
-  <link rel="manifest" href="/site.webmanifest">
-  <link rel="icon" type="image/png" href="/img/icon.png">
-  <link rel="apple-touch-icon" type="image/png" href="/img/icon-192.png">
-
-  <link rel="canonical" href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">
 
   
   
   
   
-    
   
-  <meta property="twitter:card" content="summary_large_image">
-  
-  <meta property="og:site_name" content="Dominic Royé">
-  <meta property="og:url" content="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">
-  <meta property="og:title" content="A very short introduction to Tidyverse | Dominic Royé">
-  <meta property="og:description" content="The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse."><meta property="og:image" content="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/featured.png">
-  <meta property="og:locale" content="en-us">
-  
-  <meta property="article:published_time" content="2020-06-06T00:00:00&#43;00:00">
-  
-  <meta property="article:modified_time" content="2020-06-06T00:00:00&#43;00:00">
-  
+  <link rel="stylesheet" href="/css/wowchemy.b48d89910a3f8560bb2d78fedea8d682.css" />
 
   
 
-<link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.css">
-<script src="//cdnjs.cloudflare.com/ajax/libs/cookieconsent2/3.0.3/cookieconsent.min.js"></script>
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27463794-2"></script>
 <script>
-  window.addEventListener("load", function(){
-    window.cookieconsent.initialise({
-      "palette": {
-        "popup": {
-          "background": "#2962ff",
-          "text": "#fff"
-        },
-        "button": {
-          "background": "#fff",
-          "text": "#2962ff"
-        }
-      },
-      "theme": "classic",
-      "content": {
-        "message": "This website uses cookies to ensure you get the best experience on our website.",
-        "dismiss": "Got it!",
-        "link": "Learn more",
-        "href": "https://cookies.insites.com"
-      }
-    })});
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-27463794-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
 </script>
 
 
   
 
-  <title>A very short introduction to Tidyverse | Dominic Royé</title>
+  
 
-</head>
-<body id="top" data-spy="scroll" data-target="#TableOfContents" data-offset="71" >
-  <aside class="search-results" id="search">
-  <div class="container">
-    <section class="search-header">
+  
 
-      <div class="row no-gutters justify-content-between mb-3">
-        <div class="col-6">
-          <h1>Search</h1>
-        </div>
-        <div class="col-6 col-search-close">
-          <a class="js-search" href="#"><i class="fas fa-times-circle text-muted" aria-hidden="true"></i></a>
-        </div>
-      </div>
 
-      <div id="search-box">
-        
-        
-        
-      </div>
 
-    </section>
-    <section class="section-search-results">
 
-      <div id="search-hits">
-        
-      </div>
+  
+  
+  
 
-    </section>
-  </div>
-</aside>
+  
 
-<nav class="navbar navbar-light fixed-top navbar-expand-lg py-0" id="navbar-main">
-  <div class="container">
+  
+    <link rel="manifest" href="/en/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@@dr_xeo" />
+    <meta property="twitter:creator" content="@@dr_xeo" />
+  
+  <meta property="og:site_name" content="Dr. Dominic Royé" />
+  <meta property="og:url" content="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/" />
+  <meta property="og:title" content="A very short introduction to Tidyverse | Dr. Dominic Royé" />
+  <meta property="og:description" content="The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse." /><meta property="og:image" content="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/featured.png" />
+    <meta property="twitter:image" content="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2020-06-06T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2020-06-06T00:00:00&#43;00:00">
+  
+
+  
+
 
     
-      <a class="navbar-brand" href="/en/"><div style="position:relative;float:left">Dominic Royé<img src="/img/portrait.jpg" alt="Dominic Royé" style="float: left;"></div></a>
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/"
+  },
+  "headline": "A very short introduction to Tidyverse",
+  
+  "image": [
+    "https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/featured.png"
+  ],
+  
+  "datePublished": "2020-06-06T00:00:00Z",
+  "dateModified": "2020-06-06T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Dominic Royé"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Santiago de Compostela",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_192x192_fit_lanczos_3.png"
+    }
+  },
+  "description": "The tidyverse universe of packages, a collection of packages specially focused on data science, marked a milestone in R programming. In this post I am going to summarize very briefly the most essential to start in this world. The tidyverse grammar follows a common structure in all functions. The most essential thing is that the first argument is the object and then come the rest of the arguments. In addition, a set of verbs is provided to facilitate the use of the functions. The tidyverse philosophy and grammar of functions structure is also reflected in other packages that make its use compatible with the collection of tidyverse."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>A very short introduction to Tidyverse | Dr. Dominic Royé</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="cdcb21327c6f490be8096e3312c84d5b" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.2da3b1fa37e894630bf6de39b1b694b3.js"></script>
+
+  
+
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+            
+            >
+             <div style = "padding-top:0.5em;">Dr. Dominic Royé</div></a>
+      </div>
+      
+
       
       <button type="button" class="navbar-toggler" data-toggle="collapse"
-              data-target="#navbar" aria-controls="navbar" aria-expanded="false" aria-label="Toggle navigation">
-        <span><i class="fas fa-bars"></i></span>
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
       </button>
       
 
-    
-    <div class="collapse navbar-collapse" id="navbar">
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+          
+          ></a>
+      </div>
+      
 
       
       
-      <ul class="navbar-nav ml-auto">
-        
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
 
         
+        <ul class="navbar-nav d-md-inline-flex">
+          
 
-        
-        
-        
+          
 
-        <li class="nav-item">
-          <a class="nav-link" href="/en/#">
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+
+          
             
-            <span>home</span>
             
-          </a>
-        </li>
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#"><span>home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#posts"><span>blog</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#featured"><span>publications</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#projects"><span>graphs</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#about"><span>me</span></a>
+          </li>
+
+          
+          
 
         
-        
 
-        
+          
+        </ul>
+      </div>
 
-        
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
         
         
           
-        
-
-        <li class="nav-item">
-          <a class="nav-link" href="/en/#posts">
             
-            <span>blog</span>
-            
-          </a>
-        </li>
-
-        
-        
-
-        
-
-        
-        
-        
+            <li class="nav-item d-none d-lg-inline-flex">
+              <a class="nav-link" href="https://twitter.com/dr_xeo" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+              </a>
+            </li>
           
         
 
-        <li class="nav-item">
-          <a class="nav-link" href="/en/#publications_selected">
-            
-            <span>publications</span>
-            
-          </a>
-        </li>
+        
+        
 
         
         
 
         
-
-        
-        
-        
-          
-        
-
-        <li class="nav-item">
-          <a class="nav-link" href="/en/#graphs">
-            
-            <span>graphs</span>
-            
-          </a>
-        </li>
-
-        
-        
-
-        
-
-        
-        
-        
-          
-        
-
-        <li class="nav-item">
-          <a class="nav-link" href="/en/#teaching">
-            
-            <span>more</span>
-            
-          </a>
-        </li>
-
-        
-        
-
-        
-
-        
-        
-        
-          
-        
-
-        <li class="nav-item">
-          <a class="nav-link" href="/en/#about">
-            
-            <span>me</span>
-            
-          </a>
-        </li>
-
-        
-        
-
-      
-
-        
-
-        
-
-        
-
         
 
       </ul>
 
     </div>
+  </nav>
+</header>
+
+
   </div>
-</nav>
 
-
-<article class="article" itemscope itemtype="http://schema.org/Article">
+  <div class="page-body">
+    <article class="article">
 
   
 
@@ -354,269 +717,90 @@
 
 
 
-<div class="article-header d-xl-none">
-  <div class="featured-image" style="background-image: url('/en/2020/a-very-short-introduction-to-tidyverse/featured_hucb30efb4845712af1b21177307978519_146938_800x0_resize_box_2.png');"></div>
+
+
+
+
+
+
+
   
-</div>
+  
+    
+  
 
 
-<div class="container-fluid split-header d-none d-xl-block">
-  <div class="row">
-    <div class="col-6">
-      <div class="split-header-content">
-        <h1 itemprop="name">A very short introduction to Tidyverse</h1>
+<div class="article-container pt-3">
+  <h1>A very short introduction to Tidyverse</h1>
 
-        
+  
 
-        
+  
+
 
 <div class="article-metadata">
 
   
   
-  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Dr. Dominic Royé">
-  </span>
-  
 
+  
   <span class="article-date">
     
-    <meta content="2020-06-06 00:00:00 &#43;0000 UTC" itemprop="datePublished">
-    <time datetime="2020-06-06 00:00:00 &#43;0000 UTC" itemprop="dateModified">
-      2020-06-06
-    </time>
+    
+      
+    
+    2020-06-06
   </span>
-  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Dr. Dominic Royé">
-  </span>
-
   
 
   
+
   
   <span class="middot-divider"></span>
-  <a href="/en/2020/a-very-short-introduction-to-tidyverse/#disqus_thread"></a>
+  <span class="article-reading-time">
+    24 min read
+  </span>
   
 
   
+  
+  
+  
+  
+  
+
   
   
   <span class="middot-divider"></span>
   <span class="article-categories">
-    <i class="fas fa-folder"></i>
-    
-    <a href="/en/categories/tidyverse/">tidyverse</a>, 
-    
-    <a href="/en/categories/r/">R</a>, 
-    
-    <a href="">R:elementary</a>
-    
-  </span>
-  
-  
-
+    <i class="fas fa-folder mr-1"></i><a href="/en/category/tidyverse/">tidyverse</a>, <a href="/en/category/r/">R</a>, <a href="/en/category/relementary/">R:elementary</a></span>
   
 
 </div>
 
-
-        
-
-
-
-
-
-
-
   
 
 
 
 
 
-
-
-
-
-
-        
-<div class="share-box" aria-hidden="true">
-  <ul class="share">
-    <li>
-      <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=A%20very%20short%20introduction%20to%20Tidyverse&amp;url=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f"
-         target="_blank" rel="noopener">
-        <i class="fab fa-twitter"></i>
-      </a>
-    </li>
-    <li>
-      <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f"
-         target="_blank" rel="noopener">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-    </li>
-    <li>
-      <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f&amp;title=A%20very%20short%20introduction%20to%20Tidyverse"
-         target="_blank" rel="noopener">
-        <i class="fab fa-linkedin-in"></i>
-      </a>
-    </li>
-    <li>
-      <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f&amp;title=A%20very%20short%20introduction%20to%20Tidyverse"
-         target="_blank" rel="noopener">
-        <i class="fab fa-weibo"></i>
-      </a>
-    </li>
-    <li>
-      <a class="email"
-         href="mailto:?subject=A%20very%20short%20introduction%20to%20Tidyverse&amp;body=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </li>
-  </ul>
 </div>
 
 
-      </div>
-    </div>
-    <div class="col-6">
-      <div class="split-header-image">
-        <img src="/en/2020/a-very-short-introduction-to-tidyverse/featured_hucb30efb4845712af1b21177307978519_146938_680x500_fill_q90_box_smart1_2.png" itemprop="image" alt="">
-        
-      </div>
-    </div>
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 552px;">
+  <div style="position: relative">
+    <img src="/en/2020/a-very-short-introduction-to-tidyverse/featured_hucb30efb4845712af1b21177307978519_146938_720x0_resize_lanczos_3.png" width="720" height="552" alt="" class="featured-image">
+    
   </div>
-</div>
-
-<div class="article-container d-xl-none">
-  <h1 itemprop="name">A very short introduction to Tidyverse</h1>
-
-  
-
-  
-
-<div class="article-metadata">
-
-  
-  
-  <span itemscope itemprop="author" itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Dr. Dominic Royé">
-  </span>
-  
-
-  <span class="article-date">
-    
-    <meta content="2020-06-06 00:00:00 &#43;0000 UTC" itemprop="datePublished">
-    <time datetime="2020-06-06 00:00:00 &#43;0000 UTC" itemprop="dateModified">
-      2020-06-06
-    </time>
-  </span>
-  <span itemscope itemprop="publisher" itemtype="http://schema.org/Person">
-    <meta itemprop="name" content="Dr. Dominic Royé">
-  </span>
-
-  
-
-  
-  
-  <span class="middot-divider"></span>
-  <a href="/en/2020/a-very-short-introduction-to-tidyverse/#disqus_thread"></a>
-  
-
-  
-  
-  
-  <span class="middot-divider"></span>
-  <span class="article-categories">
-    <i class="fas fa-folder"></i>
-    
-    <a href="/en/categories/tidyverse/">tidyverse</a>, 
-    
-    <a href="/en/categories/r/">R</a>, 
-    
-    <a href="">R:elementary</a>
-    
-  </span>
-  
-  
-
-  
-  
-<div class="share-box" aria-hidden="true">
-  <ul class="share">
-    <li>
-      <a class="twitter"
-         href="https://twitter.com/intent/tweet?text=A%20very%20short%20introduction%20to%20Tidyverse&amp;url=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f"
-         target="_blank" rel="noopener">
-        <i class="fab fa-twitter"></i>
-      </a>
-    </li>
-    <li>
-      <a class="facebook"
-         href="https://www.facebook.com/sharer.php?u=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f"
-         target="_blank" rel="noopener">
-        <i class="fab fa-facebook-f"></i>
-      </a>
-    </li>
-    <li>
-      <a class="linkedin"
-         href="https://www.linkedin.com/shareArticle?mini=true&amp;url=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f&amp;title=A%20very%20short%20introduction%20to%20Tidyverse"
-         target="_blank" rel="noopener">
-        <i class="fab fa-linkedin-in"></i>
-      </a>
-    </li>
-    <li>
-      <a class="weibo"
-         href="http://service.weibo.com/share/share.php?url=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f&amp;title=A%20very%20short%20introduction%20to%20Tidyverse"
-         target="_blank" rel="noopener">
-        <i class="fab fa-weibo"></i>
-      </a>
-    </li>
-    <li>
-      <a class="email"
-         href="mailto:?subject=A%20very%20short%20introduction%20to%20Tidyverse&amp;body=https%3a%2f%2fdominicroye.github.io%2fen%2f2020%2fa-very-short-introduction-to-tidyverse%2f">
-        <i class="fas fa-envelope"></i>
-      </a>
-    </li>
-  </ul>
-</div>
-
-
-  
-
-</div>
-
-
-  
-
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
-
 </div>
 
 
 
   <div class="article-container">
 
-    <div class="article-style" itemprop="articleBody">
+    <div class="article-style">
       
-<script src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/header-attrs/header-attrs.js"></script>
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -881,8 +1065,8 @@ str_glue(
   &quot;I&#39;am {age}, &quot;,
   &quot;and my birth year is {format(date_today-age*365, &#39;%Y&#39;)}.&quot;
 )</code></pre>
-<pre><code>## My name is Juan, I&#39;am 50, and my birth year is 1971.
-## My name is Michael, I&#39;am 80, and my birth year is 1941.</code></pre>
+<pre><code>## My name is Juan, I&#39;am 50, and my birth year is 1972.
+## My name is Michael, I&#39;am 80, and my birth year is 1942.</code></pre>
 </div>
 <div id="management-of-dates-and-times" class="section level2" number="4.3">
 <h2><span class="header-section-number">4.3</span> Management of dates and times</h2>
@@ -1115,7 +1299,7 @@ wld &lt;- filter(wld, !is.na(iso_a2)) %&gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>Other <code>dplyr</code> functions allow us to join tables: <code>*_join ()</code>. Depending on which table (left or right) you want to join, the functions change: <code>left_join()</code>, <code>right_join()</code> or even <code>full_join()</code>. The <code>by</code> argument is not necessary as long as both tables have a column in common. However, in this case the variable names are different, so we use the following way: <code>c("country_region_code"="iso_a2")</code>. The <code>forcats</code> package of <code>tidyverse</code> has many useful functions for handling categorical variables (<code>factors</code>), variables that have a fixed and known set of possible values. All <code>forcats</code> functions have the prefix <code>fct_*</code>. For example, in this case we use <code>fct_reorder()</code> to reorder the country labels in order of the maximum based on the residential mobility records. Finally, we create a new column <code>"resi_real"</code> to change the reference value, the average or baseline, from 0 to 100.</p>
 <pre class="r"><code>subset_europe &lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -1232,14 +1416,14 @@ it &lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png" width="2100" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png" width="2100" /></p>
 <pre class="r"><code># scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &quot;lm&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png" width="2100" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png" width="2100" /></p>
 <p>To modify the axes, we use the different <code>scale_*</code> functions that we must adapt to the scales of measurement (date, discrete, continuous, etc.). The <code>labs()</code> function helps us define the axis, legend and plot titles. Finally, we add the style of the graph with <code>theme_light()</code> (others are <code>theme_bw()</code>, <code>theme_minimal()</code>, etc.). We could also make changes to all graphic elements through <code>theme()</code>.</p>
 <pre class="r"><code># time serie plot
 ggplot(it, 
@@ -1253,7 +1437,7 @@ ggplot(it,
        y = &quot;Residential mobility&quot;,
        title = &quot;Mobility during COVID-19&quot;) +
   theme_light()</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png" width="2100" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png" width="2100" /></p>
 <pre class="r"><code># scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -1268,7 +1452,7 @@ ggplot(it,
        title = &quot;Mobility during COVID-19&quot;) +
   theme_light()</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png" width="2100" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png" width="2100" /></p>
 </div>
 <div id="boxplot" class="section level3" number="4.5.2">
 <h3><span class="header-section-number">4.5.2</span> Boxplot</h3>
@@ -1297,7 +1481,7 @@ ggplot(subset_europe_reg,
        title = &quot;Mobility during COVID-19&quot;, 
        fill = &quot;&quot;) +
   theme_minimal()</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png" width="2100" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png" width="2100" /></p>
 </div>
 <div id="heatmap" class="section level3" number="4.5.3">
 <h3><span class="header-section-number">4.5.3</span> Heatmap</h3>
@@ -1339,7 +1523,7 @@ ggplot(subset_europe,
                                label.position = &quot;top&quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)</code></pre>
-<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png" width="3675" /></p>
+<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png" width="3675" /></p>
 </div>
 </div>
 <div id="apply-functions-on-vectors-or-lists" class="section level2" number="4.6">
@@ -1395,9 +1579,9 @@ cor_mobility[1:5]</code></pre>
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic       p.value parameter conf.low conf.high method alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;         &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
-## 1   -0.312     -6.06 0.00000000367       340   -0.405    -0.213 Pears~ two.sided  
+##   estimate statistic  p.value parameter conf.low conf.high method    alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
+## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&#39;~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -1447,52 +1631,29 @@ arrange(cor_mobility, estimate)</code></pre>
     
 
 
+
+
+
+
 <div class="article-tags">
   
-  <a class="badge badge-light" href="/en/tags/introduction/">introduction</a>
+  <a class="badge badge-light" href="/en/tag/introduction/">introduction</a>
   
-  <a class="badge badge-light" href="/en/tags/visualization/">visualization</a>
+  <a class="badge badge-light" href="/en/tag/visualization/">visualization</a>
   
-  <a class="badge badge-light" href="/en/tags/manipulation/">manipulation</a>
+  <a class="badge badge-light" href="/en/tag/manipulation/">manipulation</a>
   
-  <a class="badge badge-light" href="/en/tags/data/">data</a>
+  <a class="badge badge-light" href="/en/tag/data/">data</a>
   
-  <a class="badge badge-light" href="/en/tags/covid-19/">COVID-19</a>
+  <a class="badge badge-light" href="/en/tag/covid-19/">COVID-19</a>
   
 </div>
 
 
 
+<div class="share-box">
+  <ul class="share">
     
-
-
-
-
-
-
-<div class="media author-card" itemscope itemtype="http://schema.org/Person">
-  
-  <img class="portrait mr-3" src="/img/potrai_domi.jpg" itemprop="image" alt="Avatar">
-  
-  <div class="media-body">
-    <h5 class="card-title" itemprop="name"><a href="/en/">Dr. Dominic Royé</a></h5>
-    
-    
-    <ul class="network-icon" aria-hidden="true">
-      
-      
-      
-      
-      
-      
-      
-      
-      <li>
-        <a itemprop="sameAs" href="mailto:dominic.roye@usc.es" >
-          <i class="fa fa-envelope"></i>
-        </a>
-      </li>
-      
       
       
       
@@ -1500,145 +1661,308 @@ arrange(cor_mobility, estimate)</code></pre>
       
       
       
-      
-      
-        
-      
       <li>
-        <a itemprop="sameAs" href="//twitter.com/dr_xeo" >
+        <a href="https://twitter.com/intent/tweet?url=https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&amp;text=A%20very%20short%20introduction%20to%20Tidyverse" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
           <i class="fab fa-twitter"></i>
         </a>
       </li>
-      
-      
-      
-      
-      
+    
       
       
       
         
+      
+      
       
       <li>
-        <a itemprop="sameAs" href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
-          <i class="ai ai-researchgate"></i>
+        <a href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&amp;t=A%20very%20short%20introduction%20to%20Tidyverse" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
         </a>
       </li>
-      
-      
-      
-      
-        
-      
-      
+    
       
       
       
         
+      
+      
       
       <li>
-        <a itemprop="sameAs" href="//github.com/dominicroye" >
-          <i class="fab fa-github"></i>
+        <a href="mailto:?subject=A%20very%20short%20introduction%20to%20Tidyverse&amp;body=https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
         </a>
       </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&amp;title=A%20very%20short%20introduction%20to%20Tidyverse" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=A%20very%20short%20introduction%20to%20Tidyverse%20https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&amp;title=A%20very%20short%20introduction%20to%20Tidyverse" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://dominicroye.github.io/"><img class="avatar mr-3 avatar-circle" src="/en/author/dr.-dominic-roye/avatar_hu930bec32484cd86675af8880de95caa2_508993_270x270_fill_q75_lanczos_center.jpg" alt="Dr. Dominic Royé"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://dominicroye.github.io/">Dr. Dominic Royé</a></h5>
+      <h6 class="card-subtitle">Senior postdoctoral researcher</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dr_xeo" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/en/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/dominicroye" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dominicroye/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+        <i class="ai ai-researchgate"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/en/2018/how-to-create-warming-stripes-in-r/">How to create &#39;Warming Stripes&#39; in R</a></li>
+      
+      <li><a href="/en/2018/the-pie-chart/">the pie chart</a></li>
+      
+      <li><a href="/en/2021/climate-circles/">Climate circles</a></li>
+      
+      <li><a href="/en/2020/geographic-distance/">Geographic distance</a></li>
+      
+      <li><a href="/en/2019/visualize-urban-growth/">Visualize urban growth</a></li>
       
     </ul>
   </div>
-</div>
-
-
-
-
-    
-    
-    <div class="article-widget">
-      <div class="hr-light"></div>
-      <h3>Related</h3>
-      <ul>
-        
-        <li><a href="/en/2018/how-to-create-warming-stripes-in-r/">How to create &#39;Warming Stripes&#39; in R</a></li>
-        
-        <li><a href="/en/2018/the-pie-chart/">the pie chart</a></li>
-        
-      </ul>
-    </div>
-    
-
-    
-    <div class="article-widget">
-      <div class="post-nav">
   
-  <div class="post-nav-item">
-    <div class="meta-nav">Next</div>
-    <a href="https://dominicroye.github.io/en/2020/river-flow-directions/" rel="next">River flow directions</a>
-  </div>
-  
-  
-  <div class="post-nav-item">
-    <div class="meta-nav">Previous</div>
-    <a href="https://dominicroye.github.io/en/2020/visualize-climate-anomalies/" rel="prev">Visualize climate anomalies</a>
-  </div>
-  
-</div>
 
-    </div>
-    
 
-    
-<section id="comments">
-  <div id="disqus_thread"></div>
-<script type="application/javascript">
-    var disqus_config = function () {
-    
-    
-    
-    };
-    (function() {
-        if (["localhost", "127.0.0.1"].indexOf(window.location.hostname) != -1) {
-            document.getElementById('disqus_thread').innerHTML = 'Disqus comments not available by default when the website is previewed locally.';
-            return;
-        }
-        var d = document, s = d.createElement('script'); s.async = true;
-        s.src = '//' + "https-dominicroye-github-io" + '.disqus.com/embed.js';
-        s.setAttribute('data-timestamp', +new Date());
-        (d.head || d.body).appendChild(s);
-    })();
-</script>
-<noscript>Please enable JavaScript to view the <a href="https://disqus.com/?ref_noscript">comments powered by Disqus.</a></noscript>
-<a href="https://disqus.com" class="dsq-brlink">comments powered by <span class="logo-disqus">Disqus</span></a>
-</section>
 
 
 
   </div>
 </article>
+  </div>
 
-<div class="container">
-  <footer class="site-footer">
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
   
 
+
+
+  
+
+  
+
+  
   <p class="powered-by">
-    &copy; 2018-2021 Dominic Royé. All rights reserved. &middot; 
+    © 2018-2022 Dominic Royé. All rights reserved
+  </p>
+  
 
-    Powered by the
-    <a href="https://sourcethemes.com/academic/" target="_blank" rel="noopener">Academic theme</a> for
-    <a href="https://gohugo.io" target="_blank" rel="noopener">Hugo</a>.
+  
+  
 
+
+
+
+
+
+  <p class="powered-by">
     
-    <span class="float-right" aria-hidden="true">
-      <a href="#" id="back_to_top">
-        <span class="button_icon">
-          <i class="fas fa-chevron-up fa-2x"></i>
-        </span>
-      </a>
-    </span>
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
     
   </p>
 </footer>
 
-</div>
+    </div>
+    
+  </div>
 
-
+  
 <div id="modal" class="modal fade" role="dialog">
   <div class="modal-dialog">
     <div class="modal-content">
@@ -1664,53 +1988,46 @@ arrange(cor_mobility, estimate)</code></pre>
   </div>
 </div>
 
+      
+
     
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
 
     
     
+    
+      
+      
+        <script src="https://cdn.jsdelivr.net/gh/desandro/imagesloaded@v4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/metafizzy/isotope@v3.0.6/dist/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous"></script>
+      
 
-    
-    
-    
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha512-+NqPlbbtM1QqiK8ZAo4Yrj2c4lNQoGv8P79DPtKzj++l5jnN39rHA/xsqn8zE9l0uSoxaCdrOgFs6yjyfbBxSg==" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.imagesloaded/4.1.3/imagesloaded.pkgd.min.js" integrity="sha512-umsR78NN0D23AzgoZ11K7raBD+R6hqKojyBZs1w8WvYlsI+QuKRGBx3LFCwhatzBunCjDuJpDHwxD13sLMbpRA==" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha256-VsEqElsCHSGmnmHXGQzvoWjWwoznFSZc6hs7ARLRacQ=" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.isotope/3.0.4/isotope.pkgd.min.js" integrity="sha512-VDBOIlDbuC4VWxGJNmuFRQ0Li0SKkDpmGyuhAG5LTDLd/dJ/S0WMVxriR2Y+CyPL5gzjpN4f/6iqWVBJlht0tQ==" crossorigin="anonymous"></script>
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/fancybox/3.2.5/jquery.fancybox.min.js" integrity="sha256-X5PoE3KU5l+JcX+w09p/wHl9AzK333C4hJ2I9S5mD4M=" crossorigin="anonymous"></script>
+      
+      
+
+      
 
       
         
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js" integrity="sha256-/BfiIkHlHoVihZdc6TFuj7MmJ0TWcWsMXkeDFwhi0zw=" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
         
-        <script src="//cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/languages/r.min.js"></script>
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
         
       
 
-      
-      
+    
+
+    
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.js" integrity="" crossorigin="anonymous"></script>
     
 
     
     
 
     
-    
-    
-    <script id="dsq-count-scr" src="//https-dominicroye-github-io.disqus.com/count.js" async></script>
-    
-
-    
-    
-    <script>hljs.initHighlightingOnLoad();</script>
-    
-
-    
-
-    
-    
-
-    
-
     
     
 
@@ -1721,14 +2038,26 @@ arrange(cor_mobility, estimate)</code></pre>
     
     
     
-    
-    
-    
-    
-    <script src="/js/academic.min.d037ee5294b166a79dec317c58aea9cc.js"></script>
 
     
+    
 
-  </body>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/en/js/wowchemy.min.50d3bf3df0c53b31631bb48a62b35f92.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
 </html>
-

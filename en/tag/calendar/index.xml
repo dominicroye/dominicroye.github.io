@@ -1,0 +1,182 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>calendar | Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/en/tag/calendar/</link>
+      <atom:link href="https://dominicroye.github.io/en/tag/calendar/index.xml" rel="self" type="application/rss+xml" />
+    <description>calendar</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Sun, 20 Dec 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
+      <title>calendar</title>
+      <link>https://dominicroye.github.io/en/tag/calendar/</link>
+    </image>
+    
+    <item>
+      <title>A heatmap as calendar</title>
+      <link>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</link>
+      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Recently I was looking for a visual representation to show the daily changes of temperature, precipitation and wind in an application &lt;a href=&#34;https://xeo81.shinyapps.io/MeteoExtremosGalicia/&#34;&gt;xeo81.shinyapps.io/MeteoExtremosGalicia&lt;/a&gt; (in Spanish), which led me to use a heatmap in the form of a calendar. The &lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;shiny&lt;/a&gt; application is updated every four hours with new data showing calendars for each weather station. The heatmap as a calendar allows you to visualize any variable with a daily time reference.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ragg&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ragg provides a set of high quality and high performance raster devices&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ragg&amp;quot;)) install.packages(&amp;quot;ragg&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+# paquetes
+library(tidyverse)
+library(lubridate)
+library(ragg)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend the short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20) &lt;a href=&#34;https://dominicroye.github.io/files/precipitation_santiago.csv&#34;&gt;download&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import the data
+dat_pr &amp;lt;- read_csv(&amp;quot;precipitation_santiago.csv&amp;quot;)
+dat_pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 355 x 2
+##    date          pr
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 2020-01-01   0  
+##  2 2020-01-02   0  
+##  3 2020-01-03   5.4
+##  4 2020-01-04   0  
+##  5 2020-01-05   0  
+##  6 2020-01-06   0  
+##  7 2020-01-07   0  
+##  8 2020-01-08   1  
+##  9 2020-01-09   3.8
+## 10 2020-01-10   0  
+## # ... with 345 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparation&lt;/h2&gt;
+&lt;p&gt;In the first step we must 1) complement the time series from December 21 to December 31 with &lt;code&gt;NA&lt;/code&gt;, 2) add the day of the week, the month, the week number and the day. Depending on whether we want each week to start on Sunday or Monday, we indicate it in the &lt;code&gt;wday()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- dat_pr %&amp;gt;% 
+          complete(date = seq(ymd(&amp;quot;2020-01-01&amp;quot;), 
+                              ymd(&amp;quot;2020-12-31&amp;quot;), 
+                              &amp;quot;day&amp;quot;)) %&amp;gt;%
+          mutate(weekday = wday(date, label = T, week_start = 1), 
+                 month = month(date, label = T, abbr = F),
+                 week = isoweek(date),
+                 day = day(date))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we need to make a change in the week of the year, which is because in certain years there may be, for example, a few days at the end of the year as the first week of the following year. We also create two new columns. On the one hand, we categorize precipitation into 14 classes and on the other, we define a white text color for darker tones in the heatmap.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- mutate(dat_pr, 
+                 week = case_when(month == &amp;quot;December&amp;quot; &amp;amp; week == 1 ~ 53,
+                                  month == &amp;quot;January&amp;quot; &amp;amp; week %in% 52:53 ~ 0,
+                                  TRUE ~ week),
+                 pcat = cut(pr, c(-1, 0, .5, 1:5, 7, 9, 15, 20, 25, 30, 300)),
+                 text_col = ifelse(pcat %in% c(&amp;quot;(15,20]&amp;quot;, &amp;quot;(20,25]&amp;quot;, &amp;quot;(25,30]&amp;quot;, &amp;quot;(30,300]&amp;quot;), 
+                                   &amp;quot;white&amp;quot;, &amp;quot;black&amp;quot;)) 
+      
+dat_pr  &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 8
+##    date          pr weekday month    week   day pcat    text_col
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;   &amp;lt;ord&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;   &amp;lt;chr&amp;gt;   
+##  1 2020-01-01   0   Wed     January     1     1 (-1,0]  black   
+##  2 2020-01-02   0   Thu     January     1     2 (-1,0]  black   
+##  3 2020-01-03   5.4 Fri     January     1     3 (5,7]   black   
+##  4 2020-01-04   0   Sat     January     1     4 (-1,0]  black   
+##  5 2020-01-05   0   Sun     January     1     5 (-1,0]  black   
+##  6 2020-01-06   0   Mon     January     2     6 (-1,0]  black   
+##  7 2020-01-07   0   Tue     January     2     7 (-1,0]  black   
+##  8 2020-01-08   1   Wed     January     2     8 (0.5,1] black   
+##  9 2020-01-09   3.8 Thu     January     2     9 (3,4]   black   
+## 10 2020-01-10   0   Fri     January     2    10 (-1,0]  black   
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualization&lt;/h2&gt;
+&lt;p&gt;First we create a color ramp from Brewer colors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# color ramp
+pubu &amp;lt;- RColorBrewer::brewer.pal(9, &amp;quot;PuBu&amp;quot;)
+col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Second, before building the chart, we define a custom theme as a function. To do this, we specify all the elements and their modifications with the help of the &lt;code&gt;theme()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_calendar &amp;lt;- function(){
+
+ theme(aspect.ratio = 1/2,
+       
+       axis.title = element_blank(),
+       axis.ticks = element_blank(),
+       axis.text.y = element_blank(),
+       axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+       
+       panel.grid = element_blank(),
+       panel.background = element_blank(),
+       
+       strip.background = element_blank(),
+       strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 15),
+       
+       legend.position = &amp;quot;top&amp;quot;,
+       legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5),
+       legend.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 9, hjust = 1),
+       
+       plot.caption =  element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = 1, size = 8),
+       panel.border = element_rect(colour = &amp;quot;grey&amp;quot;, fill=NA, size=1),
+       plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 26, 
+                                 face = &amp;quot;bold&amp;quot;, 
+                                 margin = margin(0,0,0.5,0, unit = &amp;quot;cm&amp;quot;)),
+       plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 16)
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we build the final chart using &lt;code&gt;geom_tile()&lt;/code&gt; and specify the day of the week as the X axis and the week number as the Y axis. As you can see in the variable of the week number (&lt;code&gt;-week&lt;/code&gt;), I change the sign so that the first day of each month is in the first row. With &lt;code&gt;geom_text()&lt;/code&gt; we add the number of each day with its color according to what we defined previously. In &lt;code&gt;guides&lt;/code&gt; we make the adjustments of the colorbar and in &lt;code&gt;scale_fill/colour_manual()&lt;/code&gt; we define the corresponding colors. An important step is found in &lt;code&gt;facet_wrap()&lt;/code&gt; where we specify the facets composition of each month. The facets should have free scales and the ideal would be a 4 x 3 facet distribution. It is possible to modify the position of the day number to another using the arguments &lt;code&gt;nudge_*&lt;/code&gt; in &lt;code&gt;geom_text()&lt;/code&gt; (eg bottom-right corner: nudge_x = .35, nudge_y = -.25).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;    ggplot(dat_pr, 
+           aes(weekday, -week, fill = pcat)) +
+      geom_tile(colour = &amp;quot;white&amp;quot;, size = .4)  + 
+      geom_text(aes(label = day, colour = text_col), size = 2.5) +
+      guides(fill = guide_colorsteps(barwidth = 25, 
+                                     barheight = .4,
+                                    title.position = &amp;quot;top&amp;quot;)) +
+       scale_fill_manual(values = c(&amp;quot;white&amp;quot;, col_p(13)),
+                         na.value = &amp;quot;grey90&amp;quot;, drop = FALSE) +
+       scale_colour_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;), guide = FALSE) + 
+       facet_wrap(~ month, nrow = 4, ncol = 3, scales = &amp;quot;free&amp;quot;) +
+       labs(title = &amp;quot;How is 2020 being in Santiago?&amp;quot;, 
+             subtitle = &amp;quot;Precipitation&amp;quot;,
+             caption = &amp;quot;Data: Meteogalicia&amp;quot;,
+             fill = &amp;quot;mm&amp;quot;) +
+       theme_calendar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To export we will use the &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt; package, which provides higher performance and quality than the standard raster devices provided by grDevices.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In other heatmap calendars I have added the predominant wind direction of each day as an arrow using &lt;code&gt;geom_arrow()&lt;/code&gt; from the &lt;code&gt;metR&lt;/code&gt; package (it can be seen in the aforementioned application).&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

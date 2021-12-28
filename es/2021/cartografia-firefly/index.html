@@ -1,0 +1,1510 @@
+<!DOCTYPE html><html lang="es-ES" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dr. Dominic Royé" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Los mapas *firefly* (lampíridos ingl.) son promocionados y descritos por [John Nelson](https://twitter.com/John_M_Nelson) quien publicó un [post](https://adventuresinmapping.com/2016/10/17/firefly-cartography/) en 2016 sobre sus características. No obstante, este tipo de mapas están vinculados a ArcGIS, lo que me ha llevado a intentar recrearlos en R." />
+
+  
+  <link rel="alternate" hreflang="es-ES" href="https://dominicroye.github.io/es/2021/cartografia-firefly/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.css" integrity="" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.b48d89910a3f8560bb2d78fedea8d682.css" />
+
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27463794-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-27463794-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/es/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://dominicroye.github.io/es/2021/cartografia-firefly/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@@dr_xeo" />
+    <meta property="twitter:creator" content="@@dr_xeo" />
+  
+  <meta property="og:site_name" content="Dr. Dominic Royé" />
+  <meta property="og:url" content="https://dominicroye.github.io/es/2021/cartografia-firefly/" />
+  <meta property="og:title" content="Cartografía firefly | Dr. Dominic Royé" />
+  <meta property="og:description" content="Los mapas *firefly* (lampíridos ingl.) son promocionados y descritos por [John Nelson](https://twitter.com/John_M_Nelson) quien publicó un [post](https://adventuresinmapping.com/2016/10/17/firefly-cartography/) en 2016 sobre sus características. No obstante, este tipo de mapas están vinculados a ArcGIS, lo que me ha llevado a intentar recrearlos en R." /><meta property="og:image" content="https://dominicroye.github.io/es/2021/cartografia-firefly/featured.png" />
+    <meta property="twitter:image" content="https://dominicroye.github.io/es/2021/cartografia-firefly/featured.png" /><meta property="og:locale" content="es-ES" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2021-06-01T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2021-06-01T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dominicroye.github.io/es/2021/cartografia-firefly/"
+  },
+  "headline": "Cartografía firefly",
+  
+  "image": [
+    "https://dominicroye.github.io/es/2021/cartografia-firefly/featured.png"
+  ],
+  
+  "datePublished": "2021-06-01T00:00:00Z",
+  "dateModified": "2021-06-01T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Dominic Royé"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Santiago de Compostela",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_192x192_fit_lanczos_3.png"
+    }
+  },
+  "description": "Los mapas *firefly* (lampíridos ingl.) son promocionados y descritos por [John Nelson](https://twitter.com/John_M_Nelson) quien publicó un [post](https://adventuresinmapping.com/2016/10/17/firefly-cartography/) en 2016 sobre sus características. No obstante, este tipo de mapas están vinculados a ArcGIS, lo que me ha llevado a intentar recrearlos en R."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Cartografía firefly | Dr. Dominic Royé</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="be14f024f7c71452cbc85eae86956e96" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.2da3b1fa37e894630bf6de39b1b694b3.js"></script>
+
+  
+
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/es/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+            
+            >
+             <div style = "padding-top:0.5em;">Dr. Dominic Royé</div></a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Barra de navegación">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/es/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+          
+          ></a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#"><span>inicio</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#posts"><span>blog</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#featured"><span>publicaciones</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#projects"><span>gráficos</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/es/#about"><span>mí</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+            
+            <li class="nav-item d-none d-lg-inline-flex">
+              <a class="nav-link" href="https://twitter.com/dr_xeo" data-toggle="tooltip" data-placement="bottom" title="Sígueme en Twitter" target="_blank" rel="noopener" aria-label="Sígueme en Twitter">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        
+
+        
+        
+
+        
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+
+<div class="article-container pt-3">
+  <h1>Cartografía firefly</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    2021-06-01
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min de lectura
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/es/category/sig/">sig</a>, <a href="/es/category/r/">R</a>, <a href="/es/category/rintermedio/">R:intermedio</a>, <a href="/es/category/visualizacion/">visualización</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 532px;">
+  <div style="position: relative">
+    <img src="/es/2021/cartografia-firefly/featured_hua9abf85121564bd95d2f36b415f30bce_13490040_720x0_resize_lanczos_3.png" width="720" height="532" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="cartografía-firefly" class="section level1">
+<h1>Cartografía <em>firefly</em></h1>
+<p>Los mapas <em>firefly</em> (lampíridos ingl.) son promocionados y descritos por
+<a href="https://twitter.com/John_M_Nelson">John Nelson</a> quien publicó un <a href="https://adventuresinmapping.com/2016/10/17/firefly-cartography/">post</a> en 2016 sobre sus características. No obstante, este tipo de mapas están vinculados a ArcGIS, lo que me ha llevado a intentar recrearlos en R. La reciente extensión de <code>ggplot2</code> con el paquete <a href="https://github.com/marcmenem/ggshadow"><code>ggshadow</code></a> nos facilitará la creación de este estilo cartográfico. Se caracteriza por tres elementos 1) un mapa base oscuro y desaturado (p.j. imágenes satelitales) 2) una viñeta y área resaltada enmascarada y 3) una única capa temática brillante. Lo esencial son los colores y el brillo que se logra con colores fríos, habitualmente colores neón. John Nelson explica más detalles en este <a href="https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/">post</a>.</p>
+<p>¿Para qué sirve el estilo <em>firefly</em>? En palabras de <a href="https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/">John Nelson</a>: “the map style that captures our attention and dutifully honors the First Law of Geography”. John hace referencia a lo dicho por Waldo Tobler
+“everything is related to everything else, but near things are more related than distant things” (Tobler 1970).</p>
+<p>En este post visualizaremos todos los terremotos registrados en el suroeste de Europa con una magnitud mayor de 3.</p>
+</div>
+<div id="paquetes" class="section level1">
+<h1>Paquetes</h1>
+<p>Usaremos los siguientes paquetes:</p>
+<table>
+<colgroup>
+<col width="13%" />
+<col width="86%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Paquete</th>
+<th align="left">Descripción</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.</td>
+</tr>
+<tr class="even">
+<td align="left">plotwidgets</td>
+<td align="left">Contiene funciones para la conversión de colores (RGB, HSL)</td>
+</tr>
+<tr class="odd">
+<td align="left">terra</td>
+<td align="left">Importar, exportar y manipular raster (paquete sucesor de raster)</td>
+</tr>
+<tr class="even">
+<td align="left">raster</td>
+<td align="left">Importar, exportar y manipular raster</td>
+</tr>
+<tr class="odd">
+<td align="left">sf</td>
+<td align="left">Simple Feature: importar, exportar y manipular datos vectoriales</td>
+</tr>
+<tr class="even">
+<td align="left">ggshadow</td>
+<td align="left">Extensión de ggplot2 para geometrías con sombreado</td>
+</tr>
+<tr class="odd">
+<td align="left">ggspatial</td>
+<td align="left">Extensión de ggplot2 para objetos espaciales</td>
+</tr>
+<tr class="even">
+<td align="left">ggnewscale</td>
+<td align="left">Extensión de ggplot2 para crear multiples scalas</td>
+</tr>
+<tr class="odd">
+<td align="left">janitor</td>
+<td align="left">Funciones sencillas para examinar y limpiar datos</td>
+</tr>
+<tr class="even">
+<td align="left">rnaturalearth</td>
+<td align="left">Mapas vectoriales del mundo ‘Natural Earth’</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># instalamos los paquetes si hace falta
+
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;terra&quot;)) install.packages(&quot;terra&quot;)
+if(!require(&quot;raster&quot;)) install.packages(&quot;raster&quot;)
+if(!require(&quot;plotwidgets&quot;)) install.packages(&quot;plotwidgets&quot;)
+if(!require(&quot;ggshadow&quot;)) install.packages(&quot;ggshadow&quot;)
+if(!require(&quot;ggspatial&quot;)) install.packages(&quot;ggspatial&quot;)
+if(!require(&quot;ggnewscale&quot;)) install.packages(&quot;ggnewscale&quot;)
+if(!require(&quot;janitor&quot;)) install.packages(&quot;janitor&quot;)
+if(!require(&quot;rnaturalearth&quot;)) install.packages(&quot;rnaturalearth&quot;)
+
+# paquetes
+
+library(raster)
+library(terra)
+library(sf)
+library(tidyverse)
+library(plotwidgets)
+library(ggshadow)
+library(ggspatial)
+library(ggnewscale)
+library(janitor)
+library(rnaturalearth)</code></pre>
+</div>
+<div id="preparación" class="section level1">
+<h1>Preparación</h1>
+<div id="datos" class="section level2">
+<h2>Datos</h2>
+<p>Primero descargamos todos los datos necesarios. Para el mapa de base usaremos la Blue Marble vía el acceso a worldview.earthdata.nasa.gov donde me he descargado una selección del área de interés en formato geoTiff con una resolución de 1 km. Es importante ajustar la resolución al detalle necesario del mapa.</p>
+<ul>
+<li>Selección de Blue Marble via <a href="https://worldview.earthdata.nasa.gov">worldview.earthdata.nasa.gov</a> (~66 MB) <a href="https://www.dropbox.com/s/bt8qfkzw339q13l/snapshot-2017-11-30T00_00_00Z.tiff?dl=0">descarga</a></li>
+<li>Registros de terremotos históricos en el suroeste de Europa del <a href="https://www.ign.es/web/ign/portal/sis-catalogo-terremotos">IGN</a> <a href="/files/catalogoComunSV_1621713848556.csv">descarga</a></li>
+</ul>
+</div>
+<div id="importar" class="section level2">
+<h2>Importar</h2>
+<p>Lo primero que hacemos es importar el raster RGB <em>Blue Marble</em> y los datos de los terremotos. Para importar el raster hago uso del nuevo paquete <a href="https://rspatial.org/terra/pkg/index.html"><code>terra</code></a> que es el sucesor del paquete <code>raster</code>. Podéis encontrar una comparación reciente <a href="https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-raster-packages/">aquí</a>. No todos los paquetes son compatibles todavía con la nueva clase de <code>SpatRaster</code>, por eso, nos hace falta también el paquete <code>raster</code>.</p>
+<pre class="r"><code># terremotos
+
+terremotos &lt;- read.csv2(&quot;catalogoComunSV_1621713848556.csv&quot;)
+str(terremotos)</code></pre>
+<pre><code>## &#39;data.frame&#39;:    149724 obs. of  10 variables:
+##  $ Evento       : chr  &quot;          33&quot; &quot;          34&quot; &quot;          35&quot; &quot;          36&quot; ...
+##  $ Fecha        : chr  &quot;  02/03/1373&quot; &quot;  03/03/1373&quot; &quot;  08/03/1373&quot; &quot;  19/03/1373&quot; ...
+##  $ Hora         : chr  &quot;    00:00:00&quot; &quot;    00:00:00&quot; &quot;    00:00:00&quot; &quot;    00:00:00&quot; ...
+##  $ Latitud      : chr  &quot;     42.5000&quot; &quot;     42.5000&quot; &quot;     42.5000&quot; &quot;     42.5000&quot; ...
+##  $ Longitud     : chr  &quot;      0.7500&quot; &quot;      0.7500&quot; &quot;      0.7500&quot; &quot;      0.7500&quot; ...
+##  $ Prof...Km.   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Inten.       : chr  &quot;     VIII-IX&quot; &quot;            &quot; &quot;            &quot; &quot;            &quot; ...
+##  $ Mag.         : chr  &quot;            &quot; &quot;            &quot; &quot;            &quot; &quot;            &quot; ...
+##  $ Tipo.Mag.    : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ LocalizaciÃ³n: chr  &quot;RibagorÃ§a.L&quot; &quot;RibagorÃ§a.L&quot; &quot;RibagorÃ§a.L&quot; &quot;RibagorÃ§a.L&quot; ...</code></pre>
+<pre class="r"><code># Blue Marble RGB raster
+
+bm &lt;- rast(&quot;snapshot-2017-11-30T00_00_00Z.tiff&quot;)
+bm # contiene tres capas (red, green, blue)</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 7156, 7156, 3  (nrow, ncol, nlyr)
+## resolution  : 0.008789272, 0.008789272  (x, y)
+## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+## source      : snapshot-2017-11-30T00_00_00Z.tiff 
+## red-grn-blue: 1, 2, 3 
+## names       : sna_1, sna_2, sna_3</code></pre>
+<pre class="r"><code># plot
+
+plotRGB(bm)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-4-1.png" width="2100" /></p>
+<pre class="r"><code># límites países
+
+limits &lt;- ne_countries(scale = 50, returnclass = &quot;sf&quot;)</code></pre>
+</div>
+<div id="terremotos" class="section level2">
+<h2>Terremotos</h2>
+<p>En este paso limpiamos los datos importados de los terremotos. 1) Convertimos en númerico longitud, latitud y magnitud usando la función <code>parse_number()</code> y limpiampos los nombres de las columnas con la función <code>clean_names()</code>, 2) Creamos un objeto espacial <code>sf</code> y lo proyectamos usando el EPSG:3035 correspondiendo a ETRS89-extended/LAEA Europe.</p>
+<pre class="r"><code># limpiamos los datos y creamos un objeto sf
+
+terremotos &lt;-  terremotos %&gt;% clean_names() %&gt;%
+               mutate(across(c(mag, latitud, longitud),                                                                                                  parse_number)) %&gt;%
+               st_as_sf(coords = c(&quot;longitud&quot;, &quot;latitud&quot;), 
+                       crs = 4326) %&gt;% 
+               st_transform(3035) # proyectamos a Laea </code></pre>
+</div>
+<div id="mapa-de-fondo-blue-marble" class="section level2">
+<h2>Mapa de fondo Blue Marble</h2>
+<p>Recortamos el mapa de fondo a una extensión menor, pero todavía no limitamos el área final.</p>
+<pre class="r"><code># recortamos al área deseada
+
+bm &lt;- crop(bm, extent(-20, 10, 30, 50))</code></pre>
+<p>Para obtener una versión desaturada del raster RGB de Blue Marble, debemos aplicar una función creada con este fin. En ésta usamos la función <code>rgb2hsl()</code> del paquete <code>plotwidgets</code>, que nos ayuda en convertir RGB a HSL y viceversa. El modelo HSL se define con Hue (tono), Saturation (saturación), Lightness (luminosidad). Los últimos dos parametros se expresan en ratio o porcentaje. El tono está definido en una rueda de color de 0 a 360º. 0 es rojo, 120 es verde, 240 es azul. Para cambiar la saturación únicamente debemos bajar el valor de S.</p>
+<pre class="r"><code># función para cambiar la saturación desde RGB
+
+saturation &lt;- function(rgb, s = .5){
+  
+  hsl &lt;- rgb2hsl(as.matrix(rgb))
+  hsl[2, ] &lt;- s
+  
+  rgb_new &lt;- as.vector(t(hsl2rgb(hsl)))
+  
+  return(rgb_new)
+  
+}</code></pre>
+<p>Empleamos nuestra función <code>saturation()</code> usando otra función <code>app()</code> que la aplica a cada píxel con las tres capas de RGB. Añadimos el argumento <code>s</code>, el que define el nivel de saturación deseada. Este paso puede tardar varios minutos. Después proyectamos nuestra imagen RGB.</p>
+<pre class="r"><code># aplicamos la función para desaturar con un 5%
+
+bm_desat &lt;- app(bm, saturation, s = .05)
+
+# plot nuevo imagen RGB
+
+plotRGB(bm_desat)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-8-1.png" width="2100" /></p>
+<pre class="r"><code># proyectamos 
+
+bm_desat &lt;- terra::project(bm_desat, &quot;epsg:3035&quot;)</code></pre>
+</div>
+</div>
+<div id="construcción-del-mapa-firefly" class="section level1">
+<h1>Construcción del mapa <em>firefly</em></h1>
+<div id="límites-y-gradícula" class="section level2">
+<h2>Límites y gradícula</h2>
+<p>Antes de empezar a construir el mapa, creamos una gradícula y estabelecemos la extensión final del mapa.</p>
+<pre class="r"><code># definimos los límites finales del mapa
+
+bx &lt;- tibble(x = c(-13, 6.7), y = c(31, 47)) %&gt;% 
+       st_as_sf(coords = c(&quot;x&quot;, &quot;y&quot;), crs = 4326) %&gt;%
+        st_transform(3035) %&gt;% 
+         st_bbox()
+
+# crearmos una gradícula del mapa
+
+grid &lt;- st_graticule(terremotos) </code></pre>
+</div>
+<div id="mapa-con-fondo-de-imagen" class="section level2">
+<h2>Mapa con fondo de imagen</h2>
+<p>La función <code>layer_spatial()</code> de <code>ggspatial</code> nos permite añadir un raster RGB sin grandes problemas, no obstante, todavía no apoya la nueva clase <code>SpatRaster</code>. Por eso, debemos convertirlo en la clase <code>stack</code> con la función <code>stack()</code>. También es posible usar en lugar de <code>geom_sf()</code>, la función <code>layer_spatial()</code> para objetos vectoriales de clase <code>sf</code> o <code>sp</code>.</p>
+<pre class="r"><code>ggplot() +
+  layer_spatial(data = stack(bm_desat)) + # mapa de fondo Blue Marble
+  geom_sf(data = limits, fill = NA, size = .3, colour = &quot;white&quot;) + # límites países
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-10-1.png" width="4500" /></p>
+</div>
+<div id="mapa-con-fondo-y-los-terremotos" class="section level2">
+<h2>Mapa con fondo y los terremotos</h2>
+<p>Para crear el efecto del brillo en los mapas <em>firefly</em>, hacemos uso de la función <code>geom_glowpoint()</code> del paquete <code>ggshadow</code>. También existe la misma función para líneas. Dado que nuestros datos son espaciales de clase <code>sf</code> y la geometría no apoya directamente el uso de <code>sf</code>, debemos indicar como argumento <code>stats = "sf_coordinates"</code> y dentro de <code>aes()</code> indicar <code>geometry = geometry</code>. Mapearemos el tamaño de los puntos en función de la magnitud. Además, filtramos aquellos terremotos con una magnitud mayor del 3.</p>
+<p>Dentro de la función <code>geom_glowpoint()</code>, 1) definimos el color deseado para el punto y el brillo, 2) el grado de transparencia con <code>alpha</code> bien para el punto o bien para el brillo. Por último, en la función <code>scale_size()</code> estabelecemos el rango (mínimo, máximo) del tamaño que tendrán los puntos.</p>
+<pre class="r"><code>ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &quot;white&quot;) +
+  geom_sf(data = grid, colour = &quot;white&quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(terremotos, mag &gt; 3),
+                 aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &quot;#6bb857&quot;,
+                   shadowcolour = &quot;#6bb857&quot;,
+                   shadowalpha = .1,
+                   stat = &quot;sf_coordinates&quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-11-1.png" width="4500" /></p>
+</div>
+<div id="mapa-final" class="section level2">
+<h2>Mapa final</h2>
+<p>El brillo de los mapas <em>firefly</em> se caracteriza por tener un tono blanco o un tono más claro en el centro de los puntos. Para lograrlo, debemos duplicar la capa anterior creada, cambiando únicamente el color y hacer los puntos con su brillo más pequeños.</p>
+<p>Por defecto, <code>ggplot2</code> no permite emplear diferentes escalas para la misma caracteristica (tamaño, color, etc) de distintas capas. Pero el paquete <code>ggnewscale</code> nos da la posibilidad de incorporar múltiples escalas de una característica de distintas capas. Lo único importante para lograrlo es el orden en el que se añade cada capa y escala. Primero debemos poner la geometría y despúes su escala correspondiente. Indicamos con <code>new_scale('size')</code> que la siguiente capa y escala es una nueva independiente de la anterior. Si usaramos <code>colour</code> o <code>fill</code> sería con <code>new_scale_*()</code>.</p>
+<pre class="r"><code>ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &quot;white&quot;) +
+  geom_sf(data = grid, colour = &quot;white&quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(terremotos, mag &gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &quot;#6bb857&quot;,
+                   shadowcolour = &quot;#6bb857&quot;,
+                   shadowalpha = .1,
+                   stat = &quot;sf_coordinates&quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  new_scale(&quot;size&quot;) +
+  geom_glowpoint(data = filter(terremotos, mag &gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .6,
+                   shadowalpha = .05,
+                   color = &quot;#ffffff&quot;,
+                   stat = &quot;sf_coordinates&quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.01, .7)) +
+  labs(title = &quot;TERREMOTOS&quot;) +
+  coord_sf(xlim = bx[c(1, 3)], ylim = bx[c(2, 4)], crs = 3035,
+           expand = FALSE) +
+  theme_void() +
+  theme(plot.title = element_text(size = 50, vjust = -5, colour = &quot;white&quot;, hjust = .95))</code></pre>
+<p><img src="https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-12-1.png" width="4500" /></p>
+<pre class="r"><code>ggsave(&quot;firefly_map.png&quot;, width = 15, height = 15, units = &quot;in&quot;, dpi = 300)</code></pre>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/es/tag/firefly/">firefly</a>
+  
+  <a class="badge badge-light" href="/es/tag/mapa/">mapa</a>
+  
+  <a class="badge badge-light" href="/es/tag/terremotos/">terremotos</a>
+  
+  <a class="badge badge-light" href="/es/tag/cartografia/">cartografía</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://dominicroye.github.io/es/2021/cartografia-firefly/&amp;text=Cartograf%c3%ada%20firefly" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io/es/2021/cartografia-firefly/&amp;t=Cartograf%c3%ada%20firefly" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Cartograf%c3%ada%20firefly&amp;body=https://dominicroye.github.io/es/2021/cartografia-firefly/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://dominicroye.github.io/es/2021/cartografia-firefly/&amp;title=Cartograf%c3%ada%20firefly" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Cartograf%c3%ada%20firefly%20https://dominicroye.github.io/es/2021/cartografia-firefly/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://dominicroye.github.io/es/2021/cartografia-firefly/&amp;title=Cartograf%c3%ada%20firefly" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://dominicroye.github.io/"><img class="avatar mr-3 avatar-circle" src="/es/author/dr.-dominic-roye/avatar_hu930bec32484cd86675af8880de95caa2_508993_270x270_fill_q75_lanczos_center.jpg" alt="Dr. Dominic Royé"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://dominicroye.github.io/">Dr. Dominic Royé</a></h5>
+      <h6 class="card-subtitle">Investigador postdoctoral senior</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dr_xeo" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/es/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/dominicroye" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dominicroye/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+        <i class="ai ai-researchgate"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Relacionado</h3>
+    <ul>
+      
+      <li><a href="/es/2021/mapa-dasimetrico-bivariante/">Mapa dasimétrico bivariante</a></li>
+      
+      <li><a href="/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/">Visualizar el ciclo de día-noche en un mapamundi</a></li>
+      
+      <li><a href="/es/2020/un-heatmap-como-calendario/">Un heatmap como calendario</a></li>
+      
+      <li><a href="/es/2020/visualizar-anomalias-climaticas/">Visualizar anomalías climáticas</a></li>
+      
+      <li><a href="/es/2019/visualizar-anomalias-de-precipitacion-mensual/">Visualizar anomalías de precipitación mensual</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+  <p class="powered-by">
+    © 2018-2022 Dominic Royé. All rights reserved
+  </p>
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Citar</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copiar
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Descargar
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdn.jsdelivr.net/gh/desandro/imagesloaded@v4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/metafizzy/isotope@v3.0.6/dist/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.js" integrity="" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/es/js/wowchemy.min.50d3bf3df0c53b31631bb48a62b35f92.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

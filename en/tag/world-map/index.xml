@@ -1,0 +1,337 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>world map | Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/en/tag/world-map/</link>
+      <atom:link href="https://dominicroye.github.io/en/tag/world-map/index.xml" rel="self" type="application/rss+xml" />
+    <description>world map</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Mon, 20 Dec 2021 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
+      <title>world map</title>
+      <link>https://dominicroye.github.io/en/tag/world-map/</link>
+    </image>
+    
+    <item>
+      <title>Visualize the day-night cycle on a world map</title>
+      <link>https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/</link>
+      <pubDate>Mon, 20 Dec 2021 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;In April of this year, I made an animation of the 24-hour average temperature of January 2020, also showing the day-night cycle.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;The average temperature of 24 hours in January 2020 with the day/night cycle. You can see a lot of geographic patterns. I love this kind of hypnotic temperature gifs. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/rspatial?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rspatial&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/NA5haUlnie&#34;&gt;pic.twitter.com/NA5haUlnie&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1383486611707494406?ref_src=twsrc%5Etfw&#34;&gt;April 17, 2021&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;p&gt;My biggest problem was finding a way to project correctly the area at night without breaking the geometry. The easiest solution I found was rasterising the night polygon and then reprojecting it. Indeed, a vector approach could be used, but I have preferred to use raster data here.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;We will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;12%&#34; /&gt;
+&lt;col width=&#34;87%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;hms&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Provides a simple class to store durations or time of day values and display them in hh:mm:ss format&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster (raster successor package)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lwgeom&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Access to the liblwgeom library with additional vector functions for sf&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Vector maps of the world ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;gifski&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Creating animations in gif format&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;hms&amp;quot;)) install.packages(&amp;quot;hms&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;lwgeom&amp;quot;)) install.packages(&amp;quot;lwgeom&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+if(!require(&amp;quot;gifski&amp;quot;)) install.packages(&amp;quot;gifski&amp;quot;)
+
+
+
+# packages
+library(rnaturalearth)
+library(tidyverse)
+library(lwgeom)
+library(sf)
+library(terra)
+library(lubridate)
+library(hms)
+library(gifski)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    To use the 50 and 10 m resolution of the &lt;code&gt;{rnaturalearth}&lt;/code&gt; package it is necessary to install the following additional packages. The &lt;code&gt;{devtools}&lt;/code&gt; package must be installed.
+&lt;code&gt;devtools::install_github(&amp;ldquo;ropensci/rnaturalearthdata&amp;rdquo;)&lt;/code&gt;
+&lt;code&gt;devtools::install_github(&amp;ldquo;ropensci/rnaturalearthhires&amp;rdquo;)&lt;/code&gt;
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;external-functions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;External functions&lt;/h2&gt;
+&lt;p&gt;The functions to estimate the separator line between day and night are based on a javascript &lt;em&gt;L.Terminator.js&lt;/em&gt; from the &lt;code&gt;{Leaflet}&lt;/code&gt; package I found on &lt;a href=&#34;https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions&#34;&gt;stackoverflow&lt;/a&gt;. You can download the script with the functions &lt;a href=&#34;https://dominicroye.github.io/files/terminator.R&#34;&gt;here&lt;/a&gt; or access it on &lt;a href=&#34;https://github.com/JoGall/terminator/blob/master/terminator.R&#34;&gt;github&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;source(&amp;quot;terminator.R&amp;quot;) # import the functions&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;custom-functions&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Custom functions&lt;/h2&gt;
+&lt;p&gt;The primary function &lt;code&gt;terminator()&lt;/code&gt; based on the javascript of &lt;code&gt;{Leaflet}&lt;/code&gt; needs as arguments: the date-time, the minimum and maximum extension, as well as the resolution or the interval of longitude.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # date and time of our operating system
+t0&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2021-12-24 15:24:09 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimate the day-night line
+
+# convert it into a spatial object of class sf
+line_nightday &amp;lt;- st_linestring(as.matrix(coord_nightday)) %&amp;gt;% st_sfc(crs = 4326) 
+
+# plot
+plot(line_nightday)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the next step, we obtain the polygons corresponding to the day and the night that separates the previously estimated line. To do this, we create a rectangle covering the entire planet and use the &lt;code&gt;st_split()&lt;/code&gt; function from the &lt;code&gt;{lwgeom}&lt;/code&gt; package that divides the rectangle.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rectangle
+wld_bbx &amp;lt;- st_bbox(c(xmin = -180, xmax = 180,
+                       ymin = -90, ymax = 90), 
+                     crs = 4326) %&amp;gt;% 
+             st_as_sfc()
+
+# division with the day-night line
+poly_nightday &amp;lt;-  st_split(wld_bbx, line_nightday) %&amp;gt;% 
+                      st_collection_extract(c(&amp;quot;POLYGON&amp;quot;)) %&amp;gt;% 
+                       st_sf() 
+
+# plot
+plot(poly_nightday)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The question now arises which of the two polygons corresponds to the night and which to the day. That will depend on what day of the year we are, given the changes in the Earth’s position concerning the Sun. Between the first summer equinox and the autumn equinox, it corresponds to the first polygon, when we can also observe the polar day at the north pole, and in the opposite case, it would be the second. The &lt;code&gt;{terra}&lt;/code&gt; package only accepts its vector class called &lt;code&gt;SpatVector&lt;/code&gt;, so we convert the vector object sf with the &lt;code&gt;vect()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# select the second polygon
+poly_nightday &amp;lt;- slice(poly_nightday, 2) %&amp;gt;% 
+                    mutate(daynight = 1)
+
+# create the raster with a resolution of 0.5º and the extent of the world
+r &amp;lt;- rast(vect(wld_bbx), resolution = .5)
+
+# rasterize the night polygon 
+night_rast &amp;lt;- rasterize(vect(poly_nightday), r) 
+
+# result in raster format
+plot(night_rast)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the last step we reproject the raster to &lt;a href=&#34;https://epsg.io/54009&#34;&gt;Mollweide&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define the raster projection (WGS84)
+crs(night_rast) &amp;lt;- &amp;quot;EPSG:4326&amp;quot;
+
+# reproject
+night_rast_prj &amp;lt;- project(night_rast, &amp;quot;ESRI:54009&amp;quot;, 
+                          mask = TRUE, 
+                          method = &amp;quot;near&amp;quot;)
+# map
+plot(night_rast_prj)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally we include the individual steps that we have done in a custom function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;rast_determiner &amp;lt;- function(x_min, date, res) {
+  
+  # create date with time adding the number of minutes
+  t0 &amp;lt;- as_date(date) + minutes(x_min) 
+  # estimate the coordinates of the line that separates day and night
+  night_step &amp;lt;- terminator(t0, -180, 180, 0.2) %&amp;gt;% as.matrix()
+  # pass the points to line
+  night_line &amp;lt;- st_linestring(night_step) %&amp;gt;% st_sfc(crs = 4326)
+  
+  # define the rectangle of the planet
+  wld_bbx &amp;lt;- st_bbox(c(xmin = -180, xmax = 180,
+                       ymin = -90, ymax = 90), 
+                     crs = 4326) %&amp;gt;% 
+             st_as_sfc()
+  
+  # divide the polygon with the day-night line
+  poly_nightday &amp;lt;-  st_split(wld_bbx, night_line) %&amp;gt;% 
+                      st_collection_extract(c(&amp;quot;POLYGON&amp;quot;)) %&amp;gt;% 
+                       st_sf()  
+  
+  # select the polygon according to the date
+  if(date &amp;lt;= make_date(year(date), 3, 20) | date &amp;gt;= make_date(year(date), 9, 23)) {
+    
+    poly_nightday &amp;lt;- slice(poly_nightday, 2) %&amp;gt;% 
+      mutate(daynight = 1)
+    
+  } else {
+    
+    poly_nightday &amp;lt;- slice(poly_nightday, 1) %&amp;gt;% 
+      mutate(daynight = 1)
+  }
+  
+  # create the raster with the resolution given in the argument res
+  r &amp;lt;- rast(vect(wld_bbx), resolution = res)
+  
+  # rasterize the night polygon
+  night_rast &amp;lt;- rasterize(vect(poly_nightday), r) 
+  
+  return(night_rast)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Since we want to obtain the area at night for different day hours, we construct a second function to apply the first one at different day intervals (in minutes).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;night_determinator &amp;lt;- function(time_seq, # minutes
+                               date = Sys.Date(), # date (system default)
+                               res = .5) { # raster resolution 0.5º
+
+# apply the first function on a vector of day intervals
+night_raster &amp;lt;-  map(time_seq, 
+                     rast_determiner,
+                     date = date, 
+                     res = res)
+
+# convert the raster into an object with as many layers as day intervals
+night_raster &amp;lt;- rast(night_raster)
+
+# define the WGS84 projection
+crs(night_raster) &amp;lt;- &amp;quot;EPSG:4326&amp;quot;
+
+return(night_raster)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-a-day-night-cycle&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Create a day-night cycle&lt;/h1&gt;
+&lt;p&gt;First, we create the area of nights for the day of our operating system with intervals of 30 minutes. Then we reproject it to &lt;a href=&#34;https://epsg.io/54019&#34;&gt;Winkel II&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# apply our function for a 24 hour day in 30 minute intervals
+night_rast &amp;lt;- night_determinator(seq(0, 1410, 30), Sys.Date(), res = .5)
+
+# reproject to Winkel II
+night_raster_winkel &amp;lt;- project(night_rast, 
+                               &amp;quot;ESRI:54019&amp;quot;, 
+                                mask = TRUE,
+                                method = &amp;quot;near&amp;quot;)
+# map of the first 5 intervals
+plot(night_raster_winkel, maxnl = 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/visualize-the-day-night-cycle-on-a-world-map/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animation-of-the-day-night-cycle&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Animation of the day-night cycle&lt;/h1&gt;
+&lt;div id=&#34;preparation-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparation&lt;/h2&gt;
+&lt;p&gt;To create a 24-hour animation showing the movement of the night on the Earth, we must do a few previous steps. First we get the world boundaries with the &lt;code&gt;ne_countries()&lt;/code&gt; function and reproject them to the new Winkel II projection. Then we convert the raster data into a &lt;code&gt;data.frame&lt;/code&gt; indicating to keep missing values. We can see that each layer of the raster (of each 30-minute interval) is a column in the &lt;code&gt;data.frame&lt;/code&gt;. We rename the columns and convert the table into a long format using the &lt;code&gt;pivot_longer()&lt;/code&gt; function. What we do is to merge all the columns of the layers into a single one. As the last step, we exclude the missing values with the &lt;code&gt;filter()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# country boundaries
+wld &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;) %&amp;gt;% 
+         st_transform(&amp;quot;ESRI:54019&amp;quot;)
+
+# convert the raster to a data.frame with xyz
+df_winkel &amp;lt;- as.data.frame(night_raster_winkel, xy = TRUE, na.rm = FALSE)
+
+# rename all the columns corresponding to the day intervals
+names(df_winkel)[3:length(df_winkel)] &amp;lt;- str_c(&amp;quot;H&amp;quot;, as_hms(seq(0, 1410, 30)*60))
+
+# change to a long format
+df_winkel &amp;lt;- pivot_longer(df_winkel, 3:length(df_winkel), names_to = &amp;quot;hour&amp;quot;, values_to = &amp;quot;night&amp;quot;) 
+
+# exclude missing values to reduce table size
+df_winkel &amp;lt;- filter(df_winkel, !is.na(night))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It only remains to create a graticule and obtain the extent of the world map.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# graticule
+grid &amp;lt;- st_graticule() %&amp;gt;%   st_transform(&amp;quot;ESRI:54019&amp;quot;)
+
+# get the extension of the world
+bbx &amp;lt;- st_bbox(wld)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we will build a map at a single interval with &lt;code&gt;ggplot2&lt;/code&gt;, adding the vector geometry using the &lt;code&gt;geom_sf()&lt;/code&gt; function (the boundaries and the graticule) and the raster data using the &lt;code&gt;geom_raster()&lt;/code&gt; function. In the title, we are using a unicode symbol as a clock. We also define the map’s extent in &lt;code&gt;coord_sf()&lt;/code&gt; to keet it constant over all maps in the animation. Finally, we make use of &lt;code&gt;{{ }}&lt;/code&gt; from the &lt;a href=&#34;https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/&#34;&gt;{rlang}&lt;/a&gt; package within the &lt;code&gt;filter()&lt;/code&gt;function to be able to filter our raster data in table form. So that our function can correctly evaluate the values that we pass in &lt;code&gt;x&lt;/code&gt; (the intervals of the day) it is necessary to use this grammar of tidy evaluation due to data masking in &lt;code&gt;tidyverse&lt;/code&gt;. Honestly, it is a topic for another post.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# example 5 UTC
+x &amp;lt;- &amp;quot;H05:00:00&amp;quot;
+# map
+ggplot() +
+  # boundaries
+  geom_sf(data = wld,
+          fill = &amp;quot;#74a9cf&amp;quot;, 
+          colour = &amp;quot;white&amp;quot;,
+          size = .1) +
+  # graticule
+  geom_sf(data = grid, size = .1) +
+  # filtered raster data 
+  geom_raster(data = filter(df_winkel, hour == {{x}}), 
+              aes(x, y), 
+              fill = &amp;quot;grey90&amp;quot;,
+              alpha = .6) +
+  # title
+  labs(title = str_c(&amp;quot;\U1F551&amp;quot;, str_remove(x, &amp;quot;H&amp;quot;), &amp;quot; UTC&amp;quot;)) + 
+  # extension limits
+  coord_sf(xlim = bbx[c(1, 3)], 
+           ylim = bbx[c(2, 4)])  +
+  # map style
+  theme_void() +
+  theme(plot.title = element_text(hjust = .1, vjust = .9))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Animation&lt;/h2&gt;
+&lt;p&gt;We create the animation by applying the &lt;code&gt;walk()&lt;/code&gt; function, which in turn will go through the interval vector to filter our data and map each step using &lt;code&gt;ggplot&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;walk(str_c(&amp;quot;H&amp;quot;, as_hms(seq(0, 1410, 30)*60)), function(step){
+  
+  g &amp;lt;- ggplot() +
+    geom_sf(data = wld,
+            fill = &amp;quot;#74a9cf&amp;quot;, 
+            colour = &amp;quot;white&amp;quot;,
+            size = .1) +
+    geom_sf(data = grid,
+            size = .1) +
+    geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+                fill = &amp;quot;grey90&amp;quot;,
+                alpha = .6) +
+    labs(title = str_c(&amp;quot;\U1F551&amp;quot;, str_remove(x, &amp;quot;H&amp;quot;), &amp;quot; UTC&amp;quot;)) + 
+    coord_sf(xlim = bbx[c(1, 3)], ylim = bbx[c(2, 4)])  +
+    theme_void() +
+    theme(plot.title = element_text(hjust = .1, vjust = .9))
+  
+  
+  ggsave(str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(step, &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;), g,
+         height = 4.3, width = 8.4, bg = &amp;quot;white&amp;quot;, dpi = 300, units = &amp;quot;in&amp;quot;)
+  
+})&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The creation of the final gif is done with &lt;code&gt;gifski()&lt;/code&gt; passing it the names of the images in the order as they should appear in the animation.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(as_hms(seq(0, 1410, 30)*60), &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;)
+
+gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>

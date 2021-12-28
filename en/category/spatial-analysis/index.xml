@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes" ?>
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>spatial analysis | Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/en/category/spatial-analysis/</link>
+      <atom:link href="https://dominicroye.github.io/en/category/spatial-analysis/index.xml" rel="self" type="application/rss+xml" />
+    <description>spatial analysis</description>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Sun, 19 Jan 2020 00:00:00 +0000</lastBuildDate>
+    <image>
+      <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
+      <title>spatial analysis</title>
+      <link>https://dominicroye.github.io/en/category/spatial-analysis/</link>
+    </image>
+    
+    <item>
+      <title>Geographic distance</title>
+      <link>https://dominicroye.github.io/en/2020/geographic-distance/</link>
+      <pubDate>Sun, 19 Jan 2020 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2020/geographic-distance/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The first post of this year 2020, I will dedicate to a question that I was recently asked. The question was how to calculate the shortest distance between different points and how to know which is the closest point. When we work with spatial data in R, currently the easiest thing is to use the &lt;code&gt;sf&lt;/code&gt; package in combination with the &lt;code&gt;tidyverse&lt;/code&gt; collection of packages. We also use the &lt;code&gt;units&lt;/code&gt; package which is very useful for working with units of measurement.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;12%&#34; /&gt;
+&lt;col width=&#34;87%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;units&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Support for measurement units in R vectors, matrices and arrays: propagation, conversion, derivation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;maps&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Draw geographical maps&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Hold and facilitate interaction with Natural Earth map data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the necessary packages
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;units&amp;quot;)) install.packages(&amp;quot;units&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;maps&amp;quot;)) install.packages(&amp;quot;maps&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# load packages
+library(maps)
+library(sf) 
+library(tidyverse)
+library(units)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;measurement-units&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Measurement units&lt;/h2&gt;
+&lt;p&gt;The use of vectors and matrices with the &lt;code&gt;units&lt;/code&gt; class allows us to calculate and transform units of measurement.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# length
+l &amp;lt;- set_units(1:10, m)
+l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##  [1]  1  2  3  4  5  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert units
+set_units(l, cm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  100  200  300  400  500  600  700  800  900 1000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sum different units
+set_units(l, cm) + l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  200  400  600  800 1000 1200 1400 1600 1800 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# area
+a &amp;lt;- set_units(355, ha)
+set_units(a, km2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 3.55 [km2]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# velocity
+vel &amp;lt;- set_units(seq(20, 50, 10), km/h)
+set_units(vel, m/s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m/s]
+## [1]  5.555556  8.333333 11.111111 13.888889&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;capital-cities-of-the-world&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Capital cities of the world&lt;/h2&gt;
+&lt;p&gt;We will use the capital cities of the whole world with the objective of calculating the distance to the nearest capital city and indicating the name/country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# set of world cities with coordinates
+head(world.cities) # from the maps package&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                 name country.etc   pop   lat  long capital
+## 1 &amp;#39;Abasan al-Jadidah   Palestine  5629 31.31 34.34       0
+## 2 &amp;#39;Abasan al-Kabirah   Palestine 18999 31.32 34.35       0
+## 3       &amp;#39;Abdul Hakim    Pakistan 47788 30.55 72.11       0
+## 4 &amp;#39;Abdullah-as-Salam      Kuwait 21817 29.36 47.98       0
+## 5              &amp;#39;Abud   Palestine  2456 32.03 35.07       0
+## 6            &amp;#39;Abwein   Palestine  3434 32.03 35.20       0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To convert points with longitude and latitude into a spatial object of class &lt;code&gt;sf&lt;/code&gt;, we use the function &lt;code&gt;st_as_sf()&lt;/code&gt;, indicating the coordinate columns and the coordinate reference system (WSG84, epsg: 4326).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the points into an sf object with CRS WSG84
+cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
+cities&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##                  name  country.etc   pop capital            geometry
+## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
+## 2  &amp;#39;Abasan al-Kabirah    Palestine 18999       0 POINT (34.35 31.32)
+## 3        &amp;#39;Abdul Hakim     Pakistan 47788       0 POINT (72.11 30.55)
+## 4  &amp;#39;Abdullah-as-Salam       Kuwait 21817       0 POINT (47.98 29.36)
+## 5               &amp;#39;Abud    Palestine  2456       0 POINT (35.07 32.03)
+## 6             &amp;#39;Abwein    Palestine  3434       0  POINT (35.2 32.03)
+## 7            &amp;#39;Adadlay      Somalia  9198       0  POINT (44.65 9.77)
+## 8              &amp;#39;Adale      Somalia  5492       0   POINT (46.3 2.75)
+## 9               &amp;#39;Afak         Iraq 22706       0 POINT (45.26 32.07)
+## 10              &amp;#39;Afif Saudi Arabia 41731       0 POINT (42.93 23.92)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step, we filter by the capital cities encoded in the column &lt;em&gt;capital&lt;/em&gt; with 1. The advantage of the &lt;code&gt;sf&lt;/code&gt; package is the possibility of applying functions of the &lt;code&gt;tidyverse&lt;/code&gt; collection to manipulate the attributes. In addition, we add a column with new labels using the &lt;code&gt;str_c()&lt;/code&gt; function of the &lt;code&gt;stringr&lt;/code&gt; package, which is similar to that of &lt;em&gt;R Base&lt;/em&gt; &lt;code&gt;paste()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the capital cities
+capitals &amp;lt;- filter(cities, capital == 1)
+
+# create a new label combining name and country
+capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;quot;, country.etc, &amp;quot;)&amp;quot;))
+
+capitals &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##           name          country.etc     pop capital               geometry
+## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
+## 2    Abu Dhabi United Arab Emirates  619316       1    POINT (54.37 24.48)
+## 3        Abuja              Nigeria  178462       1      POINT (7.17 9.18)
+## 4        Accra                Ghana 2029143       1      POINT (-0.2 5.56)
+## 5    Adamstown             Pitcairn      51       1  POINT (-130.1 -25.05)
+## 6  Addis Abeba             Ethiopia 2823167       1     POINT (38.74 9.03)
+## 7        Agana                 Guam    1041       1   POINT (144.75 13.47)
+## 8      Algiers              Algeria 2029936       1     POINT (3.04 36.77)
+## 9        Alofi                 Niue     627       1 POINT (-169.92 -19.05)
+## 10   Amsterdam          Netherlands  744159       1     POINT (4.89 52.37)
+##                        city_country
+## 1                   &amp;#39;Amman (Jordan)
+## 2  Abu Dhabi (United Arab Emirates)
+## 3                   Abuja (Nigeria)
+## 4                     Accra (Ghana)
+## 5              Adamstown (Pitcairn)
+## 6            Addis Abeba (Ethiopia)
+## 7                      Agana (Guam)
+## 8                 Algiers (Algeria)
+## 9                      Alofi (Niue)
+## 10          Amsterdam (Netherlands)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calculate-distances&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calculate distances&lt;/h2&gt;
+&lt;p&gt;Geographical distance (Euclidean or greater circle) is calculated with the &lt;code&gt;st_distance()&lt;/code&gt; function, either between two points, between one point and others or between all points. In the latter case we obtain a symmetric matrix of distances (NxN), taken pairwise between the elements of the capital city set. In the diagonal we find the combinations between the same points giving all null values.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;81&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;343&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;81&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;332&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;343&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;332&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;For instance, when we want to know the distance from Amsterdam to Abu Dhabi, Washington and Tokyo we pass two spatial objects.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculate distance
+dist_amsterdam &amp;lt;- st_distance(slice(capitals, 10), 
+                              slice(capitals, c(2, 220, 205)))
+
+dist_amsterdam # distance in meters&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##         [,1]    [,2]    [,3]
+## [1,] 5163124 6187634 9293710&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The result is a matrix with a single row or column (depending on the order of the spatial objects) with a class of &lt;code&gt;units&lt;/code&gt;. Thus it is possible to convert easily to another unit of measure. If we want to obtain a vector without class &lt;code&gt;units&lt;/code&gt;, we only have to apply the function &lt;code&gt;as.vector()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change from m to km
+set_units(dist_amsterdam, &amp;quot;km&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [km]
+##          [,1]     [,2]    [,3]
+## [1,] 5163.124 6187.634 9293.71&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# units class to vector
+as.vector(dist_amsterdam)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5163124 6187634 9293710&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the second step, we estimate the distance matrix between all the capital cities. It is important to convert the null values to &lt;code&gt;NA&lt;/code&gt; to subsequently obtain the correct matrix index.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculate distance
+m_distance &amp;lt;- st_distance(capitals)
+
+# matrix
+dim(m_distance)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 230 230&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change m to km
+m_distance_km &amp;lt;- set_units(m_distance, km)
+
+# replace the distance of 0 m with NA
+m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;To obtain the shortest distance, in addition to its position, we use the &lt;code&gt;apply ()&lt;/code&gt; function which in turn allows us to apply the function &lt;code&gt;which.min()&lt;/code&gt; and &lt;code&gt;min()&lt;/code&gt; on each row. It would also be possible to use the function on columns giving the same result. Finally, we add the results as new columns with the &lt;code&gt;mutate()&lt;/code&gt; function. The indices in &lt;em&gt;pos&lt;/em&gt; allow us to obtain the names of the nearest cities.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the index (position) of the city and the distance
+pos &amp;lt;- apply(m_distance_km, 1, which.min)
+dist &amp;lt;- apply(m_distance_km, 1, min, na.rm = TRUE)
+
+# add the distance and get the name of the city
+capitals &amp;lt;- mutate(capitals, nearest_city =  city_country[pos], 
+                             geometry_nearest = geometry[pos],
+                             distance_city = dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-of-distances-to-the-next-capital-city&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map of distances to the next capital city&lt;/h2&gt;
+&lt;p&gt;Finally, we build a map representing the distance in proportional circles. To do this, we use the usual grammar of &lt;code&gt;ggplot()&lt;/code&gt; by adding the geometry &lt;code&gt;geom_sf()&lt;/code&gt;, first for the world map as background and then for the cities. In &lt;code&gt;aes()&lt;/code&gt; we indicate, with the argument &lt;code&gt;size = distance_city&lt;/code&gt;, the variable which we want to map proportionally. The &lt;code&gt;theme_void()&lt;/code&gt; function removes all style elements. In addition, we define with the function &lt;code&gt;coord_sf()&lt;/code&gt; a new projection indicating the &lt;em&gt;proj4&lt;/em&gt; format.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# world map
+world &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;)
+
+# map
+ggplot(world) +
+   geom_sf(fill = &amp;quot;black&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+   geom_sf(data = capitals, 
+           aes(size = distance_city),
+           alpha = 0.7,
+           fill = &amp;quot;#bd0026&amp;quot;,
+           shape = 21,
+           show.legend = &amp;#39;point&amp;#39;) +
+   coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
+  labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital city&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+  </channel>
+</rss>
