@@ -72,7 +72,7 @@ q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
 
 str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
-##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
+##  $ bbox    : chr &amp;quot;40.2567047,-3.8635825,40.5767047,-3.5435825&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
@@ -81,10 +81,10 @@ str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
 cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
-##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 197 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 212 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 11 polygons
 ##        $osm_multilines : NULL
@@ -126,7 +126,7 @@ str(q) #estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 ##  $ bbox    : chr &amp;quot;30,-10,46,5&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:2500];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
-##  $ features: chr [1:2] &amp;quot; [\&amp;quot;name\&amp;quot;=\&amp;quot;Mercadona\&amp;quot;]&amp;quot; &amp;quot; [\&amp;quot;shop\&amp;quot;=\&amp;quot;supermarket\&amp;quot;]&amp;quot;
+##  $ features: chr &amp;quot; [\&amp;quot;name\&amp;quot;=\&amp;quot;Mercadona\&amp;quot;] [\&amp;quot;shop\&amp;quot;=\&amp;quot;supermarket\&amp;quot;]&amp;quot;
 ##  - attr(*, &amp;quot;class&amp;quot;)= chr [1:2] &amp;quot;list&amp;quot; &amp;quot;overpass_query&amp;quot;
 ##  - attr(*, &amp;quot;nodes_only&amp;quot;)= logi FALSE&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#consulta 

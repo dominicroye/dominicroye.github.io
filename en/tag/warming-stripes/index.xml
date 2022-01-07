@@ -86,7 +86,8 @@ str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
 ##   ..   `J-J-A` = col_double(),
 ##   ..   `S-O-N` = col_double(),
 ##   ..   metANN = col_double()
-##   .. )&lt;/code&gt;&lt;/pre&gt;
+##   .. )
+##  - attr(*, &amp;quot;problems&amp;quot;)=&amp;lt;externalptr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values &lt;em&gt;999.9&lt;/em&gt; with &lt;code&gt;NA&lt;/code&gt;, using the &lt;code&gt;ifelse( )&lt;/code&gt; function that evaluates a condition and perform the given argument corresponding to true and false.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#select only the annual temperature and year column
 temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)

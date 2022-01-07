@@ -800,7 +800,7 @@
 
     <div class="article-style">
       
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <p>Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.</p>
@@ -872,7 +872,7 @@ measles &lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&quot;&quot;,y=&quot;&quot;)+
             theme_minimal()</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
 <pre class="r"><code>ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -880,7 +880,7 @@ measles &lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&quot;&quot;,y=&quot;&quot;)+
             theme_minimal()</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png" width="672" /></p>
 <pre class="r"><code>#custom themes definitions
 theme_singlebar &lt;- theme_bw()+
   theme(
@@ -907,7 +907,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
               scale_fill_brewer(&quot;&quot;,palette=&quot;Set1&quot;)+
                 coord_flip()+
                   theme_singlebar</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
 <pre class="r"><code>#we expand our data with numbers from Italy
 measles2 &lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -925,7 +925,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &quot;Set1&quot;)+
             labs(x=&quot;&quot;,y=&quot;&quot;,fill=&quot;Vaccination Status&quot;)+
             theme_minimal()</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 </div>
 <div id="waffle-plot" class="section level3">
 <h3>Waffle plot</h3>
@@ -940,7 +940,7 @@ names(val_measles) &lt;- measles$vacc_status
 waffle(val_measles, #data
         colors=brewer.pal(5,&quot;Set1&quot;), #colors
         rows=5) #row number </code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 <p>The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.</p>
 <pre class="r"><code>#data
 medida &lt;- c(41,59) #data from the OECD 2015
@@ -950,7 +950,7 @@ names(medida) &lt;- c(&quot;Estudios Superiores&quot;,&quot;Otros estudios&quot;
 waffle(medida,
        colors=c(&quot;#377eb8&quot;,&quot;#bdbdbd&quot;),
        rows=5)</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
 </div>
 <div id="treemap" class="section level3">
 <h3>Treemap</h3>
@@ -965,7 +965,7 @@ type=&quot;index&quot;,        #style more in ?treemap
 title=&quot;&quot;,            
 palette = brewer.pal(5,&quot;Set1&quot;) #colors
 )</code></pre>
-<p><img src="/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
 <p>Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent <a href="https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart">post</a> by <a href="https://twitter.com/lisacrost">Lisa Charlotte Rost</a>. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a <a href="https://policyviz.com/2018/08/07/dataviz-cheatsheet/">cheat sheet</a> from <em>policyviz</em> with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book <em>Creating More Effective Graphs</em> (Robbins 2013).</p>
 </div>
 <div id="references" class="section level3">

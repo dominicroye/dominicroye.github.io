@@ -68,13 +68,14 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Step 1: import the data&lt;/h3&gt;
 &lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl  (2): pr, ta
+## date (1): date&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   date = col_date(format = &amp;quot;&amp;quot;),
-##   pr = col_double(),
-##   ta = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
 ##    date          pr    ta

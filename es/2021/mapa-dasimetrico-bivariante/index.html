@@ -888,11 +888,9 @@ library(raster)</code></pre>
 <h2>Importar</h2>
 <p>Lo primero que hacemos es importar el raster del uso de suelo, los datos de renta e índice de Gini y los límites censales.</p>
 <pre class="r"><code># raster de CORINE LAND COVER 2018
-urb &lt;- raster(&quot;U2018_CLC2018_V2020_20u1.tif&quot;)</code></pre>
-<pre><code>## Warning in showSRID(uprojargs, format = &quot;PROJ&quot;, multiline = &quot;NO&quot;, prefer_proj
-## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
-## definition</code></pre>
-<pre class="r"><code># datos de renta y Gini
+urb &lt;- raster(&quot;U2018_CLC2018_V2020_20u1.tif&quot;)
+
+# datos de renta y Gini
 renta &lt;- read_excel(&quot;30824.xlsx&quot;)
 gini &lt;- read_excel(&quot;37677.xlsx&quot;)
 
@@ -963,10 +961,10 @@ mapbivar &lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &quot;quantile&quot;,
 # resultado
 head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))</code></pre>
 <pre><code>## Simple feature collection with 6 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
-## projected CRS:  ETRS89 / UTM zone 30N
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## Projected CRS: ETRS89 / UTM zone 30N
 ## # A tibble: 6 x 4
 ##   GINI_2017 RNMP_2017 bi_class                                          geometry
 ##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;                                   &lt;MULTIPOLYGON [m]&gt;

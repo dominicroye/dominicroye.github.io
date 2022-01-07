@@ -68,13 +68,14 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
 &lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl  (2): pr, ta
+## date (1): date&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   date = col_date(format = &amp;quot;&amp;quot;),
-##   pr = col_double(),
-##   ta = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
 ##    date          pr    ta
@@ -300,15 +301,13 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
                select(DATE:RR) %&amp;gt;% 
              rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 27,606 x 2
 ##    date          pr

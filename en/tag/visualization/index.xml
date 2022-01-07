@@ -18,7 +18,7 @@
       <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/</guid>
       <description>
-&lt;script src=&#34;https://dominicroye.github.io/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -517,7 +517,7 @@ wld &amp;lt;- filter(wld, !is.na(iso_a2)) %&amp;gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Other &lt;code&gt;dplyr&lt;/code&gt; functions allow us to join tables: &lt;code&gt;*_join ()&lt;/code&gt;. Depending on which table (left or right) you want to join, the functions change: &lt;code&gt;left_join()&lt;/code&gt;, &lt;code&gt;right_join()&lt;/code&gt; or even &lt;code&gt;full_join()&lt;/code&gt;. The &lt;code&gt;by&lt;/code&gt; argument is not necessary as long as both tables have a column in common. However, in this case the variable names are different, so we use the following way: &lt;code&gt;c(&#34;country_region_code&#34;=&#34;iso_a2&#34;)&lt;/code&gt;. The &lt;code&gt;forcats&lt;/code&gt; package of &lt;code&gt;tidyverse&lt;/code&gt; has many useful functions for handling categorical variables (&lt;code&gt;factors&lt;/code&gt;), variables that have a fixed and known set of possible values. All &lt;code&gt;forcats&lt;/code&gt; functions have the prefix &lt;code&gt;fct_*&lt;/code&gt;. For example, in this case we use &lt;code&gt;fct_reorder()&lt;/code&gt; to reorder the country labels in order of the maximum based on the residential mobility records. Finally, we create a new column &lt;code&gt;&#34;resi_real&#34;&lt;/code&gt; to change the reference value, the average or baseline, from 0 to 100.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;subset_europe &amp;lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -634,14 +634,14 @@ it &amp;lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To modify the axes, we use the different &lt;code&gt;scale_*&lt;/code&gt; functions that we must adapt to the scales of measurement (date, discrete, continuous, etc.). The &lt;code&gt;labs()&lt;/code&gt; function helps us define the axis, legend and plot titles. Finally, we add the style of the graph with &lt;code&gt;theme_light()&lt;/code&gt; (others are &lt;code&gt;theme_bw()&lt;/code&gt;, &lt;code&gt;theme_minimal()&lt;/code&gt;, etc.). We could also make changes to all graphic elements through &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time serie plot
 ggplot(it, 
@@ -655,7 +655,7 @@ ggplot(it,
        y = &amp;quot;Residential mobility&amp;quot;,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -670,7 +670,7 @@ ggplot(it,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34; number=&#34;4.5.2&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/h3&gt;
@@ -699,7 +699,7 @@ ggplot(subset_europe_reg,
        title = &amp;quot;Mobility during COVID-19&amp;quot;, 
        fill = &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34; number=&#34;4.5.3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/h3&gt;
@@ -741,7 +741,7 @@ ggplot(subset_europe,
                                label.position = &amp;quot;top&amp;quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;apply-functions-on-vectors-or-lists&#34; class=&#34;section level2&#34; number=&#34;4.6&#34;&gt;
@@ -920,7 +920,8 @@ str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
 ##   ..   `J-J-A` = col_double(),
 ##   ..   `S-O-N` = col_double(),
 ##   ..   metANN = col_double()
-##   .. )&lt;/code&gt;&lt;/pre&gt;
+##   .. )
+##  - attr(*, &amp;quot;problems&amp;quot;)=&amp;lt;externalptr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values &lt;em&gt;999.9&lt;/em&gt; with &lt;code&gt;NA&lt;/code&gt;, using the &lt;code&gt;ifelse( )&lt;/code&gt; function that evaluates a condition and perform the given argument corresponding to true and false.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#select only the annual temperature and year column
 temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)

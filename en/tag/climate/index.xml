@@ -512,13 +512,14 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Step 1: import the data&lt;/h3&gt;
 &lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl  (2): pr, ta
+## date (1): date&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   date = col_date(format = &amp;quot;&amp;quot;),
-##   pr = col_double(),
-##   ta = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
 ##    date          pr    ta
@@ -744,15 +745,13 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
                select(DATE:RR) %&amp;gt;% 
              rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 27,606 x 2
 ##    date          pr
@@ -1275,8 +1274,8 @@ p&lt;/code&gt;&lt;/pre&gt;
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias.jpg&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_hub86c06637abfa96aea046367c222cbcc_3883904_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias.jpg&#34; width=&#34;225&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2017.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2017_hu41fc0110ca3ba0ba34f503bce65cecdb_254006_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_2017.png&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -1284,8 +1283,8 @@ p&lt;/code&gt;&lt;/pre&gt;
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2017.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2017_hu41fc0110ca3ba0ba34f503bce65cecdb_254006_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_2017.png&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2021.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_2021_huf57db5249fb964ec2d852cac793a34c4_1637949_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_2021.png&#34; width=&#34;345&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -1304,6 +1303,15 @@ p&lt;/code&gt;&lt;/pre&gt;
     
     &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_ger.jpg&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_ger_hu2b071b050c113fd4b1f3924197e152b2_970455_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_ger.jpg&#34; width=&#34;271&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_mensual_2021.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horas_sol_anomalias_mensual_2021_hu058c2f427321800065dd2bd97d3bc529_1168522_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horas_sol_anomalias_mensual_2021.png&#34; width=&#34;248&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     

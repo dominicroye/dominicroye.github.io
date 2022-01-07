@@ -863,15 +863,13 @@ library(lubridate)</code></pre>
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&gt;%
                select(DATE:RR) %&gt;% 
              rename(date = DATE, pr = RR)</code></pre>
+<pre><code>## Rows: 27606 Columns: 5</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )</code></pre>
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>data</code></pre>
 <pre><code>## # A tibble: 27,606 x 2
 ##    date          pr

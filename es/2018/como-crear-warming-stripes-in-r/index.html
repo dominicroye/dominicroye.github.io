@@ -868,7 +868,8 @@ str(temp_lisboa)</code></pre>
 ##   ..   `J-J-A` = col_double(),
 ##   ..   `S-O-N` = col_double(),
 ##   ..   metANN = col_double()
-##   .. )</code></pre>
+##   .. )
+##  - attr(*, &quot;problems&quot;)=&lt;externalptr&gt;</code></pre>
 <p>Vemos en las columnas que tenemos valores mensuales y estacionales, y el valor anual. Pero antes de proceder a visualizar la temperatura anual, debemos sustituir los valores ausentes <em>999.9</em> por <code>NA</code>, usando la función <code>ifelse( )</code> que lleva una condición y los argumentos correspondientes a verdadero y falso de la condición dada.</p>
 <pre class="r"><code>#selecionamos la columna del año y la temperatura anual
 temp_lisboa_yr &lt;- select(temp_lisboa, YEAR, metANN)

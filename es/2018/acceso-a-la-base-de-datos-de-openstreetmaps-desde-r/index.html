@@ -854,7 +854,7 @@ q &lt;- getbb(&quot;Madrid&quot;) %&gt;%
 
 str(q) #la estructura de la consulta</code></pre>
 <pre><code>## List of 4
-##  $ bbox    : chr &quot;40.3119774,-3.8889539,40.6437293,-3.5179163&quot;
+##  $ bbox    : chr &quot;40.2567047,-3.8635825,40.5767047,-3.5435825&quot;
 ##  $ prefix  : chr &quot;[out:xml][timeout:25];\n(\n&quot;
 ##  $ suffix  : chr &quot;);\n(._;&gt;;);\nout body;&quot;
 ##  $ features: chr &quot; [\&quot;amenity\&quot;=\&quot;cinema\&quot;]&quot;
@@ -863,10 +863,10 @@ str(q) #la estructura de la consulta</code></pre>
 <pre class="r"><code>cinema &lt;- osmdata_sf(q)
 cinema</code></pre>
 <pre><code>## Object of class &#39;osmdata&#39; with:
-##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &#39;sf&#39; Simple Features Collection with 197 points
+##            $osm_points : &#39;sf&#39; Simple Features Collection with 212 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 11 polygons
 ##        $osm_multilines : NULL
@@ -908,7 +908,7 @@ str(q) #estructura de la consulta</code></pre>
 ##  $ bbox    : chr &quot;30,-10,46,5&quot;
 ##  $ prefix  : chr &quot;[out:xml][timeout:2500];\n(\n&quot;
 ##  $ suffix  : chr &quot;);\n(._;&gt;;);\nout body;&quot;
-##  $ features: chr [1:2] &quot; [\&quot;name\&quot;=\&quot;Mercadona\&quot;]&quot; &quot; [\&quot;shop\&quot;=\&quot;supermarket\&quot;]&quot;
+##  $ features: chr &quot; [\&quot;name\&quot;=\&quot;Mercadona\&quot;] [\&quot;shop\&quot;=\&quot;supermarket\&quot;]&quot;
 ##  - attr(*, &quot;class&quot;)= chr [1:2] &quot;list&quot; &quot;overpass_query&quot;
 ##  - attr(*, &quot;nodes_only&quot;)= logi FALSE</code></pre>
 <pre class="r"><code>#consulta 

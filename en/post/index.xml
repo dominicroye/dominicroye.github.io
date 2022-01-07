@@ -739,7 +739,7 @@ bm # contains three layers (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
 ## dimensions  : 7156, 7156, 3  (nrow, ncol, nlyr)
 ## resolution  : 0.008789272, 0.008789272  (x, y)
 ## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
 ## source      : snapshot-2017-11-30T00_00_00Z.tiff 
 ## red-grn-blue: 1, 2, 3 
 ## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
@@ -980,11 +980,9 @@ library(raster)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Import&lt;/h2&gt;
 &lt;p&gt;The first thing we do is to import the land use raster, the income and Gini index data, and the census boundaries.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster of CORINE LAND COVER 2018
-urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
-## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
-## definition&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# income data and Gini index
+urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)
+
+# income data and Gini index
 renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
 gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
 
@@ -1055,10 +1053,10 @@ mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantil
 # results
 head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
-## projected CRS:  ETRS89 / UTM zone 30N
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## Projected CRS: ETRS89 / UTM zone 30N
 ## # A tibble: 6 x 4
 ##   GINI_2017 RNMP_2017 bi_class                                          geometry
 ##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
@@ -2030,7 +2028,7 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
       <pubDate>Sat, 06 Jun 2020 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/</guid>
       <description>
-&lt;script src=&#34;https://dominicroye.github.io/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 &lt;div id=&#34;TOC&#34;&gt;
 &lt;ul&gt;
@@ -2529,7 +2527,7 @@ wld &amp;lt;- filter(wld, !is.na(iso_a2)) %&amp;gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Other &lt;code&gt;dplyr&lt;/code&gt; functions allow us to join tables: &lt;code&gt;*_join ()&lt;/code&gt;. Depending on which table (left or right) you want to join, the functions change: &lt;code&gt;left_join()&lt;/code&gt;, &lt;code&gt;right_join()&lt;/code&gt; or even &lt;code&gt;full_join()&lt;/code&gt;. The &lt;code&gt;by&lt;/code&gt; argument is not necessary as long as both tables have a column in common. However, in this case the variable names are different, so we use the following way: &lt;code&gt;c(&#34;country_region_code&#34;=&#34;iso_a2&#34;)&lt;/code&gt;. The &lt;code&gt;forcats&lt;/code&gt; package of &lt;code&gt;tidyverse&lt;/code&gt; has many useful functions for handling categorical variables (&lt;code&gt;factors&lt;/code&gt;), variables that have a fixed and known set of possible values. All &lt;code&gt;forcats&lt;/code&gt; functions have the prefix &lt;code&gt;fct_*&lt;/code&gt;. For example, in this case we use &lt;code&gt;fct_reorder()&lt;/code&gt; to reorder the country labels in order of the maximum based on the residential mobility records. Finally, we create a new column &lt;code&gt;&#34;resi_real&#34;&lt;/code&gt; to change the reference value, the average or baseline, from 0 to 100.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;subset_europe &amp;lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -2646,14 +2644,14 @@ it &amp;lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &amp;quot;lm&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;To modify the axes, we use the different &lt;code&gt;scale_*&lt;/code&gt; functions that we must adapt to the scales of measurement (date, discrete, continuous, etc.). The &lt;code&gt;labs()&lt;/code&gt; function helps us define the axis, legend and plot titles. Finally, we add the style of the graph with &lt;code&gt;theme_light()&lt;/code&gt; (others are &lt;code&gt;theme_bw()&lt;/code&gt;, &lt;code&gt;theme_minimal()&lt;/code&gt;, etc.). We could also make changes to all graphic elements through &lt;code&gt;theme()&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time serie plot
 ggplot(it, 
@@ -2667,7 +2665,7 @@ ggplot(it,
        y = &amp;quot;Residential mobility&amp;quot;,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -2682,7 +2680,7 @@ ggplot(it,
        title = &amp;quot;Mobility during COVID-19&amp;quot;) +
   theme_light()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## `geom_smooth()` using formula &amp;#39;y ~ x&amp;#39;&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;boxplot&#34; class=&#34;section level3&#34; number=&#34;4.5.2&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.2&lt;/span&gt; Boxplot&lt;/h3&gt;
@@ -2711,7 +2709,7 @@ ggplot(subset_europe_reg,
        title = &amp;quot;Mobility during COVID-19&amp;quot;, 
        fill = &amp;quot;&amp;quot;) +
   theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;heatmap&#34; class=&#34;section level3&#34; number=&#34;4.5.3&#34;&gt;
 &lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;4.5.3&lt;/span&gt; Heatmap&lt;/h3&gt;
@@ -2753,7 +2751,7 @@ ggplot(subset_europe,
                                label.position = &amp;quot;top&amp;quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png&#34; width=&#34;3675&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 &lt;div id=&#34;apply-functions-on-vectors-or-lists&#34; class=&#34;section level2&#34; number=&#34;4.6&#34;&gt;
@@ -2914,13 +2912,14 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Step 1: import the data&lt;/h3&gt;
 &lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl  (2): pr, ta
+## date (1): date&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   date = col_date(format = &amp;quot;&amp;quot;),
-##   pr = col_double(),
-##   ta = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
 ##    date          pr    ta
@@ -3736,15 +3735,13 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
                select(DATE:RR) %&amp;gt;% 
              rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 27,606 x 2
 ##    date          pr
@@ -4081,55 +4078,41 @@ files&lt;/code&gt;&lt;/pre&gt;
 ## RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import all files and join them together
 pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## 
-## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## 
-## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## 
-## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )
-## 
-## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   STAID = col_double(),
-##   SOUID = col_double(),
-##   DATE = col_double(),
-##   RR = col_double(),
-##   Q_RR = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 27545 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 34729 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 24927 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 19813 Columns: 5&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 5
 ##    STAID SOUID     DATE    RR  Q_RR
@@ -4212,19 +4195,13 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The next step is to import the climate teleconnection indices.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconnections
 telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## Delimiter: &amp;quot;,&amp;quot;
+## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   yr = col_double(),
-##   NAO = col_double(),
-##   WeMO = col_double(),
-##   EA = col_double(),
-##   `POL-EUAS` = col_double(),
-##   `EATL/WRUS` = col_double(),
-##   MO = col_double(),
-##   SCAND = col_double(),
-##   AO = col_double()
-## )&lt;/code&gt;&lt;/pre&gt;
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 9
 ##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND        AO
@@ -4320,27 +4297,22 @@ data&lt;/code&gt;&lt;/pre&gt;
 ## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To apply the test to all cities, we need the corresponding groupings. Therefore, we use the &lt;code&gt;group_by()&lt;/code&gt; function for indicating the two groups: &lt;em&gt;city&lt;/em&gt; and &lt;em&gt;telecon&lt;/em&gt;. In addition, we apply the &lt;code&gt;nest()&lt;/code&gt; function of the &lt;em&gt;{tidyr}&lt;/em&gt; package (&lt;em&gt;{tidyverse}&lt;/em&gt; collection) with the aim of creating lists of tables nested per row. In other words, in each row of each city and teleconnection index we will have a new table that contains the year, the precipitation value and the value of each teleconection, correspondingly.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
-data_nest&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
-## # Groups:   city, telecon [40]
-##    city      telecon data             
-##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
-##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
-##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## grouped_df [40 x 3] (S3: grouped_df/tbl_df/tbl/data.frame)
-##  $ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
-##  $ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
-##  $ data   :List of 40
+head(data_nest)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 3
+## # Groups:   city, telecon [6]
+##   city      telecon data             
+##   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
+## 1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+## 2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+## 3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+## 4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+## 5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+## 6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(head(slice(data_nest, 1)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## grouped_df [6 x 3] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ city   : chr [1:6] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##  $ telecon: chr [1:6] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##  $ data   :List of 6
 ##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
 ##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
 ##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
@@ -4365,213 +4337,38 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
 ##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
 ##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [40 x 3] (S3: tbl_df/tbl/data.frame)
-##   ..$ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
-##   ..$ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
-##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:40] 
+##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [6 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ city   : chr [1:6] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##   ..$ telecon: chr [1:6] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:6] 
 ##   .. ..$ : int 1
 ##   .. ..$ : int 2
 ##   .. ..$ : int 3
 ##   .. ..$ : int 4
 ##   .. ..$ : int 5
 ##   .. ..$ : int 6
-##   .. ..$ : int 7
-##   .. ..$ : int 8
-##   .. ..$ : int 9
-##   .. ..$ : int 10
-##   .. ..$ : int 11
-##   .. ..$ : int 12
-##   .. ..$ : int 13
-##   .. ..$ : int 14
-##   .. ..$ : int 15
-##   .. ..$ : int 16
-##   .. ..$ : int 17
-##   .. ..$ : int 18
-##   .. ..$ : int 19
-##   .. ..$ : int 20
-##   .. ..$ : int 21
-##   .. ..$ : int 22
-##   .. ..$ : int 23
-##   .. ..$ : int 24
-##   .. ..$ : int 25
-##   .. ..$ : int 26
-##   .. ..$ : int 27
-##   .. ..$ : int 28
-##   .. ..$ : int 29
-##   .. ..$ : int 30
-##   .. ..$ : int 31
-##   .. ..$ : int 32
-##   .. ..$ : int 33
-##   .. ..$ : int 34
-##   .. ..$ : int 35
-##   .. ..$ : int 36
-##   .. ..$ : int 37
-##   .. ..$ : int 38
-##   .. ..$ : int 39
-##   .. ..$ : int 40
 ##   .. ..@ ptype: int(0) 
 ##   ..- attr(*, &amp;quot;.drop&amp;quot;)= logi TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The next step is to create a function, in which we define the correlation test and pass it to the clean format using the &lt;code&gt;tidy()&lt;/code&gt; function, which we apply to each groupings.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method = &amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now we only have to apply our function to the column that contains the tables for each combination between city and teleconnection. To do this, we use the &lt;code&gt;map()&lt;/code&gt; function that applies another function to a vector or list. What we do is create a new column that contains the result, a statistical summary table, for each combination.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
-data_nest&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
-## # Groups:   city, telecon [40]
-##    city      telecon data              model           
-##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
-##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
-## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## grouped_df [40 x 4] (S3: grouped_df/tbl_df/tbl/data.frame)
-##  $ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
-##  $ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
-##  $ data   :List of 40
+head(data_nest)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 4
+## # Groups:   city, telecon [6]
+##   city      telecon data              model           
+##   &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
+## 1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(head(slice(data_nest, 1)))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## grouped_df [6 x 4] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ city   : chr [1:6] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##  $ telecon: chr [1:6] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##  $ data   :List of 6
 ##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
 ##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
 ##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
@@ -4596,143 +4393,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
 ##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
 ##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
-##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
-##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
-##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
-##  $ model  :List of 40
+##  $ model  :List of 6
 ##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
 ##   .. ..$ estimate   : Named num -0.00989
 ##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
@@ -4781,322 +4442,16 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 ##   .. ..$ p.value    : num 0.147
 ##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
 ##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.161
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 43970
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.19
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0292
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 50862
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.813
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.185
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 62070
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.131
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.256
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 65825
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.0348
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0155
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 51584
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.9
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.0457
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 54788
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.711
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.153
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 44372
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.213
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.147
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 44670
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.23
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.357
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 33688
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.00296
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.404
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 31242
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.000706
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.313
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 65806
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.0102
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.304
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 65369
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.0123
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0643
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 46893
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.605
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.497
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 75028
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 2.42e-05
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.291
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 64692
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.0169
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0835
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 45930
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.501
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.306
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 34766
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.012
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.109
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 44660
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.38
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.443
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 75608
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.00018
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.01
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 52919
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.935
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.176
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 43170
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.151
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.19
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 62364
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.12
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.181
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 61902
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.139
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0504
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 49752
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.682
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.44
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 29356
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.000203
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.332
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 35014
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.00594
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.211
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 19574
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.129
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.0672
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 26472
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.632
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0542
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 23460
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.7
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.0478
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 25990
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.733
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.113
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 27600
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.422
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num 0.0971
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 22396
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.488
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.0795
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 26776
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.57
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
-##   .. ..$ estimate   : Named num -0.252
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
-##   .. ..$ statistic  : Named num 31056
-##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
-##   .. ..$ p.value    : num 0.0688
-##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
-##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
-##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [40 x 3] (S3: tbl_df/tbl/data.frame)
-##   ..$ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
-##   ..$ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
-##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:40] 
+##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [6 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ city   : chr [1:6] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##   ..$ telecon: chr [1:6] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:6] 
 ##   .. ..$ : int 1
 ##   .. ..$ : int 2
 ##   .. ..$ : int 3
 ##   .. ..$ : int 4
 ##   .. ..$ : int 5
 ##   .. ..$ : int 6
-##   .. ..$ : int 7
-##   .. ..$ : int 8
-##   .. ..$ : int 9
-##   .. ..$ : int 10
-##   .. ..$ : int 11
-##   .. ..$ : int 12
-##   .. ..$ : int 13
-##   .. ..$ : int 14
-##   .. ..$ : int 15
-##   .. ..$ : int 16
-##   .. ..$ : int 17
-##   .. ..$ : int 18
-##   .. ..$ : int 19
-##   .. ..$ : int 20
-##   .. ..$ : int 21
-##   .. ..$ : int 22
-##   .. ..$ : int 23
-##   .. ..$ : int 24
-##   .. ..$ : int 25
-##   .. ..$ : int 26
-##   .. ..$ : int 27
-##   .. ..$ : int 28
-##   .. ..$ : int 29
-##   .. ..$ : int 30
-##   .. ..$ : int 31
-##   .. ..$ : int 32
-##   .. ..$ : int 33
-##   .. ..$ : int 34
-##   .. ..$ : int 35
-##   .. ..$ : int 36
-##   .. ..$ : int 37
-##   .. ..$ : int 38
-##   .. ..$ : int 39
-##   .. ..$ : int 40
 ##   .. ..@ ptype: int(0) 
 ##   ..- attr(*, &amp;quot;.drop&amp;quot;)= logi TRUE&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;How can we undo the list of tables in each row of our table?&lt;/p&gt;
@@ -5107,18 +4462,18 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
 ## # Groups:   city, telecon [40]
-##    city     telecon estimate statistic p.value method                alternative
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
-##  1 Bilbao   NAO       0.153     44372. 2.13e-1 Spearman&amp;#39;s rank corr~ two.sided  
-##  2 Santiago NAO      -0.181     61902. 1.39e-1 Spearman&amp;#39;s rank corr~ two.sided  
-##  3 Barcelo~ NAO      -0.0203    53460. 8.69e-1 Spearman&amp;#39;s rank corr~ two.sided  
-##  4 Madrid   NAO      -0.291     64692. 1.69e-2 Spearman&amp;#39;s rank corr~ two.sided  
-##  5 Valencia NAO      -0.113     27600. 4.22e-1 Spearman&amp;#39;s rank corr~ two.sided  
-##  6 Bilbao   WeMO      0.404     31242  7.06e-4 Spearman&amp;#39;s rank corr~ two.sided  
-##  7 Santiago WeMO      0.332     35014  5.94e-3 Spearman&amp;#39;s rank corr~ two.sided  
-##  8 Barcelo~ WeMO      0.0292    50862  8.13e-1 Spearman&amp;#39;s rank corr~ two.sided  
-##  9 Madrid   WeMO      0.109     44660  3.80e-1 Spearman&amp;#39;s rank corr~ two.sided  
-## 10 Valencia WeMO     -0.252     31056  6.88e-2 Spearman&amp;#39;s rank corr~ two.sided  
+##    city      telecon estimate statistic  p.value method              alternative
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;               &amp;lt;chr&amp;gt;      
+##  1 Bilbao    NAO       0.153     44372. 0.213    Spearman&amp;#39;s rank co~ two.sided  
+##  2 Santiago  NAO      -0.181     61902. 0.139    Spearman&amp;#39;s rank co~ two.sided  
+##  3 Barcelona NAO      -0.0203    53460. 0.869    Spearman&amp;#39;s rank co~ two.sided  
+##  4 Madrid    NAO      -0.291     64692. 0.0169   Spearman&amp;#39;s rank co~ two.sided  
+##  5 Valencia  NAO      -0.113     27600. 0.422    Spearman&amp;#39;s rank co~ two.sided  
+##  6 Bilbao    WeMO      0.404     31242  0.000706 Spearman&amp;#39;s rank co~ two.sided  
+##  7 Santiago  WeMO      0.332     35014  0.00594  Spearman&amp;#39;s rank co~ two.sided  
+##  8 Barcelona WeMO      0.0292    50862  0.813    Spearman&amp;#39;s rank co~ two.sided  
+##  9 Madrid    WeMO      0.109     44660  0.380    Spearman&amp;#39;s rank co~ two.sided  
+## 10 Valencia  WeMO     -0.252     31056  0.0688   Spearman&amp;#39;s rank co~ two.sided  
 ## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The result is a table in which we can see the correlations and their statistical significance for each city and teleconnection index.&lt;/p&gt;
 &lt;/div&gt;
@@ -5157,6 +4512,7 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/</guid>
       <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;We usually work with different data sources, and sometimes we can find tables distributed over several Excel sheets. In this post we are going to import the average daily temperature of Madrid and Berlin which is found in two Excel files with sheets for each year between 2000 and 2005: &lt;a href=&#34;https://dominicroye.github.io/files/Data_Excel.zip&#34;&gt;download&lt;/a&gt;.&lt;/p&gt;
@@ -5164,6 +4520,10 @@ data_nest&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Packages&lt;/h2&gt;
 &lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Packages&lt;/th&gt;
@@ -5245,28 +4605,28 @@ mad &amp;lt;- path %&amp;gt;%
         
 str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 6
-##  $ 2000:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
-##   ..$ date: POSIXct[1:366], format: &amp;quot;2000-01-01&amp;quot; ...
+##  $ 2000: tibble [366 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:366] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
 ##   ..$ yr  : num [1:366] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
-##  $ 2001:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
-##   ..$ date: POSIXct[1:365], format: &amp;quot;2001-01-01&amp;quot; ...
+##  $ 2001: tibble [365 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2001-01-01&amp;quot; &amp;quot;2001-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:365] 8.2 8.8 7.5 9.2 10 9 5.5 4.6 3 7.9 ...
 ##   ..$ yr  : num [1:365] 2001 2001 2001 2001 2001 ...
-##  $ 2002:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
-##   ..$ date: POSIXct[1:365], format: &amp;quot;2002-01-01&amp;quot; ...
+##  $ 2002: tibble [365 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2002-01-01&amp;quot; &amp;quot;2002-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:365] 8.7 7.4 8.5 9.2 9.3 7.3 5.4 5.6 6.8 6.1 ...
 ##   ..$ yr  : num [1:365] 2002 2002 2002 2002 2002 ...
-##  $ 2003:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
-##   ..$ date: POSIXct[1:365], format: &amp;quot;2003-01-01&amp;quot; ...
+##  $ 2003: tibble [365 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2003-01-01&amp;quot; &amp;quot;2003-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:365] 9.4 10.8 9.7 9.2 6.3 6.6 3.8 6.4 4.3 3.4 ...
 ##   ..$ yr  : num [1:365] 2003 2003 2003 2003 2003 ...
-##  $ 2004:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
-##   ..$ date: POSIXct[1:366], format: &amp;quot;2004-01-01&amp;quot; ...
+##  $ 2004: tibble [366 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2004-01-01&amp;quot; &amp;quot;2004-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:366] 6.6 5.9 7.8 8.1 6.4 5.7 5.2 6.9 11.8 12.2 ...
 ##   ..$ yr  : num [1:366] 2004 2004 2004 2004 2004 ...
-##  $ 2005:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
-##   ..$ date: POSIXct[1:365], format: &amp;quot;2005-01-01&amp;quot; ...
+##  $ 2005: tibble [365 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2005-01-01&amp;quot; &amp;quot;2005-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:365] 7.1 7.8 6.4 5.6 4.4 6.8 7.4 6 5.2 4.2 ...
 ##   ..$ yr  : num [1:365] 2005 2005 2005 2005 2005 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The result is a named list with the name of each sheet that contains the data.frame. Since it is the same table in all sheets, we could use the function &lt;code&gt;bind_rows()&lt;/code&gt;, however, there is a variant of &lt;code&gt;map()&lt;/code&gt; that directly joins all the tables by row: &lt;code&gt;map_df()&lt;/code&gt;. If it were necessary to join by column, &lt;code&gt;map_dfc()&lt;/code&gt; could be used.&lt;/p&gt;
@@ -5304,15 +4664,15 @@ mad &amp;lt;- path %&amp;gt;%
            .id = &amp;quot;yr2&amp;quot;)
 
 str(mad)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
-##  $ yr2 : chr  &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; ...
-##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
-##  $ ta  : num  5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
-##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## tibble [2,192 x 4] (S3: tbl_df/tbl/data.frame)
+##  $ yr2 : chr [1:2192] &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; ...
+##  $ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##  $ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;But how do we import multiple Excel files?&lt;/p&gt;
 &lt;p&gt;To do this, first we must know the &lt;code&gt;dir_ls()&lt;/code&gt; function from the &lt;a href=&#34;https://github.com/r-lib/fs&#34;&gt;&lt;em&gt;{fs}&lt;/em&gt;&lt;/a&gt; package. Indeed, there is the &lt;code&gt;dir()&lt;/code&gt; function of &lt;em&gt;R Base&lt;/em&gt;, but the advantages of the recent package are several, especially the compatibility with the &lt;em&gt;{tidyverse}&lt;/em&gt; collection.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dir_ls()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.en.html    index.en.Rmd     
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx   featured.png       index.en.Rmd       index.en.Rmd.lock~ 
 ## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we can filter the files that we want
 dir_ls(regexp = &amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
@@ -5383,12 +4743,12 @@ data &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
 
 str(data)&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 2
-##  $ berlin_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
-##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##  $ berlin_temp.xlsx: tibble [2,192 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:2192] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
 ##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
-##  $ madrid_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
-##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##  $ madrid_temp.xlsx: tibble [2,192 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
 ##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
 ##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining all data.frames
@@ -5397,11 +4757,11 @@ data_df &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
                   .id = &amp;quot;city&amp;quot;)
 
 str(data_df)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
-##  $ city: chr  &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; ...
-##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
-##  $ ta  : num  1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
-##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## tibble [4,384 x 4] (S3: tbl_df/tbl/data.frame)
+##  $ city: chr [1:4384] &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; ...
+##  $ date: POSIXct[1:4384], format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num [1:4384] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##  $ yr  : num [1:4384] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -5704,7 +5064,8 @@ str(temp_lisboa)&lt;/code&gt;&lt;/pre&gt;
 ##   ..   `J-J-A` = col_double(),
 ##   ..   `S-O-N` = col_double(),
 ##   ..   metANN = col_double()
-##   .. )&lt;/code&gt;&lt;/pre&gt;
+##   .. )
+##  - attr(*, &amp;quot;problems&amp;quot;)=&amp;lt;externalptr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values &lt;em&gt;999.9&lt;/em&gt; with &lt;code&gt;NA&lt;/code&gt;, using the &lt;code&gt;ifelse( )&lt;/code&gt; function that evaluates a condition and perform the given argument corresponding to true and false.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#select only the annual temperature and year column
 temp_lisboa_yr &amp;lt;- select(temp_lisboa, YEAR, metANN)
@@ -5870,7 +5231,7 @@ q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
 
 str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
-##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
+##  $ bbox    : chr &amp;quot;40.2567047,-3.8635825,40.5767047,-3.5435825&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
@@ -5879,10 +5240,10 @@ str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
 cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
-##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
+##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 197 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 212 points
 ##             $osm_lines : NULL
 ##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 11 polygons
 ##        $osm_multilines : NULL
@@ -6325,7 +5686,7 @@ nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
       <pubDate>Wed, 22 Aug 2018 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/2018/the-pie-chart/</guid>
       <description>
-&lt;script src=&#34;https://dominicroye.github.io/rmarkdown-libs/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;p&gt;Welcome to my blog! I am Dominic Royé, researcher and lecturer of physical geography at the University of Santiago de Compostela. One of my passions is R programming to visualize and analyze any type of data. Hence, my idea of this blog has its origin in my datavis publications I have been cooking in the last year on Twitter on different topics describing the world. In addition, I would like to take advantage of the blog and publish short introductions and explanation on data visualization, management and manipulation in R. I hope you like it. Any suggestion or ideas are welcomed.&lt;/p&gt;
@@ -6397,7 +5758,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(measles,aes(x=vacc_status,prop,ymin=0,ymax=prop))+
             geom_pointrange()+
              scale_y_continuous(breaks=seq(0,1,.1),
@@ -6405,7 +5766,7 @@ measles &amp;lt;- arrange(measles,
                                 limits=c(0,1))+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#custom themes definitions
 theme_singlebar &amp;lt;- theme_bw()+
   theme(
@@ -6432,7 +5793,7 @@ ggplot(aes(1,prop,fill=vacc_status))+  #we put 1 in x to create a single bar
               scale_fill_brewer(&amp;quot;&amp;quot;,palette=&amp;quot;Set1&amp;quot;)+
                 coord_flip()+
                   theme_singlebar&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we expand our data with numbers from Italy
 measles2 &amp;lt;- mutate(measles,
                   italy=c(0.826,0.081,0.053,0.013,0.027),
@@ -6450,7 +5811,7 @@ ggplot(measles2,aes(region,prop,fill=vacc_status))+
             scale_fill_brewer(palette = &amp;quot;Set1&amp;quot;)+
             labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Vaccination Status&amp;quot;)+
             theme_minimal()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;waffle-plot&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Waffle plot&lt;/h3&gt;
@@ -6465,7 +5826,7 @@ names(val_measles) &amp;lt;- measles$vacc_status
 waffle(val_measles, #data
         colors=brewer.pal(5,&amp;quot;Set1&amp;quot;), #colors
         rows=5) #row number &lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;The Waffle chart seems very interesting to me when we want to show a proportion of an individual category.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#data
 medida &amp;lt;- c(41,59) #data from the OECD 2015
@@ -6475,7 +5836,7 @@ names(medida) &amp;lt;- c(&amp;quot;Estudios Superiores&amp;quot;,&amp;quot;Otro
 waffle(medida,
        colors=c(&amp;quot;#377eb8&amp;quot;,&amp;quot;#bdbdbd&amp;quot;),
        rows=5)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;treemap&#34; class=&#34;section level3&#34;&gt;
 &lt;h3&gt;Treemap&lt;/h3&gt;
@@ -6490,7 +5851,7 @@ type=&amp;quot;index&amp;quot;,        #style more in ?treemap
 title=&amp;quot;&amp;quot;,            
 palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
 )&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-08-22-the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/the-pie-chart/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Personally, I think that all types of graphic representations have their advantages and disadvantages. However, we currently have a huge variety of alternatives to avoid using the pie chart. If you still want to make a pie chart, which I would not rule out either, I recommend following certain rules, which you can find very well summarized in a recent &lt;a href=&#34;https://academy.datawrapper.de/article/127-what-to-consider-when-creating-a-pie-chart&#34;&gt;post&lt;/a&gt; by &lt;a href=&#34;https://twitter.com/lisacrost&#34;&gt;Lisa Charlotte Rost&lt;/a&gt;. For example, you should order from the highest to the lowest unless there is a natural order or use a maximum of five categories. Finally, I leave you a link to a &lt;a href=&#34;https://policyviz.com/2018/08/07/dataviz-cheatsheet/&#34;&gt;cheat sheet&lt;/a&gt; from &lt;em&gt;policyviz&lt;/em&gt; with basic rules of data visualization. A good reference on graphics using different programs from Excel to R can be found in the book &lt;em&gt;Creating More Effective Graphs&lt;/em&gt; (Robbins 2013).&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;references&#34; class=&#34;section level3&#34;&gt;

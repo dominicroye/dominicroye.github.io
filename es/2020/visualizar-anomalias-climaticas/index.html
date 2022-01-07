@@ -758,7 +758,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    8 min de lectura
+    9 min de lectura
   </span>
   
 
@@ -850,13 +850,14 @@ library(ggrepel)</code></pre>
 <h3>Paso 1: importar los datos</h3>
 <p>Importamos los datos en formato <em>csv</em>, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).</p>
 <pre class="r"><code>data &lt;- read_csv(&quot;meteo_tenerife.csv&quot;) </code></pre>
+<pre><code>## Rows: 14303 Columns: 3</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## dbl  (2): pr, ta
+## date (1): date</code></pre>
 <pre><code>## 
-## -- Column specification --------------------------------------------------------
-## cols(
-##   date = col_date(format = &quot;&quot;),
-##   pr = col_double(),
-##   ta = col_double()
-## )</code></pre>
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>data</code></pre>
 <pre><code>## # A tibble: 14,303 x 3
 ##    date          pr    ta

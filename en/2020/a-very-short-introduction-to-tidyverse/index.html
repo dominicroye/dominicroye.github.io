@@ -800,7 +800,7 @@
 
     <div class="article-style">
       
-<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+<script src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/header-attrs/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -1299,7 +1299,7 @@ wld &lt;- filter(wld, !is.na(iso_a2)) %&gt;% select(iso_a2, subregion)
 
 # plot
 plot(wld)</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
 <p>Other <code>dplyr</code> functions allow us to join tables: <code>*_join ()</code>. Depending on which table (left or right) you want to join, the functions change: <code>left_join()</code>, <code>right_join()</code> or even <code>full_join()</code>. The <code>by</code> argument is not necessary as long as both tables have a column in common. However, in this case the variable names are different, so we use the following way: <code>c("country_region_code"="iso_a2")</code>. The <code>forcats</code> package of <code>tidyverse</code> has many useful functions for handling categorical variables (<code>factors</code>), variables that have a fixed and known set of possible values. All <code>forcats</code> functions have the prefix <code>fct_*</code>. For example, in this case we use <code>fct_reorder()</code> to reorder the country labels in order of the maximum based on the residential mobility records. Finally, we create a new column <code>"resi_real"</code> to change the reference value, the average or baseline, from 0 to 100.</p>
 <pre class="r"><code>subset_europe &lt;- filter(residential_mobility, 
                         is.na(sub_region_1),
@@ -1416,14 +1416,14 @@ it &lt;- filter(google_mobility,
 ggplot(it, 
        aes(date, resi)) + 
   geom_line()</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png" width="2100" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-1.png" width="2100" /></p>
 <pre class="r"><code># scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
   geom_point() +
   geom_smooth(method = &quot;lm&quot;)</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png" width="2100" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-20-2.png" width="2100" /></p>
 <p>To modify the axes, we use the different <code>scale_*</code> functions that we must adapt to the scales of measurement (date, discrete, continuous, etc.). The <code>labs()</code> function helps us define the axis, legend and plot titles. Finally, we add the style of the graph with <code>theme_light()</code> (others are <code>theme_bw()</code>, <code>theme_minimal()</code>, etc.). We could also make changes to all graphic elements through <code>theme()</code>.</p>
 <pre class="r"><code># time serie plot
 ggplot(it, 
@@ -1437,7 +1437,7 @@ ggplot(it,
        y = &quot;Residential mobility&quot;,
        title = &quot;Mobility during COVID-19&quot;) +
   theme_light()</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png" width="2100" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-1.png" width="2100" /></p>
 <pre class="r"><code># scatter plot
 ggplot(it, 
        aes(parks, resi)) + 
@@ -1452,7 +1452,7 @@ ggplot(it,
        title = &quot;Mobility during COVID-19&quot;) +
   theme_light()</code></pre>
 <pre><code>## `geom_smooth()` using formula &#39;y ~ x&#39;</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png" width="2100" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-21-2.png" width="2100" /></p>
 </div>
 <div id="boxplot" class="section level3" number="4.5.2">
 <h3><span class="header-section-number">4.5.2</span> Boxplot</h3>
@@ -1481,7 +1481,7 @@ ggplot(subset_europe_reg,
        title = &quot;Mobility during COVID-19&quot;, 
        fill = &quot;&quot;) +
   theme_minimal()</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png" width="2100" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-22-1.png" width="2100" /></p>
 </div>
 <div id="heatmap" class="section level3" number="4.5.3">
 <h3><span class="header-section-number">4.5.3</span> Heatmap</h3>
@@ -1523,7 +1523,7 @@ ggplot(subset_europe,
                                label.position = &quot;top&quot;, 
                                ticks = FALSE)) +
   coord_cartesian(expand = FALSE)</code></pre>
-<p><img src="/post/en/2020-06-06-a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png" width="3675" /></p>
+<p><img src="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/index.en_files/figure-html/unnamed-chunk-25-1.png" width="3675" /></p>
 </div>
 </div>
 <div id="apply-functions-on-vectors-or-lists" class="section level2" number="4.6">

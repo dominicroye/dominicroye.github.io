@@ -469,7 +469,7 @@ bm # contains three layers (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
 ## dimensions  : 7156, 7156, 3  (nrow, ncol, nlyr)
 ## resolution  : 0.008789272, 0.008789272  (x, y)
 ## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
-## coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
 ## source      : snapshot-2017-11-30T00_00_00Z.tiff 
 ## red-grn-blue: 1, 2, 3 
 ## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
@@ -710,11 +710,9 @@ library(raster)&lt;/code&gt;&lt;/pre&gt;
 &lt;h2&gt;Import&lt;/h2&gt;
 &lt;p&gt;The first thing we do is to import the land use raster, the income and Gini index data, and the census boundaries.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster of CORINE LAND COVER 2018
-urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
-## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
-## definition&lt;/code&gt;&lt;/pre&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# income data and Gini index
+urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)
+
+# income data and Gini index
 renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
 gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
 
@@ -785,10 +783,10 @@ mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantil
 # results
 head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
-## geometry type:  MULTIPOLYGON
-## dimension:      XY
-## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
-## projected CRS:  ETRS89 / UTM zone 30N
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## Projected CRS: ETRS89 / UTM zone 30N
 ## # A tibble: 6 x 4
 ##   GINI_2017 RNMP_2017 bi_class                                          geometry
 ##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
