@@ -118,7 +118,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The primary function &lt;code&gt;terminator()&lt;/code&gt; based on the javascript of &lt;code&gt;{Leaflet}&lt;/code&gt; needs as arguments: the date-time, the minimum and maximum extension, as well as the resolution or the interval of longitude.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # date and time of our operating system
 t0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2021-12-24 15:24:09 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-01-12 15:58:56 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimate the day-night line
 
 # convert it into a spatial object of class sf
@@ -310,7 +310,7 @@ ggplot() +
             size = .1) +
     geom_sf(data = grid,
             size = .1) +
-    geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+    geom_raster(data = filter(df_winkel, hour == {{step}}), aes(x, y), 
                 fill = &amp;quot;grey90&amp;quot;,
                 alpha = .6) +
     labs(title = str_c(&amp;quot;\U1F551&amp;quot;, str_remove(x, &amp;quot;H&amp;quot;), &amp;quot; UTC&amp;quot;)) + 
@@ -324,7 +324,7 @@ ggplot() +
   
 })&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The creation of the final gif is done with &lt;code&gt;gifski()&lt;/code&gt; passing it the names of the images in the order as they should appear in the animation.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(as_hms(seq(0, 1410, 30)*60), &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- str_c(&amp;quot;wld_night_H&amp;quot;, str_remove_all(as_hms(seq(0, 1410, 30)*60), &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;)
 
 gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;

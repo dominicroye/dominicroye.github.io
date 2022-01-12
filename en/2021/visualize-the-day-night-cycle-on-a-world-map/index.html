@@ -900,7 +900,7 @@ library(gifski)</code></pre>
 <p>The primary function <code>terminator()</code> based on the javascript of <code>{Leaflet}</code> needs as arguments: the date-time, the minimum and maximum extension, as well as the resolution or the interval of longitude.</p>
 <pre class="r"><code>t0 &lt;- Sys.time() # date and time of our operating system
 t0</code></pre>
-<pre><code>## [1] &quot;2021-12-24 15:24:09 CET&quot;</code></pre>
+<pre><code>## [1] &quot;2022-01-12 15:58:56 CET&quot;</code></pre>
 <pre class="r"><code>coord_nightday &lt;- terminator(t0, -180, 180, 0.2) # estimate the day-night line
 
 # convert it into a spatial object of class sf
@@ -1092,7 +1092,7 @@ ggplot() +
             size = .1) +
     geom_sf(data = grid,
             size = .1) +
-    geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+    geom_raster(data = filter(df_winkel, hour == {{step}}), aes(x, y), 
                 fill = &quot;grey90&quot;,
                 alpha = .6) +
     labs(title = str_c(&quot;\U1F551&quot;, str_remove(x, &quot;H&quot;), &quot; UTC&quot;)) + 
@@ -1106,7 +1106,7 @@ ggplot() +
   
 })</code></pre>
 <p>The creation of the final gif is done with <code>gifski()</code> passing it the names of the images in the order as they should appear in the animation.</p>
-<pre class="r"><code>files &lt;- str_c(&quot;wld_night_&quot;, str_remove_all(as_hms(seq(0, 1410, 30)*60), &quot;:&quot;), &quot;.png&quot;)
+<pre class="r"><code>files &lt;- str_c(&quot;wld_night_H&quot;, str_remove_all(as_hms(seq(0, 1410, 30)*60), &quot;:&quot;), &quot;.png&quot;)
 
 gifski(files, &quot;night_day.gif&quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)</code></pre>
 <p><img src="night_day.gif" /><!-- --></p>

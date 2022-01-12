@@ -900,7 +900,7 @@ library(gifski)</code></pre>
 <p>La función principal <code>terminator()</code> basada en el javascript de <code>{Leaflet}</code> necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.</p>
 <pre class="r"><code>t0 &lt;- Sys.time() # fecha y hora de nuestro sistema operativo
 t0</code></pre>
-<pre><code>## [1] &quot;2021-12-23 11:33:08 CET&quot;</code></pre>
+<pre><code>## [1] &quot;2022-01-12 16:03:37 CET&quot;</code></pre>
 <pre class="r"><code>coord_nightday &lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
 
 # lo convertimos en un objecto espacial de clase sf
@@ -1054,9 +1054,6 @@ grid &lt;- st_graticule() %&gt;%   st_transform(&quot;ESRI:54019&quot;)
 
 # obtenemos la extensión del mundo
 bbx &lt;- st_bbox(wld)</code></pre>
-</div>
-<div id="mapa" class="section level2">
-<h2>Mapa</h2>
 <p>El mapa de cualquier hora lo construimos con <code>ggplot2</code> añadiendo la geometría vectorial con <code>geom_sf()</code> (los límites y la retícula) y con <code>geom_raster()</code> los datos raster. En el título estamos usando un símbolo unicode como reloj. Además definimos la extensión del mapa en <code>coord_sf()</code> para mantenerlo constante sobre todos los mapas en la animación. Por último, hacemos uso de <code>{{ }}</code> de <a href="https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/">{rlang}</a> dentro de la función <code>filter()</code> para poder filtrar nuestros datos raster en forma de tabla. Con el objetivo de que nuestra función pueda evaluar correctamente los valores que pasamos en <code>x</code> (los intervalos del día) es necesario usar esta gramatica de <em>tidy evaluation</em> por <em>data masking</em> de <code>tidyverse</code>. Es un tema para otro post.</p>
 <pre class="r"><code># ejemplo 5 UTC
 x &lt;- &quot;H05:00:00&quot;
@@ -1097,7 +1094,8 @@ g &lt;- ggplot() +
           size = .1) +
   geom_sf(data = grid,
           size = .1) +
-  geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+  geom_raster(data = filter(df_winkel, hour == {{step}}), 
+              aes(x, y), 
             fill = &quot;grey90&quot;,
             alpha = .6) +
   labs(title = str_c(&quot;\U1F551&quot;, str_remove(x, &quot;H&quot;), &quot; UTC&quot;)) + 
@@ -1111,7 +1109,7 @@ ggsave(str_c(&quot;wld_night_&quot;, str_remove_all(step, &quot;:&quot;), &quot;
 
 })</code></pre>
 <p>La creación del gif final lo hacemos con <code>gifski()</code> pasándole los nombres de las imagenes en el orden como deben aparecer en la animación.</p>
-<pre class="r"><code>files &lt;- str_c(&quot;wld_night_&quot;, str_remove_all(as_hms(seq(0, 710, 30)*60), &quot;:&quot;), &quot;.png&quot;)
+<pre class="r"><code>files &lt;- str_c(&quot;wld_night_H&quot;, str_remove_all(as_hms(seq(0, 710, 30)*60), &quot;:&quot;), &quot;.png&quot;)
 
 gifski(files, &quot;night_day.gif&quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)</code></pre>
 <p><img src="night_day.gif" /><!-- --></p>

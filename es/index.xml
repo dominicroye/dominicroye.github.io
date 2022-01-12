@@ -233,7 +233,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función principal &lt;code&gt;terminator()&lt;/code&gt; basada en el javascript de &lt;code&gt;{Leaflet}&lt;/code&gt; necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # fecha y hora de nuestro sistema operativo
 t0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2021-12-23 11:33:08 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-01-12 16:03:37 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
 
 # lo convertimos en un objecto espacial de clase sf
@@ -387,9 +387,6 @@ grid &amp;lt;- st_graticule() %&amp;gt;%   st_transform(&amp;quot;ESRI:54019&amp
 
 # obtenemos la extensión del mundo
 bbx &amp;lt;- st_bbox(wld)&lt;/code&gt;&lt;/pre&gt;
-&lt;/div&gt;
-&lt;div id=&#34;mapa&#34; class=&#34;section level2&#34;&gt;
-&lt;h2&gt;Mapa&lt;/h2&gt;
 &lt;p&gt;El mapa de cualquier hora lo construimos con &lt;code&gt;ggplot2&lt;/code&gt; añadiendo la geometría vectorial con &lt;code&gt;geom_sf()&lt;/code&gt; (los límites y la retícula) y con &lt;code&gt;geom_raster()&lt;/code&gt; los datos raster. En el título estamos usando un símbolo unicode como reloj. Además definimos la extensión del mapa en &lt;code&gt;coord_sf()&lt;/code&gt; para mantenerlo constante sobre todos los mapas en la animación. Por último, hacemos uso de &lt;code&gt;{{ }}&lt;/code&gt; de &lt;a href=&#34;https://www.tidyverse.org/blog/2019/06/rlang-0-4-0/&#34;&gt;{rlang}&lt;/a&gt; dentro de la función &lt;code&gt;filter()&lt;/code&gt; para poder filtrar nuestros datos raster en forma de tabla. Con el objetivo de que nuestra función pueda evaluar correctamente los valores que pasamos en &lt;code&gt;x&lt;/code&gt; (los intervalos del día) es necesario usar esta gramatica de &lt;em&gt;tidy evaluation&lt;/em&gt; por &lt;em&gt;data masking&lt;/em&gt; de &lt;code&gt;tidyverse&lt;/code&gt;. Es un tema para otro post.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ejemplo 5 UTC
 x &amp;lt;- &amp;quot;H05:00:00&amp;quot;
@@ -430,7 +427,8 @@ g &amp;lt;- ggplot() +
           size = .1) +
   geom_sf(data = grid,
           size = .1) +
-  geom_raster(data = filter(df, hour == !!step), aes(x, y), 
+  geom_raster(data = filter(df_winkel, hour == {{step}}), 
+              aes(x, y), 
             fill = &amp;quot;grey90&amp;quot;,
             alpha = .6) +
   labs(title = str_c(&amp;quot;\U1F551&amp;quot;, str_remove(x, &amp;quot;H&amp;quot;), &amp;quot; UTC&amp;quot;)) + 
@@ -444,7 +442,7 @@ ggsave(str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(step, &amp;quot;:&am
 
 })&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La creación del gif final lo hacemos con &lt;code&gt;gifski()&lt;/code&gt; pasándole los nombres de las imagenes en el orden como deben aparecer en la animación.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(as_hms(seq(0, 710, 30)*60), &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;)
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;files &amp;lt;- str_c(&amp;quot;wld_night_H&amp;quot;, str_remove_all(as_hms(seq(0, 710, 30)*60), &amp;quot;:&amp;quot;), &amp;quot;.png&amp;quot;)
 
 gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
@@ -7381,8 +7379,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_ccaa_ing.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_ccaa_ing_hu021b5faa639d69aef1058a336ecc1680_1392362_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_ccaa_ing.png&#34; width=&#34;209&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_eu.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_eu_hub04fd51d00d0e4b18eb0808408cf8745_3861450_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_eu.png&#34; width=&#34;272&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -7390,8 +7388,35 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colores
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_eu.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_eu_hua3bff94cceab3acce549952fc0a695e9_771953_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_eu.png&#34; width=&#34;259&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_eu2low.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_eu2low_huceee8c351e5c303b63b75cfe33351276_1608213_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_eu2low.png&#34; width=&#34;146&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_prov.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_prov_hu413fee30843cc0ba31f05e68a21d2b59_2391789_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_prov.png&#34; width=&#34;317&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_prov2_low.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_prov2_low_hu3a14b0cacf7d8f7909954d5501212a14_1263531_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_prov2_low.png&#34; width=&#34;181&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_usa.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_usa_hu5de49d861cef8791de7c8b28c95e78b8_2079595_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_usa.png&#34; width=&#34;227&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -7627,7 +7652,7 @@ Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
     
     
     &lt;a data-fancybox=&#34;gallery-population&#34; href=&#34;https://dominicroye.github.io/media/albums/population/desigualdad_paris.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/population/desigualdad_paris_hu8ac2e1461f5b0a13f3bf7dda131d1aba_6922256_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;desigualdad_paris.png&#34; width=&#34;195&#34; height=&#34;190&#34;&gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/population/desigualdad_paris_hu21c54ceafba32ee2b84291f44e51581b_5105800_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;desigualdad_paris.png&#34; width=&#34;187&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
