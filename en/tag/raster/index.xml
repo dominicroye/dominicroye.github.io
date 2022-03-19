@@ -5,12 +5,376 @@
     <link>https://dominicroye.github.io/en/tag/raster/</link>
       <atom:link href="https://dominicroye.github.io/en/tag/raster/index.xml" rel="self" type="application/rss+xml" />
     <description>raster</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Tue, 08 Jan 2019 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Tue, 08 Mar 2022 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
       <title>raster</title>
       <link>https://dominicroye.github.io/en/tag/raster/</link>
     </image>
+    
+    <item>
+      <title>Use of multidimensional spatial data</title>
+      <link>https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/</link>
+      <pubDate>Tue, 08 Mar 2022 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Initial considerations&lt;/h1&gt;
+&lt;p&gt;Space-time information is vital in many disciplines, especially in climatology or meteorology, and this makes it necessary to have a format that allows a multidimensional structure. It is also important that this format has a high degree of interchange compatibility and can store a large number of data. These characteristics led to the development of the open standard netCDF (NetworkCommon Data Form). The netCDF format is an open multi-dimensional scientific data exchange standard used with observational or model data, primarily in disciplines such as climatology, meteorology, and oceanography. The netCDF convention is managed by Unidata (&lt;a href=&#34;https://www.unidata.ucar.edu/software/netcdf/&#34; class=&#34;uri&#34;&gt;https://www.unidata.ucar.edu/software/netcdf/&lt;/a&gt;). It is a space-time format with a regular or irregular grid. The multidimensional structure in the form of an array allows the use of space-time and multivariable data. The general characteristics of netCDF refer to the use of an n-dimensional coordinate system, multiple variables, and a regular or irregular grid. In addition, metadata describing the contents are included. The extension of the netCDF format is “nc”.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;3d_ncdf.en.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;I recently used drought data from Spain in netCDF format with a resolution of 1 km to represent the state of drought for each year since 1960 (&lt;a href=&#34;https://monitordesequia.csic.es/historico/&#34; class=&#34;uri&#34;&gt;https://monitordesequia.csic.es/historico/&lt;/a&gt;). The SPEI index (Standardized Precipitation-Evapotranspiration Index) is widely used to describe the drought with different time intervals (3, 6, 12 months, etc.).&lt;/p&gt;
+&lt;p&gt;{{&amp;lt; tweet 1490260694851362821 &amp;gt;}}&lt;/p&gt;
+&lt;p&gt;I have been asked on several occasions about handling the netCDF format. For this reason, in this post, we will use a subset of these same data, the year 2017 of the SPEI 12 months.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;Data handling in netCDF format is possible through various packages directly or indirectly. The specifically designed &lt;code&gt;{ncdf4}&lt;/code&gt; package stands out, which is also used by other packages, although we don’t see it. Handling with &lt;code&gt;{ncdf4}&lt;/code&gt; is somewhat complex, mainly because of the need to manage RAM when dealing with large datasets or also because of the way to handle the &lt;em&gt;array&lt;/em&gt; class. Another very powerful package is &lt;code&gt;{terra}&lt;/code&gt;, which we know when working with raster data and allows us to use its functions also for handling the netCDF format.&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Packages&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster (raster successor package)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;mapSpain&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Spanish administrative limits&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;mapSpain&amp;quot;)) install.packages(&amp;quot;mapSpain&amp;quot;)
+
+# load packages
+library(tidyverse)
+library(sf)
+library(terra)
+library(lubridate)
+library(mapSpain)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For those less experienced with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend the brief introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Data&lt;/h1&gt;
+&lt;p&gt;First, we download the data &lt;a href=&#34;https://www.dropbox.com/s/ioo2ky7wb3zxkdx/spei12_2017.nc?dl=0&#34;&gt;here&lt;/a&gt;. Then, we import the SPEI-12 index data for 2017 using the &lt;code&gt;rast()&lt;/code&gt; function. Actually, in this step, we have only created a reference to the file without importing all the data into memory. We see in the metadata the number of layers available. The SPEI-12 index is calculated weekly with four weeks per month. If we look at the metadata, the definition of the coordinate system is missing, so we define it by assigning the code EPSG:25830 (ETRS89/UTM 30N).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import
+spei &amp;lt;- rast(&amp;quot;spei12_2017.nc&amp;quot;)
+# metadata
+spei&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 834, 1115, 48  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. :  
+## source      : spei12_2017.nc 
+## names       : spei1~017_1, spei1~017_2, spei1~017_3, spei1~017_4, spei1~017_5, spei1~017_6, ... 
+## time        : 2017-01-01 to 2017-12-23&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define the coordinate system
+crs(spei) &amp;lt;- &amp;quot;EPSG:25830&amp;quot;
+
+# map first weeks
+plot(spei)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extract-metadata&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Extract metadata&lt;/h1&gt;
+&lt;p&gt;There are different functions to access metadata, such as dates, layer names or variable names. Remember that netCDF files can also contain several variables.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time
+t &amp;lt;- time(spei)
+head(t)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2017-01-01 UTC&amp;quot; &amp;quot;2017-01-09 UTC&amp;quot; &amp;quot;2017-01-16 UTC&amp;quot; &amp;quot;2017-01-23 UTC&amp;quot;
+## [5] &amp;quot;2017-02-01 UTC&amp;quot; &amp;quot;2017-02-09 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# layer names
+names(spei) %&amp;gt;% head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;spei12_2017_1&amp;quot; &amp;quot;spei12_2017_2&amp;quot; &amp;quot;spei12_2017_3&amp;quot; &amp;quot;spei12_2017_4&amp;quot;
+## [5] &amp;quot;spei12_2017_5&amp;quot; &amp;quot;spei12_2017_6&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# variable names
+varnames(spei)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;spei12_2017&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;time-series-extraction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Time-series extraction&lt;/h1&gt;
+&lt;p&gt;One possibility that netCDF data allows is time-series extraction, either from points or areas. For example, we will create here the SPEI-12 time series for the city of Zaragoza and the average for the entire autonomous community of Aragon.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Zaragoza coordinates
+zar &amp;lt;- st_point(c(-0.883333, 41.65)) %&amp;gt;% 
+          st_sfc(crs = 4326) %&amp;gt;% 
+           st_as_sf() %&amp;gt;% 
+            st_transform(25830)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;{terra}&lt;/code&gt; package only accepts its vector class &lt;em&gt;SpatVector&lt;/em&gt;, so it is necessary to convert the point of class &lt;em&gt;sf&lt;/em&gt; with the &lt;code&gt;vect()&lt;/code&gt; function. To extract the time series we use the &lt;code&gt;extract()&lt;/code&gt; function. The extracted data is given back in the form of a table, each row is an element of the vector data, and each column is a layer. In our case, it is only a single row corresponding to the city of Zaragoza.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  &lt;div&gt;
+    Some functions may conflict with the names of other packages; to avoid this, we can write the package’s name in front of the function we want to use, separated by the colon symbol written twice (&lt;code&gt;package_name::function_name&lt;/code&gt;).
+  &lt;/div&gt;
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extract time series
+spei_zar &amp;lt;- terra::extract(spei, vect(zar))
+
+# dimensions
+dim(spei_zar)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]  1 49&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create a data.frame
+spei_zar &amp;lt;- tibble(date = t, zar = unlist(spei_zar)[-1])
+head(spei_zar)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 6 x 2
+##   date                  zar
+##   &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt;
+## 1 2017-01-01 00:00:00 0.280
+## 2 2017-01-09 00:00:00 0.25 
+## 3 2017-01-16 00:00:00 0.220
+## 4 2017-01-23 00:00:00 0.210
+## 5 2017-02-01 00:00:00 0.350
+## 6 2017-02-09 00:00:00 0.220&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We obtain the average of the autonomous community of Aragon using the polygon geometry and indicating the type of function with which we want to summarize the area. The &lt;code&gt;esp_get_ccaa()&lt;/code&gt; function of the &lt;code&gt;mapSpain()&lt;/code&gt; package is very useful when importing Spanish administrative boundaries of different levels. In the extraction, we must pass the &lt;code&gt;na.rm = TRUE&lt;/code&gt; argument to the &lt;code&gt;mean()&lt;/code&gt; function to exclude pixels with no value.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# boundaries of Aragon
+aragon &amp;lt;- esp_get_ccaa(&amp;quot;Aragon&amp;quot;) %&amp;gt;% 
+            st_transform(25830)
+
+# extract the average values of the SPEI-12
+spei_arag &amp;lt;- terra::extract(spei, vect(aragon), fun = &amp;quot;mean&amp;quot;, na.rm = TRUE)
+
+# add the new values to our data.frame
+spei_zar &amp;lt;- mutate(spei_zar, arag = unlist(spei_arag)[-1])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step, we transform the table to the long format with &lt;code&gt;pivot_longer()&lt;/code&gt;, merging the value of the SPEI index of Zaragoza and Aragon. We will also add a column with the interpretation of the index and change the labels.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;spei_zar &amp;lt;-  pivot_longer(spei_zar, 2:3, names_to = &amp;quot;reg&amp;quot;, values_to = &amp;quot;spei&amp;quot;) %&amp;gt;%
+             mutate(sign = case_when(spei &amp;lt; -0.5 ~ &amp;quot;drought&amp;quot;, 
+                                    spei &amp;gt; 0.5 ~ &amp;quot;wet&amp;quot;,
+                                    TRUE ~ &amp;quot;normal&amp;quot;),
+                    date = as_date(date),
+                    reg = factor(reg, c(&amp;quot;zar&amp;quot;, &amp;quot;arag&amp;quot;), c(&amp;quot;Zaragoza&amp;quot;, &amp;quot;Aragon&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now it remains to build the graph in which we compare the SPEI-12 of Zaragoza with the average of Aragon. The &lt;code&gt;geom_rect()&lt;/code&gt; function helps us draw different background rectangles to mark drought and normal state.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# time series graph
+ggplot(spei_zar) +
+      geom_rect(aes(xmin = min(date), xmax = max(date), 
+                    ymin = -0.5, ymax = 0.5), 
+                fill = &amp;quot;#41ab5d&amp;quot;) +
+      geom_rect(aes(xmin = min(date), xmax = max(date), 
+                    ymin = -1, ymax = -0.5), 
+                fill = &amp;quot;#ffffcc&amp;quot;) +
+      geom_rect(aes(xmin = min(date), xmax = max(date), 
+                    ymin = -1.5, ymax = -1), 
+                fill = &amp;quot;#F3641D&amp;quot;) +
+      geom_hline(yintercept = 0, size = 1, colour = &amp;quot;white&amp;quot;) +
+      geom_line(aes(date, spei, linetype = reg), size = 1, alpha = .7) +
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  labs(linetype = &amp;quot;&amp;quot;, y = &amp;quot;SPEI-12&amp;quot;, x = &amp;quot;&amp;quot;) +
+  coord_cartesian(expand = FALSE) +
+  theme_minimal() +
+  theme(legend.position = c(.25, .9),
+        panel.grid.minor = element_blank(),
+        panel.ontop = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;drought-map&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Drought map&lt;/h1&gt;
+&lt;div id=&#34;spain&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Spain&lt;/h2&gt;
+&lt;p&gt;To create a map of drought severity in 2017, we must first make some modifications. With the &lt;code&gt;subset()&lt;/code&gt; function, we obtain a layer or several as a subset. Here we select the last one to see the state of drought for the whole year.&lt;/p&gt;
+&lt;p&gt;We replace all values greater than -0.5 with &lt;code&gt;NA&lt;/code&gt; in the next step. Drought is considered when the SPEI index is below -0.5 and, on the other hand, if it is above 0.5, we would speak of a wet period.&lt;/p&gt;
+&lt;p&gt;The raster class is not directly compatible with &lt;code&gt;ggplot&lt;/code&gt;, so we convert it to an xyz table with longitude, latitude and the variable. When we do the same conversion of multiple layers, each column will represent one layer. Finally, we rename our index column and add a new column with different levels of drought severity.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extract layer(s) with their index
+spei_anual &amp;lt;- subset(spei, 48) 
+
+# substitute non-drought values with NA
+spei_anual[spei_anual &amp;gt; -0.5] &amp;lt;- NA
+
+# convert our raster into an xyz table
+spei_df &amp;lt;- as.data.frame(spei_anual, xy = TRUE)
+head(spei_df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##            x       y spei12_2017_48
+## 38096 123100 4858900          -1.48
+## 39195 105500 4857800          -1.59
+## 39197 107700 4857800          -1.40
+## 39211 123100 4857800          -1.47
+## 39212 124200 4857800          -1.50
+## 40310 105500 4856700          -1.63&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change the name of the variable
+names(spei_df)[3] &amp;lt;- &amp;quot;spei&amp;quot;
+
+# categorize the index and fix the order of the factor
+spei_df &amp;lt;- mutate(spei_df, spei_cat = case_when(spei &amp;gt; -0.9 ~ &amp;quot;slight&amp;quot;,
+                                                spei &amp;gt; -1.5 &amp;amp; spei &amp;lt; -0.9 ~ &amp;quot;moderate&amp;quot;,
+                                                spei &amp;gt; -2 &amp;amp; spei &amp;lt;= -1.5 ~ &amp;quot;severe&amp;quot;,
+                                                TRUE ~ &amp;quot;extreme&amp;quot;) %&amp;gt;% 
+                                      fct_relevel(c(&amp;quot;slight&amp;quot;, &amp;quot;moderate&amp;quot;, &amp;quot;severe&amp;quot;, &amp;quot;extreme&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can create a raster map with the &lt;code&gt;geom_tile()&lt;/code&gt; geometry indicating longitude, latitude and the fill of the pixels with our categorized variable.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# boundaries
+ccaa &amp;lt;- esp_get_ccaa() %&amp;gt;% 
+            filter(!ine.ccaa.name %in% c(&amp;quot;Canarias&amp;quot;, &amp;quot;Ceuta&amp;quot;, &amp;quot;Melilla&amp;quot;)) %&amp;gt;% 
+              st_transform(25830)
+
+# mapa
+ggplot(spei_df) +
+   geom_tile(aes(x , y, fill = spei_cat)) +
+  geom_sf(data = ccaa, fill = NA, size = .1, colour = &amp;quot;white&amp;quot;, alpha = .4) +
+  scale_fill_manual(values = c(&amp;quot;#ffffcc&amp;quot;, &amp;quot;#F3641D&amp;quot;, &amp;quot;#DE2929&amp;quot;, &amp;quot;#8B1A1A&amp;quot;),
+                    na.value = NA) +
+  guides(fill = guide_legend(keywidth = 2, keyheight = .3, label.position = &amp;quot;bottom&amp;quot;,
+                             title.position = &amp;quot;top&amp;quot;)) +
+  coord_sf() +
+  labs(fill = &amp;quot;DROUGHT&amp;quot;) +
+  theme_void() +
+  theme(legend.position = &amp;quot;top&amp;quot;,
+        legend.justification = 0.2,
+        plot.background = element_rect(fill = &amp;quot;black&amp;quot;, colour = NA),
+        legend.title = element_text(colour = &amp;quot;white&amp;quot;, size = 20, hjust = .5),
+        legend.text = element_text(colour = &amp;quot;white&amp;quot;),
+        plot.margin = margin(t = 10))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;758.4&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aragon&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aragon&lt;/h2&gt;
+&lt;p&gt;In this last map example, we select the drought situation 12 months ahead, at the beginning and end of the year. The main function we use is &lt;code&gt;crop()&lt;/code&gt; that cuts to the extent of a spatial object; in our case, it is Aragon, then we apply the &lt;code&gt;mask()&lt;/code&gt; function that masks all those pixels within limits leaving the others in &lt;code&gt;NA&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# subset first and last week 2017
+spei_sub &amp;lt;- subset(spei, c(1, 48)) 
+
+# crop and mask Aragon
+spei_arag &amp;lt;- crop(spei_sub, aragon) %&amp;gt;% 
+                    mask(vect(aragon)) 
+
+# convert the data to xyz
+spei_df_arag &amp;lt;- as.data.frame(spei_arag, xy = TRUE)
+
+# rename layers
+names(spei_df_arag)[3:4] &amp;lt;- c(&amp;quot;January&amp;quot;, &amp;quot;December&amp;quot;)
+
+# changing to the long table format by merging both months
+spei_df_arag &amp;lt;- pivot_longer(spei_df_arag, 3:4, 
+                             names_to = &amp;quot;mo&amp;quot;, 
+                             values_to = &amp;quot;spei&amp;quot;) %&amp;gt;% 
+                mutate(mo = fct_relevel(mo, c(&amp;quot;January&amp;quot;, &amp;quot;December&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will make the two maps in the same way as the one for whole Spain. The main difference is that we use the SPEI index directly as a continuous variable. Also, to create two maps as facets in one row, we add the &lt;code&gt;facet_grid()&lt;/code&gt; function. Finally, the index shows negative and positive values; therefore, a divergent range of colours is necessary. To centre the midpoint at 0, we must rescale the index values using the &lt;code&gt;rescale()&lt;/code&gt; function from the &lt;code&gt;scales&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# map of Aragon
+ggplot(spei_df_arag) +
+   geom_tile(aes(x , y, fill = spei)) +
+  geom_sf(data = aragon, fill = NA, size = .1, colour = &amp;quot;white&amp;quot;, alpha = .4) +
+  scale_fill_distiller(palette = &amp;quot;RdYlGn&amp;quot;, direction = 1, 
+                       values = scales::rescale(c(-2.1, 0, 0.9)),
+                       breaks = seq(-2, 1, .5)) +
+  guides(fill = guide_colorbar(barwidth = 8, barheight = .3, label.position = &amp;quot;bottom&amp;quot;)) +
+  facet_grid(. ~ mo) +
+  coord_sf() +
+  labs(fill = &amp;quot;SPEI-12&amp;quot;, title = &amp;quot;Aragon&amp;quot;) +
+  theme_void() +
+  theme(legend.position = &amp;quot;top&amp;quot;,
+        legend.justification = 0.5,
+        legend.title = element_text(colour = &amp;quot;white&amp;quot;, vjust = 1.1),
+        strip.text = element_text(colour = &amp;quot;white&amp;quot;),
+        plot.background = element_rect(fill = &amp;quot;black&amp;quot;, colour = NA),
+        plot.title = element_text(colour = &amp;quot;white&amp;quot;, size = 20, hjust = .5, vjust = 2.5,
+                                  margin = margin(b = 10, t = 10)),
+        legend.text = element_text(colour = &amp;quot;white&amp;quot;),
+        plot.margin = margin(10, 10, 10, 10))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;more-possibilities&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;More possibilities&lt;/h1&gt;
+&lt;p&gt;It is possible to regroup the different layers by applying a function. For example, using the months of each week of the SPEI-12 we can calculate the monthly average in 2017. To do this, we use the &lt;code&gt;tapp()&lt;/code&gt; function, which in turn applies another function to each group. It is crucial that the group is either a factor or the index of each layer. Both &lt;code&gt;tapp()&lt;/code&gt; and &lt;code&gt;app()&lt;/code&gt; functions have an argument to process in parallel using more than one core.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# months as factor
+mo &amp;lt;- month(t, label = TRUE)
+mo&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##  [1] ene ene ene ene feb feb feb feb mar mar mar mar abr abr abr abr may may may
+## [20] may jun jun jun jun jul jul jul jul ago ago ago ago sep sep sep sep oct oct
+## [39] oct oct nov nov nov nov dic dic dic dic
+## 12 Levels: ene &amp;lt; feb &amp;lt; mar &amp;lt; abr &amp;lt; may &amp;lt; jun &amp;lt; jul &amp;lt; ago &amp;lt; sep &amp;lt; ... &amp;lt; dic&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# average by month
+spei_mo &amp;lt;- tapp(spei, mo, mean)
+spei_mo&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 834, 1115, 12  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## names       :     ene,     feb,     mar,     abr,     may,     jun, ... 
+## min values  : -1.2800, -1.4675, -2.2400, -2.6500, -2.5775, -2.4675, ... 
+## max values  :  1.3875,  1.9175,  1.7475,  1.8375,  1.7500,  1.7000, ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# maps
+plot(spei_mo)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The &lt;code&gt;mean()&lt;/code&gt; function used directly on a multidimensional &lt;code&gt;SpatRaster&lt;/code&gt; class object returns the average per cell. The same result can be obtained with the &lt;code&gt;app()&lt;/code&gt; function that applies any function. The number of resulting layers depends on the function; for example, using &lt;code&gt;range()&lt;/code&gt; results in two layers, one for the minimum value and one for the maximum value. Finally, the &lt;code&gt;global()&lt;/code&gt; function summarizes each layer in the form of a table with the indicated function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# average over layers
+spei_mean &amp;lt;- mean(spei)
+spei_mean&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 834, 1115, 1  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## name        :      mean 
+## min value   : -2.127083 
+## max value   :  1.568542&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# map
+plot(spei_mean)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# alternative
+spei_min &amp;lt;- app(spei, min)
+spei_min&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 834, 1115, 1  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## name        :   min 
+## min value   : -3.33 
+## max value   :  0.29&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;spei_range &amp;lt;- app(spei, range)
+names(spei_range) &amp;lt;- c(&amp;quot;min&amp;quot;, &amp;quot;max&amp;quot;)
+spei_range&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 834, 1115, 2  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## names       :   min,   max 
+## min values  : -3.33, -1.06 
+## max values  :  0.29,  2.02&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# map
+plot(spei_range)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-15-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# statistical summary by layer
+global(spei, &amp;quot;mean&amp;quot;, na.rm = TRUE) %&amp;gt;% head()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                      mean
+## spei12_2017_1 -0.03389126
+## spei12_2017_2 -0.17395742
+## spei12_2017_3 -0.13228593
+## spei12_2017_4 -0.07536089
+## spei12_2017_5  0.06718260
+## spei12_2017_6 -0.03461822&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Calculating the distance to the sea in R</title>

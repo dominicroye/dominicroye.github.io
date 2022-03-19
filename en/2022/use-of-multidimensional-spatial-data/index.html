@@ -1,0 +1,1593 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dr. Dominic Royé" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="Space-time information is vital in many disciplines, especially in climatology or meteorology, and this makes it necessary to have a format that allows a multidimensional structure. It is also important that this format has a high degree of interchange compatibility and can store a large number of data." />
+
+  
+  <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.css" integrity="" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.b48d89910a3f8560bb2d78fedea8d682.css" />
+
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27463794-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-27463794-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/en/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@@dr_xeo" />
+    <meta property="twitter:creator" content="@@dr_xeo" />
+  
+  <meta property="og:site_name" content="Dr. Dominic Royé" />
+  <meta property="og:url" content="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/" />
+  <meta property="og:title" content="Use of multidimensional spatial data | Dr. Dominic Royé" />
+  <meta property="og:description" content="Space-time information is vital in many disciplines, especially in climatology or meteorology, and this makes it necessary to have a format that allows a multidimensional structure. It is also important that this format has a high degree of interchange compatibility and can store a large number of data." /><meta property="og:image" content="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/featured.png" />
+    <meta property="twitter:image" content="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2022-03-08T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2022-03-08T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/"
+  },
+  "headline": "Use of multidimensional spatial data",
+  
+  "image": [
+    "https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/featured.png"
+  ],
+  
+  "datePublished": "2022-03-08T00:00:00Z",
+  "dateModified": "2022-03-08T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Dominic Royé"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Santiago de Compostela",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_192x192_fit_lanczos_3.png"
+    }
+  },
+  "description": "Space-time information is vital in many disciplines, especially in climatology or meteorology, and this makes it necessary to have a format that allows a multidimensional structure. It is also important that this format has a high degree of interchange compatibility and can store a large number of data."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Use of multidimensional spatial data | Dr. Dominic Royé</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="866470535c55bb27847b5cd2414ab005" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.2da3b1fa37e894630bf6de39b1b694b3.js"></script>
+
+  
+
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+            
+            >
+             <div style = "padding-top:0.5em;">Dr. Dominic Royé</div></a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+          
+          ></a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#"><span>home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#posts"><span>blog</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#featured"><span>publications</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#projects"><span>graphs</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#about"><span>me</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+            
+            <li class="nav-item d-none d-lg-inline-flex">
+              <a class="nav-link" href="https://twitter.com/dr_xeo" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        
+
+        
+        
+
+        
+        
+
+        
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+
+<div class="article-container pt-3">
+  <h1>Use of multidimensional spatial data</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    2022-03-08
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    12 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/en/category/gis/">gis</a>, <a href="/en/category/r/">R</a>, <a href="/en/category/radvanzed/">R:advanzed</a>, <a href="/en/category/visualization/">visualization</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 752px;">
+  <div style="position: relative">
+    <img src="/en/2022/use-of-multidimensional-spatial-data/featured_hu20e04fbdafdebe5830b6910732fad8a5_309539_720x0_resize_lanczos_3.png" width="720" height="752" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/header-attrs/header-attrs.js"></script>
+
+
+<div id="initial-considerations" class="section level1">
+<h1>Initial considerations</h1>
+<p>Space-time information is vital in many disciplines, especially in climatology or meteorology, and this makes it necessary to have a format that allows a multidimensional structure. It is also important that this format has a high degree of interchange compatibility and can store a large number of data. These characteristics led to the development of the open standard netCDF (NetworkCommon Data Form). The netCDF format is an open multi-dimensional scientific data exchange standard used with observational or model data, primarily in disciplines such as climatology, meteorology, and oceanography. The netCDF convention is managed by Unidata (<a href="https://www.unidata.ucar.edu/software/netcdf/" class="uri">https://www.unidata.ucar.edu/software/netcdf/</a>). It is a space-time format with a regular or irregular grid. The multidimensional structure in the form of an array allows the use of space-time and multivariable data. The general characteristics of netCDF refer to the use of an n-dimensional coordinate system, multiple variables, and a regular or irregular grid. In addition, metadata describing the contents are included. The extension of the netCDF format is “nc”.</p>
+<p><img src="3d_ncdf.en.png" /></p>
+<p>I recently used drought data from Spain in netCDF format with a resolution of 1 km to represent the state of drought for each year since 1960 (<a href="https://monitordesequia.csic.es/historico/" class="uri">https://monitordesequia.csic.es/historico/</a>). The SPEI index (Standardized Precipitation-Evapotranspiration Index) is widely used to describe the drought with different time intervals (3, 6, 12 months, etc.).</p>
+<p>{{&lt; tweet 1490260694851362821 &gt;}}</p>
+<p>I have been asked on several occasions about handling the netCDF format. For this reason, in this post, we will use a subset of these same data, the year 2017 of the SPEI 12 months.</p>
+</div>
+<div id="packages" class="section level1">
+<h1>Packages</h1>
+<p>Data handling in netCDF format is possible through various packages directly or indirectly. The specifically designed <code>{ncdf4}</code> package stands out, which is also used by other packages, although we don’t see it. Handling with <code>{ncdf4}</code> is somewhat complex, mainly because of the need to manage RAM when dealing with large datasets or also because of the way to handle the <em>array</em> class. Another very powerful package is <code>{terra}</code>, which we know when working with raster data and allows us to use its functions also for handling the netCDF format.</p>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Packages</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.</td>
+</tr>
+<tr class="even">
+<td align="left">sf</td>
+<td align="left">Simple Feature: import, export and manipulate vector data</td>
+</tr>
+<tr class="odd">
+<td align="left">lubridate</td>
+<td align="left">Easy manipulation of dates and times</td>
+</tr>
+<tr class="even">
+<td align="left">terra</td>
+<td align="left">Import, export and manipulate raster (raster successor package)</td>
+</tr>
+<tr class="odd">
+<td align="left">mapSpain</td>
+<td align="left">Spanish administrative limits</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># install the packages if necessary
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;lubridate&quot;)) install.packages(&quot;lubridate&quot;)
+if(!require(&quot;terra&quot;)) install.packages(&quot;terra&quot;)
+if(!require(&quot;mapSpain&quot;)) install.packages(&quot;mapSpain&quot;)
+
+# load packages
+library(tidyverse)
+library(sf)
+library(terra)
+library(lubridate)
+library(mapSpain)</code></pre>
+<p>For those less experienced with <code>tidyverse</code>, I recommend the brief introduction on this blog <a href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">post</a>.</p>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>First, we download the data <a href="https://www.dropbox.com/s/ioo2ky7wb3zxkdx/spei12_2017.nc?dl=0">here</a>. Then, we import the SPEI-12 index data for 2017 using the <code>rast()</code> function. Actually, in this step, we have only created a reference to the file without importing all the data into memory. We see in the metadata the number of layers available. The SPEI-12 index is calculated weekly with four weeks per month. If we look at the metadata, the definition of the coordinate system is missing, so we define it by assigning the code EPSG:25830 (ETRS89/UTM 30N).</p>
+<pre class="r"><code># import
+spei &lt;- rast(&quot;spei12_2017.nc&quot;)
+# metadata
+spei</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 834, 1115, 48  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. :  
+## source      : spei12_2017.nc 
+## names       : spei1~017_1, spei1~017_2, spei1~017_3, spei1~017_4, spei1~017_5, spei1~017_6, ... 
+## time        : 2017-01-01 to 2017-12-23</code></pre>
+<pre class="r"><code># define the coordinate system
+crs(spei) &lt;- &quot;EPSG:25830&quot;
+
+# map first weeks
+plot(spei)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+</div>
+<div id="extract-metadata" class="section level1">
+<h1>Extract metadata</h1>
+<p>There are different functions to access metadata, such as dates, layer names or variable names. Remember that netCDF files can also contain several variables.</p>
+<pre class="r"><code># time
+t &lt;- time(spei)
+head(t)</code></pre>
+<pre><code>## [1] &quot;2017-01-01 UTC&quot; &quot;2017-01-09 UTC&quot; &quot;2017-01-16 UTC&quot; &quot;2017-01-23 UTC&quot;
+## [5] &quot;2017-02-01 UTC&quot; &quot;2017-02-09 UTC&quot;</code></pre>
+<pre class="r"><code># layer names
+names(spei) %&gt;% head()</code></pre>
+<pre><code>## [1] &quot;spei12_2017_1&quot; &quot;spei12_2017_2&quot; &quot;spei12_2017_3&quot; &quot;spei12_2017_4&quot;
+## [5] &quot;spei12_2017_5&quot; &quot;spei12_2017_6&quot;</code></pre>
+<pre class="r"><code># variable names
+varnames(spei)</code></pre>
+<pre><code>## [1] &quot;spei12_2017&quot;</code></pre>
+</div>
+<div id="time-series-extraction" class="section level1">
+<h1>Time-series extraction</h1>
+<p>One possibility that netCDF data allows is time-series extraction, either from points or areas. For example, we will create here the SPEI-12 time series for the city of Zaragoza and the average for the entire autonomous community of Aragon.</p>
+<pre class="r"><code># Zaragoza coordinates
+zar &lt;- st_point(c(-0.883333, 41.65)) %&gt;% 
+          st_sfc(crs = 4326) %&gt;% 
+           st_as_sf() %&gt;% 
+            st_transform(25830)</code></pre>
+<p>The <code>{terra}</code> package only accepts its vector class <em>SpatVector</em>, so it is necessary to convert the point of class <em>sf</em> with the <code>vect()</code> function. To extract the time series we use the <code>extract()</code> function. The extracted data is given back in the form of a table, each row is an element of the vector data, and each column is a layer. In our case, it is only a single row corresponding to the city of Zaragoza.</p>
+<p><div class="alert alert-note">
+  <div>
+    Some functions may conflict with the names of other packages; to avoid this, we can write the package’s name in front of the function we want to use, separated by the colon symbol written twice (<code>package_name::function_name</code>).
+  </div>
+</div>
+</p>
+<pre class="r"><code># extract time series
+spei_zar &lt;- terra::extract(spei, vect(zar))
+
+# dimensions
+dim(spei_zar)</code></pre>
+<pre><code>## [1]  1 49</code></pre>
+<pre class="r"><code># create a data.frame
+spei_zar &lt;- tibble(date = t, zar = unlist(spei_zar)[-1])
+head(spei_zar)</code></pre>
+<pre><code>## # A tibble: 6 x 2
+##   date                  zar
+##   &lt;dttm&gt;              &lt;dbl&gt;
+## 1 2017-01-01 00:00:00 0.280
+## 2 2017-01-09 00:00:00 0.25 
+## 3 2017-01-16 00:00:00 0.220
+## 4 2017-01-23 00:00:00 0.210
+## 5 2017-02-01 00:00:00 0.350
+## 6 2017-02-09 00:00:00 0.220</code></pre>
+<p>We obtain the average of the autonomous community of Aragon using the polygon geometry and indicating the type of function with which we want to summarize the area. The <code>esp_get_ccaa()</code> function of the <code>mapSpain()</code> package is very useful when importing Spanish administrative boundaries of different levels. In the extraction, we must pass the <code>na.rm = TRUE</code> argument to the <code>mean()</code> function to exclude pixels with no value.</p>
+<pre class="r"><code># boundaries of Aragon
+aragon &lt;- esp_get_ccaa(&quot;Aragon&quot;) %&gt;% 
+            st_transform(25830)
+
+# extract the average values of the SPEI-12
+spei_arag &lt;- terra::extract(spei, vect(aragon), fun = &quot;mean&quot;, na.rm = TRUE)
+
+# add the new values to our data.frame
+spei_zar &lt;- mutate(spei_zar, arag = unlist(spei_arag)[-1])</code></pre>
+<p>In the next step, we transform the table to the long format with <code>pivot_longer()</code>, merging the value of the SPEI index of Zaragoza and Aragon. We will also add a column with the interpretation of the index and change the labels.</p>
+<pre class="r"><code>spei_zar &lt;-  pivot_longer(spei_zar, 2:3, names_to = &quot;reg&quot;, values_to = &quot;spei&quot;) %&gt;%
+             mutate(sign = case_when(spei &lt; -0.5 ~ &quot;drought&quot;, 
+                                    spei &gt; 0.5 ~ &quot;wet&quot;,
+                                    TRUE ~ &quot;normal&quot;),
+                    date = as_date(date),
+                    reg = factor(reg, c(&quot;zar&quot;, &quot;arag&quot;), c(&quot;Zaragoza&quot;, &quot;Aragon&quot;)))</code></pre>
+<p>Now it remains to build the graph in which we compare the SPEI-12 of Zaragoza with the average of Aragon. The <code>geom_rect()</code> function helps us draw different background rectangles to mark drought and normal state.</p>
+<pre class="r"><code># time series graph
+ggplot(spei_zar) +
+      geom_rect(aes(xmin = min(date), xmax = max(date), 
+                    ymin = -0.5, ymax = 0.5), 
+                fill = &quot;#41ab5d&quot;) +
+      geom_rect(aes(xmin = min(date), xmax = max(date), 
+                    ymin = -1, ymax = -0.5), 
+                fill = &quot;#ffffcc&quot;) +
+      geom_rect(aes(xmin = min(date), xmax = max(date), 
+                    ymin = -1.5, ymax = -1), 
+                fill = &quot;#F3641D&quot;) +
+      geom_hline(yintercept = 0, size = 1, colour = &quot;white&quot;) +
+      geom_line(aes(date, spei, linetype = reg), size = 1, alpha = .7) +
+  scale_x_date(date_breaks = &quot;month&quot;, date_labels = &quot;%b&quot;) +
+  labs(linetype = &quot;&quot;, y = &quot;SPEI-12&quot;, x = &quot;&quot;) +
+  coord_cartesian(expand = FALSE) +
+  theme_minimal() +
+  theme(legend.position = c(.25, .9),
+        panel.grid.minor = element_blank(),
+        panel.ontop = TRUE)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="drought-map" class="section level1">
+<h1>Drought map</h1>
+<div id="spain" class="section level2">
+<h2>Spain</h2>
+<p>To create a map of drought severity in 2017, we must first make some modifications. With the <code>subset()</code> function, we obtain a layer or several as a subset. Here we select the last one to see the state of drought for the whole year.</p>
+<p>We replace all values greater than -0.5 with <code>NA</code> in the next step. Drought is considered when the SPEI index is below -0.5 and, on the other hand, if it is above 0.5, we would speak of a wet period.</p>
+<p>The raster class is not directly compatible with <code>ggplot</code>, so we convert it to an xyz table with longitude, latitude and the variable. When we do the same conversion of multiple layers, each column will represent one layer. Finally, we rename our index column and add a new column with different levels of drought severity.</p>
+<pre class="r"><code># extract layer(s) with their index
+spei_anual &lt;- subset(spei, 48) 
+
+# substitute non-drought values with NA
+spei_anual[spei_anual &gt; -0.5] &lt;- NA
+
+# convert our raster into an xyz table
+spei_df &lt;- as.data.frame(spei_anual, xy = TRUE)
+head(spei_df)</code></pre>
+<pre><code>##            x       y spei12_2017_48
+## 38096 123100 4858900          -1.48
+## 39195 105500 4857800          -1.59
+## 39197 107700 4857800          -1.40
+## 39211 123100 4857800          -1.47
+## 39212 124200 4857800          -1.50
+## 40310 105500 4856700          -1.63</code></pre>
+<pre class="r"><code># change the name of the variable
+names(spei_df)[3] &lt;- &quot;spei&quot;
+
+# categorize the index and fix the order of the factor
+spei_df &lt;- mutate(spei_df, spei_cat = case_when(spei &gt; -0.9 ~ &quot;slight&quot;,
+                                                spei &gt; -1.5 &amp; spei &lt; -0.9 ~ &quot;moderate&quot;,
+                                                spei &gt; -2 &amp; spei &lt;= -1.5 ~ &quot;severe&quot;,
+                                                TRUE ~ &quot;extreme&quot;) %&gt;% 
+                                      fct_relevel(c(&quot;slight&quot;, &quot;moderate&quot;, &quot;severe&quot;, &quot;extreme&quot;)))</code></pre>
+<p>We can create a raster map with the <code>geom_tile()</code> geometry indicating longitude, latitude and the fill of the pixels with our categorized variable.</p>
+<pre class="r"><code># boundaries
+ccaa &lt;- esp_get_ccaa() %&gt;% 
+            filter(!ine.ccaa.name %in% c(&quot;Canarias&quot;, &quot;Ceuta&quot;, &quot;Melilla&quot;)) %&gt;% 
+              st_transform(25830)
+
+# mapa
+ggplot(spei_df) +
+   geom_tile(aes(x , y, fill = spei_cat)) +
+  geom_sf(data = ccaa, fill = NA, size = .1, colour = &quot;white&quot;, alpha = .4) +
+  scale_fill_manual(values = c(&quot;#ffffcc&quot;, &quot;#F3641D&quot;, &quot;#DE2929&quot;, &quot;#8B1A1A&quot;),
+                    na.value = NA) +
+  guides(fill = guide_legend(keywidth = 2, keyheight = .3, label.position = &quot;bottom&quot;,
+                             title.position = &quot;top&quot;)) +
+  coord_sf() +
+  labs(fill = &quot;DROUGHT&quot;) +
+  theme_void() +
+  theme(legend.position = &quot;top&quot;,
+        legend.justification = 0.2,
+        plot.background = element_rect(fill = &quot;black&quot;, colour = NA),
+        legend.title = element_text(colour = &quot;white&quot;, size = 20, hjust = .5),
+        legend.text = element_text(colour = &quot;white&quot;),
+        plot.margin = margin(t = 10))</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-11-1.png" width="758.4" /></p>
+</div>
+<div id="aragon" class="section level2">
+<h2>Aragon</h2>
+<p>In this last map example, we select the drought situation 12 months ahead, at the beginning and end of the year. The main function we use is <code>crop()</code> that cuts to the extent of a spatial object; in our case, it is Aragon, then we apply the <code>mask()</code> function that masks all those pixels within limits leaving the others in <code>NA</code>.</p>
+<pre class="r"><code># subset first and last week 2017
+spei_sub &lt;- subset(spei, c(1, 48)) 
+
+# crop and mask Aragon
+spei_arag &lt;- crop(spei_sub, aragon) %&gt;% 
+                    mask(vect(aragon)) 
+
+# convert the data to xyz
+spei_df_arag &lt;- as.data.frame(spei_arag, xy = TRUE)
+
+# rename layers
+names(spei_df_arag)[3:4] &lt;- c(&quot;January&quot;, &quot;December&quot;)
+
+# changing to the long table format by merging both months
+spei_df_arag &lt;- pivot_longer(spei_df_arag, 3:4, 
+                             names_to = &quot;mo&quot;, 
+                             values_to = &quot;spei&quot;) %&gt;% 
+                mutate(mo = fct_relevel(mo, c(&quot;January&quot;, &quot;December&quot;)))</code></pre>
+<p>We will make the two maps in the same way as the one for whole Spain. The main difference is that we use the SPEI index directly as a continuous variable. Also, to create two maps as facets in one row, we add the <code>facet_grid()</code> function. Finally, the index shows negative and positive values; therefore, a divergent range of colours is necessary. To centre the midpoint at 0, we must rescale the index values using the <code>rescale()</code> function from the <code>scales</code> package.</p>
+<pre class="r"><code># map of Aragon
+ggplot(spei_df_arag) +
+   geom_tile(aes(x , y, fill = spei)) +
+  geom_sf(data = aragon, fill = NA, size = .1, colour = &quot;white&quot;, alpha = .4) +
+  scale_fill_distiller(palette = &quot;RdYlGn&quot;, direction = 1, 
+                       values = scales::rescale(c(-2.1, 0, 0.9)),
+                       breaks = seq(-2, 1, .5)) +
+  guides(fill = guide_colorbar(barwidth = 8, barheight = .3, label.position = &quot;bottom&quot;)) +
+  facet_grid(. ~ mo) +
+  coord_sf() +
+  labs(fill = &quot;SPEI-12&quot;, title = &quot;Aragon&quot;) +
+  theme_void() +
+  theme(legend.position = &quot;top&quot;,
+        legend.justification = 0.5,
+        legend.title = element_text(colour = &quot;white&quot;, vjust = 1.1),
+        strip.text = element_text(colour = &quot;white&quot;),
+        plot.background = element_rect(fill = &quot;black&quot;, colour = NA),
+        plot.title = element_text(colour = &quot;white&quot;, size = 20, hjust = .5, vjust = 2.5,
+                                  margin = margin(b = 10, t = 10)),
+        legend.text = element_text(colour = &quot;white&quot;),
+        plot.margin = margin(10, 10, 10, 10))</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-13-1.png" width="768" /></p>
+</div>
+</div>
+<div id="more-possibilities" class="section level1">
+<h1>More possibilities</h1>
+<p>It is possible to regroup the different layers by applying a function. For example, using the months of each week of the SPEI-12 we can calculate the monthly average in 2017. To do this, we use the <code>tapp()</code> function, which in turn applies another function to each group. It is crucial that the group is either a factor or the index of each layer. Both <code>tapp()</code> and <code>app()</code> functions have an argument to process in parallel using more than one core.</p>
+<pre class="r"><code># months as factor
+mo &lt;- month(t, label = TRUE)
+mo</code></pre>
+<pre><code>##  [1] ene ene ene ene feb feb feb feb mar mar mar mar abr abr abr abr may may may
+## [20] may jun jun jun jun jul jul jul jul ago ago ago ago sep sep sep sep oct oct
+## [39] oct oct nov nov nov nov dic dic dic dic
+## 12 Levels: ene &lt; feb &lt; mar &lt; abr &lt; may &lt; jun &lt; jul &lt; ago &lt; sep &lt; ... &lt; dic</code></pre>
+<pre class="r"><code># average by month
+spei_mo &lt;- tapp(spei, mo, mean)
+spei_mo</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 834, 1115, 12  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## names       :     ene,     feb,     mar,     abr,     may,     jun, ... 
+## min values  : -1.2800, -1.4675, -2.2400, -2.6500, -2.5775, -2.4675, ... 
+## max values  :  1.3875,  1.9175,  1.7475,  1.8375,  1.7500,  1.7000, ...</code></pre>
+<pre class="r"><code># maps
+plot(spei_mo)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<p>The <code>mean()</code> function used directly on a multidimensional <code>SpatRaster</code> class object returns the average per cell. The same result can be obtained with the <code>app()</code> function that applies any function. The number of resulting layers depends on the function; for example, using <code>range()</code> results in two layers, one for the minimum value and one for the maximum value. Finally, the <code>global()</code> function summarizes each layer in the form of a table with the indicated function.</p>
+<pre class="r"><code># average over layers
+spei_mean &lt;- mean(spei)
+spei_mean</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 834, 1115, 1  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## name        :      mean 
+## min value   : -2.127083 
+## max value   :  1.568542</code></pre>
+<pre class="r"><code># map
+plot(spei_mean)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code># alternative
+spei_min &lt;- app(spei, min)
+spei_min</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 834, 1115, 1  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## name        :   min 
+## min value   : -3.33 
+## max value   :  0.29</code></pre>
+<pre class="r"><code>spei_range &lt;- app(spei, range)
+names(spei_range) &lt;- c(&quot;min&quot;, &quot;max&quot;)
+spei_range</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 834, 1115, 2  (nrow, ncol, nlyr)
+## resolution  : 1100, 1100  (x, y)
+## extent      : -80950, 1145550, 3979450, 4896850  (xmin, xmax, ymin, ymax)
+## coord. ref. : ETRS89 / UTM zone 30N (EPSG:25830) 
+## source      : memory 
+## names       :   min,   max 
+## min values  : -3.33, -1.06 
+## max values  :  0.29,  2.02</code></pre>
+<pre class="r"><code># map
+plot(spei_range)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/index.en_files/figure-html/unnamed-chunk-15-2.png" width="672" /></p>
+<pre class="r"><code># statistical summary by layer
+global(spei, &quot;mean&quot;, na.rm = TRUE) %&gt;% head()</code></pre>
+<pre><code>##                      mean
+## spei12_2017_1 -0.03389126
+## spei12_2017_2 -0.17395742
+## spei12_2017_3 -0.13228593
+## spei12_2017_4 -0.07536089
+## spei12_2017_5  0.06718260
+## spei12_2017_6 -0.03461822</code></pre>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/en/tag/ncdf/">ncdf</a>
+  
+  <a class="badge badge-light" href="/en/tag/cube/">cube</a>
+  
+  <a class="badge badge-light" href="/en/tag/drought/">drought</a>
+  
+  <a class="badge badge-light" href="/en/tag/spain/">spain</a>
+  
+  <a class="badge badge-light" href="/en/tag/raster/">raster</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/&amp;text=Use%20of%20multidimensional%20spatial%20data" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/&amp;t=Use%20of%20multidimensional%20spatial%20data" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Use%20of%20multidimensional%20spatial%20data&amp;body=https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/&amp;title=Use%20of%20multidimensional%20spatial%20data" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Use%20of%20multidimensional%20spatial%20data%20https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://dominicroye.github.io/en/2022/use-of-multidimensional-spatial-data/&amp;title=Use%20of%20multidimensional%20spatial%20data" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://dominicroye.github.io/"><img class="avatar mr-3 avatar-circle" src="/en/author/dr.-dominic-roye/avatar_hu930bec32484cd86675af8880de95caa2_508993_270x270_fill_q75_lanczos_center.jpg" alt="Dr. Dominic Royé"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://dominicroye.github.io/">Dr. Dominic Royé</a></h5>
+      <h6 class="card-subtitle">Senior postdoctoral researcher</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dr_xeo" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/en/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/dominicroye" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dominicroye/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+        <i class="ai ai-researchgate"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/en/2019/calculating-the-distance-to-the-sea-in-r/">Calculating the distance to the sea in R</a></li>
+      
+      <li><a href="/en/2021/visualize-the-day-night-cycle-on-a-world-map/">Visualize the day-night cycle on a world map</a></li>
+      
+      <li><a href="/en/2021/firefly-cartography/">Firefly cartography</a></li>
+      
+      <li><a href="/en/2021/bivariate-dasymetric-map/">Bivariate dasymetric map</a></li>
+      
+      <li><a href="/en/2019/visualize-urban-growth/">Visualize urban growth</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+
+  
+
+  
+  <p class="powered-by">
+    © 2018-2022 Dominic Royé. All rights reserved
+  </p>
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdn.jsdelivr.net/gh/desandro/imagesloaded@v4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/metafizzy/isotope@v3.0.6/dist/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.js" integrity="" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/en/js/wowchemy.min.50d3bf3df0c53b31631bb48a62b35f92.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>
