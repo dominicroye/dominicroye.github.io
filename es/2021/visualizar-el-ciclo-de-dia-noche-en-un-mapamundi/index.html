@@ -900,7 +900,7 @@ library(gifski)</code></pre>
 <p>La función principal <code>terminator()</code> basada en el javascript de <code>{Leaflet}</code> necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.</p>
 <pre class="r"><code>t0 &lt;- Sys.time() # fecha y hora de nuestro sistema operativo
 t0</code></pre>
-<pre><code>## [1] &quot;2022-01-12 16:03:37 CET&quot;</code></pre>
+<pre><code>## [1] &quot;2022-03-27 13:10:39 CEST&quot;</code></pre>
 <pre class="r"><code>coord_nightday &lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
 
 # lo convertimos en un objecto espacial de clase sf
@@ -1080,6 +1080,8 @@ ggplot() +
   # estilo del mapa
   theme_void() +
   theme(plot.title = element_text(hjust = .1, vjust = .9))</code></pre>
+<pre><code>## Warning: Raster pixels are placed at uneven horizontal intervals and will be
+## shifted. Consider using geom_tile() instead.</code></pre>
 <p><img src="https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 </div>
 <div id="animación" class="section level2">
@@ -1113,6 +1115,7 @@ ggsave(str_c(&quot;wld_night_&quot;, str_remove_all(step, &quot;:&quot;), &quot;
 
 gifski(files, &quot;night_day.gif&quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)</code></pre>
 <p><img src="night_day.gif" /><!-- --></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 </div>
 

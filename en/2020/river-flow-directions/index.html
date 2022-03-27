@@ -758,7 +758,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    13 min read
+    14 min read
   </span>
   
 
@@ -937,6 +937,12 @@ qgis_configure()</code></pre>
 <pre><code>## getOption(&#39;qgisprocess.path&#39;) was not found.</code></pre>
 <pre><code>## Sys.getenv(&#39;R_QGISPROCESS_PATH&#39;) was not found.</code></pre>
 <pre><code>## Trying &#39;qgis_process&#39; on PATH</code></pre>
+<pre><code>## Error in processx::run(&quot;cmd.exe&quot;, c(&quot;/c&quot;, &quot;call&quot;, path, args), ...): System command &#39;cmd.exe&#39; failed, exit status: 1, stderr:
+## E&gt; &quot;qgis_process&quot; no se reconoce como un comando interno o externo,
+## E&gt; programa o archivo por lotes ejecutable.</code></pre>
+<pre><code>## Found 1 QGIS installation containing &#39;qgis_process&#39;:
+##  C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat</code></pre>
+<pre><code>## Trying command &#39;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&#39;</code></pre>
 <pre><code>## Success!</code></pre>
 <pre><code>## QGIS version: 3.18.1-Zürich</code></pre>
 <pre><code>## Metadata of 986 algorithms queried and stored in cache.
@@ -945,18 +951,18 @@ qgis_configure()</code></pre>
 <pre class="r"><code># search tools
 qgis_algorithms()</code></pre>
 <pre><code>## # A tibble: 986 x 5
-##    provider provider_title algorithm         algorithm_id    algorithm_title    
-##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;             &lt;chr&gt;           &lt;chr&gt;              
-##  1 3d       QGIS (3D)      3d:tessellate     tessellate      Tessellate         
-##  2 gdal     GDAL           gdal:aspect       aspect          Aspect             
-##  3 gdal     GDAL           gdal:assignproje~ assignprojecti~ Assign projection  
-##  4 gdal     GDAL           gdal:buffervecto~ buffervectors   Buffer vectors     
-##  5 gdal     GDAL           gdal:buildvirtua~ buildvirtualra~ Build virtual rast~
-##  6 gdal     GDAL           gdal:buildvirtua~ buildvirtualve~ Build virtual vect~
-##  7 gdal     GDAL           gdal:cliprasterb~ cliprasterbyex~ Clip raster by ext~
-##  8 gdal     GDAL           gdal:cliprasterb~ cliprasterbyma~ Clip raster by mas~
-##  9 gdal     GDAL           gdal:clipvectorb~ clipvectorbyex~ Clip vector by ext~
-## 10 gdal     GDAL           gdal:clipvectorb~ clipvectorbypo~ Clip vector by mas~
+##    provider provider_title algorithm                algorithm_id algorithm_title
+##    &lt;chr&gt;    &lt;chr&gt;          &lt;chr&gt;                    &lt;chr&gt;        &lt;chr&gt;          
+##  1 3d       QGIS (3D)      3d:tessellate            tessellate   Tessellate     
+##  2 gdal     GDAL           gdal:aspect              aspect       Aspect         
+##  3 gdal     GDAL           gdal:assignprojection    assignproje~ Assign project~
+##  4 gdal     GDAL           gdal:buffervectors       buffervecto~ Buffer vectors 
+##  5 gdal     GDAL           gdal:buildvirtualraster  buildvirtua~ Build virtual ~
+##  6 gdal     GDAL           gdal:buildvirtualvector  buildvirtua~ Build virtual ~
+##  7 gdal     GDAL           gdal:cliprasterbyextent  cliprasterb~ Clip raster by~
+##  8 gdal     GDAL           gdal:cliprasterbymaskla~ cliprasterb~ Clip raster by~
+##  9 gdal     GDAL           gdal:clipvectorbyextent  clipvectorb~ Clip vector by~
+## 10 gdal     GDAL           gdal:clipvectorbypolygon clipvectorb~ Clip vector by~
 ## # ... with 976 more rows</code></pre>
 <pre class="r"><code># usage of tool
 qgis_show_help(&quot;native:extractvertices&quot;)</code></pre>
@@ -992,22 +998,18 @@ qgis_show_help(&quot;native:extractvertices&quot;)</code></pre>
 <pre class="r"><code>river_vertices &lt;- qgis_run_algorithm(alg = &quot;native:extractvertices&quot;,
                INPUT = river_line,
                OUTPUT = file.path(tempdir(), &quot;rivers_world_vertices.geojson&quot;))</code></pre>
-<pre><code>## Running cmd.exe /c call qgis_process run &quot;native:extractvertices&quot; \
-##   &quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\file61ac255b430\file61ac7a175a31.gpkg&quot; \
-##   &quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson&quot;</code></pre>
-<pre><code>## proj_create_from_database: Cannot find proj.db
-## proj_create_from_database: Cannot find proj.db</code></pre>
-<pre><code>## proj_create_from_wkt: Cannot find proj.db</code></pre>
-<pre><code>## proj_identify: Cannot find proj.db</code></pre>
-<pre><code>## proj_get_authorities_from_database: Cannot find proj.db</code></pre>
-<pre><code>## proj_as_wkt: Cannot find proj.db</code></pre>
-<pre><code>## 
+<pre><code>## Running cmd.exe /c call \
+##   &quot;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&quot; run \
+##   &quot;native:extractvertices&quot; \
+##   &quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\file1f54157824f7\file1f54f432848.gpkg&quot; \
+##   &quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson&quot;
+## 
 ## ----------------
 ## Inputs
 ## ----------------
 ## 
-## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\file61ac255b430\file61ac7a175a31.gpkg
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson
+## INPUT:   C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\file1f54157824f7\file1f54f432848.gpkg
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson
 ## 
 ## 
 ## 0...10...20...30...40...50...60...70...80...90...
@@ -1015,10 +1017,10 @@ qgis_show_help(&quot;native:extractvertices&quot;)</code></pre>
 ## Results
 ## ----------------
 ## 
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson</code></pre>
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson</code></pre>
 <pre class="r"><code>river_vertices &lt;- st_read(qgis_output(river_vertices, &quot;OUTPUT&quot;))</code></pre>
 <pre><code>## Reading layer `rivers_world_vertices&#39; from data source 
-##   `C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\rivers_world_vertices.geojson&#39; 
+##   `C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\rivers_world_vertices.geojson&#39; 
 ##   using driver `GeoJSON&#39;
 ## Simple feature collection with 339734 features and 12 fields
 ## Geometry type: POINT
@@ -1169,6 +1171,7 @@ caption &lt;- &quot;Based on data from Zeenatul Basher, 20180215&quot;</code></p
   theme_polar()</code></pre>
 <pre><code>## Warning: Ignoring unknown aesthetics: ymin, ymax</code></pre>
 <p><img src="https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 
     </div>

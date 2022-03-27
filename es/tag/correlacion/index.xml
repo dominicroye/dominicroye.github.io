@@ -85,39 +85,39 @@ files&lt;/code&gt;&lt;/pre&gt;
 ## RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
 pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 27545 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 27545 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 34729 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 34729 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 24927 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 24927 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 19813 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 19813 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
@@ -166,7 +166,8 @@ pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
            group_by(STAID, yr) %&amp;gt;%
              summarise(pr = sum(RR, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -202,11 +203,11 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
 telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
@@ -240,8 +241,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 ##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
 ##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
 ## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: POL-EUAS &amp;lt;dbl&amp;gt;, EATL/WRUS &amp;lt;dbl&amp;gt;,
-## #   MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
+## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;test-de-correlación&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Test de correlación&lt;/h2&gt;
@@ -509,6 +510,7 @@ head(data_nest)&lt;/code&gt;&lt;/pre&gt;
         panel.background = element_blank(),
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

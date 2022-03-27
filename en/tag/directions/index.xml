@@ -155,6 +155,12 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## getOption(&amp;#39;qgisprocess.path&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Sys.getenv(&amp;#39;R_QGISPROCESS_PATH&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Trying &amp;#39;qgis_process&amp;#39; on PATH&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in processx::run(&amp;quot;cmd.exe&amp;quot;, c(&amp;quot;/c&amp;quot;, &amp;quot;call&amp;quot;, path, args), ...): System command &amp;#39;cmd.exe&amp;#39; failed, exit status: 1, stderr:
+## E&amp;gt; &amp;quot;qgis_process&amp;quot; no se reconoce como un comando interno o externo,
+## E&amp;gt; programa o archivo por lotes ejecutable.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Found 1 QGIS installation containing &amp;#39;qgis_process&amp;#39;:
+##  C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying command &amp;#39;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Success!&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## QGIS version: 3.18.1-Zürich&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Metadata of 986 algorithms queried and stored in cache.
@@ -163,18 +169,18 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# search tools
 qgis_algorithms()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 986 x 5
-##    provider provider_title algorithm         algorithm_id    algorithm_title    
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;             &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;              
-##  1 3d       QGIS (3D)      3d:tessellate     tessellate      Tessellate         
-##  2 gdal     GDAL           gdal:aspect       aspect          Aspect             
-##  3 gdal     GDAL           gdal:assignproje~ assignprojecti~ Assign projection  
-##  4 gdal     GDAL           gdal:buffervecto~ buffervectors   Buffer vectors     
-##  5 gdal     GDAL           gdal:buildvirtua~ buildvirtualra~ Build virtual rast~
-##  6 gdal     GDAL           gdal:buildvirtua~ buildvirtualve~ Build virtual vect~
-##  7 gdal     GDAL           gdal:cliprasterb~ cliprasterbyex~ Clip raster by ext~
-##  8 gdal     GDAL           gdal:cliprasterb~ cliprasterbyma~ Clip raster by mas~
-##  9 gdal     GDAL           gdal:clipvectorb~ clipvectorbyex~ Clip vector by ext~
-## 10 gdal     GDAL           gdal:clipvectorb~ clipvectorbypo~ Clip vector by mas~
+##    provider provider_title algorithm                algorithm_id algorithm_title
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 3d       QGIS (3D)      3d:tessellate            tessellate   Tessellate     
+##  2 gdal     GDAL           gdal:aspect              aspect       Aspect         
+##  3 gdal     GDAL           gdal:assignprojection    assignproje~ Assign project~
+##  4 gdal     GDAL           gdal:buffervectors       buffervecto~ Buffer vectors 
+##  5 gdal     GDAL           gdal:buildvirtualraster  buildvirtua~ Build virtual ~
+##  6 gdal     GDAL           gdal:buildvirtualvector  buildvirtua~ Build virtual ~
+##  7 gdal     GDAL           gdal:cliprasterbyextent  cliprasterb~ Clip raster by~
+##  8 gdal     GDAL           gdal:cliprasterbymaskla~ cliprasterb~ Clip raster by~
+##  9 gdal     GDAL           gdal:clipvectorbyextent  clipvectorb~ Clip vector by~
+## 10 gdal     GDAL           gdal:clipvectorbypolygon clipvectorb~ Clip vector by~
 ## # ... with 976 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# usage of tool
 qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
@@ -210,22 +216,18 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- qgis_run_algorithm(alg = &amp;quot;native:extractvertices&amp;quot;,
                INPUT = river_line,
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call qgis_process run &amp;quot;native:extractvertices&amp;quot; \
-##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\file61ac255b430\file61ac7a175a31.gpkg&amp;quot; \
-##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_database: Cannot find proj.db
-## proj_create_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_identify: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_get_authorities_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_as_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call \
+##   &amp;quot;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;quot; run \
+##   &amp;quot;native:extractvertices&amp;quot; \
+##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\file1f54157824f7\file1f54f432848.gpkg&amp;quot; \
+##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson&amp;quot;
+## 
 ## ----------------
 ## Inputs
 ## ----------------
 ## 
-## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\file61ac255b430\file61ac7a175a31.gpkg
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson
+## INPUT:   C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\file1f54157824f7\file1f54f432848.gpkg
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson
 ## 
 ## 
 ## 0...10...20...30...40...50...60...70...80...90...
@@ -233,10 +235,10 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 ## Results
 ## ----------------
 ## 
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- st_read(qgis_output(river_vertices, &amp;quot;OUTPUT&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Reading layer `rivers_world_vertices&amp;#39; from data source 
-##   `C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\rivers_world_vertices.geojson&amp;#39; 
+##   `C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\rivers_world_vertices.geojson&amp;#39; 
 ##   using driver `GeoJSON&amp;#39;
 ## Simple feature collection with 339734 features and 12 fields
 ## Geometry type: POINT
@@ -387,6 +389,7 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
   theme_polar()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

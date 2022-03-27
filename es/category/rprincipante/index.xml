@@ -115,7 +115,8 @@ meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;%
                   summarise(ta = mean(tavg, na.rm = TRUE),
                             tmx = mean(tmax, na.rm = TRUE),
                             tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
 ## # Groups:   name [9]
@@ -267,6 +268,7 @@ Sys.setlocale(&amp;quot;LC_TIME&amp;quot;, &amp;quot;English&amp;quot;)&lt;/code
        colour = &amp;quot;Daily average temperature&amp;quot;) +
   theme_cc()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/circulos-climaticos/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -314,6 +316,10 @@ Sys.setlocale(&amp;quot;LC_TIME&amp;quot;, &amp;quot;English&amp;quot;)&lt;/code
 &lt;p&gt;El universo de los paquetes de &lt;code&gt;tidyverse&lt;/code&gt;, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de &lt;code&gt;tidyverse&lt;/code&gt;. Por ejemplo, el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;simple feature&lt;/a&gt;) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete &lt;code&gt;dplyr&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;El núcleo de la colección lo constituyen los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;11%&#34; /&gt;
+&lt;col width=&#34;88%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
@@ -421,13 +427,13 @@ En comparación con &lt;em&gt;R Base&lt;/em&gt; las funciones son más rápidas,
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
@@ -663,13 +669,13 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;En caso de que no lo hayas hecho antes, importamos los datos de movilidad.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;selecionar-y-renombrar&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
@@ -1092,9 +1098,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -1122,9 +1128,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $DK
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1    0.237      5.81  1.04e-8       567    0.158     0.313 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1    0.237      5.81     1.04e-8       567    0.158     0.313 Pears~ two.sided  
 ## 
 ## $EE
 ## # A tibble: 1 x 8
@@ -1188,9 +1194,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $LT
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.204     -5.45  7.17e-8       686   -0.274    -0.131 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.204     -5.45     7.17e-8       686   -0.274    -0.131 Pears~ two.sided  
 ## 
 ## $LV
 ## # A tibble: 1 x 8
@@ -1242,9 +1248,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $SK
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.196     -5.70  1.65e-8       810   -0.262    -0.129 Pearson&amp;#39;~ two.sided&lt;/code&gt;&lt;/pre&gt;
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.196     -5.70     1.65e-8       810   -0.262    -0.129 Pears~ two.sided&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Como ya hemos visto anteriormente, existen subfunciones de &lt;code&gt;map_*&lt;/code&gt; para obtener en lugar de una lista un objeto de otra clase, aquí de &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_mobility &amp;lt;- europe_reg %&amp;gt;%
                   split(.$country_region_code) %&amp;gt;% 
@@ -1268,6 +1274,7 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
 ## # ... with 17 more rows, and 1 more variable: alternative &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Otros ejemplos prácticos aquí en este &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt; or este &lt;a href=&#34;https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/&#34;&gt;otro&lt;/a&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1443,19 +1450,19 @@ capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;261&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;260&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;310&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;323&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;261&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;310&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;356&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;133&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;260&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;356&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;323&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;133&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -1525,6 +1532,7 @@ ggplot(world) +
   labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital&amp;quot;) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/distancias-geograficas/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1630,10 +1638,10 @@ str(prov_enlaces) #estructura es lista&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
 ##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
 ##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
-##  $ updated: POSIXct[1:1], format: &amp;quot;2021-09-13&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2022-03-14&amp;quot;
 ##  $ items  : tibble [52 x 5] (S3: tbl_df/tbl/data.frame)
 ##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
-##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-09-13&amp;quot; &amp;quot;2021-09-13&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2022-03-14&amp;quot; &amp;quot;2022-03-14&amp;quot; ...
 ##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
 ##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
 ##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
@@ -1649,16 +1657,16 @@ prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
 ##    title                             date                link  description hash 
 ##    &amp;lt;chr&amp;gt;                             &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;
-##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
-##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
-##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
-##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
-##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
-##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
-##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
-##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
-##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
-## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
+##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
+##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
+##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
+##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
+##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
+##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
+##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
+##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
+##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
+## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
@@ -1721,7 +1729,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
 ## Simple feature collection with 36284 features and 24 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
-## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Bounding box:  xmin: 720570.9 ymin: 4351286 xmax: 734981.9 ymax: 4382906
 ## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparación-de-los-datos&#34; class=&#34;section level2&#34;&gt;
@@ -1732,7 +1740,7 @@ buildings_val &amp;lt;- mutate(buildings_val,
                beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
                             ymd_hms() %&amp;gt;% as_date()
                )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 4 failed to parse.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;gráfico-de-distribución&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Gráfico de distribución&lt;/h2&gt;
@@ -1782,11 +1790,11 @@ br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quant
 lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## style: quantile
 ##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
-##         934        1355         956         594        1704        1054 
+##         932        1350         947         594        1703        1054 
 ## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
-##        1453        1029        1223        1158        1154        1190 
+##        1453        1029        1223        1158        1155        1190 
 ## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
-##        1149        1111        1229&lt;/code&gt;&lt;/pre&gt;
+##        1149        1111        1244&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#categorizar el año
 buildings_val25 &amp;lt;- mutate(buildings_val25, 
                           yr_cl = cut(year(beginning), 
@@ -1860,6 +1868,7 @@ m &amp;lt;-   tm_shape(buildings_val25) +
 tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
 &lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34; data-external=&#34;1&#34;&gt;
 &lt;/iframe&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

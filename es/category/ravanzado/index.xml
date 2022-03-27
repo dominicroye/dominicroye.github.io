@@ -372,6 +372,7 @@ global(spei, &amp;quot;mean&amp;quot;, na.rm = TRUE) %&amp;gt;% head()&lt;/code&
 ## spei12_2017_4 -0.07536089
 ## spei12_2017_5  0.06718260
 ## spei12_2017_6 -0.03461822&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -628,6 +629,7 @@ p &amp;lt;- p1 | p2
 
 p&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasimetrico-bivariante/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -961,6 +963,7 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
 &lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1109,6 +1112,12 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## getOption(&amp;#39;qgisprocess.path&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Sys.getenv(&amp;#39;R_QGISPROCESS_PATH&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Trying &amp;#39;qgis_process&amp;#39; on PATH&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in processx::run(&amp;quot;cmd.exe&amp;quot;, c(&amp;quot;/c&amp;quot;, &amp;quot;call&amp;quot;, path, args), ...): System command &amp;#39;cmd.exe&amp;#39; failed, exit status: 1, stderr:
+## E&amp;gt; &amp;quot;qgis_process&amp;quot; no se reconoce como un comando interno o externo,
+## E&amp;gt; programa o archivo por lotes ejecutable.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Found 1 QGIS installation containing &amp;#39;qgis_process&amp;#39;:
+##  C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying command &amp;#39;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Success!&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## QGIS version: 3.18.1-Zürich&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Metadata of 986 algorithms queried and stored in cache.
@@ -1117,18 +1126,18 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
 qgis_algorithms()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 986 x 5
-##    provider provider_title algorithm         algorithm_id    algorithm_title    
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;             &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;              
-##  1 3d       QGIS (3D)      3d:tessellate     tessellate      Tessellate         
-##  2 gdal     GDAL           gdal:aspect       aspect          Aspect             
-##  3 gdal     GDAL           gdal:assignproje~ assignprojecti~ Assign projection  
-##  4 gdal     GDAL           gdal:buffervecto~ buffervectors   Buffer vectors     
-##  5 gdal     GDAL           gdal:buildvirtua~ buildvirtualra~ Build virtual rast~
-##  6 gdal     GDAL           gdal:buildvirtua~ buildvirtualve~ Build virtual vect~
-##  7 gdal     GDAL           gdal:cliprasterb~ cliprasterbyex~ Clip raster by ext~
-##  8 gdal     GDAL           gdal:cliprasterb~ cliprasterbyma~ Clip raster by mas~
-##  9 gdal     GDAL           gdal:clipvectorb~ clipvectorbyex~ Clip vector by ext~
-## 10 gdal     GDAL           gdal:clipvectorb~ clipvectorbypo~ Clip vector by mas~
+##    provider provider_title algorithm                algorithm_id algorithm_title
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 3d       QGIS (3D)      3d:tessellate            tessellate   Tessellate     
+##  2 gdal     GDAL           gdal:aspect              aspect       Aspect         
+##  3 gdal     GDAL           gdal:assignprojection    assignproje~ Assign project~
+##  4 gdal     GDAL           gdal:buffervectors       buffervecto~ Buffer vectors 
+##  5 gdal     GDAL           gdal:buildvirtualraster  buildvirtua~ Build virtual ~
+##  6 gdal     GDAL           gdal:buildvirtualvector  buildvirtua~ Build virtual ~
+##  7 gdal     GDAL           gdal:cliprasterbyextent  cliprasterb~ Clip raster by~
+##  8 gdal     GDAL           gdal:cliprasterbymaskla~ cliprasterb~ Clip raster by~
+##  9 gdal     GDAL           gdal:clipvectorbyextent  clipvectorb~ Clip vector by~
+## 10 gdal     GDAL           gdal:clipvectorbypolygon clipvectorb~ Clip vector by~
 ## # ... with 976 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
 qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
@@ -1164,22 +1173,18 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- qgis_run_algorithm(alg = &amp;quot;native:extractvertices&amp;quot;,
                INPUT = river_line,
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call qgis_process run &amp;quot;native:extractvertices&amp;quot; \
-##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l\file57ec4c224632\file57ec66d44605.gpkg&amp;quot; \
-##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_database: Cannot find proj.db
-## proj_create_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_identify: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_get_authorities_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_as_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call \
+##   &amp;quot;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;quot; run \
+##   &amp;quot;native:extractvertices&amp;quot; \
+##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r\file67a81d8f1f66\file67a840795857.gpkg&amp;quot; \
+##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r/rivers_world_vertices.geojson&amp;quot;
+## 
 ## ----------------
 ## Inputs
 ## ----------------
 ## 
-## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l\file57ec4c224632\file57ec66d44605.gpkg
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l/rivers_world_vertices.geojson
+## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r\file67a81d8f1f66\file67a840795857.gpkg
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r/rivers_world_vertices.geojson
 ## 
 ## 
 ## 0...10...20...30...40...50...60...70...80...90...
@@ -1187,10 +1192,10 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 ## Results
 ## ----------------
 ## 
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- st_read(qgis_output(river_vertices, &amp;quot;OUTPUT&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Reading layer `rivers_world_vertices&amp;#39; from data source 
-##   `C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l\rivers_world_vertices.geojson&amp;#39; 
+##   `C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r\rivers_world_vertices.geojson&amp;#39; 
 ##   using driver `GeoJSON&amp;#39;
 ## Simple feature collection with 339734 features and 12 fields
 ## Geometry type: POINT
@@ -1342,6 +1347,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   theme_polar()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1419,39 +1425,39 @@ files&lt;/code&gt;&lt;/pre&gt;
 ## RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
 pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 27545 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 27545 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 34729 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 34729 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 24927 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 24927 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 19813 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 19813 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
@@ -1500,7 +1506,8 @@ pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
            group_by(STAID, yr) %&amp;gt;%
              summarise(pr = sum(RR, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -1536,11 +1543,11 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
 telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
@@ -1574,8 +1581,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 ##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
 ##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
 ## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: POL-EUAS &amp;lt;dbl&amp;gt;, EATL/WRUS &amp;lt;dbl&amp;gt;,
-## #   MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
+## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;test-de-correlación&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Test de correlación&lt;/h2&gt;
@@ -1843,6 +1850,7 @@ head(data_nest)&lt;/code&gt;&lt;/pre&gt;
         panel.background = element_blank(),
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

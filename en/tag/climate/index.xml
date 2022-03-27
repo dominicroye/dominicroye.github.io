@@ -130,7 +130,8 @@ meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;%
                   summarise(ta = mean(tavg, na.rm = TRUE),
                             tmx = mean(tmax, na.rm = TRUE),
                             tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
 ## # Groups:   name [9]
@@ -277,6 +278,7 @@ ggplot(ny_city) +
        colour = &amp;quot;Daily average temperature&amp;quot;) +
   theme_cc()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -452,6 +454,7 @@ col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To export we will use the &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt; package, which provides higher performance and quality than the standard raster devices provided by grDevices.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In other heatmap calendars I have added the predominant wind direction of each day as an arrow using &lt;code&gt;geom_arrow()&lt;/code&gt; from the &lt;code&gt;metR&lt;/code&gt; package (it can be seen in the aforementioned application).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -512,12 +515,12 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Step 1: import the data&lt;/h3&gt;
 &lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## dbl  (2): pr, ta
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
@@ -671,6 +674,7 @@ g2&lt;/code&gt;&lt;/pre&gt;
 g3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -745,11 +749,11 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
                select(DATE:RR) %&amp;gt;% 
              rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
@@ -775,7 +779,8 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
             filter(date &amp;gt;= &amp;quot;1950-01-01&amp;quot;) %&amp;gt;%
                 group_by(yr, mo) %&amp;gt;% 
                    summarise(prs = sum(pr, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;yr&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;yr&amp;#39;. You can override using the `.groups`
+## argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
 ## # Groups:   yr [70]
@@ -1011,6 +1016,7 @@ g1&lt;/code&gt;&lt;/pre&gt;
 p&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomaly20162018_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1028,7 +1034,8 @@ p&lt;/code&gt;&lt;/pre&gt;
       <link>https://dominicroye.github.io/en/project/climate/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/project/climate/</guid>
-      <description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
 
 
 
@@ -1559,6 +1566,7 @@ p&lt;/code&gt;&lt;/pre&gt;
   
 
 &lt;/div&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -1567,7 +1575,8 @@ p&lt;/code&gt;&lt;/pre&gt;
       <link>https://dominicroye.github.io/en/project/animations/</link>
       <pubDate>Sun, 27 Apr 2014 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/project/animations/</guid>
-      <description>&lt;p&gt;
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;
 &lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
   &lt;iframe src=&#34;https://player.vimeo.com/video/547991537&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
 &lt;/div&gt;
@@ -1651,6 +1660,7 @@ Probability of a frost day (minimum temperature less than 0ºC) through the year
 &lt;/div&gt;
 
 Probability of a frost day (minimum temperature less than 0ºC/32ºF) through the year in the Contiguous United States. Data: &lt;a href=&#34;https://developers.google.com/earth-engine/datasets/catalog/OREGONSTATE_PRISM_AN81m&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;PRISM&lt;/a&gt;. Platform: &lt;a href=&#34;https://earthengine.google.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google Earth Engine&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

@@ -854,7 +854,7 @@ q &lt;- getbb(&quot;Madrid&quot;) %&gt;%
 
 str(q) #la estructura de la consulta</code></pre>
 <pre><code>## List of 4
-##  $ bbox    : chr &quot;40.2567047,-3.8635825,40.5767047,-3.5435825&quot;
+##  $ bbox    : chr &quot;40.3119774,-3.8889539,40.6437293,-3.5179163&quot;
 ##  $ prefix  : chr &quot;[out:xml][timeout:25];\n(\n&quot;
 ##  $ suffix  : chr &quot;);\n(._;&gt;;);\nout body;&quot;
 ##  $ features: chr &quot; [\&quot;amenity\&quot;=\&quot;cinema\&quot;]&quot;
@@ -863,12 +863,12 @@ str(q) #la estructura de la consulta</code></pre>
 <pre class="r"><code>cinema &lt;- osmdata_sf(q)
 cinema</code></pre>
 <pre><code>## Object of class &#39;osmdata&#39; with:
-##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &#39;sf&#39; Simple Features Collection with 212 points
+##            $osm_points : &#39;sf&#39; Simple Features Collection with 220 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 11 polygons
+##          $osm_polygons : &#39;sf&#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL</code></pre>
 <p>Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría <em>osm_points</em>.</p>
@@ -923,6 +923,7 @@ ggplot(mercadona$osm_points)+
           shape = 21)+
   theme_void()</code></pre>
 <p><img src="https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 </div>
 

@@ -912,7 +912,8 @@ meteo_yday &lt;- group_by(meteo, name, yd) %&gt;%
                   summarise(ta = mean(tavg, na.rm = TRUE),
                             tmx = mean(tmax, na.rm = TRUE),
                             tmin = mean(tmin, na.rm = TRUE))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;name&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;name&#39;. You can override using the
+## `.groups` argument.</code></pre>
 <pre class="r"><code>meteo_yday</code></pre>
 <pre><code>## # A tibble: 3,294 x 5
 ## # Groups:   name [9]
@@ -1059,6 +1060,7 @@ ggplot(ny_city) +
        colour = &quot;Daily average temperature&quot;) +
   theme_cc()</code></pre>
 <p><img src="https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-13-1.png" width="3540" /></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 </div>
 

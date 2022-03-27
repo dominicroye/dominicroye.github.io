@@ -487,6 +487,7 @@ global(spei, &amp;quot;mean&amp;quot;, na.rm = TRUE) %&amp;gt;% head()&lt;/code&
 ## spei12_2017_4 -0.07536089
 ## spei12_2017_5  0.06718260
 ## spei12_2017_6 -0.03461822&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -597,7 +598,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The primary function &lt;code&gt;terminator()&lt;/code&gt; based on the javascript of &lt;code&gt;{Leaflet}&lt;/code&gt; needs as arguments: the date-time, the minimum and maximum extension, as well as the resolution or the interval of longitude.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # date and time of our operating system
 t0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-01-12 15:58:56 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-27 11:36:26 CEST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimate the day-night line
 
 # convert it into a spatial object of class sf
@@ -807,6 +808,7 @@ ggplot() +
 
 gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -946,7 +948,8 @@ meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;%
                   summarise(ta = mean(tavg, na.rm = TRUE),
                             tmx = mean(tmax, na.rm = TRUE),
                             tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
 ## # Groups:   name [9]
@@ -1093,6 +1096,7 @@ ggplot(ny_city) +
        colour = &amp;quot;Daily average temperature&amp;quot;) +
   theme_cc()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/climate-circles/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1284,8 +1288,8 @@ bm # contains three layers (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
 ## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
 ## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
 ## source      : snapshot-2017-11-30T00_00_00Z.tiff 
-## red-grn-blue: 1, 2, 3 
-## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
+## colors RGB  : 1, 2, 3 
+## names       : snapshot-2~0_00_00Z_1, snapshot-2~0_00_00Z_2, snapshot-2~0_00_00Z_3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot
 
 plotRGB(bm)&lt;/code&gt;&lt;/pre&gt;
@@ -1424,6 +1428,7 @@ grid &amp;lt;- st_graticule(earthquakes) &lt;/code&gt;&lt;/pre&gt;
   theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1714,6 +1719,7 @@ p &amp;lt;- p1 | p2
 # final map
 p&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1889,6 +1895,7 @@ col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;To export we will use the &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt; package, which provides higher performance and quality than the standard raster devices provided by grDevices.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;In other heatmap calendars I have added the predominant wind direction of each day as an arrow using &lt;code&gt;geom_arrow()&lt;/code&gt; from the &lt;code&gt;metR&lt;/code&gt; package (it can be seen in the aforementioned application).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -2237,6 +2244,7 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
 &lt;p&gt;After having created images for each day of the year, we only have to create the gif.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.en.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -2385,6 +2393,12 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## getOption(&amp;#39;qgisprocess.path&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Sys.getenv(&amp;#39;R_QGISPROCESS_PATH&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Trying &amp;#39;qgis_process&amp;#39; on PATH&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in processx::run(&amp;quot;cmd.exe&amp;quot;, c(&amp;quot;/c&amp;quot;, &amp;quot;call&amp;quot;, path, args), ...): System command &amp;#39;cmd.exe&amp;#39; failed, exit status: 1, stderr:
+## E&amp;gt; &amp;quot;qgis_process&amp;quot; no se reconoce como un comando interno o externo,
+## E&amp;gt; programa o archivo por lotes ejecutable.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Found 1 QGIS installation containing &amp;#39;qgis_process&amp;#39;:
+##  C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying command &amp;#39;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Success!&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## QGIS version: 3.18.1-Zürich&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Metadata of 986 algorithms queried and stored in cache.
@@ -2393,18 +2407,18 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# search tools
 qgis_algorithms()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 986 x 5
-##    provider provider_title algorithm         algorithm_id    algorithm_title    
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;             &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;              
-##  1 3d       QGIS (3D)      3d:tessellate     tessellate      Tessellate         
-##  2 gdal     GDAL           gdal:aspect       aspect          Aspect             
-##  3 gdal     GDAL           gdal:assignproje~ assignprojecti~ Assign projection  
-##  4 gdal     GDAL           gdal:buffervecto~ buffervectors   Buffer vectors     
-##  5 gdal     GDAL           gdal:buildvirtua~ buildvirtualra~ Build virtual rast~
-##  6 gdal     GDAL           gdal:buildvirtua~ buildvirtualve~ Build virtual vect~
-##  7 gdal     GDAL           gdal:cliprasterb~ cliprasterbyex~ Clip raster by ext~
-##  8 gdal     GDAL           gdal:cliprasterb~ cliprasterbyma~ Clip raster by mas~
-##  9 gdal     GDAL           gdal:clipvectorb~ clipvectorbyex~ Clip vector by ext~
-## 10 gdal     GDAL           gdal:clipvectorb~ clipvectorbypo~ Clip vector by mas~
+##    provider provider_title algorithm                algorithm_id algorithm_title
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 3d       QGIS (3D)      3d:tessellate            tessellate   Tessellate     
+##  2 gdal     GDAL           gdal:aspect              aspect       Aspect         
+##  3 gdal     GDAL           gdal:assignprojection    assignproje~ Assign project~
+##  4 gdal     GDAL           gdal:buffervectors       buffervecto~ Buffer vectors 
+##  5 gdal     GDAL           gdal:buildvirtualraster  buildvirtua~ Build virtual ~
+##  6 gdal     GDAL           gdal:buildvirtualvector  buildvirtua~ Build virtual ~
+##  7 gdal     GDAL           gdal:cliprasterbyextent  cliprasterb~ Clip raster by~
+##  8 gdal     GDAL           gdal:cliprasterbymaskla~ cliprasterb~ Clip raster by~
+##  9 gdal     GDAL           gdal:clipvectorbyextent  clipvectorb~ Clip vector by~
+## 10 gdal     GDAL           gdal:clipvectorbypolygon clipvectorb~ Clip vector by~
 ## # ... with 976 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# usage of tool
 qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
@@ -2440,22 +2454,18 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- qgis_run_algorithm(alg = &amp;quot;native:extractvertices&amp;quot;,
                INPUT = river_line,
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call qgis_process run &amp;quot;native:extractvertices&amp;quot; \
-##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\file61ac255b430\file61ac7a175a31.gpkg&amp;quot; \
-##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_database: Cannot find proj.db
-## proj_create_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_identify: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_get_authorities_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_as_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call \
+##   &amp;quot;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;quot; run \
+##   &amp;quot;native:extractvertices&amp;quot; \
+##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\file1f54157824f7\file1f54f432848.gpkg&amp;quot; \
+##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson&amp;quot;
+## 
 ## ----------------
 ## Inputs
 ## ----------------
 ## 
-## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\file61ac255b430\file61ac7a175a31.gpkg
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson
+## INPUT:   C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\file1f54157824f7\file1f54f432848.gpkg
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson
 ## 
 ## 
 ## 0...10...20...30...40...50...60...70...80...90...
@@ -2463,10 +2473,10 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 ## Results
 ## ----------------
 ## 
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- st_read(qgis_output(river_vertices, &amp;quot;OUTPUT&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Reading layer `rivers_world_vertices&amp;#39; from data source 
-##   `C:\Users\xeo19\AppData\Local\Temp\RtmpygKk6Y\rivers_world_vertices.geojson&amp;#39; 
+##   `C:\Users\xeo19\AppData\Local\Temp\Rtmpkf37V1\rivers_world_vertices.geojson&amp;#39; 
 ##   using driver `GeoJSON&amp;#39;
 ## Simple feature collection with 339734 features and 12 fields
 ## Geometry type: POINT
@@ -2617,6 +2627,7 @@ caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quo
   theme_polar()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -2770,13 +2781,13 @@ In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; th
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
@@ -3012,13 +3023,13 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;In case you haven’t done it before, we import the mobility data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;select-and-rename&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
@@ -3406,9 +3417,9 @@ cor_mobility[1:5]&lt;/code&gt;&lt;/pre&gt;
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -3450,6 +3461,7 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
 ## # ... with 17 more rows, and 1 more variable: alternative &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Other practical examples here in this &lt;a href=&#34;https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/&#34;&gt;post&lt;/a&gt; or this &lt;a href=&#34;https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/&#34;&gt;other&lt;/a&gt;. More details can be found in the &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; of &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -3519,12 +3531,12 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Step 1: import the data&lt;/h3&gt;
 &lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## dbl  (2): pr, ta
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
@@ -3678,6 +3690,7 @@ g2&lt;/code&gt;&lt;/pre&gt;
 g3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -3877,19 +3890,19 @@ capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;81&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;343&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;255&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;345&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;81&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;255&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;332&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;142&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;343&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;332&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;345&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;142&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -3959,6 +3972,7 @@ ggplot(world) +
   labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital city&amp;quot;) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -4080,10 +4094,10 @@ str(prov_enlaces) # object is a list&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
 ##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
 ##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
-##  $ updated: POSIXct[1:1], format: &amp;quot;2021-09-13&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2022-03-14&amp;quot;
 ##  $ items  : tibble [52 x 5] (S3: tbl_df/tbl/data.frame)
 ##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
-##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-09-13&amp;quot; &amp;quot;2021-09-13&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2022-03-14&amp;quot; &amp;quot;2022-03-14&amp;quot; ...
 ##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
 ##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
 ##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
@@ -4099,16 +4113,16 @@ prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
 ##    title                             date                link  description hash 
 ##    &amp;lt;chr&amp;gt;                             &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;
-##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
-##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
-##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
-##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
-##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
-##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
-##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
-##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
-##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
-## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
+##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
+##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
+##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
+##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
+##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
+##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
+##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
+##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
+##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
+## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Now, we access and download the data from Valencia. To filter the final download link we use the &lt;code&gt;filter()&lt;/code&gt; function of the &lt;code&gt;dplyr&lt;/code&gt; package, searching for the name of the territorial headquarter and then the name of the municipality in capital letters with the &lt;code&gt;str_detect()&lt;/code&gt; function of &lt;code&gt;stringr&lt;/code&gt;. The &lt;code&gt;pull()&lt;/code&gt; function allows us to extract a column from a &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
@@ -4171,7 +4185,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
 ## Simple feature collection with 36284 features and 24 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
-## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Bounding box:  xmin: 720570.9 ymin: 4351286 xmax: 734981.9 ymax: 4382906
 ## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data-preparation&#34; class=&#34;section level2&#34;&gt;
@@ -4181,7 +4195,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
                beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
                             ymd_hms() %&amp;gt;% as_date()
                )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 4 failed to parse.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;distribution-chart&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Distribution chart&lt;/h2&gt;
@@ -4231,11 +4245,11 @@ br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quant
 lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## style: quantile
 ##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
-##         934        1355         956         594        1704        1054 
+##         932        1350         947         594        1703        1054 
 ## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
-##        1453        1029        1223        1158        1154        1190 
+##        1453        1029        1223        1158        1155        1190 
 ## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
-##        1149        1111        1229&lt;/code&gt;&lt;/pre&gt;
+##        1149        1111        1244&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# categorize the year
 buildings_val25 &amp;lt;- mutate(buildings_val25, 
                           yr_cl = cut(year(beginning), 
@@ -4309,6 +4323,7 @@ m &amp;lt;-   tm_shape(buildings_val25) +
 tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
 &lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34; data-external=&#34;1&#34;&gt;
 &lt;/iframe&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -4406,11 +4421,11 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
                select(DATE:RR) %&amp;gt;% 
              rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 27606 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
@@ -4436,7 +4451,8 @@ library(lubridate)&lt;/code&gt;&lt;/pre&gt;
             filter(date &amp;gt;= &amp;quot;1950-01-01&amp;quot;) %&amp;gt;%
                 group_by(yr, mo) %&amp;gt;% 
                    summarise(prs = sum(pr, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;yr&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;yr&amp;#39;. You can override using the `.groups`
+## argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
 ## # Groups:   yr [70]
@@ -4672,6 +4688,7 @@ g1&lt;/code&gt;&lt;/pre&gt;
 p&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomaly20162018_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -4765,39 +4782,39 @@ files&lt;/code&gt;&lt;/pre&gt;
 ## RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import all files and join them together
 pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 26329 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 27545 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 27545 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 34729 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 34729 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 24927 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 24927 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 19813 Columns: 5&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 19813 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
@@ -4846,7 +4863,8 @@ pr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
            group_by(STAID, yr)%&amp;gt;%
              summarise(pr = sum(RR, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -4882,11 +4900,11 @@ pr_yr&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;The next step is to import the climate teleconnection indices.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconnections
 telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 68 Columns: 9
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
-## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
@@ -4920,8 +4938,8 @@ data_all&lt;/code&gt;&lt;/pre&gt;
 ##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
 ##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
 ## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: POL-EUAS &amp;lt;dbl&amp;gt;, EATL/WRUS &amp;lt;dbl&amp;gt;,
-## #   MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &amp;lt;dbl&amp;gt;,
+## #   `EATL/WRUS` &amp;lt;dbl&amp;gt;, MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;correlation-test&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Correlation test&lt;/h2&gt;
@@ -5189,6 +5207,7 @@ head(data_nest)&lt;/code&gt;&lt;/pre&gt;
         panel.background = element_blank(),
         axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -5375,8 +5394,8 @@ str(mad)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;But how do we import multiple Excel files?&lt;/p&gt;
 &lt;p&gt;To do this, first we must know the &lt;code&gt;dir_ls()&lt;/code&gt; function from the &lt;a href=&#34;https://github.com/r-lib/fs&#34;&gt;&lt;em&gt;{fs}&lt;/em&gt;&lt;/a&gt; package. Indeed, there is the &lt;code&gt;dir()&lt;/code&gt; function of &lt;em&gt;R Base&lt;/em&gt;, but the advantages of the recent package are several, especially the compatibility with the &lt;em&gt;{tidyverse}&lt;/em&gt; collection.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dir_ls()&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx   featured.png       index.en.Rmd       index.en.Rmd.lock~ 
-## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx   featured.png       index.en.html      index.en.Rmd       
+## index.en.Rmd.lock~ index.en_files     madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we can filter the files that we want
 dir_ls(regexp = &amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
@@ -5465,6 +5484,7 @@ str(data_df)&lt;/code&gt;&lt;/pre&gt;
 ##  $ date: POSIXct[1:4384], format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
 ##  $ ta  : num [1:4384] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
 ##  $ yr  : num [1:4384] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -5826,6 +5846,7 @@ writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;With the calculation of distance we can create art, as seen in the header of this post, which includes a world map only with the distance to the sea of all continents. A different perspective to our world (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;here more (spanish)&lt;/a&gt;) .&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -6015,6 +6036,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/how-to-create-warming-stripes-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -6079,7 +6101,7 @@ q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
 
 str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
-##  $ bbox    : chr &amp;quot;40.2567047,-3.8635825,40.5767047,-3.5435825&amp;quot;
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
@@ -6088,12 +6110,12 @@ str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
 cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
-##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 212 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 220 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 11 polygons
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see that the result is a list of different spatial objects. In our case, we are only interested in &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
@@ -6140,6 +6162,7 @@ ggplot(mercadona$osm_points)+
           shape = 21)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -6532,6 +6555,7 @@ plot(data.frame(date=timestamp,
 
 #close the conection with the ncdf file
 nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -6754,7 +6778,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
       <link>https://dominicroye.github.io/en/project/climate/</link>
       <pubDate>Thu, 27 Apr 2017 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/project/climate/</guid>
-      <description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
 
 
 
@@ -7285,6 +7310,7 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
   
 
 &lt;/div&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -7301,7 +7327,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
       <link>https://dominicroye.github.io/en/project/geography/</link>
       <pubDate>Wed, 27 Apr 2016 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/project/geography/</guid>
-      <description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
 
 
 
@@ -7628,15 +7655,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/no2_pi_autum_germany.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/no2_pi_autum_germany_hue56a90e9f9c964b408eb5a71cd230b04_589648_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;no2_pi_autum_germany.png&#34; width=&#34;126&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/obesity_europe.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/obesity_europe_hu2610abfa470d61c8d4e8f443ab63c083_327923_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;obesity_europe.png&#34; width=&#34;274&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -7799,6 +7817,15 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/sol.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/sol_hu04ca4ba739fa07a160654aebdecebd30_9756811_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;sol.png&#34; width=&#34;144&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/SVF.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/SVF_huce2f95f9dea22a1ecdd912667839babe_1101847_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;SVF.png&#34; width=&#34;193&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -7832,6 +7859,7 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
   
 
 &lt;/div&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -7879,7 +7907,8 @@ Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
       <link>https://dominicroye.github.io/en/project/population/</link>
       <pubDate>Mon, 27 Apr 2015 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/project/population/</guid>
-      <description>
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+
 
 
 
@@ -8068,6 +8097,7 @@ Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
   
 
 &lt;/div&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     
@@ -8076,7 +8106,8 @@ Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
       <link>https://dominicroye.github.io/en/project/animations/</link>
       <pubDate>Sun, 27 Apr 2014 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/project/animations/</guid>
-      <description>&lt;p&gt;
+      <description>&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;p&gt;
 &lt;div style=&#34;position: relative; padding-bottom: 56.25%; height: 0; overflow: hidden;&#34;&gt;
   &lt;iframe src=&#34;https://player.vimeo.com/video/547991537&#34; style=&#34;position: absolute; top: 0; left: 0; width: 100%; height: 100%; border:0;&#34; title=&#34;vimeo video&#34; webkitallowfullscreen mozallowfullscreen allowfullscreen&gt;&lt;/iframe&gt;
 &lt;/div&gt;
@@ -8160,6 +8191,7 @@ Probability of a frost day (minimum temperature less than 0ºC) through the year
 &lt;/div&gt;
 
 Probability of a frost day (minimum temperature less than 0ºC/32ºF) through the year in the Contiguous United States. Data: &lt;a href=&#34;https://developers.google.com/earth-engine/datasets/catalog/OREGONSTATE_PRISM_AN81m&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;PRISM&lt;/a&gt;. Platform: &lt;a href=&#34;https://earthengine.google.com/&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;Google Earth Engine&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 </description>
     </item>
     

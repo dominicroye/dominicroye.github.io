@@ -182,19 +182,19 @@ capitals &lt;/code&gt;&lt;/pre&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;261&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;260&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;310&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;323&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;261&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;310&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;356&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;133&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;260&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;356&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;323&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;133&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
 &lt;/tr&gt;
 &lt;/tbody&gt;
@@ -264,6 +264,7 @@ ggplot(world) +
   labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital&amp;quot;) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/distancias-geograficas/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -369,10 +370,10 @@ str(prov_enlaces) #estructura es lista&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
 ##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
 ##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
-##  $ updated: POSIXct[1:1], format: &amp;quot;2021-09-13&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2022-03-14&amp;quot;
 ##  $ items  : tibble [52 x 5] (S3: tbl_df/tbl/data.frame)
 ##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
-##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-09-13&amp;quot; &amp;quot;2021-09-13&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2022-03-14&amp;quot; &amp;quot;2022-03-14&amp;quot; ...
 ##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
 ##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
 ##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
@@ -388,16 +389,16 @@ prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
 ##    title                             date                link  description hash 
 ##    &amp;lt;chr&amp;gt;                             &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;
-##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
-##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
-##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
-##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
-##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
-##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
-##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
-##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
-##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
-## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
+##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
+##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
+##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
+##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
+##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
+##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
+##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
+##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
+##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
+## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
@@ -460,7 +461,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
 ## Simple feature collection with 36284 features and 24 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
-## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Bounding box:  xmin: 720570.9 ymin: 4351286 xmax: 734981.9 ymax: 4382906
 ## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparación-de-los-datos&#34; class=&#34;section level2&#34;&gt;
@@ -471,7 +472,7 @@ buildings_val &amp;lt;- mutate(buildings_val,
                beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
                             ymd_hms() %&amp;gt;% as_date()
                )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 4 failed to parse.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;gráfico-de-distribución&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Gráfico de distribución&lt;/h2&gt;
@@ -521,11 +522,11 @@ br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quant
 lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## style: quantile
 ##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
-##         934        1355         956         594        1704        1054 
+##         932        1350         947         594        1703        1054 
 ## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
-##        1453        1029        1223        1158        1154        1190 
+##        1453        1029        1223        1158        1155        1190 
 ## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
-##        1149        1111        1229&lt;/code&gt;&lt;/pre&gt;
+##        1149        1111        1244&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#categorizar el año
 buildings_val25 &amp;lt;- mutate(buildings_val25, 
                           yr_cl = cut(year(beginning), 
@@ -599,6 +600,7 @@ m &amp;lt;-   tm_shape(buildings_val25) +
 tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
 &lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34; data-external=&#34;1&#34;&gt;
 &lt;/iframe&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>

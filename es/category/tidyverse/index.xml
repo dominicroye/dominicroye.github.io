@@ -54,6 +54,10 @@
 &lt;p&gt;El universo de los paquetes de &lt;code&gt;tidyverse&lt;/code&gt;, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de &lt;code&gt;tidyverse&lt;/code&gt;. Por ejemplo, el paquete &lt;code&gt;sf&lt;/code&gt; (&lt;a href=&#34;https://r-spatial.github.io/sf/articles/sf1.html&#34;&gt;simple feature&lt;/a&gt;) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete &lt;code&gt;dplyr&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;El núcleo de la colección lo constituyen los siguientes paquetes:&lt;/p&gt;
 &lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;11%&#34; /&gt;
+&lt;col width=&#34;88%&#34; /&gt;
+&lt;/colgroup&gt;
 &lt;thead&gt;
 &lt;tr class=&#34;header&#34;&gt;
 &lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
@@ -161,13 +165,13 @@ En comparación con &lt;em&gt;R Base&lt;/em&gt; las funciones son más rápidas,
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
@@ -403,13 +407,13 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;En caso de que no lo hayas hecho antes, importamos los datos de movilidad.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;selecionar-y-renombrar&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
@@ -832,9 +836,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -862,9 +866,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $DK
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1    0.237      5.81  1.04e-8       567    0.158     0.313 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1    0.237      5.81     1.04e-8       567    0.158     0.313 Pears~ two.sided  
 ## 
 ## $EE
 ## # A tibble: 1 x 8
@@ -928,9 +932,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $LT
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.204     -5.45  7.17e-8       686   -0.274    -0.131 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.204     -5.45     7.17e-8       686   -0.274    -0.131 Pears~ two.sided  
 ## 
 ## $LV
 ## # A tibble: 1 x 8
@@ -982,9 +986,9 @@ europe_reg %&amp;gt;%
 ## 
 ## $SK
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.196     -5.70  1.65e-8       810   -0.262    -0.129 Pearson&amp;#39;~ two.sided&lt;/code&gt;&lt;/pre&gt;
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.196     -5.70     1.65e-8       810   -0.262    -0.129 Pears~ two.sided&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Como ya hemos visto anteriormente, existen subfunciones de &lt;code&gt;map_*&lt;/code&gt; para obtener en lugar de una lista un objeto de otra clase, aquí de &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_mobility &amp;lt;- europe_reg %&amp;gt;%
                   split(.$country_region_code) %&amp;gt;% 
@@ -1008,6 +1012,7 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
 ## # ... with 17 more rows, and 1 more variable: alternative &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Otros ejemplos prácticos aquí en este &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt; or este &lt;a href=&#34;https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/&#34;&gt;otro&lt;/a&gt;. Podemos encontrar más detalles en el &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; de &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

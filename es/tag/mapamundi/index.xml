@@ -118,7 +118,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función principal &lt;code&gt;terminator()&lt;/code&gt; basada en el javascript de &lt;code&gt;{Leaflet}&lt;/code&gt; necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # fecha y hora de nuestro sistema operativo
 t0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-01-12 16:03:37 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-27 13:10:39 CEST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
 
 # lo convertimos en un objecto espacial de clase sf
@@ -298,6 +298,8 @@ ggplot() +
   # estilo del mapa
   theme_void() +
   theme(plot.title = element_text(hjust = .1, vjust = .9))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Raster pixels are placed at uneven horizontal intervals and will be
+## shifted. Consider using geom_tile() instead.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animación&#34; class=&#34;section level2&#34;&gt;
@@ -331,6 +333,7 @@ ggsave(str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(step, &amp;quot;:&am
 
 gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

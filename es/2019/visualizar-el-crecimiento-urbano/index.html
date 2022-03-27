@@ -895,10 +895,10 @@ str(prov_enlaces) #estructura es lista</code></pre>
 <pre><code>## List of 4
 ##  $ title  : chr &quot;Download service of Buildings. Territorial Office&quot;
 ##  $ link   : chr &quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&quot;
-##  $ updated: POSIXct[1:1], format: &quot;2021-09-13&quot;
+##  $ updated: POSIXct[1:1], format: &quot;2022-03-14&quot;
 ##  $ items  : tibble [52 x 5] (S3: tbl_df/tbl/data.frame)
 ##   ..$ title      : chr [1:52] &quot;Territorial office 02 Albacete&quot; &quot;Territorial office 03 Alicante&quot; &quot;Territorial office 04 Almería&quot; &quot;Territorial office 05 Avila&quot; ...
-##   ..$ date       : POSIXct[1:52], format: &quot;2021-09-13&quot; &quot;2021-09-13&quot; ...
+##   ..$ date       : POSIXct[1:52], format: &quot;2022-03-14&quot; &quot;2022-03-14&quot; ...
 ##   ..$ link       : chr [1:52] &quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&quot; &quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&quot; &quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&quot; &quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&quot; ...
 ##   ..$ description: chr [1:52] &quot;\n\n\t\t  &quot; &quot;\n\n\t\t  &quot; &quot;\n\n\t\t  &quot; &quot;\n\n\t\t  &quot; ...
 ##   ..$ hash       : chr [1:52] &quot;d21ebb7975e59937&quot; &quot;bdba5e149f09e9d8&quot; &quot;03bcbcc7c5be2e17&quot; &quot;8a154202dd778143&quot; ...</code></pre>
@@ -914,16 +914,16 @@ prov_enlaces_tab &lt;- as_tibble(prov_enlaces$items) %&gt;%
 <pre><code>## # A tibble: 52 x 5
 ##    title                             date                link  description hash 
 ##    &lt;chr&gt;                             &lt;dttm&gt;              &lt;chr&gt; &lt;chr&gt;       &lt;chr&gt;
-##  1 &quot;Territorial office 02 Albacete&quot;  2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ d21e~
-##  2 &quot;Territorial office 03 Alicante&quot;  2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ bdba~
-##  3 &quot;Territorial office 04 Almería&quot;   2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ 03bc~
-##  4 &quot;Territorial office 05 Avila&quot;     2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ 8a15~
-##  5 &quot;Territorial office 06 Badajoz&quot;   2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ 7d3f~
-##  6 &quot;Territorial office 07 Baleares &quot; 2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ 9c08~
-##  7 &quot;Territorial office 08 Barcelona&quot; 2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ ff72~
-##  8 &quot;Territorial office 09 Burgos &quot;   2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ b431~
-##  9 &quot;Territorial office 10 Cáceres &quot;  2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ f79c~
-## 10 &quot;Territorial office 11 Cádiz &quot;    2021-09-13 00:00:00 http~ &quot;\n\n\t\t ~ d702~
+##  1 &quot;Territorial office 02 Albacete&quot;  2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ d21e~
+##  2 &quot;Territorial office 03 Alicante&quot;  2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ bdba~
+##  3 &quot;Territorial office 04 Almería&quot;   2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ 03bc~
+##  4 &quot;Territorial office 05 Avila&quot;     2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ 8a15~
+##  5 &quot;Territorial office 06 Badajoz&quot;   2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ 7d3f~
+##  6 &quot;Territorial office 07 Baleares &quot; 2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ 9c08~
+##  7 &quot;Territorial office 08 Barcelona&quot; 2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ ff72~
+##  8 &quot;Territorial office 09 Burgos &quot;   2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ b431~
+##  9 &quot;Territorial office 10 Cáceres &quot;  2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ f79c~
+## 10 &quot;Territorial office 11 Cádiz &quot;    2022-03-14 00:00:00 http~ &quot;\n\n\t\t ~ d702~
 ## # ... with 42 more rows</code></pre>
 <p>Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función <code>filter()</code> del paquete <code>dplyr</code> buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función <code>str_detect()</code> de <code>stringr</code>. La función <code>pull()</code> nos permite extraer una columna de un <code>data.frame</code>.</p>
 <p><div class="alert alert-note">
@@ -986,7 +986,7 @@ buildings_val &lt;- st_read(file_val)</code></pre>
 ## Simple feature collection with 36284 features and 24 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
-## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Bounding box:  xmin: 720570.9 ymin: 4351286 xmax: 734981.9 ymax: 4382906
 ## Projected CRS: ETRS89 / UTM zone 30N</code></pre>
 </div>
 <div id="preparación-de-los-datos" class="section level2">
@@ -997,7 +997,7 @@ buildings_val &lt;- mutate(buildings_val,
                beginning = str_replace(beginning, &quot;^-&quot;, &quot;0000&quot;) %&gt;% 
                             ymd_hms() %&gt;% as_date()
                )</code></pre>
-<pre><code>## Warning: 5 failed to parse.</code></pre>
+<pre><code>## Warning: 4 failed to parse.</code></pre>
 </div>
 <div id="gráfico-de-distribución" class="section level2">
 <h2>Gráfico de distribución</h2>
@@ -1047,11 +1047,11 @@ br &lt;- classIntervals(year(buildings_val25$beginning), 15, &quot;quantile&quot
 lab &lt;- names(print(br, under = &quot;&lt;&quot;, over = &quot;&gt;&quot;, cutlabels = FALSE))</code></pre>
 <pre><code>## style: quantile
 ##      &lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
-##         934        1355         956         594        1704        1054 
+##         932        1350         947         594        1703        1054 
 ## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
-##        1453        1029        1223        1158        1154        1190 
+##        1453        1029        1223        1158        1155        1190 
 ## 1978 - 1988 1988 - 1999      &gt; 1999 
-##        1149        1111        1229</code></pre>
+##        1149        1111        1244</code></pre>
 <pre class="r"><code>#categorizar el año
 buildings_val25 &lt;- mutate(buildings_val25, 
                           yr_cl = cut(year(beginning), 
@@ -1125,6 +1125,7 @@ m &lt;-   tm_shape(buildings_val25) +
 tmap_leaflet(m)</code></pre>
 <iframe src="/files/urban_growth_leaflet.html" width="672" height="500px" data-external="1">
 </iframe>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 
     </div>

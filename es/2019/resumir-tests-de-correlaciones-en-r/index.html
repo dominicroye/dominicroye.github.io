@@ -867,39 +867,39 @@ files</code></pre>
 ## RR_STAID003969.txt</code></pre>
 <pre class="r"><code>#importamos todos, uniéndolos en una única tabla
 pr &lt;- files %&gt;% map_df(read_csv, skip = 20)</code></pre>
-<pre><code>## Rows: 26329 Columns: 5</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 26329 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
-<pre><code>## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre><code>## Rows: 27545 Columns: 5</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 27545 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
-<pre><code>## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre><code>## Rows: 34729 Columns: 5</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 34729 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
-<pre><code>## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre><code>## Rows: 24927 Columns: 5</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 24927 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
-<pre><code>## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre><code>## Rows: 19813 Columns: 5</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.
+## Rows: 19813 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
-<pre><code>## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>pr</code></pre>
@@ -948,7 +948,8 @@ pr</code></pre>
 <pre class="r"><code>pr_yr &lt;- filter(pr, DATE &gt;= &quot;1950-01-01&quot;, DATE &lt; &quot;2018-01-01&quot;) %&gt;%
            group_by(STAID, yr) %&gt;%
              summarise(pr = sum(RR, na.rm = TRUE))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;STAID&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;STAID&#39;. You can override using the
+## `.groups` argument.</code></pre>
 <pre class="r"><code>pr_yr</code></pre>
 <pre><code>## # A tibble: 324 x 3
 ## # Groups:   STAID [5]
@@ -984,11 +985,11 @@ pr_yr</code></pre>
 <p>El siguiente paso es importar los índices de las teleconexiones.</p>
 <pre class="r"><code>#teleconexiones
 telecon &lt;- read_csv(&quot;teleconnections_indices.csv&quot;)</code></pre>
-<pre><code>## Rows: 68 Columns: 9</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 68 Columns: 9
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO</code></pre>
-<pre><code>## 
+## dbl (9): yr, NAO, WeMO, EA, POL-EUAS, EATL/WRUS, MO, SCAND, AO
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>telecon</code></pre>
@@ -1022,8 +1023,8 @@ data_all</code></pre>
 ##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
 ##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
 ## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
-## # ... with 58 more rows, and 5 more variables: POL-EUAS &lt;dbl&gt;, EATL/WRUS &lt;dbl&gt;,
-## #   MO &lt;dbl&gt;, SCAND &lt;dbl&gt;, AO &lt;dbl&gt;</code></pre>
+## # ... with 58 more rows, and 5 more variables: `POL-EUAS` &lt;dbl&gt;,
+## #   `EATL/WRUS` &lt;dbl&gt;, MO &lt;dbl&gt;, SCAND &lt;dbl&gt;, AO &lt;dbl&gt;</code></pre>
 </div>
 <div id="test-de-correlación" class="section level2">
 <h2>Test de correlación</h2>
@@ -1291,6 +1292,7 @@ head(data_nest)</code></pre>
         panel.background = element_blank(),
         axis.ticks = element_blank())</code></pre>
 <p><img src="https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png" width="2100" /></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 
     </div>

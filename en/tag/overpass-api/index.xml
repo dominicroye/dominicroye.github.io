@@ -72,7 +72,7 @@ q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
 
 str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
-##  $ bbox    : chr &amp;quot;40.2567047,-3.8635825,40.5767047,-3.5435825&amp;quot;
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
@@ -81,12 +81,12 @@ str(q) #query structure&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
 cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
-##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 212 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 220 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 11 polygons
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;We see that the result is a list of different spatial objects. In our case, we are only interested in &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
@@ -133,6 +133,7 @@ ggplot(mercadona$osm_points)+
           shape = 21)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2018/accessing-openstreetmap-data-with-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

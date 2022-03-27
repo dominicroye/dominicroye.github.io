@@ -372,6 +372,7 @@ global(spei, &amp;quot;mean&amp;quot;, na.rm = TRUE) %&amp;gt;% head()&lt;/code&
 ## spei12_2017_4 -0.07536089
 ## spei12_2017_5  0.06718260
 ## spei12_2017_6 -0.03461822&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -482,7 +483,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función principal &lt;code&gt;terminator()&lt;/code&gt; basada en el javascript de &lt;code&gt;{Leaflet}&lt;/code&gt; necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # fecha y hora de nuestro sistema operativo
 t0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-01-12 16:03:37 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-27 13:10:39 CEST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
 
 # lo convertimos en un objecto espacial de clase sf
@@ -662,6 +663,8 @@ ggplot() +
   # estilo del mapa
   theme_void() +
   theme(plot.title = element_text(hjust = .1, vjust = .9))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Raster pixels are placed at uneven horizontal intervals and will be
+## shifted. Consider using geom_tile() instead.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animación&#34; class=&#34;section level2&#34;&gt;
@@ -695,6 +698,7 @@ ggsave(str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(step, &amp;quot;:&am
 
 gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -803,7 +807,8 @@ meteo_yday &amp;lt;- group_by(meteo, name, yd) %&amp;gt;%
                   summarise(ta = mean(tavg, na.rm = TRUE),
                             tmx = mean(tmax, na.rm = TRUE),
                             tmin = mean(tmin, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;name&amp;#39;. You can override using the
+## `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yday&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 3,294 x 5
 ## # Groups:   name [9]
@@ -955,6 +960,7 @@ Sys.setlocale(&amp;quot;LC_TIME&amp;quot;, &amp;quot;English&amp;quot;)&lt;/code
        colour = &amp;quot;Daily average temperature&amp;quot;) +
   theme_cc()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/circulos-climaticos/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3540&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1098,8 +1104,8 @@ bm # contiene tres capas (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
 ## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
 ## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
 ## source      : snapshot-2017-11-30T00_00_00Z.tiff 
-## red-grn-blue: 1, 2, 3 
-## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
+## colors RGB  : 1, 2, 3 
+## names       : snapshot-2~0_00_00Z_1, snapshot-2~0_00_00Z_2, snapshot-2~0_00_00Z_3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot
 
 plotRGB(bm)&lt;/code&gt;&lt;/pre&gt;
@@ -1238,6 +1244,7 @@ grid &amp;lt;- st_graticule(terremotos) &lt;/code&gt;&lt;/pre&gt;
   theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1495,6 +1502,7 @@ p &amp;lt;- p1 | p2
 
 p&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasimetrico-bivariante/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1665,6 +1673,7 @@ col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Para exportar haremos uso del paquete &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt;, que proporciona mayor rendimiento y mayor calidad que los dispositivos ráster estándar proporcionados por grDevices.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;En otros calendarios he añadido la dirección predominante del viento de cada día como flecha usando &lt;code&gt;geom_arrow()&lt;/code&gt; del paquete &lt;code&gt;metR&lt;/code&gt; (se puede ver en la mencionada aplicación).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1997,6 +2006,7 @@ files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;q
 &lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -2058,12 +2068,12 @@ library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
 &lt;h3&gt;Paso 1: importar los datos&lt;/h3&gt;
 &lt;p&gt;Importamos los datos en formato &lt;em&gt;csv&lt;/em&gt;, siendo la primera columna la fecha, la segunda la precipitación (pr) y la última la temperatura media diaria (ta).&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 14303 Columns: 3
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## dbl  (2): pr, ta
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
@@ -2217,6 +2227,7 @@ g2&lt;/code&gt;&lt;/pre&gt;
 g3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/visualizar-anomalias-climaticas/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -2323,10 +2334,10 @@ str(prov_enlaces) #estructura es lista&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
 ##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
 ##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
-##  $ updated: POSIXct[1:1], format: &amp;quot;2021-09-13&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2022-03-14&amp;quot;
 ##  $ items  : tibble [52 x 5] (S3: tbl_df/tbl/data.frame)
 ##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
-##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-09-13&amp;quot; &amp;quot;2021-09-13&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2022-03-14&amp;quot; &amp;quot;2022-03-14&amp;quot; ...
 ##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
 ##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
 ##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
@@ -2342,16 +2353,16 @@ prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;%
 &lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
 ##    title                             date                link  description hash 
 ##    &amp;lt;chr&amp;gt;                             &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;
-##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
-##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
-##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
-##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
-##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
-##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
-##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
-##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
-##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
-## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2021-09-13 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
+##  1 &amp;quot;Territorial office 02 Albacete&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d21e~
+##  2 &amp;quot;Territorial office 03 Alicante&amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ bdba~
+##  3 &amp;quot;Territorial office 04 Almería&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 03bc~
+##  4 &amp;quot;Territorial office 05 Avila&amp;quot;     2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 8a15~
+##  5 &amp;quot;Territorial office 06 Badajoz&amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 7d3f~
+##  6 &amp;quot;Territorial office 07 Baleares &amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ 9c08~
+##  7 &amp;quot;Territorial office 08 Barcelona&amp;quot; 2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ ff72~
+##  8 &amp;quot;Territorial office 09 Burgos &amp;quot;   2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ b431~
+##  9 &amp;quot;Territorial office 10 Cáceres &amp;quot;  2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ f79c~
+## 10 &amp;quot;Territorial office 11 Cádiz &amp;quot;    2022-03-14 00:00:00 http~ &amp;quot;\n\n\t\t ~ d702~
 ## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
 &lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
@@ -2414,7 +2425,7 @@ buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
 ## Simple feature collection with 36284 features and 24 fields
 ## Geometry type: MULTIPOLYGON
 ## Dimension:     XY
-## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Bounding box:  xmin: 720570.9 ymin: 4351286 xmax: 734981.9 ymax: 4382906
 ## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;preparación-de-los-datos&#34; class=&#34;section level2&#34;&gt;
@@ -2425,7 +2436,7 @@ buildings_val &amp;lt;- mutate(buildings_val,
                beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
                             ymd_hms() %&amp;gt;% as_date()
                )&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 4 failed to parse.&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;gráfico-de-distribución&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Gráfico de distribución&lt;/h2&gt;
@@ -2475,11 +2486,11 @@ br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quant
 lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## style: quantile
 ##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
-##         934        1355         956         594        1704        1054 
+##         932        1350         947         594        1703        1054 
 ## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
-##        1453        1029        1223        1158        1154        1190 
+##        1453        1029        1223        1158        1155        1190 
 ## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
-##        1149        1111        1229&lt;/code&gt;&lt;/pre&gt;
+##        1149        1111        1244&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#categorizar el año
 buildings_val25 &amp;lt;- mutate(buildings_val25, 
                           yr_cl = cut(year(beginning), 
@@ -2553,6 +2564,7 @@ m &amp;lt;-   tm_shape(buildings_val25) +
 tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
 &lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34; data-external=&#34;1&#34;&gt;
 &lt;/iframe&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -3070,6 +3082,7 @@ brewer.pal.info&lt;/code&gt;&lt;/pre&gt;
            scale_fill_gradientn(colors = rev(col_strip))+
              theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/como-crear-warming-stripes-in-r/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;1152&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -3134,7 +3147,7 @@ q &amp;lt;- getbb(&amp;quot;Madrid&amp;quot;) %&amp;gt;%
 
 str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## List of 4
-##  $ bbox    : chr &amp;quot;40.2567047,-3.8635825,40.5767047,-3.5435825&amp;quot;
+##  $ bbox    : chr &amp;quot;40.3119774,-3.8889539,40.6437293,-3.5179163&amp;quot;
 ##  $ prefix  : chr &amp;quot;[out:xml][timeout:25];\n(\n&amp;quot;
 ##  $ suffix  : chr &amp;quot;);\n(._;&amp;gt;;);\nout body;&amp;quot;
 ##  $ features: chr &amp;quot; [\&amp;quot;amenity\&amp;quot;=\&amp;quot;cinema\&amp;quot;]&amp;quot;
@@ -3143,12 +3156,12 @@ str(q) #la estructura de la consulta&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cinema &amp;lt;- osmdata_sf(q)
 cinema&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Object of class &amp;#39;osmdata&amp;#39; with:
-##                  $bbox : 40.2567047,-3.8635825,40.5767047,-3.5435825
+##                  $bbox : 40.3119774,-3.8889539,40.6437293,-3.5179163
 ##         $overpass_call : The call submitted to the overpass API
 ##                  $meta : metadata including timestamp and version numbers
-##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 212 points
+##            $osm_points : &amp;#39;sf&amp;#39; Simple Features Collection with 220 points
 ##             $osm_lines : NULL
-##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 11 polygons
+##          $osm_polygons : &amp;#39;sf&amp;#39; Simple Features Collection with 12 polygons
 ##        $osm_multilines : NULL
 ##     $osm_multipolygons : NULL&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Vemos que el resultado es una lista de distintos objetos espaciales. En nuestro caso únicamente nos interesaría &lt;em&gt;osm_points&lt;/em&gt;.&lt;/p&gt;
@@ -3203,6 +3216,7 @@ ggplot(mercadona$osm_points)+
           shape = 21)+
   theme_void()&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2018/acceso-a-la-base-de-datos-de-openstreetmaps-desde-r/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

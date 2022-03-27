@@ -161,13 +161,13 @@ In comparison to R Base, &lt;code&gt;readr&lt;/code&gt; functions are faster; th
 library(tidyverse)
 
 google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility&lt;/code&gt;&lt;/pre&gt;
@@ -403,13 +403,13 @@ make_datetime(2005, 5, 23, 5)&lt;/code&gt;&lt;/pre&gt;
 &lt;/table&gt;
 &lt;p&gt;In case you haven’t done it before, we import the mobility data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;google_mobility &amp;lt;- read_csv(&amp;quot;Global_Mobility_Report.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## -- Column specification --------------------------------------------------------
+&lt;pre&gt;&lt;code&gt;## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &amp;quot;,&amp;quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.&lt;/code&gt;&lt;/pre&gt;
 &lt;div id=&#34;select-and-rename&#34; class=&#34;section level3&#34; number=&#34;4.4.1&#34;&gt;
@@ -797,9 +797,9 @@ cor_mobility[1:5]&lt;/code&gt;&lt;/pre&gt;
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&amp;#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt;     &amp;lt;int&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;      
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -841,6 +841,7 @@ arrange(cor_mobility, estimate)&lt;/code&gt;&lt;/pre&gt;
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
 ## # ... with 17 more rows, and 1 more variable: alternative &amp;lt;chr&amp;gt;&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;Other practical examples here in this &lt;a href=&#34;https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/&#34;&gt;post&lt;/a&gt; or this &lt;a href=&#34;https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/&#34;&gt;other&lt;/a&gt;. More details can be found in the &lt;a href=&#34;https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf&#34;&gt;Cheat-Sheet&lt;/a&gt; of &lt;code&gt;purrr&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>

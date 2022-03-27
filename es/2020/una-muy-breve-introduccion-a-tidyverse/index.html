@@ -836,6 +836,10 @@
 <p>El universo de los paquetes de <code>tidyverse</code>, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de <code>tidyverse</code>. Por ejemplo, el paquete <code>sf</code> (<a href="https://r-spatial.github.io/sf/articles/sf1.html">simple feature</a>) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete <code>dplyr</code>.</p>
 <p>El núcleo de la colección lo constituyen los siguientes paquetes:</p>
 <table>
+<colgroup>
+<col width="11%" />
+<col width="88%" />
+</colgroup>
 <thead>
 <tr class="header">
 <th align="left">Paquete</th>
@@ -943,13 +947,13 @@ En comparación con <em>R Base</em> las funciones son más rápidas, ayudan a li
 library(tidyverse)
 
 google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
-<pre><code>## Rows: 516697 Columns: 13</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date</code></pre>
-<pre><code>## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>google_mobility</code></pre>
@@ -1185,13 +1189,13 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 </table>
 <p>En caso de que no lo hayas hecho antes, importamos los datos de movilidad.</p>
 <pre class="r"><code>google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
-<pre><code>## Rows: 516697 Columns: 13</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date</code></pre>
-<pre><code>## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div id="selecionar-y-renombrar" class="section level3" number="4.4.1">
@@ -1614,9 +1618,9 @@ europe_reg %&gt;%
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -1644,9 +1648,9 @@ europe_reg %&gt;%
 ## 
 ## $DK
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1    0.237      5.81  1.04e-8       567    0.158     0.313 Pearson&#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+## 1    0.237      5.81     1.04e-8       567    0.158     0.313 Pears~ two.sided  
 ## 
 ## $EE
 ## # A tibble: 1 x 8
@@ -1710,9 +1714,9 @@ europe_reg %&gt;%
 ## 
 ## $LT
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.204     -5.45  7.17e-8       686   -0.274    -0.131 Pearson&#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+## 1   -0.204     -5.45     7.17e-8       686   -0.274    -0.131 Pears~ two.sided  
 ## 
 ## $LV
 ## # A tibble: 1 x 8
@@ -1764,9 +1768,9 @@ europe_reg %&gt;%
 ## 
 ## $SK
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.196     -5.70  1.65e-8       810   -0.262    -0.129 Pearson&#39;~ two.sided</code></pre>
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+## 1   -0.196     -5.70     1.65e-8       810   -0.262    -0.129 Pears~ two.sided</code></pre>
 <p>Como ya hemos visto anteriormente, existen subfunciones de <code>map_*</code> para obtener en lugar de una lista un objeto de otra clase, aquí de <code>data.frame</code>.</p>
 <pre class="r"><code>cor_mobility &lt;- europe_reg %&gt;%
                   split(.$country_region_code) %&gt;% 
@@ -1790,6 +1794,7 @@ arrange(cor_mobility, estimate)</code></pre>
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
 ## # ... with 17 more rows, and 1 more variable: alternative &lt;chr&gt;</code></pre>
 <p>Otros ejemplos prácticos aquí en este <a href="https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/">post</a> or este <a href="https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/">otro</a>. Podemos encontrar más detalles en el <a href="https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf">Cheat-Sheet</a> de <code>purrr</code>.</p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 </div>
 

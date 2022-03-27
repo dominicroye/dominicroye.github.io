@@ -863,11 +863,11 @@ library(lubridate)</code></pre>
              mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&gt;%
                select(DATE:RR) %&gt;% 
              rename(date = DATE, pr = RR)</code></pre>
-<pre><code>## Rows: 27606 Columns: 5</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 27606 Columns: 5
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
-## dbl (5): STAID, SOUID, DATE, RR, Q_RR</code></pre>
-<pre><code>## 
+## dbl (5): STAID, SOUID, DATE, RR, Q_RR
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>data</code></pre>
@@ -893,7 +893,8 @@ library(lubridate)</code></pre>
             filter(date &gt;= &quot;1950-01-01&quot;) %&gt;%
                 group_by(yr, mo) %&gt;% 
                    summarise(prs = sum(pr, na.rm = TRUE))</code></pre>
-<pre><code>## `summarise()` has grouped output by &#39;yr&#39;. You can override using the `.groups` argument.</code></pre>
+<pre><code>## `summarise()` has grouped output by &#39;yr&#39;. You can override using the `.groups`
+## argument.</code></pre>
 <pre class="r"><code>data</code></pre>
 <pre><code>## # A tibble: 833 x 3
 ## # Groups:   yr [70]
@@ -1129,6 +1130,7 @@ g1</code></pre>
 p</code></pre>
 <p><img src="https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-16-1.png" width="3729" /></p>
 <pre class="r"><code>save_plot(&quot;pr_anomaly20162018_scq.png&quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)</code></pre>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 
     </div>

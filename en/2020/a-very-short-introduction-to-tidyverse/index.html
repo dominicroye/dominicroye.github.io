@@ -943,13 +943,13 @@ In comparison to R Base, <code>readr</code> functions are faster; they handle pr
 library(tidyverse)
 
 google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
-<pre><code>## Rows: 516697 Columns: 13</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date</code></pre>
-<pre><code>## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>google_mobility</code></pre>
@@ -1185,13 +1185,13 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 </table>
 <p>In case you haven’t done it before, we import the mobility data.</p>
 <pre class="r"><code>google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
-<pre><code>## Rows: 516697 Columns: 13</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
+<pre><code>## Rows: 516697 Columns: 13
+## -- Column specification --------------------------------------------------------
 ## Delimiter: &quot;,&quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
-## date (1): date</code></pre>
-<pre><code>## 
+## date (1): date
+## 
 ## i Use `spec()` to retrieve the full column specification for this data.
 ## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div id="select-and-rename" class="section level3" number="4.4.1">
@@ -1579,9 +1579,9 @@ cor_mobility[1:5]</code></pre>
 ## 
 ## $BE
 ## # A tibble: 1 x 8
-##   estimate statistic  p.value parameter conf.low conf.high method    alternative
-##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.312     -6.06  3.67e-9       340   -0.405    -0.213 Pearson&#39;~ two.sided  
+##   estimate statistic     p.value parameter conf.low conf.high method alternative
+##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
 ## 
 ## $BG
 ## # A tibble: 1 x 8
@@ -1623,6 +1623,7 @@ arrange(cor_mobility, estimate)</code></pre>
 ## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
 ## # ... with 17 more rows, and 1 more variable: alternative &lt;chr&gt;</code></pre>
 <p>Other practical examples here in this <a href="https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/">post</a> or this <a href="https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/">other</a>. More details can be found in the <a href="https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf">Cheat-Sheet</a> of <code>purrr</code>.</p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 </div>
 

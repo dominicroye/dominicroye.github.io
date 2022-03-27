@@ -372,6 +372,7 @@ global(spei, &amp;quot;mean&amp;quot;, na.rm = TRUE) %&amp;gt;% head()&lt;/code&
 ## spei12_2017_4 -0.07536089
 ## spei12_2017_5  0.06718260
 ## spei12_2017_6 -0.03461822&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -482,7 +483,7 @@ library(gifski)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;La función principal &lt;code&gt;terminator()&lt;/code&gt; basada en el javascript de &lt;code&gt;{Leaflet}&lt;/code&gt; necesita como argumentos: la fecha con la hora, la extensión mínima y máxima de longitud así como la resolución o el intervalo de longitud.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;t0 &amp;lt;- Sys.time() # fecha y hora de nuestro sistema operativo
 t0&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-01-12 16:03:37 CET&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2022-03-27 13:10:39 CEST&amp;quot;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;coord_nightday &amp;lt;- terminator(t0, -180, 180, 0.2) # estimamos la línea día-noche
 
 # lo convertimos en un objecto espacial de clase sf
@@ -662,6 +663,8 @@ ggplot() +
   # estilo del mapa
   theme_void() +
   theme(plot.title = element_text(hjust = .1, vjust = .9))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Raster pixels are placed at uneven horizontal intervals and will be
+## shifted. Consider using geom_tile() instead.&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/visualizar-el-ciclo-de-dia-noche-en-un-mapamundi/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;animación&#34; class=&#34;section level2&#34;&gt;
@@ -695,6 +698,7 @@ ggsave(str_c(&amp;quot;wld_night_&amp;quot;, str_remove_all(step, &amp;quot;:&am
 
 gifski(files, &amp;quot;night_day.gif&amp;quot;, width = 807, height = 409, loop = TRUE, delay = 0.1)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;night_day.gif&#34; /&gt;&lt;!-- --&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -838,8 +842,8 @@ bm # contiene tres capas (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
 ## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
 ## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
 ## source      : snapshot-2017-11-30T00_00_00Z.tiff 
-## red-grn-blue: 1, 2, 3 
-## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
+## colors RGB  : 1, 2, 3 
+## names       : snapshot-2~0_00_00Z_1, snapshot-2~0_00_00Z_2, snapshot-2~0_00_00Z_3&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot
 
 plotRGB(bm)&lt;/code&gt;&lt;/pre&gt;
@@ -978,6 +982,7 @@ grid &amp;lt;- st_graticule(terremotos) &lt;/code&gt;&lt;/pre&gt;
   theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/cartografia-firefly/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1235,6 +1240,7 @@ p &amp;lt;- p1 | p2
 
 p&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasimetrico-bivariante/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;/div&gt;
 </description>
@@ -1383,6 +1389,12 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## getOption(&amp;#39;qgisprocess.path&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Sys.getenv(&amp;#39;R_QGISPROCESS_PATH&amp;#39;) was not found.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Trying &amp;#39;qgis_process&amp;#39; on PATH&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Error in processx::run(&amp;quot;cmd.exe&amp;quot;, c(&amp;quot;/c&amp;quot;, &amp;quot;call&amp;quot;, path, args), ...): System command &amp;#39;cmd.exe&amp;#39; failed, exit status: 1, stderr:
+## E&amp;gt; &amp;quot;qgis_process&amp;quot; no se reconoce como un comando interno o externo,
+## E&amp;gt; programa o archivo por lotes ejecutable.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Found 1 QGIS installation containing &amp;#39;qgis_process&amp;#39;:
+##  C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying command &amp;#39;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;#39;&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Success!&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## QGIS version: 3.18.1-Zürich&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Metadata of 986 algorithms queried and stored in cache.
@@ -1391,18 +1403,18 @@ qgis_configure()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
 qgis_algorithms()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## # A tibble: 986 x 5
-##    provider provider_title algorithm         algorithm_id    algorithm_title    
-##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;             &amp;lt;chr&amp;gt;           &amp;lt;chr&amp;gt;              
-##  1 3d       QGIS (3D)      3d:tessellate     tessellate      Tessellate         
-##  2 gdal     GDAL           gdal:aspect       aspect          Aspect             
-##  3 gdal     GDAL           gdal:assignproje~ assignprojecti~ Assign projection  
-##  4 gdal     GDAL           gdal:buffervecto~ buffervectors   Buffer vectors     
-##  5 gdal     GDAL           gdal:buildvirtua~ buildvirtualra~ Build virtual rast~
-##  6 gdal     GDAL           gdal:buildvirtua~ buildvirtualve~ Build virtual vect~
-##  7 gdal     GDAL           gdal:cliprasterb~ cliprasterbyex~ Clip raster by ext~
-##  8 gdal     GDAL           gdal:cliprasterb~ cliprasterbyma~ Clip raster by mas~
-##  9 gdal     GDAL           gdal:clipvectorb~ clipvectorbyex~ Clip vector by ext~
-## 10 gdal     GDAL           gdal:clipvectorb~ clipvectorbypo~ Clip vector by mas~
+##    provider provider_title algorithm                algorithm_id algorithm_title
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;          &amp;lt;chr&amp;gt;                    &amp;lt;chr&amp;gt;        &amp;lt;chr&amp;gt;          
+##  1 3d       QGIS (3D)      3d:tessellate            tessellate   Tessellate     
+##  2 gdal     GDAL           gdal:aspect              aspect       Aspect         
+##  3 gdal     GDAL           gdal:assignprojection    assignproje~ Assign project~
+##  4 gdal     GDAL           gdal:buffervectors       buffervecto~ Buffer vectors 
+##  5 gdal     GDAL           gdal:buildvirtualraster  buildvirtua~ Build virtual ~
+##  6 gdal     GDAL           gdal:buildvirtualvector  buildvirtua~ Build virtual ~
+##  7 gdal     GDAL           gdal:cliprasterbyextent  cliprasterb~ Clip raster by~
+##  8 gdal     GDAL           gdal:cliprasterbymaskla~ cliprasterb~ Clip raster by~
+##  9 gdal     GDAL           gdal:clipvectorbyextent  clipvectorb~ Clip vector by~
+## 10 gdal     GDAL           gdal:clipvectorbypolygon clipvectorb~ Clip vector by~
 ## # ... with 976 more rows&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
 qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
@@ -1438,22 +1450,18 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- qgis_run_algorithm(alg = &amp;quot;native:extractvertices&amp;quot;,
                INPUT = river_line,
                OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call qgis_process run &amp;quot;native:extractvertices&amp;quot; \
-##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l\file57ec4c224632\file57ec66d44605.gpkg&amp;quot; \
-##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_database: Cannot find proj.db
-## proj_create_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_create_from_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_identify: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_get_authorities_from_database: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## proj_as_wkt: Cannot find proj.db&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## 
+&lt;pre&gt;&lt;code&gt;## Running cmd.exe /c call \
+##   &amp;quot;C:/Program Files/QGIS 3.18/bin/qgis_process-qgis.bat&amp;quot; run \
+##   &amp;quot;native:extractvertices&amp;quot; \
+##   &amp;quot;--INPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r\file67a81d8f1f66\file67a840795857.gpkg&amp;quot; \
+##   &amp;quot;--OUTPUT=C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r/rivers_world_vertices.geojson&amp;quot;
+## 
 ## ----------------
 ## Inputs
 ## ----------------
 ## 
-## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l\file57ec4c224632\file57ec66d44605.gpkg
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l/rivers_world_vertices.geojson
+## INPUT:   C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r\file67a81d8f1f66\file67a840795857.gpkg
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r/rivers_world_vertices.geojson
 ## 
 ## 
 ## 0...10...20...30...40...50...60...70...80...90...
@@ -1461,10 +1469,10 @@ qgis_show_help(&amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&
 ## Results
 ## ----------------
 ## 
-## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
+## OUTPUT:  C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r/rivers_world_vertices.geojson&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- st_read(qgis_output(river_vertices, &amp;quot;OUTPUT&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Reading layer `rivers_world_vertices&amp;#39; from data source 
-##   `C:\Users\xeo19\AppData\Local\Temp\RtmpSg3M8l\rivers_world_vertices.geojson&amp;#39; 
+##   `C:\Users\xeo19\AppData\Local\Temp\RtmpIns79r\rivers_world_vertices.geojson&amp;#39; 
 ##   using driver `GeoJSON&amp;#39;
 ## Simple feature collection with 339734 features and 12 fields
 ## Geometry type: POINT
@@ -1616,6 +1624,7 @@ negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho dir
   theme_polar()&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Warning: Ignoring unknown aesthetics: ymin, ymax&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
@@ -1840,6 +1849,7 @@ writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = 
 plot(r)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/calcular-la-distancia-al-mar-en-r/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;Con el cálculo de la distancia podemos llegar crear &lt;em&gt;arte&lt;/em&gt;, como se ve en la cabezera de este post, que incluye un mapamundi únicamente con la distancia al mar de todos los continentes. Una perspectiva diferente a nuestro mundo (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;aquí más&lt;/a&gt;).&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
     </item>
