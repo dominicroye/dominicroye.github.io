@@ -5,12 +5,328 @@
     <link>https://dominicroye.github.io/es/tag/raster/</link>
       <atom:link href="https://dominicroye.github.io/es/tag/raster/index.xml" rel="self" type="application/rss+xml" />
     <description>raster</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Tue, 08 Mar 2022 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Wed, 20 Jul 2022 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
       <title>raster</title>
       <link>https://dominicroye.github.io/es/tag/raster/</link>
     </image>
+    
+    <item>
+      <title>Efecto hillshade o sombras de laderas</title>
+      <link>https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/</link>
+      <pubDate>Wed, 20 Jul 2022 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/</guid>
+      <description>
+
+
+&lt;p&gt;Es muy habitual ver mapas de relieve con efectos de sombras, también conocidos como ‘hillshade’ lo que genera una profundidad visual. ¿Cómo podemos crear estos efectos en R y visualizarlos en ggplot2?&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;8%&#34; /&gt;
+&lt;col width=&#34;91%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;elevatr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Acceso a datos de elevación desde varias API&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster (paquete sucesor de raster)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;whitebox&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Una interfaz R para la biblioteca ‘WhiteboxTools’, que es una plataforma avanzada de análisis de datos geoespaciales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyterra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Funciones auxilares para trabajar con {terra}&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;giscoR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Límites administrativos del mundo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extensión para ggplot2 de múltiples ‘scales’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;elevatr&amp;quot;)) install.packages(&amp;quot;elevatr&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;whitebox&amp;quot;)) install.packages(&amp;quot;whitebox&amp;quot;)
+if(!require(&amp;quot;tidyterra&amp;quot;)) install.packages(&amp;quot;tidyterra&amp;quot;)
+if(!require(&amp;quot;giscoR&amp;quot;)) install.packages(&amp;quot;giscoR&amp;quot;)
+if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
+
+# paquetes
+library(sf)
+library(elevatr)
+library(tidyverse)
+library(terra)
+library(whitebox)
+library(ggnewscale)
+library(tidyterra)
+library(giscoR)
+library(units)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Datos&lt;/h1&gt;
+&lt;p&gt;Como área de interés usamos Suiza en este ejemplo. Con excepción de los límites de lagos &lt;a href=&#34;https://dominicroye.github.io/files/switzerland_lakes.zip&#34;&gt;descarga&lt;/a&gt;, los datos necesario obtenemos a través de APIs usando diferentes paquetes. El paquete &lt;code&gt;giscoR&lt;/code&gt; permite obtener los límites de países con diferentes resoluciones.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;suiz &amp;lt;- gisco_get_countries(country = &amp;quot;Switzerland&amp;quot;, resolution = &amp;quot;03&amp;quot;)
+
+plot(suiz)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Los límites de los lagos corresponden a una capa de modelos cartográficos digitales (DKM500) que ofrece &lt;a href=&#34;https://www.swisstopo.admin.ch/&#34;&gt;swisstopo&lt;/a&gt;. El objetivo es quedar sólo con los grandes lagos por tanto excluimos todos aquellos con menos de 50 km2 y también aquellos completamente en territorio italiano. Recuerda que con el paquete &lt;code&gt;units&lt;/code&gt; podemos indicar unidades y así hacer cálculos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los lagos
+suiz_lakes &amp;lt;- st_read(&amp;quot;22_DKM500_GEWAESSER_PLY.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `22_DKM500_GEWAESSER_PLY&amp;#39; from data source 
+##   `E:\GitHub\blog_update_2021\content\es\post\2022-07-19-hillshade-effect\22_DKM500_GEWAESSER_PLY.shp&amp;#39; 
+##   using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 596 features and 14 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 2480000 ymin: 1062000 xmax: 2865000 ymax: 1302000
+## Projected CRS: CH1903+ / LV95&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos a grandes lagos
+suiz_lakes &amp;lt;- mutate(suiz_lakes, areakm = set_units(SHP_AREA, &amp;quot;m2&amp;quot;) %&amp;gt;% set_units(&amp;quot;km2&amp;quot;)) %&amp;gt;% 
+                filter(areakm &amp;gt; set_units(50, &amp;quot;km2&amp;quot;),
+                       !NAMN1 %in% c(&amp;quot;Lago di Como / Lario&amp;quot;,
+                                     &amp;quot;Lago d&amp;#39;Iseo&amp;quot;,
+                                     &amp;quot;Lago di Garda&amp;quot;))
+plot(suiz_lakes)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 15 attributes; use max.plot = 15 to plot
+## all&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;modelo-digital-de-terreno-mdt&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Modelo digital de terreno (MDT)&lt;/h1&gt;
+&lt;p&gt;La función &lt;code&gt;get_elev_raster()&lt;/code&gt; nos permite descargar un MDT de cualquier región del mundo a través de diferentes proveedores en formato de ráster. Por defecto usa &lt;a href=&#34;https://registry.opendata.aws/terrain-tiles/&#34;&gt;AWS&lt;/a&gt;. Un argumento esencial es la resolución que depende de la latitud, la que se puede indicar como nivel de zoom (vease la ayuda). Por ejemplo, aquí usamos nivel 10 que a una latitud de 45º correspondería a aproximadamente 100 m.&lt;/p&gt;
+&lt;p&gt;Después de obtener el mdt de Suiza debemos enmascarar los límites del país. La clase del objeto es &lt;em&gt;RasterLayer&lt;/em&gt; del paquete &lt;code&gt;raster&lt;/code&gt;, no obstante, el nuevo estándar es &lt;code&gt;terra&lt;/code&gt; con la clase &lt;em&gt;SpatRaster&lt;/em&gt;. Por eso lo convertimos y después aplicamos la máscara. Finalmente reproyectamos al sistema de coordenadas de Suiza obtenido de los datos vectoriales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos el mdt con 
+mdt &amp;lt;- get_elev_raster(suiz, z = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Mosaicing &amp;amp; Projecting&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Note: Elevation units are in meters.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mdt # clase antigua de RasterLayer&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterLayer 
+## dimensions : 3869, 7913, 30615397  (nrow, ncol, ncell)
+## resolution : 0.0006219649, 0.0006219649  (x, y)
+## extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : file38b8b936d10.tif 
+## names      : file38b8b936d10 
+## values     : -32768, 32767  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(mdt)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a terra y enmascarar la zona de interés
+mdt &amp;lt;- rast(mdt) %&amp;gt;% 
+         mask(vect(suiz)) 
+
+# reporyectamos
+mdt &amp;lt;- project(mdt, crs(suiz_lakes))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Antes de calcular el efecto de sombra, creamos un simple mapa de relieve. En &lt;code&gt;ggplot2&lt;/code&gt; empleamos la geometría &lt;code&gt;geom_raster()&lt;/code&gt; indicando la longitud, latitud y la variable para definir el color. Añadimos los límites de los lagos usando &lt;code&gt;geom_sf()&lt;/code&gt; dado que se trata de un objeto &lt;em&gt;sf&lt;/em&gt;. Aquí sólo indicamos el color de relleno con un azul claro. Con ayuda de &lt;code&gt;scale_fill_hypso_tint_c()&lt;/code&gt; aplicamos una gama de colores correspondientes a un relieve, también llamado tintas hipsométricas, y definimos los cortes en la leyenda. En el resto de funciones hacemos ajustes de aspecto en la leyenda y en el estilo del gráfico.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos nuestro ráster en data.frame de xyz
+mdtdf &amp;lt;- as.data.frame(mdt, xy = TRUE)
+names(mdtdf)[3] &amp;lt;- &amp;quot;alt&amp;quot;
+
+# mapa
+ggplot() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt)) +
+   geom_sf(data = suiz_lakes,
+          fill = &amp;quot;#c6dbef&amp;quot;, 
+          colour = NA) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &amp;quot;right&amp;quot;)) +
+  labs(fill = &amp;quot;m&amp;quot;) +
+  coord_sf() +
+  theme_void() +
+  theme(legend.position = &amp;quot;bottom&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 1 rows containing missing values (geom_raster).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-el-hillshade&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Calcular el hillshade&lt;/h1&gt;
+&lt;p&gt;Recordemos que el efecto hillshade es nada más que añadir una iluminación hipotética con respecto a una posición de una fuente de luz para así ganar profundidad. Las sombras dependen de dos variables, el acimut, el ángulo de la orientación sobra la superficie de una esfera, y la elevación, el ángulo de la altura de la fuente.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;hillshade_effect.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;La información requerida para simular la iluminación es el modelo digital de terreno. La pendiente y la orientación podemos derivar del MDT usando la función &lt;code&gt;terrain()&lt;/code&gt; del paquete &lt;code&gt;terra&lt;/code&gt;. La unidad debe ser radianes. Una vez que tenemos todos los datos podemos hacer uso de la función &lt;code&gt;shade()&lt;/code&gt; indicando el ángulo (elevación) y la dirección (acimut). El resultado es un ráster con valores entre 0 y 255, lo que nos indica sombras con bajos valores, siendo 0 negro y 255 blanco.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimamos la pendiente
+sl &amp;lt;- terrain(mdt, &amp;quot;slope&amp;quot;, unit = &amp;quot;radians&amp;quot;)
+plot(sl)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# estimamos la orientación
+asp &amp;lt;- terrain(mdt, &amp;quot;aspect&amp;quot;, unit = &amp;quot;radians&amp;quot;)
+plot(asp)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-7-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculamos el efecto hillshade con 
+hill_single &amp;lt;- shade(sl, asp, 
+      angle = 45, 
+      direction = 300,
+      normalize= TRUE)
+
+# resultado final hillshade 
+plot(hill_single, col = grey(1:100/100))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-7-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;combinar-el-relieve-y-el-efecto-de-sombra&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Combinar el relieve y el efecto de sombra&lt;/h1&gt;
+&lt;p&gt;El problema para añadir al mismo tiempo el relieve con su tinta hipsométrica y el efecto hillshade dentro de &lt;code&gt;ggplot2&lt;/code&gt; es el que tenemos dos diferentes rellenos para cada capa.
+La solución consiste en usar extensión &lt;code&gt;ggnewscale&lt;/code&gt; que permite añadir múltiples &lt;em&gt;scales&lt;/em&gt;. Primero añadimos con &lt;code&gt;geom_raster()&lt;/code&gt; el hillshade, después definimos los tonos grises y antes de añadir la altitud incluimos la función &lt;code&gt;new_scale_fill()&lt;/code&gt; para marcar otro relleno diferente. Para logarar el efecto es necesario dar un grado de transparencia a la capa del relieve, en este caso es del 70%. La elección de la dirección es importante, de ahí que debemos tener en cuenta siempre el lugar y el recorrido aparente del sol (&lt;a href=&#34;https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es&#34;&gt;sunearthtools&lt;/a&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos el hillshade a xyz
+hilldf_single &amp;lt;- as.data.frame(hill_single, xy = TRUE)
+
+# mapa 
+ggplot() +
+  geom_raster(data = hilldf_single,
+              aes(x, y, fill = lyr1),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;) +
+  new_scale_fill() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  geom_sf(data = suiz_lakes,
+          fill = &amp;quot;#c6dbef&amp;quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &amp;quot;right&amp;quot;)) +
+  labs(fill = &amp;quot;m&amp;quot;) +
+  coord_sf() +
+  theme_void() +
+  theme(legend.position = &amp;quot;bottom&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;sombras-multidireccionales&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Sombras multidireccionales&lt;/h1&gt;
+&lt;p&gt;Lo que hemos visto es un efecto unidireccional, aunque es lo más habitual, podemos crear un efecto más suave e incluso más realista combinando varias direcciones.&lt;/p&gt;
+&lt;p&gt;Simplemente mapeamos sobre un vector de varias direcciones al que se aplica la función &lt;code&gt;shade()&lt;/code&gt; con una elevación fija. Después convertimos la lista de ráster en un objeto multidimensional de varias capas para reducirlas sumando todas las capas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# pasamos varias direcciones a shade()
+hillmulti &amp;lt;- map(c(270, 15, 60, 330), function(dir){ 
+                    shade(sl, asp, 
+                          angle = 45, 
+                          direction = dir,
+                          normalize= TRUE)}
+  )
+
+# creamos un raster multidimensional y lo reducimos sumando
+hillmulti &amp;lt;- rast(hillmulti) %&amp;gt;% sum()
+
+# multidireccional
+plot(hillmulti, col = grey(1:100/100))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# unidireccional
+plot(hill_single, col = grey(1:100/100))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-9-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Hacemos lo mismo como antes para visualizar el relieve con sombras multidireccionales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos el hillshade a xyz
+hillmultidf &amp;lt;- as.data.frame(hillmulti, xy = TRUE)
+
+# mapa
+ggplot() +
+  geom_raster(data = hillmultidf,
+              aes(x, y, fill = sum),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;) +
+  new_scale_fill() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  geom_sf(data = suiz_lakes,
+          fill = &amp;quot;#c6dbef&amp;quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &amp;quot;right&amp;quot;)) +
+  labs(fill = &amp;quot;m&amp;quot;) +
+  coord_sf() +
+  theme_void() +
+    theme(legend.position = &amp;quot;top&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 1 rows containing missing values (geom_raster).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;otra-alternativa-para-direcciones-multidireccionales&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Otra alternativa para direcciones multidireccionales&lt;/h1&gt;
+&lt;p&gt;Con menos control sobre las direcciones también sería posible aplicar la función &lt;code&gt;wbt_multidirectional_hillshade()&lt;/code&gt; del paquete &lt;code&gt;whitebox&lt;/code&gt;. WhiteboxTool contiene muchas herramientas como plataforma avanzada de análisis de datos geoespaciales. La desventaja es que perdemos control sobre las direcciones y también es necesario exportar el MDT a geotiff para obtener otro ráster con las sombras.&lt;/p&gt;
+&lt;p&gt;Primero instalamos la librería con la función &lt;code&gt;install_whitebox()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalar whitebox
+install_whitebox()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# exportamos el mdt
+writeRaster(mdt, &amp;quot;mdt.tiff&amp;quot;, overwrite = TRUE)
+
+# iniciamos whitebox
+wbt_init()
+
+# creamos el hillshade
+wbt_multidirectional_hillshade(&amp;quot;mdt.tiff&amp;quot;,
+                               &amp;quot;hillshade.tiff&amp;quot;)
+
+# volvemos a importar el hillshade
+hillwb &amp;lt;- rast(&amp;quot;hillshade.tiff&amp;quot;)
+plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# debemos exluir los 0 
+hillwb[hillwb == 0] &amp;lt;- NA
+plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-12-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos el hillshade a xyz
+hillwbdf &amp;lt;- as.data.frame(hillwb, xy = TRUE)
+
+# mapa
+ggplot() +
+  geom_raster(data = hillwbdf,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;) +
+  new_scale_fill() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &amp;quot;right&amp;quot;)) +
+  labs(fill = &amp;quot;m&amp;quot;) +
+  coord_sf() +
+  theme_void()  +
+  theme(legend.position = &amp;quot;top&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 1 rows containing missing values (geom_raster).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Uso de datos multidimensionales espaciales</title>

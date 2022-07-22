@@ -1,0 +1,1572 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dr. Dominic Royé" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="It is very common to see relief maps with shadow effects, also known as &#39;hillshade&#39;, which generates visual depth. How can we create these effects in R and how to include them in ggplot2?" />
+
+  
+    <link rel="alternate" hreflang="es" href="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/" />
+  
+  <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/en/2022/hillshade-effects/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.css" integrity="" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.b48d89910a3f8560bb2d78fedea8d682.css" />
+
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27463794-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-27463794-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/en/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://dominicroye.github.io/en/2022/hillshade-effects/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@@dr_xeo" />
+    <meta property="twitter:creator" content="@@dr_xeo" />
+  
+  <meta property="og:site_name" content="Dr. Dominic Royé" />
+  <meta property="og:url" content="https://dominicroye.github.io/en/2022/hillshade-effects/" />
+  <meta property="og:title" content="Hillshade effects | Dr. Dominic Royé" />
+  <meta property="og:description" content="It is very common to see relief maps with shadow effects, also known as &#39;hillshade&#39;, which generates visual depth. How can we create these effects in R and how to include them in ggplot2?" /><meta property="og:image" content="https://dominicroye.github.io/en/2022/hillshade-effects/featured.png" />
+    <meta property="twitter:image" content="https://dominicroye.github.io/en/2022/hillshade-effects/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2022-07-20T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2022-07-20T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dominicroye.github.io/en/2022/hillshade-effects/"
+  },
+  "headline": "Hillshade effects",
+  
+  "image": [
+    "https://dominicroye.github.io/en/2022/hillshade-effects/featured.png"
+  ],
+  
+  "datePublished": "2022-07-20T00:00:00Z",
+  "dateModified": "2022-07-20T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Dominic Royé"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Santiago de Compostela",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_192x192_fit_lanczos_3.png"
+    }
+  },
+  "description": "It is very common to see relief maps with shadow effects, also known as 'hillshade', which generates visual depth. How can we create these effects in R and how to include them in ggplot2?"
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Hillshade effects | Dr. Dominic Royé</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="817ca9851e347d11d5e83112158f367c" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.2da3b1fa37e894630bf6de39b1b694b3.js"></script>
+
+  
+
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+            
+            >
+             <div style = "padding-top:0.5em;">Dr. Dominic Royé</div></a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+          
+          ></a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#"><span>home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#posts"><span>blog</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#featured"><span>publications</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#projects"><span>graphs</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#about"><span>me</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+            
+            <li class="nav-item d-none d-lg-inline-flex">
+              <a class="nav-link" href="https://twitter.com/dr_xeo" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        
+
+        
+        
+
+        
+        
+
+        
+        
+        <li class="nav-item dropdown i18n-dropdown">
+          <a href="#" class="nav-link " data-toggle="dropdown"
+             aria-haspopup="true" aria-label="Languages">
+            <i class="fas fa-globe mr-1" aria-hidden="true"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-item dropdown-item-active">
+              <span>English</span>
+            </div>
+            
+            <a class="dropdown-item" href="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/">
+              <span>Español</span>
+            </a>
+            
+          </div>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+
+<div class="article-container pt-3">
+  <h1>Hillshade effects</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    2022-07-20
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    8 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/en/category/gis/">gis</a>, <a href="/en/category/r/">R</a>, <a href="/en/category/rintermediate/">R:intermediate</a>, <a href="/en/category/visualization/">visualization</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 240px;">
+  <div style="position: relative">
+    <img src="/en/2022/hillshade-effects/featured_hu950a091053b8873a01a84700b60101c2_2938992_720x0_resize_lanczos_3.png" width="720" height="240" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+
+
+<p>It is very common to see relief maps with shadow effects, also known as ‘hillshade’, which generates visual depth. How can we create these effects in R and how to include them in ggplot2?</p>
+<div id="packages" class="section level1">
+<h1>Packages</h1>
+<table>
+<colgroup>
+<col width="9%" />
+<col width="90%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Package</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.</td>
+</tr>
+<tr class="even">
+<td align="left">sf</td>
+<td align="left">Simple Feature: import, export and manipulate vector data</td>
+</tr>
+<tr class="odd">
+<td align="left">elevatr</td>
+<td align="left">Access to elevation data from various APIs</td>
+</tr>
+<tr class="even">
+<td align="left">terra</td>
+<td align="left">Import, export and manipulate raster ({raster} successor package)</td>
+</tr>
+<tr class="odd">
+<td align="left">whitebox</td>
+<td align="left">An R interface to the ‘WhiteboxTools’ library, which is an advanced geospatial data analysis platform</td>
+</tr>
+<tr class="even">
+<td align="left">tidyterra</td>
+<td align="left">Helper functions for working with {terra}</td>
+</tr>
+<tr class="odd">
+<td align="left">giscoR</td>
+<td align="left">Administrative boundaries of the world</td>
+</tr>
+<tr class="even">
+<td align="left">ggnewscale</td>
+<td align="left">Extension for ggplot2 of multiple ‘scales’</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code># install the packages if necessary
+
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;elevatr&quot;)) install.packages(&quot;elevatr&quot;)
+if(!require(&quot;terra&quot;)) install.packages(&quot;terra&quot;)
+if(!require(&quot;whitebox&quot;)) install.packages(&quot;whitebox&quot;)
+if(!require(&quot;tidyterra&quot;)) install.packages(&quot;tidyterra&quot;)
+if(!require(&quot;giscoR&quot;)) install.packages(&quot;giscoR&quot;)
+if(!require(&quot;ggnewscale&quot;)) install.packages(&quot;ggnewscale&quot;)
+
+# packages
+library(sf)
+library(elevatr)
+library(tidyverse)
+library(terra)
+library(whitebox)
+library(ggnewscale)
+library(tidyterra)
+library(giscoR)
+library(units)</code></pre>
+</div>
+<div id="data" class="section level1">
+<h1>Data</h1>
+<p>As an area of interest, we use Switzerland in this example. Except for lake boundaries <a href="/files/switzerland_lakes.zip">download</a>, the necessary data is obtained through APIs using different packages. For example, the <code>giscoR</code> package allows you to get country boundaries with different resolutions.</p>
+<pre class="r"><code>suiz &lt;- gisco_get_countries(country = &quot;Switzerland&quot;, resolution = &quot;03&quot;)
+
+plot(suiz)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
+<p>The lake boundaries correspond to a layer of digital cartographic models (DKM500) provided by <a href="https://www.swisstopo.admin.ch/">swisstopo</a>. The objective is to keep only the largest lakes; therefore, we exclude all those with less than 50 km2 and also those located entirely in Italian territory. Remember that with the <code>units</code> package, we can indicate units and thus do calculations.</p>
+<pre class="r"><code># import the lakes boundaries
+suiz_lakes &lt;- st_read(&quot;22_DKM500_GEWAESSER_PLY.shp&quot;)</code></pre>
+<pre><code>## Reading layer `22_DKM500_GEWAESSER_PLY&#39; from data source 
+##   `E:\GitHub\blog_update_2021\content\en\post\2022-07-19-hillshade-effect\22_DKM500_GEWAESSER_PLY.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 596 features and 14 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 2480000 ymin: 1062000 xmax: 2865000 ymax: 1302000
+## Projected CRS: CH1903+ / LV95</code></pre>
+<pre class="r"><code># filter the largest ones
+suiz_lakes &lt;- mutate(suiz_lakes, areakm = set_units(SHP_AREA, &quot;m2&quot;) %&gt;% 
+                                          set_units(&quot;km2&quot;)) %&gt;% 
+                filter(areakm &gt; set_units(50, &quot;km2&quot;),
+                       !NAMN1 %in% c(&quot;Lago di Como / Lario&quot;,
+                                     &quot;Lago d&#39;Iseo&quot;,
+                                     &quot;Lago di Garda&quot;))
+plot(suiz_lakes)</code></pre>
+<pre><code>## Warning: plotting the first 9 out of 15 attributes; use max.plot = 15 to plot
+## all</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+</div>
+<div id="digital-elevation-model-dem" class="section level1">
+<h1>Digital Elevation Model (DEM)</h1>
+<p>The <code>get_elev_raster()</code> function allows us to download a DEM from any region of the world through different providers in raster format. By default, it uses <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. An essential argument is the latitude-dependent resolution, which can be specified as the zoom level (see function help). For example, we use level 10, which at a latitude of 45º would correspond to approximately 100 m.</p>
+<p>After obtaining the DEM from Switzerland, we must mask the country’s boundaries. The object’s class is <em>RasterLayer</em> from the <code>raster</code> package, however, the new standard is <code>terra</code> with the class <em>SpatRaster</em>. That’s why we convert it and then apply the mask. Finally, we reproject to the Swiss coordinate system obtained from the vector data.</p>
+<pre class="r"><code># get the DEM with
+mdt &lt;- get_elev_raster(suiz, z = 10)</code></pre>
+<pre><code>## Mosaicing &amp; Projecting</code></pre>
+<pre><code>## Note: Elevation units are in meters.</code></pre>
+<pre class="r"><code>mdt # old RasterLayer class</code></pre>
+<pre><code>## class      : RasterLayer 
+## dimensions : 3869, 7913, 30615397  (nrow, ncol, ncell)
+## resolution : 0.0006219649, 0.0006219649  (x, y)
+## extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : file1a383b30325d.tif 
+## names      : file1a383b30325d 
+## values     : -32768, 32767  (min, max)</code></pre>
+<pre class="r"><code>plot(mdt)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
+<pre class="r"><code># convert to terra and mask area of interest
+mdt &lt;- rast(mdt) %&gt;% 
+         mask(vect(suiz)) 
+
+# reproject
+mdt &lt;- project(mdt, crs(suiz_lakes))
+
+# reproject vect
+suiz &lt;- st_transform(suiz, st_crs(suiz_lakes))</code></pre>
+<p>Before calculating the shadow effect, we create a simple relief map. In <code>ggplot2</code>, we use the <code>geom_raster()</code> geometry, indicating the longitude, latitude and the variable to define the color. We add the boundaries of the lakes using <code>geom_sf()</code> since it is an <em>sf</em> object. Here we only indicate the fill color with a light blue. Then, with the help of <code>scale_fill_hypso_tint_c()</code>, we apply a range of colors corresponding to the relief, also called hypsometric tinting, and we define the breaks in the legend. We make appearance adjustments in the legend and the graph’s style in the rest of the functions.</p>
+<pre class="r"><code># convert the raster into a data.frame of xyz
+mdtdf &lt;- as.data.frame(mdt, xy = TRUE)
+names(mdtdf)[3] &lt;- &quot;alt&quot;
+
+# map
+ggplot() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt)) +
+   geom_sf(data = suiz_lakes,
+          fill = &quot;#c6dbef&quot;, 
+          colour = NA) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &quot;right&quot;)) +
+  labs(fill = &quot;m&quot;) +
+  coord_sf() +
+  theme_void() +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
+</div>
+<div id="calculate-the-hillshade" class="section level1">
+<h1>Calculate the hillshade</h1>
+<p>Let’s remember that the hillshade effect is nothing more than adding a hypothetical illumination with respect to a position of a light source to gain depth. Shadows depend on two variables, azimuth, the angle from the orientation on the surface of a sphere, and elevation, the angle from the height of the source.</p>
+<p><img src="hillshade_effect.png" /></p>
+<p>The information required to simulate lighting is the digital elevation model. The slope and aspect can be derived from the DEM using the <code>terrain()</code> function from the <code>terra</code> package. The unit must be radians. Once we have all the data, we can use the <code>shade()</code> function to indicate the angle (elevation) and direction (azimuth). The result is a raster with values between 0 and 255, which shows shadows with low values, being 0 black and 255 white.</p>
+<pre class="r"><code># estimate the slope
+sl &lt;- terrain(mdt, &quot;slope&quot;, unit = &quot;radians&quot;)
+plot(sl)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-7-1.png" width="672" /></p>
+<pre class="r"><code># estimate the aspect or orientation
+asp &lt;- terrain(mdt, &quot;aspect&quot;, unit = &quot;radians&quot;)
+plot(asp)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
+<pre class="r"><code># calculate the hillshade effect with 45º of elevation
+hill_single &lt;- shade(sl, asp, 
+      angle = 45, 
+      direction = 300,
+      normalize= TRUE)
+
+# final hillshade 
+plot(hill_single, col = grey(1:100/100))</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-7-3.png" width="672" /></p>
+</div>
+<div id="combine-the-relief-and-shadow-effect" class="section level1">
+<h1>Combine the relief and shadow effect</h1>
+<p>The problem with adding both the relief with its hypsometric tints and the hillshade effect inside <code>ggplot2</code> is that we have two different fills or scales for each layer.
+The solution is to use the <code>ggnewscale</code> extension, which allows you to add multiple <em>scales</em> of the same argument. First, we add the hillshade with <code>geom_raster()</code>, then we define the grey tones, and before adding the altitude, we include the <code>new_scale_fill()</code> function to mark a different fill. To achieve the effect, it is necessary to give a degree of transparency to the relief layer; in this case, it is 70%. The choice of direction is important, which is why we must always take into account the place and the apparent path of the sun (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
+<pre class="r"><code># convert the hillshade to xyz
+hilldf_single &lt;- as.data.frame(hill_single, xy = TRUE)
+
+# map 
+ggplot() +
+  geom_raster(data = hilldf_single,
+              aes(x, y, fill = lyr1),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = &quot;Greys&quot;) +
+  new_scale_fill() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  geom_sf(data = suiz_lakes,
+          fill = &quot;#c6dbef&quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &quot;right&quot;)) +
+  labs(fill = &quot;m&quot;) +
+  coord_sf() +
+  theme_void() +
+  theme(legend.position = &quot;bottom&quot;)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+</div>
+<div id="multidirectional-shadows" class="section level1">
+<h1>Multidirectional shadows</h1>
+<p>We have seen a unidirectional effect; although it is the most common, we can create a smoother and even more realistic effect by combining several directions.</p>
+<p>We map onto a vector of various directions to which the <code>shade()</code> function is applied with a fixed elevation angle. We then convert the raster list to a multi-layered object to reduce them by adding all the layers.</p>
+<pre class="r"><code># pass multiple directions to shade()
+hillmulti &lt;- map(c(270, 15, 60, 330), function(dir){ 
+                    shade(sl, asp, 
+                          angle = 45, 
+                          direction = dir,
+                          normalize= TRUE)}
+  )
+
+# create a multidimensional raster and reduce it by summing up
+hillmulti &lt;- rast(hillmulti) %&gt;% sum()
+
+# multidirectional
+plot(hillmulti, col = grey(1:100/100))</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+<pre class="r"><code># unidirectional
+plot(hill_single, col = grey(1:100/100))</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-9-2.png" width="672" /></p>
+<p>We do the same as before to visualize the relief with multidirectional shadows.</p>
+<pre class="r"><code># convert the hillshade to xyz
+hillmultidf &lt;- as.data.frame(hillmulti, xy = TRUE)
+
+# map
+ggplot() +
+  geom_raster(data = hillmultidf,
+              aes(x, y, fill = sum),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = &quot;Greys&quot;) +
+  new_scale_fill() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  geom_sf(data = suiz_lakes,
+          fill = &quot;#c6dbef&quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &quot;right&quot;)) +
+  labs(fill = &quot;m&quot;) +
+  coord_sf() +
+  theme_void() +
+    theme(legend.position = &quot;top&quot;)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+</div>
+<div id="another-alternative-for-multidirectional-shadows" class="section level1">
+<h1>Another alternative for multidirectional shadows</h1>
+<p>With less control over the directions, it would also be possible to apply the <code>wbt_multidirectional_hillshade()</code> function from the <code>whitebox</code> package. WhiteboxTool contains many tools as an advanced geospatial data analysis platform. The disadvantage is that we lose control over the directions and that it is also necessary to export the DEM to geotiff to obtain another raster with the shadows.</p>
+<p>We first install the library with the <code>install_whitebox()</code> function.</p>
+<pre class="r"><code># instal whitebox
+install_whitebox()</code></pre>
+<pre class="r"><code># export the DEM
+writeRaster(mdt, &quot;mdt.tiff&quot;, overwrite = TRUE)
+
+# launch whitebox
+wbt_init()
+
+# create the hillshade
+wbt_multidirectional_hillshade(&quot;mdt.tiff&quot;,
+                               &quot;hillshade.tiff&quot;)
+
+# re-import the hillshade
+hillwb &lt;- rast(&quot;hillshade.tiff&quot;)
+plot(hillwb)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<pre class="r"><code># remask 
+hillwb &lt;- mask(hillwb, vect(suiz))
+plot(hillwb)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+<pre class="r"><code># convert the hillshade to xyz
+hillwbdf &lt;- as.data.frame(hillwb, xy = TRUE)
+
+# map
+ggplot() +
+  geom_raster(data = hillwbdf,
+              aes(x, y, fill = hillshade),
+              show.legend = FALSE) +
+  scale_fill_distiller(palette = &quot;Greys&quot;) +
+  new_scale_fill() +
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7) +
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000)) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &quot;right&quot;)) +
+  labs(fill = &quot;m&quot;) +
+  coord_sf() +
+  theme_void()  +
+  theme(legend.position = &quot;top&quot;)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/en/tag/raster/">raster</a>
+  
+  <a class="badge badge-light" href="/en/tag/hillshade/">hillshade</a>
+  
+  <a class="badge badge-light" href="/en/tag/dem/">DEM</a>
+  
+  <a class="badge badge-light" href="/en/tag/shadow/">shadow</a>
+  
+  <a class="badge badge-light" href="/en/tag/elevation/">elevation</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://dominicroye.github.io/en/2022/hillshade-effects/&amp;text=Hillshade%20effects" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io/en/2022/hillshade-effects/&amp;t=Hillshade%20effects" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Hillshade%20effects&amp;body=https://dominicroye.github.io/en/2022/hillshade-effects/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://dominicroye.github.io/en/2022/hillshade-effects/&amp;title=Hillshade%20effects" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Hillshade%20effects%20https://dominicroye.github.io/en/2022/hillshade-effects/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://dominicroye.github.io/en/2022/hillshade-effects/&amp;title=Hillshade%20effects" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://dominicroye.github.io/"><img class="avatar mr-3 avatar-circle" src="/en/author/dr.-dominic-roye/avatar_hu930bec32484cd86675af8880de95caa2_508993_270x270_fill_q75_lanczos_center.jpg" alt="Dr. Dominic Royé"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://dominicroye.github.io/">Dr. Dominic Royé</a></h5>
+      <h6 class="card-subtitle">Senior postdoctoral researcher</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dr_xeo" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/en/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/dominicroye" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dominicroye/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+        <i class="ai ai-researchgate"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/en/2022/use-of-multidimensional-spatial-data/">Use of multidimensional spatial data</a></li>
+      
+      <li><a href="/en/2021/visualize-the-day-night-cycle-on-a-world-map/">Visualize the day-night cycle on a world map</a></li>
+      
+      <li><a href="/en/2021/firefly-cartography/">Firefly cartography</a></li>
+      
+      <li><a href="/en/2019/calculating-the-distance-to-the-sea-in-r/">Calculating the distance to the sea in R</a></li>
+      
+      <li><a href="/en/2021/bivariate-dasymetric-map/">Bivariate dasymetric map</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+    <div class="powered-by d-flex flex-wrap pb-2 justify-content-center">
+      <div class="p-2 font-weight-bold"><i class="fas fa-globe pr-1" aria-hidden="true"></i>Languages:</div>
+      <div class="p-2">English</div>
+      
+        <div class="p-2"><a href="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/">Español</a></div>
+      
+    </div>
+  
+
+  
+
+  
+  <p class="powered-by">
+    © 2018-2022 Dominic Royé. All rights reserved
+  </p>
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdn.jsdelivr.net/gh/desandro/imagesloaded@v4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/metafizzy/isotope@v3.0.6/dist/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.js" integrity="" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/en/js/wowchemy.min.50d3bf3df0c53b31631bb48a62b35f92.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>
