@@ -1,4 +1,3 @@
-<script src="index.es_files/header-attrs-2.12/header-attrs.js"></script>
 
 <div id="TOC">
 <ul>
@@ -146,29 +145,29 @@ library(tidyverse)
 
 google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
 <pre><code>## Rows: 516697 Columns: 13
-## -- Column specification --------------------------------------------------------
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
 ## date (1): date
 ## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <pre class="r"><code>google_mobility</code></pre>
-<pre><code>## # A tibble: 516,697 x 13
+<pre><code>## # A tibble: 516,697 × 13
 ##    country_region_code country_region  sub_region_1 sub_region_2 iso_3166_2_code
 ##    &lt;chr&gt;               &lt;chr&gt;           &lt;chr&gt;        &lt;chr&gt;        &lt;chr&gt;          
-##  1 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  2 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  3 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  4 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  5 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  6 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  7 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  8 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-##  9 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-## 10 AE                  United Arab Em~ &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
-## # ... with 516,687 more rows, and 8 more variables: census_fips_code &lt;chr&gt;,
+##  1 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  2 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  3 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  4 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  5 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  6 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  7 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  8 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+##  9 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+## 10 AE                  United Arab Em… &lt;NA&gt;         &lt;NA&gt;         &lt;NA&gt;           
+## # … with 516,687 more rows, and 8 more variables: census_fips_code &lt;chr&gt;,
 ## #   date &lt;date&gt;, retail_and_recreation_percent_change_from_baseline &lt;dbl&gt;,
 ## #   grocery_and_pharmacy_percent_change_from_baseline &lt;dbl&gt;,
 ## #   parks_percent_change_from_baseline &lt;dbl&gt;,
@@ -388,14 +387,14 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 <p>En caso de que no lo hayas hecho antes, importamos los datos de movilidad.</p>
 <pre class="r"><code>google_mobility &lt;- read_csv(&quot;Global_Mobility_Report.csv&quot;)</code></pre>
 <pre><code>## Rows: 516697 Columns: 13
-## -- Column specification --------------------------------------------------------
+## ── Column specification ────────────────────────────────────────────────────────
 ## Delimiter: &quot;,&quot;
 ## chr  (6): country_region_code, country_region, sub_region_1, sub_region_2, i...
 ## dbl  (6): retail_and_recreation_percent_change_from_baseline, grocery_and_ph...
 ## date (1): date
 ## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+## ℹ Use `spec()` to retrieve the full column specification for this data.
+## ℹ Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
 <div id="selecionar-y-renombrar" class="section level3" number="4.4.1">
 <h3><span class="header-section-number">4.4.1</span> Selecionar y renombrar</h3>
 <p>Podemos selecionar o eliminar columnas con la función <code>select()</code>, usando el nombre o índice de la(s) columna(s). Para suprimir columnas hacemos uso del signo negativo. La función <code>rename</code> ayuda en renombrar columnas o bien con el mismo nombre o con su índice.</p>
@@ -410,7 +409,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 <p>Para filtrar datos, empleamos <code>filter()</code> con operadores lógicos (<code>|</code>, <code>==</code>, <code>&gt;</code>, etc) o funciones que devuelven un valor lógico (<code>str_detect()</code>, <code>is.na()</code>, etc.). La función <code>arrange()</code> ordena de menor a mayor por una o múltiples variables (con el signo negativo <code>-</code> se invierte el orden de mayor a menor).</p>
 <pre class="r"><code>filter(residential_mobility, 
        country_region_code == &quot;US&quot;)</code></pre>
-<pre><code>## # A tibble: 304,648 x 5
+<pre><code>## # A tibble: 304,648 × 5
 ##    country_region_code country_region sub_region_1 date        resi
 ##    &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;        &lt;date&gt;     &lt;dbl&gt;
 ##  1 US                  United States  &lt;NA&gt;         2020-02-15    -1
@@ -423,11 +422,11 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ##  8 US                  United States  &lt;NA&gt;         2020-02-22    -1
 ##  9 US                  United States  &lt;NA&gt;         2020-02-23    -1
 ## 10 US                  United States  &lt;NA&gt;         2020-02-24     0
-## # ... with 304,638 more rows</code></pre>
+## # … with 304,638 more rows</code></pre>
 <pre class="r"><code>filter(residential_mobility, 
        country_region_code == &quot;US&quot;, 
        sub_region_1 == &quot;New York&quot;)</code></pre>
-<pre><code>## # A tibble: 7,068 x 5
+<pre><code>## # A tibble: 7,068 × 5
 ##    country_region_code country_region sub_region_1 date        resi
 ##    &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;        &lt;date&gt;     &lt;dbl&gt;
 ##  1 US                  United States  New York     2020-02-15     0
@@ -440,24 +439,24 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ##  8 US                  United States  New York     2020-02-22    -1
 ##  9 US                  United States  New York     2020-02-23    -1
 ## 10 US                  United States  New York     2020-02-24     0
-## # ... with 7,058 more rows</code></pre>
+## # … with 7,058 more rows</code></pre>
 <pre class="r"><code>filter(residential_mobility, 
        resi &gt; 50) %&gt;% 
           arrange(-resi)</code></pre>
-<pre><code>## # A tibble: 32 x 5
+<pre><code>## # A tibble: 32 × 5
 ##    country_region_code country_region sub_region_1              date        resi
 ##    &lt;chr&gt;               &lt;chr&gt;          &lt;chr&gt;                     &lt;date&gt;     &lt;dbl&gt;
 ##  1 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-14    56
 ##  2 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-21    55
 ##  3 SG                  Singapore      &lt;NA&gt;                      2020-05-01    55
 ##  4 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-28    54
-##  5 PE                  Peru           Metropolitan Municipalit~ 2020-04-10    54
+##  5 PE                  Peru           Metropolitan Municipalit… 2020-04-10    54
 ##  6 EC                  Ecuador        Pichincha                 2020-03-27    53
 ##  7 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-11    53
 ##  8 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-13    53
 ##  9 KW                  Kuwait         Al Farwaniyah Governorate 2020-05-20    53
 ## 10 SG                  Singapore      &lt;NA&gt;                      2020-04-10    53
-## # ... with 22 more rows</code></pre>
+## # … with 22 more rows</code></pre>
 </div>
 <div id="agrupar-y-resumir" class="section level3" number="4.4.3">
 <h3><span class="header-section-number">4.4.3</span> Agrupar y resumir</h3>
@@ -505,7 +504,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ## Warning in min(resi, na.rm = TRUE): ningún argumento finito para min; retornando
 ## Inf</code></pre>
 <pre class="r"><code>arrange(resi_variability, -range)</code></pre>
-<pre><code>## # A tibble: 94 x 4
+<pre><code>## # A tibble: 94 × 4
 ##    country_region    mx   min range
 ##    &lt;chr&gt;          &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ##  1 Nigeria           43     6    37
@@ -518,7 +517,7 @@ make_datetime(2005, 5, 23, 5)</code></pre>
 ##  8 Ecuador           44    27    17
 ##  9 Argentina         35    19    16
 ## 10 Chile             30    14    16
-## # ... with 84 more rows</code></pre>
+## # … with 84 more rows</code></pre>
 </div>
 <div id="unir-tablas" class="section level3" number="4.4.4">
 <h3><span class="header-section-number">4.4.4</span> Unir tablas</h3>
@@ -552,7 +551,7 @@ plot(wld)</code></pre>
                 select(-geometry, -sub_region_1)
 
 str(subset_europe)</code></pre>
-<pre><code>## tibble [3,988 x 7] (S3: tbl_df/tbl/data.frame)
+<pre><code>## tibble [3,988 × 7] (S3: tbl_df/tbl/data.frame)
 ##  $ country_region_code: chr [1:3988] &quot;AT&quot; &quot;AT&quot; &quot;AT&quot; &quot;AT&quot; ...
 ##  $ country_region     : chr [1:3988] &quot;Austria&quot; &quot;Austria&quot; &quot;Austria&quot; &quot;Austria&quot; ...
 ##  $ date               : Date[1:3988], format: &quot;2020-02-15&quot; &quot;2020-02-16&quot; ...
@@ -567,7 +566,7 @@ str(subset_europe)</code></pre>
 <pre class="r"><code># subconjunto 
 mobility_selection &lt;- select(subset_europe, country_region_code, date:resi)
 mobility_selection</code></pre>
-<pre><code>## # A tibble: 3,988 x 3
+<pre><code>## # A tibble: 3,988 × 3
 ##    country_region_code date        resi
 ##    &lt;chr&gt;               &lt;date&gt;     &lt;dbl&gt;
 ##  1 AT                  2020-02-15    -2
@@ -580,13 +579,13 @@ mobility_selection</code></pre>
 ##  8 AT                  2020-02-22    -2
 ##  9 AT                  2020-02-23     0
 ## 10 AT                  2020-02-24    -1
-## # ... with 3,978 more rows</code></pre>
+## # … with 3,978 more rows</code></pre>
 <pre class="r"><code># tabla ancha
 mobi_wide &lt;- pivot_wider(mobility_selection, 
                          names_from = country_region_code,
                          values_from = resi)
 mobi_wide</code></pre>
-<pre><code>## # A tibble: 114 x 36
+<pre><code>## # A tibble: 114 × 36
 ##    date          AT    BA    BE    BG    BY    CH    CZ    DE    DK    EE    ES
 ##    &lt;date&gt;     &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt;
 ##  1 2020-02-15    -2    -1    -1     0    -1    -1    -2    -1     0     0    -2
@@ -599,7 +598,7 @@ mobi_wide</code></pre>
 ##  8 2020-02-22    -2    -1     0     0    -2    -2    -3     0     1     0    -2
 ##  9 2020-02-23     0    -1     0    -3    -1    -1     0     0     0    -2    -3
 ## 10 2020-02-24    -1    -1     4    -1     0     0     0     4     0    16     0
-## # ... with 104 more rows, and 24 more variables: FI &lt;dbl&gt;, FR &lt;dbl&gt;, GB &lt;dbl&gt;,
+## # … with 104 more rows, and 24 more variables: FI &lt;dbl&gt;, FR &lt;dbl&gt;, GB &lt;dbl&gt;,
 ## #   GR &lt;dbl&gt;, HR &lt;dbl&gt;, HU &lt;dbl&gt;, IE &lt;dbl&gt;, IT &lt;dbl&gt;, LT &lt;dbl&gt;, LU &lt;dbl&gt;,
 ## #   LV &lt;dbl&gt;, MD &lt;dbl&gt;, MK &lt;dbl&gt;, NL &lt;dbl&gt;, NO &lt;dbl&gt;, PL &lt;dbl&gt;, PT &lt;dbl&gt;,
 ## #   RO &lt;dbl&gt;, RS &lt;dbl&gt;, RU &lt;dbl&gt;, SE &lt;dbl&gt;, SI &lt;dbl&gt;, SK &lt;dbl&gt;, UA &lt;dbl&gt;</code></pre>
@@ -608,7 +607,7 @@ pivot_longer(mobi_wide,
              2:36,
              names_to = &quot;country_code&quot;,
              values_to = &quot;resi&quot;)</code></pre>
-<pre><code>## # A tibble: 3,990 x 3
+<pre><code>## # A tibble: 3,990 × 3
 ##    date       country_code  resi
 ##    &lt;date&gt;     &lt;chr&gt;        &lt;dbl&gt;
 ##  1 2020-02-15 AT              -2
@@ -621,7 +620,7 @@ pivot_longer(mobi_wide,
 ##  8 2020-02-15 DE              -1
 ##  9 2020-02-15 DK               0
 ## 10 2020-02-15 EE               0
-## # ... with 3,980 more rows</code></pre>
+## # … with 3,980 more rows</code></pre>
 <p>Otro grupo de funciones a las que deberías echar un vistazo son: <code>separate()</code>, <code>case_when()</code>, <code>complete()</code>. Podemos encontrar más detalles en el <a href="https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf">Cheat-Sheet</a> de <code>dplyr</code></p>
 </div>
 </div>
@@ -809,166 +808,166 @@ europe_reg %&gt;%
   split(.$country_region_code) %&gt;% 
   map(cor_test, formula = &quot;~ residential_percent_change_from_baseline + parks_percent_change_from_baseline&quot;)  </code></pre>
 <pre><code>## $AT
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.360     -12.3 2.68e-32      1009   -0.413    -0.305 Pearson&#39;~ two.sided  
+## 1   -0.360     -12.3 2.68e-32      1009   -0.413    -0.305 Pearson&#39;… two.sided  
 ## 
 ## $BE
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic     p.value parameter conf.low conf.high method alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
-## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears~ two.sided  
+## 1   -0.312     -6.06     3.67e-9       340   -0.405    -0.213 Pears… two.sided  
 ## 
 ## $BG
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic   p.value parameter conf.low conf.high method   alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      
-## 1   -0.677     -37.8 1.47e-227      1694   -0.702    -0.650 Pearson~ two.sided  
+## 1   -0.677     -37.8 1.47e-227      1694   -0.702    -0.650 Pearson… two.sided  
 ## 
 ## $CH
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1  -0.0786     -2.91 0.00370      1360   -0.131   -0.0256 Pearson&#39;s~ two.sided  
+## 1  -0.0786     -2.91 0.00370      1360   -0.131   -0.0256 Pearson&#39;s… two.sided  
 ## 
 ## $CZ
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1  -0.0837     -3.35 0.000824      1593   -0.132   -0.0347 Pearson&#39;~ two.sided  
+## 1  -0.0837     -3.35 0.000824      1593   -0.132   -0.0347 Pearson&#39;… two.sided  
 ## 
 ## $DE
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1  0.00239     0.102   0.919      1814  -0.0436    0.0484 Pearson&#39;s~ two.sided  
+## 1  0.00239     0.102   0.919      1814  -0.0436    0.0484 Pearson&#39;s… two.sided  
 ## 
 ## $DK
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic     p.value parameter conf.low conf.high method alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
-## 1    0.237      5.81     1.04e-8       567    0.158     0.313 Pears~ two.sided  
+## 1    0.237      5.81     1.04e-8       567    0.158     0.313 Pears… two.sided  
 ## 
 ## $EE
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1   -0.235     -2.88 0.00462       142   -0.384   -0.0740 Pearson&#39;s~ two.sided  
+## 1   -0.235     -2.88 0.00462       142   -0.384   -0.0740 Pearson&#39;s… two.sided  
 ## 
 ## $ES
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1   -0.825     -65.4       0      2005   -0.839    -0.811 Pearson&#39;s~ two.sided  
+## 1   -0.825     -65.4       0      2005   -0.839    -0.811 Pearson&#39;s… two.sided  
 ## 
 ## $FI
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1   0.0427      1.42   0.155      1106  -0.0162     0.101 Pearson&#39;s~ two.sided  
+## 1   0.0427      1.42   0.155      1106  -0.0162     0.101 Pearson&#39;s… two.sided  
 ## 
 ## $FR
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic   p.value parameter conf.low conf.high method   alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      
-## 1   -0.698     -37.4 3.29e-216      1474   -0.723    -0.671 Pearson~ two.sided  
+## 1   -0.698     -37.4 3.29e-216      1474   -0.723    -0.671 Pearson… two.sided  
 ## 
 ## $GB
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.105     -11.0 9.19e-28     10712   -0.124   -0.0865 Pearson&#39;~ two.sided  
+## 1   -0.105     -11.0 9.19e-28     10712   -0.124   -0.0865 Pearson&#39;… two.sided  
 ## 
 ## $GR
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic   p.value parameter conf.low conf.high method   alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      
-## 1   -0.692     -27.0 1.03e-114       796   -0.726    -0.654 Pearson~ two.sided  
+## 1   -0.692     -27.0 1.03e-114       796   -0.726    -0.654 Pearson… two.sided  
 ## 
 ## $HR
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.579     -21.9 9.32e-87       954   -0.620    -0.536 Pearson&#39;~ two.sided  
+## 1   -0.579     -21.9 9.32e-87       954   -0.620    -0.536 Pearson&#39;… two.sided  
 ## 
 ## $HU
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.342     -15.6 6.71e-52      1843   -0.382    -0.301 Pearson&#39;~ two.sided  
+## 1   -0.342     -15.6 6.71e-52      1843   -0.382    -0.301 Pearson&#39;… two.sided  
 ## 
 ## $IE
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.222     -8.45 7.49e-17      1378   -0.271    -0.171 Pearson&#39;~ two.sided  
+## 1   -0.222     -8.45 7.49e-17      1378   -0.271    -0.171 Pearson&#39;… two.sided  
 ## 
 ## $IT
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1   -0.831     -71.0       0      2250   -0.844    -0.818 Pearson&#39;s~ two.sided  
+## 1   -0.831     -71.0       0      2250   -0.844    -0.818 Pearson&#39;s… two.sided  
 ## 
 ## $LT
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic     p.value parameter conf.low conf.high method alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
-## 1   -0.204     -5.45     7.17e-8       686   -0.274    -0.131 Pears~ two.sided  
+## 1   -0.204     -5.45     7.17e-8       686   -0.274    -0.131 Pears… two.sided  
 ## 
 ## $LV
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.544     -6.87 3.84e-10       112   -0.662    -0.401 Pearson&#39;~ two.sided  
+## 1   -0.544     -6.87 3.84e-10       112   -0.662    -0.401 Pearson&#39;… two.sided  
 ## 
 ## $NL
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic     p.value parameter conf.low conf.high method alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
-## 1    0.143      5.31 0.000000125      1356   0.0903     0.195 Pears~ two.sided  
+## 1    0.143      5.31 0.000000125      1356   0.0903     0.195 Pears… two.sided  
 ## 
 ## $NO
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1   0.0483      1.69  0.0911      1221 -0.00774     0.104 Pearson&#39;s~ two.sided  
+## 1   0.0483      1.69  0.0911      1221 -0.00774     0.104 Pearson&#39;s… two.sided  
 ## 
 ## $PL
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic   p.value parameter conf.low conf.high method   alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      
-## 1   -0.531     -26.7 6.08e-133      1815   -0.564    -0.498 Pearson~ two.sided  
+## 1   -0.531     -26.7 6.08e-133      1815   -0.564    -0.498 Pearson… two.sided  
 ## 
 ## $PT
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic   p.value parameter conf.low conf.high method   alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      
-## 1   -0.729     -46.9 2.12e-321      1938   -0.749    -0.707 Pearson~ two.sided  
+## 1   -0.729     -46.9 2.12e-321      1938   -0.749    -0.707 Pearson… two.sided  
 ## 
 ## $RO
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic p.value parameter conf.low conf.high method     alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;chr&gt;      
-## 1   -0.640     -56.0       0      4517   -0.657    -0.623 Pearson&#39;s~ two.sided  
+## 1   -0.640     -56.0       0      4517   -0.657    -0.623 Pearson&#39;s… two.sided  
 ## 
 ## $SE
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic   p.value parameter conf.low conf.high method   alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;    &lt;chr&gt;      
-## 1    0.106      3.93 0.0000909      1367   0.0529     0.158 Pearson~ two.sided  
+## 1    0.106      3.93 0.0000909      1367   0.0529     0.158 Pearson… two.sided  
 ## 
 ## $SI
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic  p.value parameter conf.low conf.high method    alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;     &lt;chr&gt;      
-## 1   -0.627     -11.4 1.98e-23       200   -0.704    -0.535 Pearson&#39;~ two.sided  
+## 1   -0.627     -11.4 1.98e-23       200   -0.704    -0.535 Pearson&#39;… two.sided  
 ## 
 ## $SK
-## # A tibble: 1 x 8
+## # A tibble: 1 × 8
 ##   estimate statistic     p.value parameter conf.low conf.high method alternative
 ##      &lt;dbl&gt;     &lt;dbl&gt;       &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;  &lt;chr&gt;      
-## 1   -0.196     -5.70     1.65e-8       810   -0.262    -0.129 Pears~ two.sided</code></pre>
+## 1   -0.196     -5.70     1.65e-8       810   -0.262    -0.129 Pears… two.sided</code></pre>
 <p>Como ya hemos visto anteriormente, existen subfunciones de <code>map_*</code> para obtener en lugar de una lista un objeto de otra clase, aquí de <code>data.frame</code>.</p>
 <pre class="r"><code>cor_mobility &lt;- europe_reg %&gt;%
                   split(.$country_region_code) %&gt;% 
@@ -977,20 +976,21 @@ europe_reg %&gt;%
                             .id = &quot;country_code&quot;)
 
 arrange(cor_mobility, estimate)</code></pre>
-<pre><code>## # A tibble: 27 x 9
+<pre><code>## # A tibble: 27 × 9
 ##    country_code estimate statistic   p.value parameter conf.low conf.high method
 ##    &lt;chr&gt;           &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;     &lt;int&gt;    &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt; 
-##  1 IT             -0.831    -71.0  0              2250   -0.844    -0.818 Pears~
-##  2 ES             -0.825    -65.4  0              2005   -0.839    -0.811 Pears~
-##  3 PT             -0.729    -46.9  2.12e-321      1938   -0.749    -0.707 Pears~
-##  4 FR             -0.698    -37.4  3.29e-216      1474   -0.723    -0.671 Pears~
-##  5 GR             -0.692    -27.0  1.03e-114       796   -0.726    -0.654 Pears~
-##  6 BG             -0.677    -37.8  1.47e-227      1694   -0.702    -0.650 Pears~
-##  7 RO             -0.640    -56.0  0              4517   -0.657    -0.623 Pears~
-##  8 SI             -0.627    -11.4  1.98e- 23       200   -0.704    -0.535 Pears~
-##  9 HR             -0.579    -21.9  9.32e- 87       954   -0.620    -0.536 Pears~
-## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears~
-## # ... with 17 more rows, and 1 more variable: alternative &lt;chr&gt;</code></pre>
+##  1 IT             -0.831    -71.0  0              2250   -0.844    -0.818 Pears…
+##  2 ES             -0.825    -65.4  0              2005   -0.839    -0.811 Pears…
+##  3 PT             -0.729    -46.9  2.12e-321      1938   -0.749    -0.707 Pears…
+##  4 FR             -0.698    -37.4  3.29e-216      1474   -0.723    -0.671 Pears…
+##  5 GR             -0.692    -27.0  1.03e-114       796   -0.726    -0.654 Pears…
+##  6 BG             -0.677    -37.8  1.47e-227      1694   -0.702    -0.650 Pears…
+##  7 RO             -0.640    -56.0  0              4517   -0.657    -0.623 Pears…
+##  8 SI             -0.627    -11.4  1.98e- 23       200   -0.704    -0.535 Pears…
+##  9 HR             -0.579    -21.9  9.32e- 87       954   -0.620    -0.536 Pears…
+## 10 LV             -0.544     -6.87 3.84e- 10       112   -0.662    -0.401 Pears…
+## # … with 17 more rows, and 1 more variable: alternative &lt;chr&gt;</code></pre>
 <p>Otros ejemplos prácticos aquí en este <a href="https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/">post</a> or este <a href="https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/">otro</a>. Podemos encontrar más detalles en el <a href="https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf">Cheat-Sheet</a> de <code>purrr</code>.</p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 </div>
