@@ -893,12 +893,12 @@ library(units)</code></pre>
 </div>
 <div id="datos" class="section level1">
 <h1>Datos</h1>
-<p>Como área de interés usamos Suiza en este ejemplo. Con excepción de los límites de lagos <a href="/files/switzerland_lakes.zip">descarga</a>, los datos necesario obtenemos a través de APIs usando diferentes paquetes. El paquete <code>giscoR</code> permite obtener los límites de países con diferentes resoluciones.</p>
+<p>Como área de interés usamos Suiza en este ejemplo. Con excepción de los límites de lagos <a href="/files/switzerland_lakes.zip">descarga</a>, los datos necesarios los obtenemos a través de APIs usando diferentes paquetes. El paquete <code>giscoR</code> permite obtener los límites de países con diferentes resoluciones.</p>
 <pre class="r"><code>suiz &lt;- gisco_get_countries(country = &quot;Switzerland&quot;, resolution = &quot;03&quot;)
 
 plot(suiz)</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-3-1.png" width="672" /></p>
-<p>Los límites de los lagos corresponden a una capa de modelos cartográficos digitales (DKM500) que ofrece <a href="https://www.swisstopo.admin.ch/">swisstopo</a>. El objetivo es quedar sólo con los grandes lagos por tanto excluimos todos aquellos con menos de 50 km2 y también aquellos completamente en territorio italiano. Recuerda que con el paquete <code>units</code> podemos indicar unidades y así hacer cálculos.</p>
+<p>Los límites de los lagos corresponden a una capa de modelos cartográficos digitales (DKM500) que ofrece <a href="https://www.swisstopo.admin.ch/">swisstopo</a>. El objetivo es quedar sólo con los grandes lagos, por tanto excluimos todos aquellos con menos de 50 km2 y también aquellos situados completamente en territorio italiano. Recuerda que con el paquete <code>units</code> podemos indicar unidades y así hacer cálculos.</p>
 <pre class="r"><code># importamos los lagos
 suiz_lakes &lt;- st_read(&quot;22_DKM500_GEWAESSER_PLY.shp&quot;)</code></pre>
 <pre><code>## Reading layer `22_DKM500_GEWAESSER_PLY&#39; from data source 
@@ -910,7 +910,8 @@ suiz_lakes &lt;- st_read(&quot;22_DKM500_GEWAESSER_PLY.shp&quot;)</code></pre>
 ## Bounding box:  xmin: 2480000 ymin: 1062000 xmax: 2865000 ymax: 1302000
 ## Projected CRS: CH1903+ / LV95</code></pre>
 <pre class="r"><code># filtramos a grandes lagos
-suiz_lakes &lt;- mutate(suiz_lakes, areakm = set_units(SHP_AREA, &quot;m2&quot;) %&gt;% set_units(&quot;km2&quot;)) %&gt;% 
+suiz_lakes &lt;- mutate(suiz_lakes, areakm = set_units(SHP_AREA, &quot;m2&quot;) %&gt;% 
+                                          set_units(&quot;km2&quot;)) %&gt;% 
                 filter(areakm &gt; set_units(50, &quot;km2&quot;),
                        !NAMN1 %in% c(&quot;Lago di Como / Lario&quot;,
                                      &quot;Lago d&#39;Iseo&quot;,
@@ -922,8 +923,8 @@ plot(suiz_lakes)</code></pre>
 </div>
 <div id="modelo-digital-de-terreno-mdt" class="section level1">
 <h1>Modelo digital de terreno (MDT)</h1>
-<p>La función <code>get_elev_raster()</code> nos permite descargar un MDT de cualquier región del mundo a través de diferentes proveedores en formato de ráster. Por defecto usa <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. Un argumento esencial es la resolución que depende de la latitud, la que se puede indicar como nivel de zoom (vease la ayuda). Por ejemplo, aquí usamos nivel 10 que a una latitud de 45º correspondería a aproximadamente 100 m.</p>
-<p>Después de obtener el mdt de Suiza debemos enmascarar los límites del país. La clase del objeto es <em>RasterLayer</em> del paquete <code>raster</code>, no obstante, el nuevo estándar es <code>terra</code> con la clase <em>SpatRaster</em>. Por eso lo convertimos y después aplicamos la máscara. Finalmente reproyectamos al sistema de coordenadas de Suiza obtenido de los datos vectoriales.</p>
+<p>La función <code>get_elev_raster()</code> nos permite descargar un MDT de cualquier región del mundo a través de diferentes proveedores en formato de ráster. Por defecto usa <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. Un argumento esencial es la resolución que depende de la latitud, la que se puede indicar como nivel de zoom (véase la ayuda). Por ejemplo, aquí usamos nivel 10 que a una latitud de 45º correspondería a aproximadamente 100m.</p>
+<p>Después de obtener el MDT de Suiza debemos enmascarar los límites del país. La clase del objeto es <em>RasterLayer</em> del paquete <code>raster</code>, no obstante, el nuevo estándar es <code>terra</code> con la clase <em>SpatRaster</em>. Por eso lo convertimos y después aplicamos la máscara. Finalmente reproyectamos al sistema de coordenadas de Suiza obtenido de los datos vectoriales.</p>
 <pre class="r"><code># obtenemos el mdt con 
 mdt &lt;- get_elev_raster(suiz, z = 10)</code></pre>
 <pre><code>## Mosaicing &amp; Projecting</code></pre>
@@ -934,8 +935,8 @@ mdt &lt;- get_elev_raster(suiz, z = 10)</code></pre>
 ## resolution : 0.0006219649, 0.0006219649  (x, y)
 ## extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : file38b8b936d10.tif 
-## names      : file38b8b936d10 
+## source     : file3f7c489b49.tif 
+## names      : file3f7c489b49 
 ## values     : -32768, 32767  (min, max)</code></pre>
 <pre class="r"><code>plot(mdt)</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
@@ -943,8 +944,11 @@ mdt &lt;- get_elev_raster(suiz, z = 10)</code></pre>
 mdt &lt;- rast(mdt) %&gt;% 
          mask(vect(suiz)) 
 
-# reporyectamos
-mdt &lt;- project(mdt, crs(suiz_lakes))</code></pre>
+# reproyectamos
+mdt &lt;- project(mdt, crs(suiz_lakes))
+
+# reproyectamos 
+suiz &lt;- st_transform(suiz, st_crs(suiz_lakes))</code></pre>
 <p>Antes de calcular el efecto de sombra, creamos un simple mapa de relieve. En <code>ggplot2</code> empleamos la geometría <code>geom_raster()</code> indicando la longitud, latitud y la variable para definir el color. Añadimos los límites de los lagos usando <code>geom_sf()</code> dado que se trata de un objeto <em>sf</em>. Aquí sólo indicamos el color de relleno con un azul claro. Con ayuda de <code>scale_fill_hypso_tint_c()</code> aplicamos una gama de colores correspondientes a un relieve, también llamado tintas hipsométricas, y definimos los cortes en la leyenda. En el resto de funciones hacemos ajustes de aspecto en la leyenda y en el estilo del gráfico.</p>
 <pre class="r"><code># convertimos nuestro ráster en data.frame de xyz
 mdtdf &lt;- as.data.frame(mdt, xy = TRUE)
@@ -983,7 +987,7 @@ plot(sl)</code></pre>
 asp &lt;- terrain(mdt, &quot;aspect&quot;, unit = &quot;radians&quot;)
 plot(asp)</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-7-2.png" width="672" /></p>
-<pre class="r"><code># calculamos el efecto hillshade con 
+<pre class="r"><code># calculamos el efecto hillshade con 45º de elevación 
 hill_single &lt;- shade(sl, asp, 
       angle = 45, 
       direction = 300,
@@ -995,8 +999,8 @@ plot(hill_single, col = grey(1:100/100))</code></pre>
 </div>
 <div id="combinar-el-relieve-y-el-efecto-de-sombra" class="section level1">
 <h1>Combinar el relieve y el efecto de sombra</h1>
-<p>El problema para añadir al mismo tiempo el relieve con su tinta hipsométrica y el efecto hillshade dentro de <code>ggplot2</code> es el que tenemos dos diferentes rellenos para cada capa.
-La solución consiste en usar extensión <code>ggnewscale</code> que permite añadir múltiples <em>scales</em>. Primero añadimos con <code>geom_raster()</code> el hillshade, después definimos los tonos grises y antes de añadir la altitud incluimos la función <code>new_scale_fill()</code> para marcar otro relleno diferente. Para logarar el efecto es necesario dar un grado de transparencia a la capa del relieve, en este caso es del 70%. La elección de la dirección es importante, de ahí que debemos tener en cuenta siempre el lugar y el recorrido aparente del sol (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
+<p>El problema para añadir al mismo tiempo el relieve con su tinta hipsométrica y el efecto hillshade dentro de <code>ggplot2</code> es que tenemos dos diferentes rellenos para cada capa.
+La solución consiste en usar la extensión <code>ggnewscale</code> que permite añadir múltiples <em>scales</em>. Primero añadimos con <code>geom_raster()</code> el hillshade, después definimos los tonos grises y antes de añadir la altitud incluimos la función <code>new_scale_fill()</code> para marcar otro relleno diferente. Para lograr el efecto es necesario dar un grado de transparencia a la capa del relieve, en este caso es del 70%. La elección de la dirección es importante, de ahí que debemos tener en cuenta siempre el lugar y el recorrido aparente del sol. (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
 <pre class="r"><code># convertimos el hillshade a xyz
 hilldf_single &lt;- as.data.frame(hill_single, xy = TRUE)
 
@@ -1076,7 +1080,7 @@ ggplot() +
 </div>
 <div id="otra-alternativa-para-direcciones-multidireccionales" class="section level1">
 <h1>Otra alternativa para direcciones multidireccionales</h1>
-<p>Con menos control sobre las direcciones también sería posible aplicar la función <code>wbt_multidirectional_hillshade()</code> del paquete <code>whitebox</code>. WhiteboxTool contiene muchas herramientas como plataforma avanzada de análisis de datos geoespaciales. La desventaja es que perdemos control sobre las direcciones y también es necesario exportar el MDT a geotiff para obtener otro ráster con las sombras.</p>
+<p>Con menos control sobre las direcciones también sería posible aplicar la función <code>wbt_multidirectional_hillshade()</code> del paquete <code>whitebox</code>. WhiteboxTool contiene muchas herramientas como plataforma avanzada de análisis de datos geoespaciales. La desventaja es que perdemos control sobre las direcciones y que también es necesario exportar el MDT a geotiff para obtener otro ráster con las sombras.</p>
 <p>Primero instalamos la librería con la función <code>install_whitebox()</code>.</p>
 <pre class="r"><code># instalar whitebox
 install_whitebox()</code></pre>
@@ -1094,8 +1098,8 @@ wbt_multidirectional_hillshade(&quot;mdt.tiff&quot;,
 hillwb &lt;- rast(&quot;hillshade.tiff&quot;)
 plot(hillwb)</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
-<pre class="r"><code># debemos exluir los 0 
-hillwb[hillwb == 0] &lt;- NA
+<pre class="r"><code># volver a enmascarar
+hillwb &lt;- mask(hillwb, vect(suiz))
 plot(hillwb)</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
 <pre class="r"><code># convertimos el hillshade a xyz
@@ -1142,6 +1146,10 @@ ggplot() +
   <a class="badge badge-light" href="/es/tag/hillshade/">hillshade</a>
   
   <a class="badge badge-light" href="/es/tag/mdt/">mdt</a>
+  
+  <a class="badge badge-light" href="/es/tag/sombras/">sombras</a>
+  
+  <a class="badge badge-light" href="/es/tag/altitud/">altitud</a>
   
 </div>
 
