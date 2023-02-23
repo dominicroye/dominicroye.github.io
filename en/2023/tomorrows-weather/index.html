@@ -1,0 +1,1730 @@
+<!DOCTYPE html><html lang="en-us" >
+
+
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+  
+  
+  
+    <meta name="generator" content="Wowchemy 5.3.0 for Hugo" />
+  
+
+  
+  
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+  
+  
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  
+
+  
+  
+  
+    
+      
+      <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap">
+      <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&family=Roboto+Mono&family=Roboto:wght@400;700&display=swap" media="print" onload="this.media='all'">
+    
+  
+
+  
+  
+  
+  
+  
+    
+    
+    
+  
+  
+
+  <meta name="author" content="Dr. Dominic Royé" />
+
+  
+  
+  
+    
+  
+  <meta name="description" content="A while back I saw Chris Campbell&#39;s global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 we&#39;ll see how we can access the GFS (Global Forecast System) data and visualize it with `{ggplot2}`, even though there are several ways, in this case we use the Google Earth Engine API via the `{rgee}` package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days." />
+
+  
+    <link rel="alternate" hreflang="es" href="https://dominicroye.github.io/es/2023/el-tiempo-de-manana/" />
+  
+  <link rel="alternate" hreflang="en-us" href="https://dominicroye.github.io/en/2023/tomorrows-weather/" />
+
+  
+  
+  
+    <meta name="theme-color" content="#1565c0" />
+  
+
+  
+  
+
+  
+
+  <link rel="stylesheet" href="/css/vendor-bundle.min.f1ecf783c14edc00c9320c205831ad8e.css" media="print" onload="this.media='all'">
+
+  
+  
+  
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/academicons@1.9.1/css/academicons.min.css" integrity="sha512-W0xM4mr6dEP9nREo7Z9z+9X70wytKvMGeDsj7ps2+xg5QPrEBXC8tAW1IFnzjR6eoJ90JmCnFzerQJTLzIEHjA==" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+    
+    
+    
+      
+      
+    
+    
+    
+
+    
+    
+    
+      
+    
+    
+      
+      
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-light" media="print" onload="this.media='all'">
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/styles/dracula.min.css" crossorigin="anonymous" title="hl-dark" media="print" onload="this.media='all'" disabled>
+      
+    
+
+    
+    
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.css" integrity="" crossorigin="anonymous" media="print" onload="this.media='all'">
+    
+
+    
+
+    
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+        
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+      
+      
+
+      
+      
+
+      
+    
+  
+
+  
+  
+  
+  
+  
+  <link rel="stylesheet" href="/css/wowchemy.b48d89910a3f8560bb2d78fedea8d682.css" />
+
+  
+
+
+
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=UA-27463794-2"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+
+  function gtag() {
+      dataLayer.push(arguments);
+  }
+
+  function trackOutboundLink(url, target) {
+    gtag('event', 'click', {
+         'event_category': 'outbound',
+         'event_label': url,
+         'transport_type': 'beacon',
+         'event_callback': function () {
+           if (target !== '_blank') {
+             document.location = url;
+           }
+         }
+    });
+    console.debug("Outbound link clicked: " + url);
+  }
+
+  function onClickCallback(event) {
+    if ((event.target.tagName !== 'A') || (event.target.host === window.location.host)) {
+      return;
+    }
+    trackOutboundLink(event.target, event.target.getAttribute('target'));  
+  }
+
+  gtag('js', new Date());
+  gtag('config', 'UA-27463794-2', {});
+  gtag('set', {'cookie_flags': 'SameSite=None;Secure'});
+
+  
+  document.addEventListener('click', onClickCallback, false);
+</script>
+
+
+  
+
+  
+
+  
+
+
+
+
+  
+  
+  
+
+  
+
+  
+    <link rel="manifest" href="/en/manifest.webmanifest" />
+  
+
+  <link rel="icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_32x32_fill_lanczos_center_3.png" />
+  <link rel="apple-touch-icon" type="image/png" href="/media/icon_hu27cb63416a395b8c8d0d7112b85e26a9_17299_180x180_fill_lanczos_center_3.png" />
+
+  <link rel="canonical" href="https://dominicroye.github.io/en/2023/tomorrows-weather/" />
+
+  
+  
+  
+  
+  
+  
+  
+  
+    
+  
+  
+
+  
+  
+    
+    
+  
+  <meta property="twitter:card" content="summary_large_image" />
+  
+    <meta property="twitter:site" content="@@dr_xeo" />
+    <meta property="twitter:creator" content="@@dr_xeo" />
+  
+  <meta property="og:site_name" content="Dr. Dominic Royé" />
+  <meta property="og:url" content="https://dominicroye.github.io/en/2023/tomorrows-weather/" />
+  <meta property="og:title" content="Tomorrow&#39;s weather | Dr. Dominic Royé" />
+  <meta property="og:description" content="A while back I saw Chris Campbell&#39;s global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 we&#39;ll see how we can access the GFS (Global Forecast System) data and visualize it with `{ggplot2}`, even though there are several ways, in this case we use the Google Earth Engine API via the `{rgee}` package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days." /><meta property="og:image" content="https://dominicroye.github.io/en/2023/tomorrows-weather/featured.png" />
+    <meta property="twitter:image" content="https://dominicroye.github.io/en/2023/tomorrows-weather/featured.png" /><meta property="og:locale" content="en-us" />
+  
+    
+      <meta
+        property="article:published_time"
+        content="2023-02-20T00:00:00&#43;00:00"
+      />
+    
+    <meta property="article:modified_time" content="2023-02-20T00:00:00&#43;00:00">
+  
+
+  
+
+
+    
+
+
+
+
+
+
+  
+
+
+
+
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "mainEntityOfPage": {
+    "@type": "WebPage",
+    "@id": "https://dominicroye.github.io/en/2023/tomorrows-weather/"
+  },
+  "headline": "Tomorrow's weather",
+  
+  "image": [
+    "https://dominicroye.github.io/en/2023/tomorrows-weather/featured.png"
+  ],
+  
+  "datePublished": "2023-02-20T00:00:00Z",
+  "dateModified": "2023-02-20T00:00:00Z",
+  
+  "author": {
+    "@type": "Person",
+    "name": "Dr. Dominic Royé"
+  },
+  
+  "publisher": {
+    "@type": "Organization",
+    "name": "University of Santiago de Compostela",
+    "logo": {
+      "@type": "ImageObject",
+      "url": "https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_192x192_fit_lanczos_3.png"
+    }
+  },
+  "description": "A while back I saw Chris Campbell's global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 we'll see how we can access the GFS (Global Forecast System) data and visualize it with `{ggplot2}`, even though there are several ways, in this case we use the Google Earth Engine API via the `{rgee}` package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days."
+}
+</script>
+
+  
+
+  
+
+  
+
+  
+
+
+
+
+
+  <title>Tomorrow&#39;s weather | Dr. Dominic Royé</title>
+</head>
+
+
+<body id="top" data-spy="scroll" data-offset="70" data-target="#TableOfContents" class="page-wrapper   " data-wc-page-id="8cc17fe2fbd8fc3e97488679a8bb13f0" >
+
+  
+  
+  
+  
+  
+  
+  
+  
+  
+  <script src="/js/wowchemy-init.min.2da3b1fa37e894630bf6de39b1b694b3.js"></script>
+
+  
+
+
+
+
+  <div class="page-header">
+    
+
+
+
+
+
+
+
+ 
+
+
+
+  
+
+
+<header class="header--fixed">
+  <nav class="navbar navbar-expand-lg navbar-light compensate-for-scrollbar" id="navbar-main">
+    <div class="container-xl">
+
+      
+      <div class="d-none d-lg-inline-flex">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+            
+            >
+             <div style = "padding-top:0.5em;">Dr. Dominic Royé</div></a>
+      </div>
+      
+
+      
+      <button type="button" class="navbar-toggler" data-toggle="collapse"
+              data-target="#navbar-content" aria-controls="navbar-content" aria-expanded="false" aria-label="Toggle navigation">
+      <span><i class="fas fa-bars"></i></span>
+      </button>
+      
+
+      
+      <div class="navbar-brand-mobile-wrapper d-inline-flex d-lg-none">
+        <a class="navbar-brand" href="/en/"><img src="/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_0x70_resize_lanczos_3.png" alt="Dr. Dominic Royé"
+          
+          ></a>
+      </div>
+      
+
+      
+      
+      <div class="navbar-collapse main-menu-item collapse justify-content-end" id="navbar-content">
+
+        
+        <ul class="navbar-nav d-md-inline-flex">
+          
+
+          
+
+          
+          
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#"><span>home</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#posts"><span>blog</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#featured"><span>publications</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#projects"><span>graphs</span></a>
+          </li>
+
+          
+          
+
+          
+
+          
+          
+          
+            
+          
+
+          
+
+          
+          
+          
+          
+
+          
+            
+              
+              
+            
+            
+              
+              
+              
+                
+              
+              
+            
+          
+
+          <li class="nav-item">
+            <a class="nav-link " href="/en/#about"><span>me</span></a>
+          </li>
+
+          
+          
+
+        
+
+          
+        </ul>
+      </div>
+
+      <ul class="nav-icons navbar-nav flex-row ml-auto d-flex pl-md-2">
+
+        
+        
+          
+            
+            <li class="nav-item d-none d-lg-inline-flex">
+              <a class="nav-link" href="https://twitter.com/dr_xeo" data-toggle="tooltip" data-placement="bottom" title="Follow me on Twitter" target="_blank" rel="noopener" aria-label="Follow me on Twitter">
+                <i class="fab fa-twitter" aria-hidden="true"></i>
+              </a>
+            </li>
+          
+        
+
+        
+        
+
+        
+        
+
+        
+        
+        <li class="nav-item dropdown i18n-dropdown">
+          <a href="#" class="nav-link " data-toggle="dropdown"
+             aria-haspopup="true" aria-label="Languages">
+            <i class="fas fa-globe mr-1" aria-hidden="true"></i></a>
+          <div class="dropdown-menu">
+            <div class="dropdown-item dropdown-item-active">
+              <span>English</span>
+            </div>
+            
+            <a class="dropdown-item" href="https://dominicroye.github.io/es/2023/el-tiempo-de-manana/">
+              <span>Español</span>
+            </a>
+            
+          </div>
+        </li>
+        
+
+      </ul>
+
+    </div>
+  </nav>
+</header>
+
+
+  </div>
+
+  <div class="page-body">
+    <article class="article">
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+    
+  
+
+
+<div class="article-container pt-3">
+  <h1>Tomorrow&#39;s weather</h1>
+
+  
+
+  
+
+
+<div class="article-metadata">
+
+  
+  
+
+  
+  <span class="article-date">
+    
+    
+      
+    
+    2023-02-20
+  </span>
+  
+
+  
+
+  
+  <span class="middot-divider"></span>
+  <span class="article-reading-time">
+    14 min read
+  </span>
+  
+
+  
+  
+  
+  
+  
+  
+
+  
+  
+  <span class="middot-divider"></span>
+  <span class="article-categories">
+    <i class="fas fa-folder mr-1"></i><a href="/en/category/gis/">gis</a>, <a href="/en/category/r/">R</a>, <a href="/en/category/radvanced/">R:advanced</a>, <a href="/en/category/visualization/">visualization</a></span>
+  
+
+</div>
+
+  
+
+
+
+
+
+</div>
+
+
+<div class="article-header article-container featured-image-wrapper mt-4 mb-4" style="max-width: 720px; max-height: 720px;">
+  <div style="position: relative">
+    <img src="/en/2023/tomorrows-weather/featured_huc66c65d08fcba79a474af5e2572ed58e_1660226_720x0_resize_lanczos_3.png" width="720" height="720" alt="" class="featured-image">
+    
+  </div>
+</div>
+
+
+
+  <div class="article-container">
+
+    <div class="article-style">
+      
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/htmlwidgets/htmlwidgets.js"></script>
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/jquery/jquery.min.js"></script>
+<link href="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/leaflet/leaflet.css" rel="stylesheet" />
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/leaflet/leaflet.js"></script>
+<link href="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/leafletfix/leafletfix.css" rel="stylesheet" />
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/proj4/proj4.min.js"></script>
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/Proj4Leaflet/proj4leaflet.js"></script>
+<link href="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/rstudio_leaflet/rstudio_leaflet.css" rel="stylesheet" />
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/leaflet-binding/leaflet.js"></script>
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/leaflet-providers/leaflet-providers_1.9.0.js"></script>
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/leaflet-providers-plugin/leaflet-providers-plugin.js"></script>
+<script src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/clipboard/setClipboardText.js"></script>
+
+<div id="TOC">
+<ul>
+<li><a href="#packages" id="toc-packages"><span class="toc-section-number">1</span> Packages</a></li>
+<li><a href="#part-i.-geoprocessing-with-google-earth-engine-gee" id="toc-part-i.-geoprocessing-with-google-earth-engine-gee"><span class="toc-section-number">2</span> Part I. Geoprocessing with Google Earth Engine (GEE)</a>
+<ul>
+<li><a href="#before-using-gee-in-r" id="toc-before-using-gee-in-r"><span class="toc-section-number">2.1</span> Before using GEE in R</a></li>
+<li><a href="#access-the-global-forecast-system" id="toc-access-the-global-forecast-system"><span class="toc-section-number">2.2</span> Access the Global Forecast System</a></li>
+<li><a href="#dynamic-map-via-gee" id="toc-dynamic-map-via-gee"><span class="toc-section-number">2.3</span> Dynamic map via GEE</a></li>
+<li><a href="#export-multiple-images" id="toc-export-multiple-images"><span class="toc-section-number">2.4</span> Export multiple images</a></li>
+</ul></li>
+<li><a href="#part-ii.-orthographic-map" id="toc-part-ii.-orthographic-map"><span class="toc-section-number">3</span> Part II. Orthographic map</a>
+<ul>
+<li><a href="#data" id="toc-data"><span class="toc-section-number">3.1</span> Data</a></li>
+<li><a href="#administrative-boundaries-and-graticules" id="toc-administrative-boundaries-and-graticules"><span class="toc-section-number">3.2</span> Administrative boundaries and graticules</a></li>
+<li><a href="#map-construction" id="toc-map-construction"><span class="toc-section-number">3.3</span> Map construction</a>
+<ul>
+<li><a href="#select-tomorrow" id="toc-select-tomorrow"><span class="toc-section-number">3.3.1</span> Select tomorrow</a></li>
+<li><a href="#the-shadow-of-the-globe" id="toc-the-shadow-of-the-globe"><span class="toc-section-number">3.3.2</span> The shadow of the globe</a></li>
+<li><a href="#adding-other-layers" id="toc-adding-other-layers"><span class="toc-section-number">3.3.3</span> Adding other layers</a></li>
+</ul></li>
+</ul></li>
+</ul>
+</div>
+
+<blockquote class="twitter-tweet"><p lang="en" dir="ltr">My climate this week looks at the Arctic freeze that is sweeping across large parts of northern Asia, w/ <a href="https://twitter.com/Emiliyadotcom?ref_src=twsrc%5Etfw">@Emiliyadotcom</a> <a href="https://t.co/u49jvHKxvK">https://t.co/u49jvHKxvK</a>  <a href="https://twitter.com/hashtag/dataviz?src=hash&amp;ref_src=twsrc%5Etfw">#dataviz</a> <a href="https://twitter.com/hashtag/gistribe?src=hash&amp;ref_src=twsrc%5Etfw">#gistribe</a> <a href="https://twitter.com/hashtag/cartography?src=hash&amp;ref_src=twsrc%5Etfw">#cartography</a> <a href="https://t.co/6mX22bKZqF">pic.twitter.com/6mX22bKZqF</a></p>&mdash; Chris Campbell (@digitalcampbell) <a href="https://twitter.com/digitalcampbell/status/1619362463157456897?ref_src=twsrc%5Etfw">January 28, 2023</a></blockquote>
+<script async src="https://platform.twitter.com/widgets.js" charset="utf-8"></script>
+
+<p>A while back I saw Chris Campbell’s global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 we’ll see how we can access the GFS (Global Forecast System) data and visualize it with <code>{ggplot2}</code>, even though there are several ways, in this case we use the Google Earth Engine API via the <code>{rgee}</code> package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days.</p>
+<div id="packages" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Packages</h1>
+<table>
+<colgroup>
+<col width="10%" />
+<col width="89%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th align="left">Package</th>
+<th align="left">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="left">tidyverse</td>
+<td align="left">Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.</td>
+</tr>
+<tr class="even">
+<td align="left">lubridate</td>
+<td align="left">Easy manipulation of dates and times</td>
+</tr>
+<tr class="odd">
+<td align="left">sf</td>
+<td align="left">Simple Feature: import, export and manipulate vector data</td>
+</tr>
+<tr class="even">
+<td align="left">terra</td>
+<td align="left">Import, export and manipulate raster ({raster} successor package)</td>
+</tr>
+<tr class="odd">
+<td align="left">rgee</td>
+<td align="left">Access to Google Earth Engine API</td>
+</tr>
+<tr class="even">
+<td align="left">giscoR</td>
+<td align="left">Administrative boundaries of the world</td>
+</tr>
+<tr class="odd">
+<td align="left">ggshadow</td>
+<td align="left">Extension to ggplot2 for shaded and glow geometries</td>
+</tr>
+<tr class="even">
+<td align="left">fs</td>
+<td align="left">Provides a cross-platform, uniform interface to file system operations</td>
+</tr>
+<tr class="odd">
+<td align="left">ggforce</td>
+<td align="left">Provides missing functionality to ggplot2</td>
+</tr>
+</tbody>
+</table>
+<pre class="r"><code>#  install the packages if necessary
+if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
+if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
+if(!require(&quot;terra&quot;)) install.packages(&quot;terra&quot;)
+if(!require(&quot;fs&quot;)) install.packages(&quot;fs&quot;)
+if(!require(&quot;rgee&quot;)) install.packages(&quot;rgee&quot;)
+if(!require(&quot;giscoR&quot;)) install.packages(&quot;giscoR&quot;)
+if(!require(&quot;ggshadow&quot;)) install.packages(&quot;ggshadow&quot;)
+if(!require(&quot;ggforce&quot;)) install.packages(&quot;ggforce&quot;)
+
+#  packages
+library(rgee)
+library(terra)
+library(sf)
+library(giscoR)
+
+library(fs)
+library(tidyverse)
+library(lubridate)
+library(ggshadow)
+library(ggforce)</code></pre>
+</div>
+<div id="part-i.-geoprocessing-with-google-earth-engine-gee" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Part I. Geoprocessing with Google Earth Engine (GEE)</h1>
+<div id="before-using-gee-in-r" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Before using GEE in R</h2>
+<p>The first step is to sign up at earthengine.google.com. In addition, it is necessary to install <em>CLI</em> of <em>gcloud</em> (<a href="https://cloud.google.com/sdk/docs/install?hl=es-419" class="uri">https://cloud.google.com/sdk/docs/install?hl=es-419</a>), you just have to follow the instructions in Google. Regarding the GEE language, many functions that are applied are similar to what is known from <code>{tidyverse}</code>. More help can be found at <a href="https://r-spatial.github.io/rgee/reference/rgee-package.html" class="uri">https://r-spatial.github.io/rgee/reference/rgee-package.html</a> and on the GEE page itself.</p>
+<p>The most essential of GEE’s native Javascript language is that it is characterized by the way of combining functions and variables using the dot, which is replaced by the $ in R. All GEE functions start with the prefix ee_* (<code>ee_print( )</code>, <code>ee_image_to_drive()</code>).</p>
+<p>Once we have <em>gcloud</em> and the <code>{rgee}</code> package installed we can proceed to create the Python virtual environment. The <code>ee_install()</code> function takes care of installing Anaconda 3 and all necessary packages. To check the correct installation of Python, and particularly of the <em>numpy</em> and <em>earthengine-api</em> packages, we can use <code>ee_check()</code>.</p>
+<pre class="r"><code>ee_install() # create python virtual environment
+ee_check() # check if everything is correct</code></pre>
+<p>Before programming with GEE’s own syntax, GEE must be authenticated and initialized using the <code>ee_Initialize()</code> function.</p>
+<pre class="r"><code>ee_Initialize(drive = TRUE) </code></pre>
+<pre><code>## ── rgee 1.1.5 ─────────────────────────────────────── earthengine-api 0.1.339 ── 
+##  ✔ user: not_defined
+##  ✔ Google Drive credentials:
+ ✔ Google Drive credentials:  FOUND
+##  ✔ Initializing Google Earth Engine:
+ ✔ Initializing Google Earth Engine:  DONE!
+## 
+ ✔ Earth Engine account: users/dominicroye 
+## ────────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+<div id="access-the-global-forecast-system" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Access the Global Forecast System</h2>
+<p>A time series of images or multidimensional data is called an <em>ImageCollection</em> in GEE. Each dataset is assigned an ID and we can access it by making the following call <code>ee$ImageCollection('ID_IMAGECOLLECTION')</code>. There are helper functions that allow conversion of purely R classes to Javascript, e.g. for dates <code>rdate_to_eedate()</code>. The first thing we do is to filter to the most recent date with the last run of the GFS model.</p>
+<p>We have to know that, unlike R, only when GEE tasks are sent, the calculation are executed on the servers using all the created GEE objects. Most steps create only <em>EarthEngine</em> objects what you will see soon in this post.</p>
+<pre class="r"><code>## GFS forecast
+dataset &lt;- ee$ImageCollection(&#39;NOAA/GFS0P25&#39;)$filter(ee$Filter$date(rdate_to_eedate(today()-days(1)),
+                                                                    rdate_to_eedate(today()+days(1))))
+dataset</code></pre>
+<pre><code>## EarthEngine Object: ImageCollection</code></pre>
+<p>The model runs every 6 hours (0, 6, 12, 18), so the <code>ee_get_date_ic()</code> function extracts the dates to choose the most recent one. This is the first time that calculations are run.</p>
+<pre class="r"><code># vector of unique run dates
+last_run &lt;- ee_get_date_ic(dataset)$time_start |&gt; unique()
+last_run</code></pre>
+<pre><code>## [1] &quot;2023-02-22 00:00:00 GMT&quot; &quot;2023-02-22 06:00:00 GMT&quot;
+## [3] &quot;2023-02-22 12:00:00 GMT&quot; &quot;2023-02-22 18:00:00 GMT&quot;
+## [5] &quot;2023-02-23 00:00:00 GMT&quot;</code></pre>
+<pre class="r"><code># select the last one
+last_run &lt;- max(last_run)</code></pre>
+<p>Next we filter the date of the last run and select the band of the air temperature at 2m. Forecast dates are attributes of each model run up to 336 hours (14 days) from the day of execution. When we want to make changes to each image in an ImageCollection we must make use of the <code>map()</code> function, similar to the one we know from the <code>{purrr}</code> package. In this case we redefine the date of each image (<em>system:time_start</em>: run date) by that of the forecast (<em>forecast_time</em>). It is important that the R function to apply is inside <code>ee_utils_pyfunc()</code>, which translates it into Python. Then we extract the dates from the 14 day forecast.</p>
+<pre class="r"><code># last run and variable selection
+temp &lt;- dataset$filter(ee$Filter$date(rdate_to_eedate(last_run)))$select(&#39;temperature_2m_above_ground&#39;)
+
+# define the forecast dates for each hour
+forcast_time &lt;- temp$map(ee_utils_pyfunc(function(img)  {
+  
+ return(ee$Image(img)$set(&#39;system:time_start&#39;,ee$Image(img)$get(&quot;forecast_time&quot;)))
+
+  })
+)
+
+# get the forecast dates
+date_forcast &lt;- ee_get_date_ic(forcast_time)
+head(date_forcast)</code></pre>
+<pre><code>##                            id          time_start
+## 1 NOAA/GFS0P25/2023022300F000 2023-02-23 00:00:00
+## 2 NOAA/GFS0P25/2023022300F001 2023-02-23 01:00:00
+## 3 NOAA/GFS0P25/2023022300F002 2023-02-23 02:00:00
+## 4 NOAA/GFS0P25/2023022300F003 2023-02-23 03:00:00
+## 5 NOAA/GFS0P25/2023022300F004 2023-02-23 04:00:00
+## 6 NOAA/GFS0P25/2023022300F005 2023-02-23 05:00:00</code></pre>
+<p>Here we could export the hourly temperature data, but it would also be possible to estimate the maximum or minimum daily temperature for the next 14 days. To achieve this we define the beginning and end of the period, and calculate the number of days. What we do in simple terms is map over the number of days to filter on each day and apply the <code>max()</code> function or any other similar function.</p>
+<pre class="r"><code># define start end of the period
+endDate &lt;- rdate_to_eedate(round_date(max(date_forcast$time_start)-days(1), &quot;day&quot;))
+startDate &lt;- rdate_to_eedate(round_date(min(date_forcast$time_start), &quot;day&quot;))
+
+# number of days
+numberOfDays &lt;- endDate$difference(startDate, &#39;days&#39;)
+
+# calculate the daily maximum
+daily &lt;- ee$ImageCollection(
+  ee$List$sequence(0, numberOfDays$subtract(1))$
+  map(ee_utils_pyfunc(function (dayOffset) {
+    start = startDate$advance(dayOffset, &#39;days&#39;)
+    end = start$advance(1, &#39;days&#39;)
+    return(forcast_time$
+    filterDate(start, end)$
+    max()$ # alternativa: min(), mean()
+    set(&#39;system:time_start&#39;, start$millis()))
+  }))
+)
+
+# dates of the daily maximum
+head(ee_get_date_ic(daily))</code></pre>
+<pre><code>##      id time_start
+## 1 no_id 2023-02-23
+## 2 no_id 2023-02-24
+## 3 no_id 2023-02-25
+## 4 no_id 2023-02-26
+## 5 no_id 2023-02-27
+## 6 no_id 2023-02-28</code></pre>
+</div>
+<div id="dynamic-map-via-gee" class="section level2" number="2.3">
+<h2><span class="header-section-number">2.3</span> Dynamic map via GEE</h2>
+<p>Since there is the possibility of adding images to a dynamic map in the GEE code editor, we can also do it from R using the GEE function <a href="https://developers.google.com/earth%20-engine/apidocs/map-addlayer"><code>Map.addLayer()</code></a>. We simply select the first day with <code>first()</code>. In the other argument we define the range of the temperature values and the color ramp.</p>
+<pre class="r"><code>Map$addLayer(
+       eeObject = daily$first(),
+       visParams = list(min = -45, max = 45,
+                        palette = rev(RColorBrewer::brewer.pal(11, &quot;RdBu&quot;))),
+       name = &quot;GFS&quot;) + 
+Map$addLegend(
+  list(min = -45, max = 45, 
+       palette = rev(RColorBrewer::brewer.pal(11, &quot;RdBu&quot;))), 
+       name = &quot;Maximum temperature&quot;, 
+       position = &quot;bottomright&quot;, 
+       bins = 10)</code></pre>
+<div class="leaflet html-widget html-fill-item-overflow-hidden html-fill-item" id="htmlwidget-1" style="width:672px;height:480px;"></div>
+<script type="application/json" data-for="htmlwidget-1">{"x":{"options":{"minZoom":1,"maxZoom":24,"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"preferCanvas":false,"bounceAtZoomLimits":false,"maxBounds":[[[-90,-370]],[[90,370]]]},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron","CartoDB.Positron","CartoDB.Positron",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["OpenStreetMap","OpenStreetMap","OpenStreetMap",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["CartoDB.DarkMatter","CartoDB.DarkMatter","CartoDB.DarkMatter",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["Esri.WorldImagery","Esri.WorldImagery","Esri.WorldImagery",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["OpenTopoMap","OpenTopoMap","OpenTopoMap",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addLayersControl","args":[["CartoDB.Positron","OpenStreetMap","CartoDB.DarkMatter","Esri.WorldImagery","OpenTopoMap"],[],{"collapsed":true,"autoZIndex":true,"position":"topleft"}]},{"method":"addScaleBar","args":[{"maxWidth":100,"metric":true,"imperial":true,"updateWhenIdle":true,"position":"bottomleft"}]},{"method":"addTiles","args":["https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/a008b4a6531d66c1e0fee8a84fcedf1a-1bfc3a7d5d0add3872bf4326ef07976c/tiles/{z}/{x}/{y}","GFS","GFS",{"minZoom":0,"maxZoom":24,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false}]},{"method":"addLayersControl","args":[["CartoDB.Positron","OpenStreetMap","CartoDB.DarkMatter","Esri.WorldImagery","OpenTopoMap"],"GFS",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]},{"method":"hideGroup","args":[null]},{"method":"addLegend","args":[{"colors":["#053061 , #154D8A 5.55555555555556%, #3984BB 16.6666666666667%, #82BAD8 27.7777777777778%, #CAE1EE 38.8888888888889%, #F7F7F7 50%, #FDD5BF 61.1111111111111%, #EE9676 72.2222222222222%, #CA4C41 83.3333333333333%, #900C26 94.4444444444444%, #67001F "],"labels":["-40","-30","-20","-10","0","10","20","30","40"],"na_color":null,"na_label":"NA","opacity":1,"position":"bottomright","type":"numeric","title":"Maximum temperature","extra":{"p_1":0.0555555555555556,"p_n":0.944444444444444},"layerId":null,"className":"info legend","group":null}]}],"setView":[[0,0],1,[]]},"evals":[],"jsHooks":{"render":[{"code":"function(el, x, data) {\n  return (\n      function(el, x, data) {\n      // get the leaflet map\n      var map = this; //HTMLWidgets.find('#' + el.id);\n      // we need a new div element because we have to handle\n      // the mouseover output separately\n      // debugger;\n      function addElement () {\n      // generate new div Element\n      var newDiv = $(document.createElement('div'));\n      // append at end of leaflet htmlwidget container\n      $(el).append(newDiv);\n      //provide ID and style\n      newDiv.addClass('lnlt');\n      newDiv.css({\n      'position': 'relative',\n      'bottomleft':  '0px',\n      'background-color': 'rgba(255, 255, 255, 0.7)',\n      'box-shadow': '0 0 2px #bbb',\n      'background-clip': 'padding-box',\n      'margin': '0',\n      'padding-left': '5px',\n      'color': '#333',\n      'font': '9px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif',\n      'z-index': '700',\n      });\n      return newDiv;\n      }\n\n\n      // check for already existing lnlt class to not duplicate\n      var lnlt = $(el).find('.lnlt');\n\n      if(!lnlt.length) {\n      lnlt = addElement();\n\n      // grab the special div we generated in the beginning\n      // and put the mousmove output there\n\n      map.on('mousemove', function (e) {\n      if (e.originalEvent.ctrlKey) {\n      if (document.querySelector('.lnlt') === null) lnlt = addElement();\n      lnlt.text(\n                           ' lon: ' + (e.latlng.lng).toFixed(5) +\n                           ' | lat: ' + (e.latlng.lat).toFixed(5) +\n                           ' | zoom: ' + map.getZoom() +\n                           ' | x: ' + L.CRS.EPSG3857.project(e.latlng).x.toFixed(0) +\n                           ' | y: ' + L.CRS.EPSG3857.project(e.latlng).y.toFixed(0) +\n                           ' | epsg: 3857 ' +\n                           ' | proj4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs ');\n      } else {\n      if (document.querySelector('.lnlt') === null) lnlt = addElement();\n      lnlt.text(\n                      ' lon: ' + (e.latlng.lng).toFixed(5) +\n                      ' | lat: ' + (e.latlng.lat).toFixed(5) +\n                      ' | zoom: ' + map.getZoom() + ' ');\n      }\n      });\n\n      // remove the lnlt div when mouse leaves map\n      map.on('mouseout', function (e) {\n      var strip = document.querySelector('.lnlt');\n      if( strip !==null) strip.remove();\n      });\n\n      };\n\n      //$(el).keypress(67, function(e) {\n      map.on('preclick', function(e) {\n      if (e.originalEvent.ctrlKey) {\n      if (document.querySelector('.lnlt') === null) lnlt = addElement();\n      lnlt.text(\n                      ' lon: ' + (e.latlng.lng).toFixed(5) +\n                      ' | lat: ' + (e.latlng.lat).toFixed(5) +\n                      ' | zoom: ' + map.getZoom() + ' ');\n      var txt = document.querySelector('.lnlt').textContent;\n      console.log(txt);\n      //txt.innerText.focus();\n      //txt.select();\n      setClipboardText('\"' + txt + '\"');\n      }\n      });\n\n      }\n      ).call(this.getMap(), el, x, data);\n}","data":null},{"code":"function(el, x, data) {\n  return (function(el,x,data){\n           var map = this;\n\n           map.on('keypress', function(e) {\n               console.log(e.originalEvent.code);\n               var key = e.originalEvent.code;\n               if (key === 'KeyE') {\n                   var bb = this.getBounds();\n                   var txt = JSON.stringify(bb);\n                   console.log(txt);\n\n                   setClipboardText('\\'' + txt + '\\'');\n               }\n           })\n        }).call(this.getMap(), el, x, data);\n}","data":null}]}}</script>
+</div>
+<div id="export-multiple-images" class="section level2" number="2.4">
+<h2><span class="header-section-number">2.4</span> Export multiple images</h2>
+<p>The <code>{rgee}</code> package has a very useful function for exporting an <em>ImageCollection</em>: <code>ee_imagecollection_to_local()</code>. Before using it, we need to set a region, the one that is intended to be exported. In this case, we export the entire globe with a rectangle covering the whole Earth.</p>
+<pre class="r"><code># earth extension
+geom &lt;- ee$Geometry$Polygon(coords = list(
+  c(-180, -90), 
+  c(180, -90),
+  c(180, 90),
+  c(-180, 90),
+  c(-180, -90)
+),
+proj = &quot;EPSG:4326&quot;,
+geodesic = FALSE)
+
+geom # EarthEngine object of type geometry</code></pre>
+<pre><code>## EarthEngine Object: Geometry</code></pre>
+<pre class="r"><code># temporary download folder
+tmp &lt;- tempdir()
+
+# run tasks and download each day
+ic_drive_files_2 &lt;- ee_imagecollection_to_local(
+  ic = daily$filter(ee$Filter$date(rdate_to_eedate(today()), rdate_to_eedate(today()+days(2)))), # we choose only the next 2 days
+  region = geom,
+  scale = 20000,# resolution 
+  lazy = FALSE,
+  dsn = path(tmp, &quot;rast_&quot;), # name of each raster
+  add_metadata = TRUE
+)</code></pre>
+<pre><code>## ───────────────────────────────────── Downloading ImageCollection - via drive ──- region parameters
+##  sfg      : POLYGON ((-180 -90, 180 -90, 180 90, -180 90, -180 -90)) 
+##  CRS      : GEOGCRS[&quot;WGS 84&quot;,
+##     DATUM[&quot;World Geodetic System 1984&quot;,
+##         ELLIPSOID[&quot;WGS 84&quot;,6378137,298.257223563, ..... 
+##  geodesic : FALSE 
+##  evenOdd  : TRUE 
+## 
+## Downloading: C:/Users/xeo19/AppData/Local/Temp/Rtmp8UpV6S/rast_0.tif
+## Downloading: C:/Users/xeo19/AppData/Local/Temp/Rtmp8UpV6S/rast_1.tif
+##  ────────────────────────────────────────────────────────────────────────────────</code></pre>
+</div>
+</div>
+<div id="part-ii.-orthographic-map" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Part II. Orthographic map</h1>
+<div id="data" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Data</h2>
+<p>Of course, the first step is to import the data with the help of <code>rast()</code>. We also define the name of each layer according to its temporal dimension correctly.</p>
+<pre class="r"><code># paths to downloaded data
+forecast_world &lt;- dir_ls(tmp, regexp = &quot;tif&quot;)
+
+# guarantee the file order 
+file_ord &lt;- str_extract(forecast_world, &quot;_[0-9]{1,2}&quot;) |&gt; parse_number()
+
+forecast_rast &lt;- rast(forecast_world[order(file_ord)]) # import
+forecast_rast</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 1002, 2004, 2  (nrow, ncol, nlyr)
+## resolution  : 0.1796631, 0.1796631  (x, y)
+## extent      : -180.0224, 180.0224, -90.01119, 90.01119  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+## sources     : rast_0.tif  
+##               rast_1.tif  
+## names       : temperature_2m_above_ground, temperature_2m_above_ground</code></pre>
+<pre class="r"><code># define the temporal dimension as the name of each layer
+names(forecast_rast) &lt;- seq(today(), today() + days(1), &quot;day&quot;)
+forecast_rast</code></pre>
+<pre><code>## class       : SpatRaster 
+## dimensions  : 1002, 2004, 2  (nrow, ncol, nlyr)
+## resolution  : 0.1796631, 0.1796631  (x, y)
+## extent      : -180.0224, 180.0224, -90.01119, 90.01119  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+## sources     : rast_0.tif  
+##               rast_1.tif  
+## names       : 2023-02-23, 2023-02-24</code></pre>
+<pre class="r"><code># plot
+plot(forecast_rast)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p>Now we can define the orthographic projection indicating with +lat_0 and +lon_0 the center of the projection. We then reproject and convert the raster to a <em>data.frame</em>.</p>
+<pre class="r"><code># projection definition
+ortho_crs &lt;-&#39;+proj=ortho +lat_0=51 +lon_0=0.5 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs&#39;
+
+# reproject the raster
+ras_ortho &lt;- project(forecast_rast, ortho_crs)
+
+# convert the raster to a data.frame of xyz
+forecast_df &lt;- as.data.frame(ras_ortho, xy = TRUE)
+
+# transform to a long format
+forecast_df &lt;- pivot_longer(forecast_df, 3:length(forecast_df), names_to = &quot;date&quot;, values_to = &quot;ta&quot;)</code></pre>
+</div>
+<div id="administrative-boundaries-and-graticules" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Administrative boundaries and graticules</h2>
+<p>We import the administrative boundaries with <code>gisco_get_countries()</code> which we need prepare for the orthographic projection. In the same way we create the graticule using <code>st_graticule()</code>. In order to preserve the geometry, it will be necessary to cut to only the visible part. The ocean is created starting from a point at 0.0 with the radius of the earth. Using the <code>st_intersection()</code> function we reduce to the visible part and reproject the boundaries.</p>
+<pre class="r"><code># obtain the administrative limits
+world_poly &lt;- gisco_get_countries(year = &quot;2016&quot;, epsg = &quot;4326&quot;, resolution = &quot;10&quot;) 
+
+# get the global graticule
+grid &lt;- st_graticule()
+
+# define what would be ocean
+ocean &lt;- st_point(x = c(0,0)) |&gt;
+            st_buffer(dist = 6371000) |&gt; # earth radius
+              st_sfc(crs = ortho_crs)
+plot(ocean)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
+<pre class="r"><code># select only visible from the boundaries and reproject
+world &lt;- world_poly |&gt;
+            st_intersection(st_transform(ocean, 4326)) |&gt;
+            st_transform(crs = ortho_crs) # 
+plot(world)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-14-2.png" width="672" /></p>
+<p>For the graticules we must repeat the same selection, although we previously limit the grid of lines to the ocean. The ocean boundary is used to create the globe’s shadow, but to use it in <code>geom_glowpath()</code> you need to convert it to a <em>data.frame</em>.</p>
+<pre class="r"><code># eliminate the lines that pass over the continents
+grid_crp &lt;- st_difference(grid, st_union(world_poly))
+
+# select the visible part
+grid_crp &lt;- st_intersection(grid_crp, st_transform(ocean, 4326)) |&gt;
+                  st_transform(crs = ortho_crs)
+
+plot(grid_crp)</code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-15-1.png" width="672" /></p>
+<pre class="r"><code># convert the boundary of the globe into a data.frame
+ocean_df &lt;- st_cast(ocean, &quot;LINESTRING&quot;) |&gt; st_coordinates() |&gt; as.data.frame()</code></pre>
+</div>
+<div id="map-construction" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Map construction</h2>
+<div id="select-tomorrow" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Select tomorrow</h3>
+<p>First we select the day of tomorrow, in my case when I write this post it is February 22, 2023. In addition, we limit the temperature range to -45ºC and +45ºC.</p>
+<pre class="r"><code>forecast_tomorrow &lt;- filter(forecast_df, date == today() + days(1)) |&gt;
+                        mutate(ta_limit = case_when(ta &gt; 45 ~ 45,
+                                              ta &lt; -45 ~ -45,
+                                               TRUE ~ ta))</code></pre>
+</div>
+<div id="the-shadow-of-the-globe" class="section level3" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> The shadow of the globe</h3>
+<p>We create the shadow effect using the <code>geom_glowpath()</code> function from the <code>{ggshadow}</code> package. Aiming for a more smooth transition I duplicate this layer with different transparency and shadow settings.</p>
+<pre class="r"><code># build a simple shadow
+ggplot() + 
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &quot;L1&quot;),
+                shadowcolor=&#39;grey90&#39;,
+                     colour = &quot;white&quot;,
+                alpha = .01,
+                shadowalpha=0.05,
+                shadowsize = 1.5) +
+    geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &quot;L1&quot;),
+                shadowcolor=&#39;grey90&#39;,
+                       colour = &quot;white&quot;,
+                alpha = .01,
+                shadowalpha=0.01,
+                shadowsize = 1) +
+   coord_sf() +
+   theme_void()</code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-17-1.png" width="672" /></p>
+<pre class="r"><code># combining several layers of shadow
+g &lt;- ggplot() +
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &quot;L1&quot;),
+                shadowcolor=&#39;grey90&#39;,
+                     colour = &quot;white&quot;,
+                alpha = .01,
+                shadowalpha=0.05,
+                shadowsize = 1.8) +
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &quot;L1&quot;),
+                shadowcolor=&#39;grey90&#39;,
+                       colour = &quot;white&quot;,
+                alpha = .01,
+                shadowalpha=0.02,
+                shadowsize = 1) +
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &quot;L1&quot;),
+                shadowcolor=&#39;grey90&#39;,
+                       colour = &quot;white&quot;,
+                alpha = .01,
+                shadowalpha=0.01,
+                shadowsize = .5) </code></pre>
+</div>
+<div id="adding-other-layers" class="section level3" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> Adding other layers</h3>
+<p>In the next step we add the temperature layer and both vector layers.</p>
+<pre class="r"><code>g2 &lt;- g + geom_raster(data = forecast_tomorrow, aes(x, y, fill = ta_limit)) +
+          geom_sf(data = grid_crp, 
+                  colour = &quot;white&quot;, 
+                  linewidth = .2) +
+          geom_sf(data = world, 
+                   fill = NA,
+                   colour = &quot;grey10&quot;,
+                   linewidth = .2) </code></pre>
+<p>What we need to add are the last definitions of the color, the legend and the general style of the map.</p>
+<pre class="r"><code>g2 + scale_fill_distiller(palette = &quot;RdBu&quot;, 
+                          limits = c(-45, 45),
+                          breaks = c(-45, -25, 0, 25, 45)) +
+     guides(fill = guide_colourbar(barwidth = 15, 
+                                   barheight = .5, 
+                                   title.position = &quot;top&quot;,
+                                   title.hjust = .5)) +
+  coord_sf() +
+  labs(fill = str_wrap(&quot;Maximum temperature at 2 meters for February 14&quot;, 35)) +
+  theme_void() +
+  theme(legend.position = &quot;bottom&quot;,
+        legend.title = element_text(size = 7),
+        plot.margin = margin(10, 10, 10, 10)) </code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-19-1.png" width="672" /></p>
+<p>If we wanted to add labels for the points with the lowest and highest temperatures, we would need to filter the extremes from our table.</p>
+<pre class="r"><code>labeling &lt;- slice(forecast_tomorrow, which.min(ta), which.max(ta))
+labeling</code></pre>
+<pre><code>## # A tibble: 2 × 5
+##           x         y date          ta ta_limit
+##       &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+## 1 -1397101.  3923352. 2023-02-24 -42.5    -42.5
+## 2  2119554. -4121598. 2023-02-24  43.9     43.9</code></pre>
+<p>The <code>geom_mark_circle()</code> function allows you to include a circle label at any position. We create the label using <code>str_glue()</code> where the variable will be replaced by each temperature of both extremes, at the same time we can define the format of the number with <code>number()</code> from the <code>{scales}</code> package.</p>
+<pre class="r"><code>g2 +  geom_mark_circle(data = labeling, 
+                       aes(x, y, 
+                          description = str_glue(&#39;{scales::number(ta, accuracy = .1, decimal.mark = &quot;.&quot;, style_positive = &quot;plus&quot;, suffix = &quot;ºC&quot;)}&#39;)
+                          ), 
+                   expand = unit(1, &quot;mm&quot;), 
+                   label.buffer = unit(4, &quot;mm&quot;),
+                   label.margin = margin(1, 1, 1, 1, &quot;mm&quot;),
+                   con.size = 0.3,
+                   label.fontsize = 8,
+                   label.fontface = &quot;bold&quot;,
+                   con.type = &quot;straight&quot;,
+                  label.fill = alpha(&quot;white&quot;, .5)) +
+     scale_fill_distiller(palette = &quot;RdBu&quot;, 
+                          limits = c(-45, 45),
+                          breaks = c(-45, -25, 0, 25, 45)) +
+     guides(fill = guide_colourbar(barwidth = 15, 
+                                   barheight = .5, 
+                                   title.position = &quot;top&quot;,
+                                   title.hjust = .5)) +
+  coord_sf(crs = ortho_crs) +
+  labs(fill = str_wrap(&quot;Maximum temperature at 2 meters for February 14&quot;, 35)) +
+  theme_void() +
+  theme(legend.position = &quot;bottom&quot;,
+        legend.title = element_text(size = 7),
+        plot.margin = margin(10, 10, 10, 10)) </code></pre>
+<p><img src="https://dominicroye.github.io/en/2023/tomorrows-weather/index.en_files/figure-html/unnamed-chunk-21-1.png" width="672" /></p>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
+</div>
+</div>
+</div>
+
+    </div>
+
+    
+
+
+
+
+
+
+<div class="article-tags">
+  
+  <a class="badge badge-light" href="/en/tag/raster/">raster</a>
+  
+  <a class="badge badge-light" href="/en/tag/gfs/">gfs</a>
+  
+  <a class="badge badge-light" href="/en/tag/forecast/">forecast</a>
+  
+  <a class="badge badge-light" href="/en/tag/globe/">globe</a>
+  
+</div>
+
+
+
+<div class="share-box">
+  <ul class="share">
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://twitter.com/intent/tweet?url=https://dominicroye.github.io/en/2023/tomorrows-weather/&amp;text=Tomorrow&amp;#39;s%20weather" target="_blank" rel="noopener" class="share-btn-twitter" aria-label="twitter">
+          <i class="fab fa-twitter"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.facebook.com/sharer.php?u=https://dominicroye.github.io/en/2023/tomorrows-weather/&amp;t=Tomorrow&amp;#39;s%20weather" target="_blank" rel="noopener" class="share-btn-facebook" aria-label="facebook">
+          <i class="fab fa-facebook"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="mailto:?subject=Tomorrow&amp;#39;s%20weather&amp;body=https://dominicroye.github.io/en/2023/tomorrows-weather/" target="_blank" rel="noopener" class="share-btn-email" aria-label="envelope">
+          <i class="fas fa-envelope"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://www.linkedin.com/shareArticle?url=https://dominicroye.github.io/en/2023/tomorrows-weather/&amp;title=Tomorrow&amp;#39;s%20weather" target="_blank" rel="noopener" class="share-btn-linkedin" aria-label="linkedin-in">
+          <i class="fab fa-linkedin-in"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="whatsapp://send?text=Tomorrow&amp;#39;s%20weather%20https://dominicroye.github.io/en/2023/tomorrows-weather/" target="_blank" rel="noopener" class="share-btn-whatsapp" aria-label="whatsapp">
+          <i class="fab fa-whatsapp"></i>
+        </a>
+      </li>
+    
+      
+      
+      
+        
+      
+      
+      
+      <li>
+        <a href="https://service.weibo.com/share/share.php?url=https://dominicroye.github.io/en/2023/tomorrows-weather/&amp;title=Tomorrow&amp;#39;s%20weather" target="_blank" rel="noopener" class="share-btn-weibo" aria-label="weibo">
+          <i class="fab fa-weibo"></i>
+        </a>
+      </li>
+    
+  </ul>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+
+
+
+  
+  
+  
+    
+  
+  
+  
+  <div class="media author-card content-widget-hr">
+    
+      
+      <a href="https://dominicroye.github.io/"><img class="avatar mr-3 avatar-circle" src="/en/author/dr.-dominic-roye/avatar_hu930bec32484cd86675af8880de95caa2_508993_270x270_fill_q75_lanczos_center.jpg" alt="Dr. Dominic Royé"></a>
+    
+
+    <div class="media-body">
+      <h5 class="card-title"><a href="https://dominicroye.github.io/">Dr. Dominic Royé</a></h5>
+      <h6 class="card-subtitle">Senior postdoctoral researcher</h6>
+      
+      <ul class="network-icon" aria-hidden="true">
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://twitter.com/dr_xeo" target="_blank" rel="noopener">
+        <i class="fab fa-twitter"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="/en/#contact" >
+        <i class="fas fa-envelope"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" target="_blank" rel="noopener">
+        <i class="ai ai-google-scholar"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://github.com/dominicroye" target="_blank" rel="noopener">
+        <i class="fab fa-github"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+      
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.linkedin.com/in/dominicroye/" target="_blank" rel="noopener">
+        <i class="fab fa-linkedin"></i>
+      </a>
+    </li>
+  
+    
+    
+    
+    
+    
+    
+    
+      
+    
+    <li>
+      <a href="https://www.researchgate.net/profile/Dominic_Roye" target="_blank" rel="noopener">
+        <i class="ai ai-researchgate"></i>
+      </a>
+    </li>
+  
+</ul>
+
+    </div>
+  </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+  
+  <div class="article-widget content-widget-hr">
+    <h3>Related</h3>
+    <ul>
+      
+      <li><a href="/en/2022/hillshade-effects/">Hillshade effects</a></li>
+      
+      <li><a href="/en/2022/use-of-multidimensional-spatial-data/">Use of multidimensional spatial data</a></li>
+      
+      <li><a href="/en/2021/bivariate-dasymetric-map/">Bivariate dasymetric map</a></li>
+      
+      <li><a href="/en/2019/calculating-the-distance-to-the-sea-in-r/">Calculating the distance to the sea in R</a></li>
+      
+      <li><a href="/en/2021/visualize-the-day-night-cycle-on-a-world-map/">Visualize the day-night cycle on a world map</a></li>
+      
+    </ul>
+  </div>
+  
+
+
+
+
+
+  </div>
+</article>
+  </div>
+
+  <div class="page-footer">
+    
+    
+    <div class="container">
+      <footer class="site-footer">
+
+  
+
+
+
+  
+    <div class="powered-by d-flex flex-wrap pb-2 justify-content-center">
+      <div class="p-2 font-weight-bold"><i class="fas fa-globe pr-1" aria-hidden="true"></i>Languages:</div>
+      <div class="p-2">English</div>
+      
+        <div class="p-2"><a href="https://dominicroye.github.io/es/2023/el-tiempo-de-manana/">Español</a></div>
+      
+    </div>
+  
+
+  
+
+  
+  <p class="powered-by">
+    © 2018-2022 Dominic Royé. All rights reserved
+  </p>
+  
+
+  
+  
+
+
+
+
+
+
+  <p class="powered-by">
+    
+    
+    
+      
+      
+      
+      
+      
+      
+      Published with <a href="https://wowchemy.com/?utm_campaign=poweredby" target="_blank" rel="noopener">Wowchemy</a> — the free, <a href="https://github.com/wowchemy/wowchemy-hugo-themes" target="_blank" rel="noopener">open source</a> website builder that empowers creators.
+    
+  </p>
+</footer>
+
+    </div>
+    
+  </div>
+
+  
+<div id="modal" class="modal fade" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Cite</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <pre><code class="tex hljs"></code></pre>
+      </div>
+      <div class="modal-footer">
+        <a class="btn btn-outline-primary my-1 js-copy-cite" href="#" target="_blank">
+          <i class="fas fa-copy"></i> Copy
+        </a>
+        <a class="btn btn-outline-primary my-1 js-download-cite" href="#" target="_blank">
+          <i class="fas fa-download"></i> Download
+        </a>
+        <div id="modal-error"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+      
+
+    
+    <script src="/js/vendor-bundle.min.b73dfaac3b6499dc997741748a7c3fe2.js"></script>
+
+    
+    
+    
+      
+      
+        <script src="https://cdn.jsdelivr.net/gh/desandro/imagesloaded@v4.1.4/imagesloaded.pkgd.min.js" integrity="sha512-S5PZ9GxJZO16tT9r3WJp/Safn31eu8uWrzglMahDT4dsmgqWonRY9grk3j+3tfuPr9WJNsfooOR7Gi7HL5W2jw==" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/gh/metafizzy/isotope@v3.0.6/dist/isotope.pkgd.min.js" integrity="sha512-Zq2BOxyhvnRFXu0+WE6ojpZLOU2jdnqbrM1hmVdGzyeCa1DgM3X5Q4A/Is9xA1IkbUeDd7755dNNI/PzSf2Pew==" crossorigin="anonymous"></script>
+      
+
+      
+      
+
+      
+
+      
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/highlight.min.js" integrity="sha512-Ypjm0o7jOxAd4hpdoppSEN0TQOC19UtPAqD+4s5AlXmUvbmmS/YMxYqAqarQYyxTnB6/rqip9qcxlNB/3U9Wdg==" crossorigin="anonymous"></script>
+        
+        
+        <script src="https://cdn.jsdelivr.net/gh/highlightjs/cdn-release@10.2.1/build/languages/r.min.js" crossorigin="anonymous"></script>
+        
+      
+
+    
+
+    
+    
+    
+      <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.min.js" integrity="" crossorigin="anonymous"></script>
+    
+
+    
+    
+
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+
+    
+    
+
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    <script src="/en/js/wowchemy.min.50d3bf3df0c53b31631bb48a62b35f92.js"></script>
+
+    
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+
+
+
+
+</body>
+</html>

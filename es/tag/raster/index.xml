@@ -5,12 +5,482 @@
     <link>https://dominicroye.github.io/es/tag/raster/</link>
       <atom:link href="https://dominicroye.github.io/es/tag/raster/index.xml" rel="self" type="application/rss+xml" />
     <description>raster</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Wed, 20 Jul 2022 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2022 Dominic Royé. All rights reserved</copyright><lastBuildDate>Mon, 20 Feb 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
       <title>raster</title>
       <link>https://dominicroye.github.io/es/tag/raster/</link>
     </image>
+    
+    <item>
+      <title>El tiempo de mañana</title>
+      <link>https://dominicroye.github.io/es/2023/el-tiempo-de-manana/</link>
+      <pubDate>Mon, 20 Feb 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/2023/el-tiempo-de-manana/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/htmlwidgets/htmlwidgets.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/jquery/jquery.min.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/leaflet/leaflet.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/leaflet/leaflet.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/leafletfix/leafletfix.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/proj4/proj4.min.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/Proj4Leaflet/proj4leaflet.js&#34;&gt;&lt;/script&gt;
+&lt;link href=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/rstudio_leaflet/rstudio_leaflet.css&#34; rel=&#34;stylesheet&#34; /&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/leaflet-binding/leaflet.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/leaflet-providers/leaflet-providers_1.9.0.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/leaflet-providers-plugin/leaflet-providers-plugin.js&#34;&gt;&lt;/script&gt;
+&lt;script src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/clipboard/setClipboardText.js&#34;&gt;&lt;/script&gt;
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#paquetes&#34; id=&#34;toc-paquetes&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Paquetes&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#parte-i.-geoprocesamiento-con-google-earth-engine-gee&#34; id=&#34;toc-parte-i.-geoprocesamiento-con-google-earth-engine-gee&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; Parte I. Geoprocesamiento con Google Earth Engine (GEE)&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#antes-de-usar-gee-en-r&#34; id=&#34;toc-antes-de-usar-gee-en-r&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Antes de usar GEE en R&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#acceder-a-la-predicción-del-gfs&#34; id=&#34;toc-acceder-a-la-predicción-del-gfs&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Acceder a la predicción del GFS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#mapa-dinámico-vía-gee&#34; id=&#34;toc-mapa-dinámico-vía-gee&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Mapa dinámico vía GEE&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#exportar-múltiples-imagenes&#34; id=&#34;toc-exportar-múltiples-imagenes&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Exportar múltiples imagenes&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#parte-ii.-visualización-en-forma-de-un-globo&#34; id=&#34;toc-parte-ii.-visualización-en-forma-de-un-globo&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; Parte II. Visualización en forma de un globo&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#datos&#34; id=&#34;toc-datos&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Datos&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#límites-administrativos-y-retícula&#34; id=&#34;toc-límites-administrativos-y-retícula&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Límites administrativos y retícula&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#construcción-del-mapa&#34; id=&#34;toc-construcción-del-mapa&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Construcción del mapa&lt;/a&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#selecionar-mañana&#34; id=&#34;toc-selecionar-mañana&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3.1&lt;/span&gt; Selecionar mañana&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#la-sombra-del-globo&#34; id=&#34;toc-la-sombra-del-globo&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3.2&lt;/span&gt; La sombra del globo&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#otras-capas-del-mapa&#34; id=&#34;toc-otras-capas-del-mapa&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3.3&lt;/span&gt; Otras capas del mapa&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;My climate this week looks at the Arctic freeze that is sweeping across large parts of northern Asia, w/ &lt;a href=&#34;https://twitter.com/Emiliyadotcom?ref_src=twsrc%5Etfw&#34;&gt;@Emiliyadotcom&lt;/a&gt; &lt;a href=&#34;https://t.co/u49jvHKxvK&#34;&gt;https://t.co/u49jvHKxvK&lt;/a&gt;  &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/gistribe?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#gistribe&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/cartography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#cartography&lt;/a&gt; &lt;a href=&#34;https://t.co/6mX22bKZqF&#34;&gt;pic.twitter.com/6mX22bKZqF&lt;/a&gt;&lt;/p&gt;&amp;mdash; Chris Campbell (@digitalcampbell) &lt;a href=&#34;https://twitter.com/digitalcampbell/status/1619362463157456897?ref_src=twsrc%5Etfw&#34;&gt;January 28, 2023&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
+&lt;p&gt;Hace tiempo vi los mapas globales de Chris Campbell del Financial Times como en este Tweet y pensé que necesitaba lograrlo en R. Así que veremos cómo podemos acceder a los datos del GFS (Global Forecast System) y visualizarlo con &lt;code&gt;{ggplot2}&lt;/code&gt;, aunque existen varias formas, en este post usaremos la API de Google Earth Engine vía el paquete &lt;code&gt;{rgee}&lt;/code&gt;. Seleccionaremos la ejecución más reciente y calcularemos la temperatura máxima para los próximos días.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34; number=&#34;1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Paquetes&lt;/h1&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;90%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster (paquete sucesor de raster)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rgee&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Acceso a Google Earth Engine API&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;giscoR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Límites administrativos del mundo&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggshadow&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extensión para ggplot2 para geometrías con sombra&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggforce&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona la funcionalidad que falta a ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;rgee&amp;quot;)) install.packages(&amp;quot;rgee&amp;quot;)
+if(!require(&amp;quot;giscoR&amp;quot;)) install.packages(&amp;quot;giscoR&amp;quot;)
+if(!require(&amp;quot;ggshadow&amp;quot;)) install.packages(&amp;quot;ggshadow&amp;quot;)
+if(!require(&amp;quot;ggforce&amp;quot;)) install.packages(&amp;quot;ggforce&amp;quot;)
+
+# paquetes
+library(rgee)
+library(terra)
+library(sf)
+library(giscoR)
+
+library(fs)
+library(tidyverse)
+library(lubridate)
+library(ggshadow)
+library(ggforce)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-i.-geoprocesamiento-con-google-earth-engine-gee&#34; class=&#34;section level1&#34; number=&#34;2&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; Parte I. Geoprocesamiento con Google Earth Engine (GEE)&lt;/h1&gt;
+&lt;div id=&#34;antes-de-usar-gee-en-r&#34; class=&#34;section level2&#34; number=&#34;2.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Antes de usar GEE en R&lt;/h2&gt;
+&lt;p&gt;El primer paso consiste en crear nuestro usuario en earthengine.google.com. Además, es necesario instalar &lt;em&gt;CLI&lt;/em&gt; de &lt;em&gt;gcloud&lt;/em&gt; (&lt;a href=&#34;https://cloud.google.com/sdk/docs/install?hl=es-419&#34; class=&#34;uri&#34;&gt;https://cloud.google.com/sdk/docs/install?hl=es-419&lt;/a&gt;), únicamente debes seguir las instrucciones en Google. Con respecto al lenguaje de GEE, muchas funciones que se aplican son similares a lo que se conoce de &lt;code&gt;{tidyverse}&lt;/code&gt;. Se puede obtener más ayuda en &lt;a href=&#34;https://r-spatial.github.io/rgee/reference/rgee-package.html&#34; class=&#34;uri&#34;&gt;https://r-spatial.github.io/rgee/reference/rgee-package.html&lt;/a&gt; y en la propia página de GEE.&lt;/p&gt;
+&lt;p&gt;Lo más esencial del lenguaje nativo Javascript de GEE es que se caracteriza por la forma de combinación de funciones y variables usando el punto, el que se sustuye por el $ en R. Todas las funciones GEE empiezan por el prefijo ee_* (&lt;code&gt;ee_print()&lt;/code&gt;, &lt;code&gt;ee_image_to_drive()&lt;/code&gt;).&lt;/p&gt;
+&lt;p&gt;Una vez que tenemos instalado &lt;em&gt;gcloud&lt;/em&gt; y el paquete &lt;code&gt;{rgee}&lt;/code&gt; podemos proceder a crear el entorno virtual de Python. La función &lt;code&gt;ee_install()&lt;/code&gt; se encarga de instalar Anaconda3 y todos los paquetes necesarios. Para comprobar la correcta instalación de Python, y particularmente de los paquetes &lt;em&gt;numpy&lt;/em&gt; y &lt;em&gt;earthengine-api&lt;/em&gt;, podemos usar &lt;code&gt;ee_check()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ee_install() # crear entorno virtual de Python
+ee_check() # comprobar si todo está correcto&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Antes de pasar a programar con la sintaxis propia de GEE se debe autenticar e inicializar GEE empleando la función &lt;code&gt;ee_Initialize()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ee_Initialize(drive = TRUE) # autenticar e inicializar GEE&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ── rgee 1.1.5 ─────────────────────────────────────── earthengine-api 0.1.339 ── 
+##  ✔ user: not_defined
+##  ✔ Google Drive credentials:
+ ✔ Google Drive credentials:  FOUND
+##  ✔ Initializing Google Earth Engine:
+ ✔ Initializing Google Earth Engine:  DONE!
+## 
+ ✔ Earth Engine account: users/dominicroye 
+## ────────────────────────────────────────────────────────────────────────────────&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;acceder-a-la-predicción-del-gfs&#34; class=&#34;section level2&#34; number=&#34;2.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Acceder a la predicción del GFS&lt;/h2&gt;
+&lt;p&gt;En GEE se denomina &lt;em&gt;ImageCollection&lt;/em&gt; una serie temporal de imágenes o datos multidimensionales. Cada dataset tiene asignado una ID y podemos acceder a ella haciendo la llamada &lt;code&gt;ee$ImageCollection(&#39;ID_IMAGECOLLECTION&#39;)&lt;/code&gt;. Hay funciones auxilares que permiten la conversión de clases puramente de R a Javascript, por ejemplo, la fecha &lt;code&gt;rdate_to_eedate()&lt;/code&gt;. Lo primero lo que hacemos es filtrar a la fecha más reciente con las últimas ejecuciones del modelo GFS.&lt;/p&gt;
+&lt;p&gt;Debemos saber que, a diferencia de R, únicamente cuando se envían tareas GEE se ejecuta el cálculo en los servidores, enviando todos los objetos creados. En la mayoría de los pasos se crean objetos &lt;em&gt;EarthEngine&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## GFS forcast
+dataset &amp;lt;- ee$ImageCollection(&amp;#39;NOAA/GFS0P25&amp;#39;)$filter(ee$Filter$date(rdate_to_eedate(today()-days(1)),
+                                                                    rdate_to_eedate(today()+days(1))))
+dataset&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## EarthEngine Object: ImageCollection&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Las ejecuciones del modelo se realizan cada 6 horas (0, 6, 12, 18), así que la función &lt;code&gt;ee_get_date_ic()&lt;/code&gt; nos extrae las fechas para poder elegir la más reciente. Aquí es la primera vez que se ejecutan cálculos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# vector de fechas únicas de ejecuciones
+last_run &amp;lt;- ee_get_date_ic(dataset)$time_start |&amp;gt; unique()
+last_run&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2023-02-22 00:00:00 GMT&amp;quot; &amp;quot;2023-02-22 06:00:00 GMT&amp;quot;
+## [3] &amp;quot;2023-02-22 12:00:00 GMT&amp;quot; &amp;quot;2023-02-22 18:00:00 GMT&amp;quot;
+## [5] &amp;quot;2023-02-23 00:00:00 GMT&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# seleccionamos la última
+last_run &amp;lt;- max(last_run)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A continuación filtramos la fecha de última ejecución y seleccionamos la banda de la temperatura de aire a 2m. Las fechas de la predicción futura son atributos de cada ejecución con una predicción de hasta 336 horas (14 días) desde el día de la misma. Cuando queramos hacer cambios a cada imagen de una ImageCollection debemos hacer uso de la función &lt;code&gt;map()&lt;/code&gt;, similar a la que conocemos del paquete &lt;code&gt;{purrr}&lt;/code&gt;. En este caso redefinimos la fecha de cada imagen (&lt;em&gt;system:time_start&lt;/em&gt;: fecha de ejecución) por la de la predicción (&lt;em&gt;forecast_time&lt;/em&gt;). Es importante que la función a aplicar de R se encuentre dentro de &lt;code&gt;ee_utils_pyfunc()&lt;/code&gt;, la que la traduce a Python. Después extraemos las fechas de la predicción.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# última ejecución y selección de variable 
+temp &amp;lt;- dataset$filter(ee$Filter$date(rdate_to_eedate(last_run)))$select(&amp;#39;temperature_2m_above_ground&amp;#39;)
+
+# definimos las fechas de predicción para cada hora
+forcast_time &amp;lt;- temp$map(ee_utils_pyfunc(function(img)  {
+  
+ return(ee$Image(img)$set(&amp;#39;system:time_start&amp;#39;,ee$Image(img)$get(&amp;quot;forecast_time&amp;quot;)))
+
+  })
+)
+
+# obtenemos las fechas de predicción
+date_forcast &amp;lt;- ee_get_date_ic(forcast_time)
+head(date_forcast)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                            id          time_start
+## 1 NOAA/GFS0P25/2023022300F000 2023-02-23 00:00:00
+## 2 NOAA/GFS0P25/2023022300F001 2023-02-23 01:00:00
+## 3 NOAA/GFS0P25/2023022300F002 2023-02-23 02:00:00
+## 4 NOAA/GFS0P25/2023022300F003 2023-02-23 03:00:00
+## 5 NOAA/GFS0P25/2023022300F004 2023-02-23 04:00:00
+## 6 NOAA/GFS0P25/2023022300F005 2023-02-23 05:00:00&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aquí podríamos exportar los datos horarios de temperatura, pero también sería posible estimar la temperatura máxima o mínima diaria de los próximos 14 días. Para lograrlo debemos definir el inicio y final del periodo, y calcular el número de días. Lo que hacemos en términos simples es mapear sobre el número días para filtrar a cada día y aplicar la función &lt;code&gt;max()&lt;/code&gt; o cualquier otra similar.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# definimos inicio final de las fechas
+endDate &amp;lt;- rdate_to_eedate(round_date(max(date_forcast$time_start)-days(1), &amp;quot;day&amp;quot;))
+startDate &amp;lt;- rdate_to_eedate(round_date(min(date_forcast$time_start), &amp;quot;day&amp;quot;))
+
+# número de dias
+numberOfDays &amp;lt;- endDate$difference(startDate, &amp;#39;days&amp;#39;)
+
+# calculamos la máxima diaria 
+daily &amp;lt;- ee$ImageCollection(
+  ee$List$sequence(0, numberOfDays$subtract(1))$
+  map(ee_utils_pyfunc(function (dayOffset) {
+    start = startDate$advance(dayOffset, &amp;#39;days&amp;#39;)
+    end = start$advance(1, &amp;#39;days&amp;#39;)
+    return(forcast_time$
+    filterDate(start, end)$
+    max()$ # alternativa: min(), mean()
+    set(&amp;#39;system:time_start&amp;#39;, start$millis()))
+  }))
+)
+
+# fechas de la máxima diaria
+head(ee_get_date_ic(daily))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      id time_start
+## 1 no_id 2023-02-23
+## 2 no_id 2023-02-24
+## 3 no_id 2023-02-25
+## 4 no_id 2023-02-26
+## 5 no_id 2023-02-27
+## 6 no_id 2023-02-28&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-dinámico-vía-gee&#34; class=&#34;section level2&#34; number=&#34;2.3&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Mapa dinámico vía GEE&lt;/h2&gt;
+&lt;p&gt;Dado que existe la posibilidad de añadir imágenes a un mapa dinámico en el editor de código de GEE, también podemos hacerlo usando desde R la función GEE &lt;a href=&#34;https://developers.google.com/earth-engine/apidocs/map-addlayer&#34;&gt;&lt;code&gt;Map.addLayer()&lt;/code&gt;&lt;/a&gt;. Seleccionamos simplemente el primer día con &lt;code&gt;first()&lt;/code&gt;. En los otros argumento definimos el rango de los valores y la gama de colores.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;Map$addLayer(
+       eeObject = daily$first(),
+       visParams = list(min = -45, max = 45,
+                        palette = rev(RColorBrewer::brewer.pal(11, &amp;quot;RdBu&amp;quot;))),
+       name = &amp;quot;GFS&amp;quot;) + 
+Map$addLegend(
+  list(min = -45, max = 45, 
+       palette = rev(RColorBrewer::brewer.pal(11, &amp;quot;RdBu&amp;quot;))), 
+       name = &amp;quot;Temperatura máxima&amp;quot;, 
+       position = &amp;quot;bottomright&amp;quot;, 
+       bins = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;div class=&#34;leaflet html-widget html-fill-item-overflow-hidden html-fill-item&#34; id=&#34;htmlwidget-1&#34; style=&#34;width:672px;height:480px;&#34;&gt;&lt;/div&gt;
+&lt;script type=&#34;application/json&#34; data-for=&#34;htmlwidget-1&#34;&gt;{&#34;x&#34;:{&#34;options&#34;:{&#34;minZoom&#34;:1,&#34;maxZoom&#34;:24,&#34;crs&#34;:{&#34;crsClass&#34;:&#34;L.CRS.EPSG3857&#34;,&#34;code&#34;:null,&#34;proj4def&#34;:null,&#34;projectedBounds&#34;:null,&#34;options&#34;:{}},&#34;preferCanvas&#34;:false,&#34;bounceAtZoomLimits&#34;:false,&#34;maxBounds&#34;:[[[-90,-370]],[[90,370]]]},&#34;calls&#34;:[{&#34;method&#34;:&#34;addProviderTiles&#34;,&#34;args&#34;:[&#34;CartoDB.Positron&#34;,&#34;CartoDB.Positron&#34;,&#34;CartoDB.Positron&#34;,{&#34;errorTileUrl&#34;:&#34;&#34;,&#34;noWrap&#34;:false,&#34;detectRetina&#34;:false,&#34;pane&#34;:&#34;tilePane&#34;,&#34;maxZoom&#34;:24}]},{&#34;method&#34;:&#34;addProviderTiles&#34;,&#34;args&#34;:[&#34;OpenStreetMap&#34;,&#34;OpenStreetMap&#34;,&#34;OpenStreetMap&#34;,{&#34;errorTileUrl&#34;:&#34;&#34;,&#34;noWrap&#34;:false,&#34;detectRetina&#34;:false,&#34;pane&#34;:&#34;tilePane&#34;,&#34;maxZoom&#34;:24}]},{&#34;method&#34;:&#34;addProviderTiles&#34;,&#34;args&#34;:[&#34;CartoDB.DarkMatter&#34;,&#34;CartoDB.DarkMatter&#34;,&#34;CartoDB.DarkMatter&#34;,{&#34;errorTileUrl&#34;:&#34;&#34;,&#34;noWrap&#34;:false,&#34;detectRetina&#34;:false,&#34;pane&#34;:&#34;tilePane&#34;,&#34;maxZoom&#34;:24}]},{&#34;method&#34;:&#34;addProviderTiles&#34;,&#34;args&#34;:[&#34;Esri.WorldImagery&#34;,&#34;Esri.WorldImagery&#34;,&#34;Esri.WorldImagery&#34;,{&#34;errorTileUrl&#34;:&#34;&#34;,&#34;noWrap&#34;:false,&#34;detectRetina&#34;:false,&#34;pane&#34;:&#34;tilePane&#34;,&#34;maxZoom&#34;:24}]},{&#34;method&#34;:&#34;addProviderTiles&#34;,&#34;args&#34;:[&#34;OpenTopoMap&#34;,&#34;OpenTopoMap&#34;,&#34;OpenTopoMap&#34;,{&#34;errorTileUrl&#34;:&#34;&#34;,&#34;noWrap&#34;:false,&#34;detectRetina&#34;:false,&#34;pane&#34;:&#34;tilePane&#34;,&#34;maxZoom&#34;:24}]},{&#34;method&#34;:&#34;addLayersControl&#34;,&#34;args&#34;:[[&#34;CartoDB.Positron&#34;,&#34;OpenStreetMap&#34;,&#34;CartoDB.DarkMatter&#34;,&#34;Esri.WorldImagery&#34;,&#34;OpenTopoMap&#34;],[],{&#34;collapsed&#34;:true,&#34;autoZIndex&#34;:true,&#34;position&#34;:&#34;topleft&#34;}]},{&#34;method&#34;:&#34;addScaleBar&#34;,&#34;args&#34;:[{&#34;maxWidth&#34;:100,&#34;metric&#34;:true,&#34;imperial&#34;:true,&#34;updateWhenIdle&#34;:true,&#34;position&#34;:&#34;bottomleft&#34;}]},{&#34;method&#34;:&#34;addTiles&#34;,&#34;args&#34;:[&#34;https://earthengine.googleapis.com/v1alpha/projects/earthengine-legacy/maps/a008b4a6531d66c1e0fee8a84fcedf1a-7e25cf32d0ae2ad12dc053f93fb31cc4/tiles/{z}/{x}/{y}&#34;,&#34;GFS&#34;,&#34;GFS&#34;,{&#34;minZoom&#34;:0,&#34;maxZoom&#34;:24,&#34;tileSize&#34;:256,&#34;subdomains&#34;:&#34;abc&#34;,&#34;errorTileUrl&#34;:&#34;&#34;,&#34;tms&#34;:false,&#34;noWrap&#34;:false,&#34;zoomOffset&#34;:0,&#34;zoomReverse&#34;:false,&#34;opacity&#34;:1,&#34;zIndex&#34;:1,&#34;detectRetina&#34;:false}]},{&#34;method&#34;:&#34;addLayersControl&#34;,&#34;args&#34;:[[&#34;CartoDB.Positron&#34;,&#34;OpenStreetMap&#34;,&#34;CartoDB.DarkMatter&#34;,&#34;Esri.WorldImagery&#34;,&#34;OpenTopoMap&#34;],&#34;GFS&#34;,{&#34;collapsed&#34;:true,&#34;autoZIndex&#34;:true,&#34;position&#34;:&#34;topleft&#34;}]},{&#34;method&#34;:&#34;hideGroup&#34;,&#34;args&#34;:[null]},{&#34;method&#34;:&#34;addLegend&#34;,&#34;args&#34;:[{&#34;colors&#34;:[&#34;#053061 , #154D8A 5.55555555555556%, #3984BB 16.6666666666667%, #82BAD8 27.7777777777778%, #CAE1EE 38.8888888888889%, #F7F7F7 50%, #FDD5BF 61.1111111111111%, #EE9676 72.2222222222222%, #CA4C41 83.3333333333333%, #900C26 94.4444444444444%, #67001F &#34;],&#34;labels&#34;:[&#34;-40&#34;,&#34;-30&#34;,&#34;-20&#34;,&#34;-10&#34;,&#34;0&#34;,&#34;10&#34;,&#34;20&#34;,&#34;30&#34;,&#34;40&#34;],&#34;na_color&#34;:null,&#34;na_label&#34;:&#34;NA&#34;,&#34;opacity&#34;:1,&#34;position&#34;:&#34;bottomright&#34;,&#34;type&#34;:&#34;numeric&#34;,&#34;title&#34;:&#34;Temperatura máxima&#34;,&#34;extra&#34;:{&#34;p_1&#34;:0.0555555555555556,&#34;p_n&#34;:0.944444444444444},&#34;layerId&#34;:null,&#34;className&#34;:&#34;info legend&#34;,&#34;group&#34;:null}]}],&#34;setView&#34;:[[0,0],1,[]]},&#34;evals&#34;:[],&#34;jsHooks&#34;:{&#34;render&#34;:[{&#34;code&#34;:&#34;function(el, x, data) {\n  return (\n      function(el, x, data) {\n      // get the leaflet map\n      var map = this; //HTMLWidgets.find(&#39;#&#39; + el.id);\n      // we need a new div element because we have to handle\n      // the mouseover output separately\n      // debugger;\n      function addElement () {\n      // generate new div Element\n      var newDiv = $(document.createElement(&#39;div&#39;));\n      // append at end of leaflet htmlwidget container\n      $(el).append(newDiv);\n      //provide ID and style\n      newDiv.addClass(&#39;lnlt&#39;);\n      newDiv.css({\n      &#39;position&#39;: &#39;relative&#39;,\n      &#39;bottomleft&#39;:  &#39;0px&#39;,\n      &#39;background-color&#39;: &#39;rgba(255, 255, 255, 0.7)&#39;,\n      &#39;box-shadow&#39;: &#39;0 0 2px #bbb&#39;,\n      &#39;background-clip&#39;: &#39;padding-box&#39;,\n      &#39;margin&#39;: &#39;0&#39;,\n      &#39;padding-left&#39;: &#39;5px&#39;,\n      &#39;color&#39;: &#39;#333&#39;,\n      &#39;font&#39;: &#39;9px/1.5 \&#34;Helvetica Neue\&#34;, Arial, Helvetica, sans-serif&#39;,\n      &#39;z-index&#39;: &#39;700&#39;,\n      });\n      return newDiv;\n      }\n\n\n      // check for already existing lnlt class to not duplicate\n      var lnlt = $(el).find(&#39;.lnlt&#39;);\n\n      if(!lnlt.length) {\n      lnlt = addElement();\n\n      // grab the special div we generated in the beginning\n      // and put the mousmove output there\n\n      map.on(&#39;mousemove&#39;, function (e) {\n      if (e.originalEvent.ctrlKey) {\n      if (document.querySelector(&#39;.lnlt&#39;) === null) lnlt = addElement();\n      lnlt.text(\n                           &#39; lon: &#39; + (e.latlng.lng).toFixed(5) +\n                           &#39; | lat: &#39; + (e.latlng.lat).toFixed(5) +\n                           &#39; | zoom: &#39; + map.getZoom() +\n                           &#39; | x: &#39; + L.CRS.EPSG3857.project(e.latlng).x.toFixed(0) +\n                           &#39; | y: &#39; + L.CRS.EPSG3857.project(e.latlng).y.toFixed(0) +\n                           &#39; | epsg: 3857 &#39; +\n                           &#39; | proj4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs &#39;);\n      } else {\n      if (document.querySelector(&#39;.lnlt&#39;) === null) lnlt = addElement();\n      lnlt.text(\n                      &#39; lon: &#39; + (e.latlng.lng).toFixed(5) +\n                      &#39; | lat: &#39; + (e.latlng.lat).toFixed(5) +\n                      &#39; | zoom: &#39; + map.getZoom() + &#39; &#39;);\n      }\n      });\n\n      // remove the lnlt div when mouse leaves map\n      map.on(&#39;mouseout&#39;, function (e) {\n      var strip = document.querySelector(&#39;.lnlt&#39;);\n      if( strip !==null) strip.remove();\n      });\n\n      };\n\n      //$(el).keypress(67, function(e) {\n      map.on(&#39;preclick&#39;, function(e) {\n      if (e.originalEvent.ctrlKey) {\n      if (document.querySelector(&#39;.lnlt&#39;) === null) lnlt = addElement();\n      lnlt.text(\n                      &#39; lon: &#39; + (e.latlng.lng).toFixed(5) +\n                      &#39; | lat: &#39; + (e.latlng.lat).toFixed(5) +\n                      &#39; | zoom: &#39; + map.getZoom() + &#39; &#39;);\n      var txt = document.querySelector(&#39;.lnlt&#39;).textContent;\n      console.log(txt);\n      //txt.innerText.focus();\n      //txt.select();\n      setClipboardText(&#39;\&#34;&#39; + txt + &#39;\&#34;&#39;);\n      }\n      });\n\n      }\n      ).call(this.getMap(), el, x, data);\n}&#34;,&#34;data&#34;:null},{&#34;code&#34;:&#34;function(el, x, data) {\n  return (function(el,x,data){\n           var map = this;\n\n           map.on(&#39;keypress&#39;, function(e) {\n               console.log(e.originalEvent.code);\n               var key = e.originalEvent.code;\n               if (key === &#39;KeyE&#39;) {\n                   var bb = this.getBounds();\n                   var txt = JSON.stringify(bb);\n                   console.log(txt);\n\n                   setClipboardText(&#39;\\&#39;&#39; + txt + &#39;\\&#39;&#39;);\n               }\n           })\n        }).call(this.getMap(), el, x, data);\n}&#34;,&#34;data&#34;:null}]}}&lt;/script&gt;
+&lt;/div&gt;
+&lt;div id=&#34;exportar-múltiples-imagenes&#34; class=&#34;section level2&#34; number=&#34;2.4&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Exportar múltiples imagenes&lt;/h2&gt;
+&lt;p&gt;El paquete &lt;code&gt;{rgee}&lt;/code&gt; tiene una función muy útil para exportar una &lt;em&gt;ImageCollection&lt;/em&gt;: &lt;code&gt;ee_imagecollection_to_local()&lt;/code&gt;. Antes de usarla debemos fijar una región, la que se pretende exportar. En este caso, exportamos todo el globo con un rectángulo cubriendo la Tierra.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extensión de la Tierra
+geom &amp;lt;- ee$Geometry$Polygon(coords = list(
+  c(-180, -90), 
+  c(180, -90),
+  c(180, 90),
+  c(-180, 90),
+  c(-180, -90)
+),
+proj = &amp;quot;EPSG:4326&amp;quot;,
+geodesic = FALSE)
+
+geom #vemos que es un objeto EarthEngine de tipo geometría&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## EarthEngine Object: Geometry&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# carpeta temporal de descarga
+tmp &amp;lt;- tempdir()
+
+# descargamos 
+ic_drive_files_2 &amp;lt;- ee_imagecollection_to_local(
+  ic = daily$filter(ee$Filter$date(rdate_to_eedate(today()), rdate_to_eedate(today()+days(2)))), # elegimos los próximos 4 días
+  region = geom,
+  scale = 20000, 
+  lazy = FALSE,
+  dsn = path(tmp, &amp;quot;drive_&amp;quot;),
+  add_metadata = TRUE
+)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## ───────────────────────────────────── Downloading ImageCollection - via drive ──- region parameters
+##  sfg      : POLYGON ((-180 -90, 180 -90, 180 90, -180 90, -180 -90)) 
+##  CRS      : GEOGCRS[&amp;quot;WGS 84&amp;quot;,
+##     DATUM[&amp;quot;World Geodetic System 1984&amp;quot;,
+##         ELLIPSOID[&amp;quot;WGS 84&amp;quot;,6378137,298.257223563, ..... 
+##  geodesic : FALSE 
+##  evenOdd  : TRUE 
+## 
+## Downloading: C:/Users/xeo19/AppData/Local/Temp/RtmpE9IUrn/drive_0.tif
+## Downloading: C:/Users/xeo19/AppData/Local/Temp/RtmpE9IUrn/drive_1.tif
+##  ────────────────────────────────────────────────────────────────────────────────&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;parte-ii.-visualización-en-forma-de-un-globo&#34; class=&#34;section level1&#34; number=&#34;3&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; Parte II. Visualización en forma de un globo&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34; number=&#34;3.1&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Datos&lt;/h2&gt;
+&lt;p&gt;El primer paso consiste en importar los datos con ayuda de &lt;code&gt;rast()&lt;/code&gt;. Además definimos el nombre de cada capa según su dimensión temporal correctamente.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a los datos descargados
+forecast_world &amp;lt;- dir_ls(tmp, regexp = &amp;quot;tif&amp;quot;)
+
+# garantizamos el orden y importamos
+file_ord &amp;lt;- str_extract(forecast_world, &amp;quot;_[0-9]{1,2}&amp;quot;) |&amp;gt; parse_number()
+
+forecast_rast &amp;lt;- rast(forecast_world[order(file_ord)])
+forecast_rast&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 1002, 2004, 2  (nrow, ncol, nlyr)
+## resolution  : 0.1796631, 0.1796631  (x, y)
+## extent      : -180.0224, 180.0224, -90.01119, 90.01119  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+## sources     : drive_0.tif  
+##               drive_1.tif  
+## names       : temperature_2m_above_ground, temperature_2m_above_ground&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# definimos la dimensión temporal como nombre de cada capa
+names(forecast_rast) &amp;lt;- seq(today(), today() + days(1), &amp;quot;day&amp;quot;)
+forecast_rast&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 1002, 2004, 2  (nrow, ncol, nlyr)
+## resolution  : 0.1796631, 0.1796631  (x, y)
+## extent      : -180.0224, 180.0224, -90.01119, 90.01119  (xmin, xmax, ymin, ymax)
+## coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+## sources     : drive_0.tif  
+##               drive_1.tif  
+## names       : 2023-02-23, 2023-02-24&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ploteamos
+plot(forecast_rast)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Ahora debemos definir la proyección ortográfica indicando con +lat_0 y +lon_0 el centro de la proyección. Después reproyectamos y convertimos el ráster en un &lt;em&gt;data.frame&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# definición de la proyección 
+ortho_crs &amp;lt;-&amp;#39;+proj=ortho +lat_0=51 +lon_0=0.5 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs&amp;#39;
+
+# reproyectamos el ráster
+ras_ortho &amp;lt;- project(forecast_rast, ortho_crs)
+
+# convertimos el ráster en un data.frame de xyz
+forecast_df &amp;lt;- as.data.frame(ras_ortho, xy = TRUE)
+
+# transformamos a un formato largo
+forecast_df &amp;lt;- pivot_longer(forecast_df, 3:length(forecast_df), names_to = &amp;quot;date&amp;quot;, values_to = &amp;quot;ta&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;límites-administrativos-y-retícula&#34; class=&#34;section level2&#34; number=&#34;3.2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Límites administrativos y retícula&lt;/h2&gt;
+&lt;p&gt;Importamos los límites administrativos con &lt;code&gt;gisco_get_countries()&lt;/code&gt; los que debemos preparar para la proyección ortográfica. Del mismo modo creamos la retícula empleando &lt;code&gt;st_graticule()&lt;/code&gt;. Con el objetivo de preservar la geometría habrá que recortar a únicamente la parte visible. El océano se crea partiendo de un punto en 0,0 con el radio de la tierra. Empleando la función &lt;code&gt;st_intersection()&lt;/code&gt; reducimos a la parte visible y reproyectamos los límites.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos los límites administrativos
+world_poly &amp;lt;- gisco_get_countries(year = &amp;quot;2016&amp;quot;, epsg = &amp;quot;4326&amp;quot;, resolution = &amp;quot;10&amp;quot;) 
+
+# obtenemos la retícula global
+grid &amp;lt;- st_graticule()
+
+# definimos lo que sería oceano 
+ocean &amp;lt;- st_point(x = c(0,0)) |&amp;gt;
+            st_buffer(dist = 6371000) |&amp;gt; # radio de la tierra
+              st_sfc(crs = ortho_crs)
+plot(ocean)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# seleccionamos sólo visible de los límites y reproyectamos
+world &amp;lt;- world_poly |&amp;gt;
+            st_intersection(st_transform(ocean, 4326)) |&amp;gt;
+            st_transform(crs = ortho_crs) # 
+plot(world)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-14-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Debemos repetir la misma selección visible para la retícula, aunque aquí antes limitamos las líneas de la retícula a los océanos. El límite del océano nos sirve para crear la sombra del globo, pero para usarlo en &lt;code&gt;geom_glowpath()&lt;/code&gt; es necesario convertirlo en un &lt;em&gt;data.frame&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# eliminamos las líneas que transcurren sobre los continentes
+grid_crp &amp;lt;- st_difference(grid, st_union(world_poly))
+
+# seleccionamos la parte visible
+grid_crp &amp;lt;- st_intersection(grid_crp, st_transform(ocean, 4326)) |&amp;gt;
+                  st_transform(crs = ortho_crs)
+
+plot(grid_crp)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos el límite del globo en un data.frame
+ocean_df &amp;lt;- st_cast(ocean, &amp;quot;LINESTRING&amp;quot;) |&amp;gt; st_coordinates() |&amp;gt; as.data.frame()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construcción-del-mapa&#34; class=&#34;section level2&#34; number=&#34;3.3&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Construcción del mapa&lt;/h2&gt;
+&lt;div id=&#34;selecionar-mañana&#34; class=&#34;section level3&#34; number=&#34;3.3.1&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3.1&lt;/span&gt; Selecionar mañana&lt;/h3&gt;
+&lt;p&gt;Primero seleccionamos el día de mañana, en mi caso cuando escribo este post es el 23 de febrero de 2023. Además, limitamos el rango de valores a -45ºC hasta +45ºC.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;forecast_tomorrow &amp;lt;- filter(forecast_df, date == today()+days(1)) |&amp;gt;
+                        mutate(ta_limit = case_when(ta &amp;gt; 45 ~ 45,
+                                              ta &amp;lt; -45 ~ -45,
+                                               TRUE ~ ta))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;la-sombra-del-globo&#34; class=&#34;section level3&#34; number=&#34;3.3.2&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3.2&lt;/span&gt; La sombra del globo&lt;/h3&gt;
+&lt;p&gt;El efecto de sombra lo creamos usando la función &lt;code&gt;geom_glowpath()&lt;/code&gt; del paquete &lt;code&gt;{ggshadow}&lt;/code&gt;. Con el objetivo de una transición suave duplico esta capa con diferentes parámetros de transparencia y tamaño de sombra.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# construimos una sombra 
+ggplot() + 
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &amp;quot;L1&amp;quot;),
+                shadowcolor=&amp;#39;grey90&amp;#39;,
+                     colour = &amp;quot;white&amp;quot;,
+                alpha = .01,
+                shadowalpha=0.05,
+                shadowsize = 1.5) +
+   coord_sf() +
+   theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-17-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# combinando varias capas de sobra
+g &amp;lt;- ggplot() +
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &amp;quot;L1&amp;quot;),
+                shadowcolor=&amp;#39;grey90&amp;#39;,
+                     colour = &amp;quot;white&amp;quot;,
+                alpha = .01,
+                shadowalpha=0.05,
+                shadowsize = 1.8) +
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &amp;quot;L1&amp;quot;),
+                shadowcolor=&amp;#39;grey90&amp;#39;,
+                       colour = &amp;quot;white&amp;quot;,
+                alpha = .01,
+                shadowalpha=0.02,
+                shadowsize = 1) +
+   geom_glowpath(data = ocean_df, 
+                aes(X, Y, group = &amp;quot;L1&amp;quot;),
+                shadowcolor=&amp;#39;grey90&amp;#39;,
+                       colour = &amp;quot;white&amp;quot;,
+                alpha = .01,
+                shadowalpha=0.01,
+                shadowsize = .5) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;otras-capas-del-mapa&#34; class=&#34;section level3&#34; number=&#34;3.3.3&#34;&gt;
+&lt;h3&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3.3&lt;/span&gt; Otras capas del mapa&lt;/h3&gt;
+&lt;p&gt;En el próximo paso añadimos la capa de la temperatura de mañana y ambas capas vectoriales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g + geom_raster(data = forecast_tomorrow, aes(x, y, fill = ta_limit)) +
+          geom_sf(data = grid_crp, 
+                  colour = &amp;quot;white&amp;quot;, 
+                  linewidth = .2) +
+          geom_sf(data = world, 
+                   fill = NA,
+                   colour = &amp;quot;grey10&amp;quot;,
+                   linewidth = .2) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lo que nos falta por añadir son últimas definiciones de color, de la leyenda y el estilo general del mapa.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 + scale_fill_distiller(palette = &amp;quot;RdBu&amp;quot;, 
+                          limits = c(-45, 45),
+                          breaks = c(-45, -25, 0, 25, 45)) +
+     guides(fill = guide_colourbar(barwidth = 15, 
+                                   barheight = .5, 
+                                   title.position = &amp;quot;top&amp;quot;,
+                                   title.hjust = .5)) +
+  coord_sf() +
+  labs(fill = str_wrap(&amp;quot;Temperatura máxima a 2 metros para el 14 de febrero&amp;quot;, 30)) +
+  theme_void() +
+  theme(legend.position = &amp;quot;bottom&amp;quot;,
+        legend.title = element_text(size = 7),
+        plot.margin = margin(10, 10, 10, 10)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Si quisiéramos añadir etiquetas de los puntos con la temperatura más baja y más alta, necesitamos filtrar los extremos a partir de nuestra tabla.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;labeling &amp;lt;- slice(forecast_tomorrow, which.min(ta), which.max(ta))
+labeling&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2 × 5
+##           x         y date          ta ta_limit
+##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+## 1 -1397101.  3923352. 2023-02-24 -42.5    -42.5
+## 2  2119554. -4121598. 2023-02-24  43.9     43.9&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La función &lt;code&gt;geom_mark_circle()&lt;/code&gt; permite incluir una etiqueta con un círculo a cualquier posición. La etiqueta la creamos usando &lt;code&gt;str_glue()&lt;/code&gt; donde la variable será sustituida por cada temperatura de ambos extremos, al mismo tiempo podemos definir el formato de la cifra con &lt;code&gt;number()&lt;/code&gt; del paquete &lt;code&gt;{scales}&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 +  geom_mark_circle(data = labeling, 
+                       aes(x, y, 
+                          description = str_glue(&amp;#39;{scales::number(ta, accuracy = .1, decimal.mark = &amp;quot;,&amp;quot;, style_positive = &amp;quot;plus&amp;quot;, suffix = &amp;quot;ºC&amp;quot;)}&amp;#39;)
+                          ), 
+                   expand = unit(1, &amp;quot;mm&amp;quot;), 
+                   label.buffer = unit(4, &amp;quot;mm&amp;quot;),
+                   label.margin = margin(1, 1, 1, 1, &amp;quot;mm&amp;quot;),
+                   con.size = 0.3,
+                   label.fontsize = 8,
+                   label.fontface = &amp;quot;bold&amp;quot;,
+                   con.type = &amp;quot;straight&amp;quot;,
+                  label.fill = alpha(&amp;quot;white&amp;quot;, .5)) +
+     scale_fill_distiller(palette = &amp;quot;RdBu&amp;quot;, 
+                          limits = c(-45, 45),
+                          breaks = c(-45, -25, 0, 25, 45)) +
+     guides(fill = guide_colourbar(barwidth = 15, 
+                                   barheight = .5, 
+                                   title.position = &amp;quot;top&amp;quot;,
+                                   title.hjust = .5)) +
+  coord_sf(crs = ortho_crs) +
+  labs(fill = str_wrap(&amp;quot;Temperatura mínima 2 metros para el 14 de febrero&amp;quot;, 30)) +
+  theme_void() +
+  theme(legend.position = &amp;quot;bottom&amp;quot;,
+        legend.title = element_text(size = 7),
+        plot.margin = margin(10, 10, 10, 10)) &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2023/el-tiempo-de-manana/index.es_files/figure-html/unnamed-chunk-21-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>Efecto hillshade o sombras de laderas</title>
