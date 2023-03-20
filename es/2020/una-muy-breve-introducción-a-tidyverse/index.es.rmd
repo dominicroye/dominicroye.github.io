@@ -1,0 +1,630 @@
+---
+output:
+  blogdown::html_page:
+    toc: true
+    number_sections: true
+categories: ["tidyverse","R","R:principante"]
+title: Una muy breve introducción a Tidyverse
+date: '2020-06-06'
+slug: breve-introduccion-tidyverse
+tags: ["introducción","visualización","gestión", "datos", "COVID-19"]
+header:
+  caption: ''
+  image: 'mobility_residence.png'
+lang: es
+summary: "El universo de los paquetes de tidyverse, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de tidyverse."
+---
+
+
+# Tidyverse
+
+El universo de los paquetes de ``tidyverse``, una colección de paquetes de funciones para un uso especialmente enfocado en la ciencia de datos, abrió un antes y después en la programación de R. En este post voy a resumir muy brevemente lo más esencial para inicarse en este mundo. La gramática sigue en todas las funciones una estructura común. Lo más esencial es que el primer argumento es el objeto y a continuación viene el resto de argumentos. Además, se proporciona un conjunto de verbos que facilitan el uso de las funciones. En la actualidad, la filosofía de las funciones también se refleja en otros paquetes que hacen compatible su uso con la colección de ``tidyverse``. Por ejemplo, el paquete ``sf`` ([simple feature](https://r-spatial.github.io/sf/articles/sf1.html)) para el tratamiento de datos vectoriales, permite el uso de múltiples funciones que encontramos en el paquete ``dplyr``. 
+
+El núcleo de la colección lo constituyen los siguientes paquetes: 
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+library(knitr)
+
+tb <- data.frame(paquete=c("ggplot2", "purrr", "tibble", "dplyr", "tidyr", "stringr", "readr", "forcats"),
+                 descripcion=c("Gramática para la creación de gráficos",
+                               "Programación funcional de R",
+                               "Sistema moderno y efectivo de tablas",
+                               "Gramatica para la  manipulación de datos",
+                               "Conjunto de funciones para ordenar datos",
+                               "Conjunto de funciones para trabajar con caracteres",
+                               "Una forma fácil y rápida para importar datos",
+                               "Herramientas y funciones para trabajar fácilmente con factores"))
+
+kable(tb,booktabs = TRUE,col.names=c("Paquete","Descripción"))
+
+```
+
+Además de los paquetes menciondos, también se usa muy frecuentemente `lubridate` para trabajar con fechas y horas, y también `readxl` que nos permite importar archivos en formato Excel. Para conocer todos los paquetes disponibles podemos emplear la función ``tidyverse_packages()``. 
+
+```{r echo=FALSE,warning=FALSE,message=FALSE}
+# cargar el paquete
+library(tidyverse)
+
+tidyverse_packages()
+```
+
+Es muy fácil encontrarnos con conflicos de funciones, o sea, que el mismo nombre de función exista en varios paquetes. Para evitarlo, podemos escribir el nombre del paquete delante de la función que queremos usar, separados por el símbolo de dos puntos escrito dos veces (`package_name::function_name`).
+
+Antes de empezar con los paquetes, espero que sea verdaderamente una breve introducción,  algunos comentarios sobre el estilo al programar en R. 
+
+# Guía de estilo 
+
+En R no existe una guía de estilo universal, o sea, en la sintaxis de R  no es necesario seguir normas concretas para nuestros scripts. Es recomendable trabajar de forma homogénea y clara a la hora de escribir con un estilo uniforme y legible. La colección de ``tidyverse`` tiene una guia propia (https://style.tidyverse.org/). 
+
+Las recomendaciones más importes son:
+
+- Evitar usar más de 80 caracteres por línea para permitir leer el código completo. 
+- Usar siempre un espacio después de una coma, nunca antes.
+- Los operadores (==, +, -, <-, %>%, etc.) deben tener un espacio antes y después.
+- No hay espacio entre el nombre de una función y el primer paréntesis, ni entre el último arguemento y el paréntesis final de una función. 
+- Evitar reutilizar nombres de funciones y variables comunes (`c <- 5` vs. `c()`)
+- Ordenar el script separando las partes con la forma de comentario `# Importar datos -----`
+- Se deben evitar tildes o símbolos especiales en nombres, archivos, rutas, etc. 
+- Nombres de los objetos deben seguir una estructura constante: `day_one`, `day_1`.
+
+Es aconsejable usar una correcta *indentación* para multiples argumentos de una función o funciones encadenadas por el operador `pipe` (`%>%`). 
+
+# Pipe %>%
+
+Para facilitar el trabajo en la gestión, manipulación y visualización de datos, el paquete `magrittr` introduce el operador llamado *pipe* en la forma `%>%` con el objetivo de combinar varias funciones sin la necesidad de asignar el resultado a un nuevo objeto. El operador *pipe* pasa a la salida de una función aplicada al primer argumento de la siguiente función. Esta forma de combinar funciones permite encadenar varios pasos de forma simultánea. En el siguiente ejemplo, muy sencillo, pasamos el vector `1:5` a la función `mean()` para calcular el promedio. 
+
+```{r}
+1:5 %>% mean()
+```
+
+# Paquetes de Tidyverse
+
+## Lectura y escritura
+
+El paquete `readr` facilita la lectura o escritura de múltiples formatos de archivo usando funciones que comienzan por `read_*` o `write_*`. 
+En comparación con *R Base* las funciones son más rápidas, ayudan a limpiar los nombres de las columnas y las fechas son convertidas automáticamente. Las tablas importadas son de clase `tibble` (**tbl_df**), una versión moderna de `data.frame` del paquete `tibble`. En el mismo sentido se puede usar la función `read_excel()` del paquete ``readxl`` para importar datos de hojas de Excel (más detalles también en esta [entrada de mi blog](https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/)). En el siguiente ejemplo importamos los datos de la movilidad registrada por Google ([enlace](https://www.google.com/covid19/mobility/)) durante los últimos meses a causa de la pandemia COVID-19 ([descarga](/files/Global_Mobility_Report.csv)). 
+
+```{r echo=FALSE}
+library(knitr)
+df <- data.frame(funcion=c("read_csv() o read_csv2()",
+                           "read_delim()", "read_table()"),
+                 descripcion=c("coma o punto-coma (CSV)",
+                               "separador general", "espacio blanco"))
+
+
+kable(df,booktabs = TRUE,col.names=c("Función lectura","Descripción"))
+
+```
+
+
+```{r}
+# cargar el paquete
+library(tidyverse)
+
+google_mobility <- read_csv("Global_Mobility_Report.csv")
+google_mobility
+
+```
+
+Debemos prestar atención a los nombres de los argumentos, ya que cambian en las funciones de `readr`. Por ejemplo, el argumento conocido `header = TRUE` de `read.csv()` es en este caso `col_names = TRUE`. Podemos encontrar más detalles en el [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/data-import.pdf) de `readr` .
+
+## Manipulación de caracteres
+
+Cuando se requiere manipular cadenas de texto usamos el paquete `stringr`, cuyas funciones siempre empiezan por `str_*` seguidas por un verbo y el primer argumento. 
+
+Algunas de estas funciones son las siguientes:
+
+```{r echo=FALSE}
+library(knitr)
+df <- data.frame(funcion=c("str_replace()", "str_c()",
+                           "str_detect()", "str_extract()",
+                           "str_sub()", "str_length()"),
+                 descripcion=c("reemplazar patrones",
+                               "combinar characteres",
+                               "detectar patrones", 
+                               "extraer patrones",
+                               "extraer por posición",
+                               "longitud de la cadena de caracteres"))
+
+
+kable(df,booktabs = TRUE,col.names=c("Función","Descripción"))
+
+```
+
+Se suelen usar expresiones regulares para patrones de caracteres. Por ejemplo, la expresión regular `[aeiou]` coincide con cualquier caracter único que sea una vocal. El uso de corchetes `[]` corresponde a clases de caracteres. Por ejemplo, `[abc]` corresponde a cada letra independientemente de la posición. `[a-z]` o `[A-Z]` o `[0-9]` cada uno entre a y z ó 0 y 9. Y por último, `[:punct:]` puntuación, etc. Con llaves "{}" podemos indicar el número del elemento anterior `{2}` sería dos veces, {1,2} entre una y dos, etc. Además con `$`o `^` podemos indicar si el patrón empieza al principio o termina al final. Podemos encontrar más detalles y patrones en el [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/strings.pdf) de `stringr`. 
+
+```{r}
+# reemplazamos 'er' al final por vacío
+
+str_replace(month.name, "er$", "")
+
+str_replace(month.name, "^Ma", "")
+
+# combinar caracteres
+
+a <- str_c(month.name, 1:12, sep = "_")
+a
+
+# colapsar combinación
+
+str_c(month.name, collapse = ", ")
+
+# dedectamos patrones
+
+str_detect(a, "_[1-5]{1}")
+
+# extraemos patrones
+
+str_extract(a, "_[1-9]{1,2}")
+
+# extraermos los caracteres en las posiciones entre 1 y 2
+
+str_sub(month.name, 1, 2)
+
+# longitud de cada mes
+
+str_length(month.name)
+
+# con pipe, el '.' representa al objeto que pasa el operador %>%
+str_length(month.name) %>% 
+   str_c(month.name, ., sep = ".")
+
+```
+
+Una función muy útil es `str_glue()` para interpolar caracteres. 
+
+```{r}
+name <- c("Juan", "Michael")
+age <- c(50, 80) 
+date_today <- Sys.Date()
+
+str_glue(
+  "My name is {name}, ",
+  "I'am {age}, ",
+  "and my birth year is {format(date_today-age*365, '%Y')}."
+)
+```
+
+
+## Manejo de fechas y horas
+
+El paquete `lubridate` ayuda en el manejo de fechas y horas. Nos permite crear los objetos reconocidos por R con funciones (como `ymd()` ó `ymd_hms()`) y hacer cálculos. 
+
+Debemos conocer las siguientes abreviaturas:
+
+- `ymd`: representa `y:year`, `m:month`, `d:day`
+- `hms`: representa `h:hour`, `m:minutes`, `s:seconds`
+
+```{r}
+# paquete
+library(lubridate)
+
+# vector de fechas
+dat <- c("1999/12/31", "2000/01/07", "2005/05/20","2010/03/25")
+
+# vector de fechas y horas
+dat_time <- c("1988-08-01 05:00", "2000-02-01 22:00")
+
+# convertir a clase date
+dat <- ymd(dat) 
+dat
+
+# otras formatos
+dmy("05-02-2000")
+ymd("20000506")
+
+# convertir a POSIXct
+dat_time <- ymd_hm(dat_time)
+dat_time
+
+# diferentes formatos en un vector 
+dat_mix <- c("1999/12/05", "05-09-2008", "2000/08/09", "25-10-2019")
+
+# indicar formato con la convención conocida en ?strptime
+parse_date_time(dat_mix, order = c("%Y/%m/%d", "%d-%m-%Y"))
+
+
+```
+
+Más funciones útiles: 
+
+```{r}
+# extraer el año
+year(dat)
+
+# el mes
+month(dat)
+month(dat, label = TRUE) # como etiqueta
+
+# el día de la semana
+wday(dat)
+wday(dat, label = TRUE) # como etiqueta
+
+# la hora
+hour(dat_time)
+
+# sumar 10 días
+dat + days(10)
+
+# sumar 1 mes
+dat + months(1)
+
+```
+
+Por último, la función ``make_date()`` es muy útil en crear fechas a partir de diferentes partes de las mismas como puede ser el año, mes, etc. 
+
+```{r}
+# crear fecha a partir de sus elementos, aquí con año y mes
+make_date(2000, 5)
+
+# crear fecha con hora 
+make_datetime(2005, 5, 23, 5)
+```
+
+Podemos encontrar más detalles en el [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/lubridate.pdf) de `lubridate`.
+
+## Manipulación de tablas y vectores
+
+Los paquetes `dplyr` y `tidyr` nos proporciona una gramática de manipulación de datos con un conjunto de verbos útiles para resolver los problemas más comunes. Las funciones más importantes son:
+
+```{r echo=FALSE}
+library(knitr)
+df <- data.frame(funcion = c("mutate()","select()",
+                           "filter()","summarise()","arrange()",
+                           "group_by()", "rename()"),
+                 descripcion = c("añadir nuevas variables o modificar existentes",
+                               "seleccionar variables",
+                               "filtrar","resumir/reducir","ordenar", "agrupar", "renombrar columnas"))
+
+
+kable(df,booktabs = TRUE, col.names=c("Función","Descripción"))
+```
+
+En caso de que no lo hayas hecho antes, importamos los datos de movilidad. 
+
+```{r}
+google_mobility <- read_csv("Global_Mobility_Report.csv")
+```
+
+### Selecionar y renombrar
+
+Podemos selecionar o eliminar columnas con la función `select()`, usando el nombre o índice de la(s) columna(s). Para suprimir columnas hacemos uso del signo negativo. La función `rename` ayuda en renombrar columnas o bien con el mismo nombre o con su índice. 
+
+```{r}
+residential_mobility <- select(google_mobility, 
+                               country_region_code:sub_region_1, 
+                               date, 
+                               residential_percent_change_from_baseline) %>% 
+                        rename(resi = 5)
+```
+
+### Filtrar y ordenar
+
+Para filtrar datos, empleamos `filter()` con operadores lógicos (`|`, `==`, `>`, etc) o funciones que devuelven un valor lógico (`str_detect()`, `is.na()`, etc.). La función `arrange()` ordena de menor a mayor por una o múltiples variables (con el signo negativo `-` se invierte el orden de mayor a menor).
+
+```{r}
+filter(residential_mobility, 
+       country_region_code == "US")
+
+filter(residential_mobility, 
+       country_region_code == "US", 
+       sub_region_1 == "New York")
+
+filter(residential_mobility, 
+       resi > 50) %>% 
+          arrange(-resi)
+```
+
+### Agrupar y resumir 
+
+¿Dónde encontramos mayor variabilidad entre regiones en cada país el día 1 de abril de 2020? 
+
+Para responder a esta pregunta, primero filtramos los datos y después agrupamos por la columna de país. Cuando empleamos la función `summarise()` posterior a la agrupación, nos permite resumir por estos grupos. Incluso, la combinación del `group_by()` con la función `mutate()` permite modificar columnas por grupos. En `summarise()` calculamos el valor máximo, mínimo y la diferencia entre ambos extremos creando nuevas columnas. 
+
+```{r}
+
+resi_variability <- residential_mobility %>% 
+                        filter(date == ymd("2020-04-01"),
+                               !is.na(sub_region_1)) %>% 
+                          group_by(country_region) %>% 
+                       summarise(mx = max(resi, na.rm = TRUE), 
+                                 min = min(resi, na.rm = TRUE),
+                                 range = abs(mx)-abs(min))
+
+arrange(resi_variability, -range)
+
+```
+
+### Unir tablas
+
+¿Cómo podemos filtrar los datos para obtener un subconjunto de Europa? 
+
+Para ello, importamos datos espaciales con el código de país y una columna de las regiones. Explicaciones detalladas sobre el paquete `sf` (*simple feature*) para trabajar con datos vectoriales, lo dejaremos para otro post. 
+
+```{r}
+library(rnaturalearth) # paquete de datos vectoriales
+
+# datos de países
+wld <- ne_countries(returnclass = "sf")
+
+# filtramos los países con código y seleccionamos las dos columnas de interés
+wld <- filter(wld, !is.na(iso_a2)) %>% select(iso_a2, subregion)
+
+# plot
+plot(wld)
+```
+
+Otras funciones de `dplyr` nos permiten unir tablas: `*_join()`. Según hacia qué tabla (izquierda o derecha) se quiere unir, cambia la función : `left_join()`, `right_join()` o incluso `full_join()`. El argumento `by` no es necesario siempre y cuando ambas tablas tienen una columna en común. No obstante, en este caso la columna de fusión es diferente, por eso, usamos el modo `c("country_region_code"="iso_a2")`. El paquete `forcats` de `tidyverse` tiene muchas funciones útiles para manejar variables categóricas (`factors`), variables que tienen un conjunto fijo y conocido de valores posibles. Todas las funciones de `forcats` tienen el prefijo `fct_*`. Por ejemplo, en este caso usamos `fct_reorder()` para reordenar las etiquetas de los países en orden de la máxima basada en los registros de movibilidad residencial. Finalmente, creamos una nueva columna 'resi_real' para cambiar el valor de referencia, el promedio (*baseline*), fijado en 0 a 100. 
+
+```{r}
+subset_europe <- filter(residential_mobility, 
+                        is.na(sub_region_1),
+                        !is.na(resi)) %>%
+                 left_join(wld, by = c("country_region_code"="iso_a2")) %>% 
+                 filter(subregion %in% c("Northern Europe",
+                                         "Southern Europe",
+                                          "Western Europe",
+                                          "Eastern Europe")) %>%
+                 mutate(resi_real = resi + 100,
+                        region = fct_reorder(country_region, 
+                                             resi, 
+                                            .fun = "max", 
+                                            .desc = FALSE)) %>% 
+                select(-geometry, -sub_region_1)
+
+str(subset_europe)
+```
+
+### Tablas largas y anchas
+
+Antes de pasar a la visualización con `ggplot2`. Es muy habitual modificar la tabla entre dos formatos principales. Una tabla es *tidy* cuando 1) cada variable es una columna 2) cada observación/caso es una fila y 3) cada tipo de unidad observacional forma una tabla.
+
+
+```{r}
+# subconjunto 
+mobility_selection <- select(subset_europe, country_region_code, date:resi)
+mobility_selection
+
+
+# tabla ancha
+mobi_wide <- pivot_wider(mobility_selection, 
+                         names_from = country_region_code,
+                         values_from = resi)
+mobi_wide
+
+# tabla larga
+pivot_longer(mobi_wide,
+             2:36,
+             names_to = "country_code",
+             values_to = "resi")
+```
+
+Otro grupo de funciones a las que deberías echar un vistazo son: `separate()`, `case_when()`, `complete()`. Podemos encontrar más detalles en el [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/data-transformation.pdf) de `dplyr` 
+
+## Visualizar datos 
+
+`ggplot2` es un sistema moderno, y con una enorme variedad de opciones, para visualización de datos. A diferencia del sistema gráfico de *R Base* se utiliza una gramática diferente. 
+La gramática de los gráficos (*grammar of graphics*, de allí "gg") consiste en la suma de varias capas u objetos independientes que se combinan usando `+` para construir el gráfico final. `ggplot` diferencia entre los datos, lo que se visualiza y la forma en que se visualiza. 
+
+* *data*: nuestro conjunto de datos (`data.frame` o `tibble`)
+
+* *aesthetics*: con la función `aes()` indicamos las variables que corresponden a los ejes x, y, z,... o, cuando se pretende aplicar parámetros gráficos (*color*, *size*, *shape*) según una variable. Es posible incluir `aes()` en `ggplot()` o en la función correspondiente a una geometría `geom_*`.
+
+* *geometries*: son objetos `geom_*` que indican la geometría a usar, (p. ej.: `geom_point()`, `geom_line()`, `geom_boxplot()`, etc.). 
+
+* *scales*: son objetos de tipo `scales_*` (p. ej.: `scale_x_continous()`, `scale_colour_manual()`) para manipular las ejes, definir colores, etc.
+
+* *statistics*: son objetos `stat_*` (p.ej.: `stat_density()`) que permiten aplicar transformaciones estadísticas.
+
+Podemos encontrar más detalles en el [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/data-visualization-2.1.pdf) de `ggplot2`. `ggplot` es complementado constantemente con extensiones para geometrías u otras opciones gráficas (https://exts.ggplot2.tidyverse.org/ggiraph.html), para obtener ideas gráficas, debes echarle un vistazo a la Galería de Gráficos R (https://www.r-graph-gallery.com/).
+
+
+### Gráfico de linea y puntos
+
+Creamos un subconjunto de nuestros datos de movilidad para residencias y parques, filtrando los registros de regiones italianas. Además, dividimos los valores de movilidad en porcentaje por 100 para obtener la fracción, ya que `ggplot2` nos permite indicar la unidad de porcentaje en el argumento de las etiquetas (último gráfico de esta sección). 
+
+```{r, dpi = 300}
+# creamos el subconjunto
+it <- filter(google_mobility, 
+             country_region == "Italy", 
+             is.na(sub_region_1)) %>% 
+      mutate(resi = residential_percent_change_from_baseline/100,   
+             parks = parks_percent_change_from_baseline/100)
+
+
+# gráfico de línea 
+ggplot(it, 
+       aes(date, resi)) + 
+  geom_line()
+
+
+# gráfico de dispersión con línea de correlación
+ggplot(it, 
+       aes(parks, resi)) + 
+  geom_point() +
+  geom_smooth(method = "lm")
+```
+
+Para modificar los ejes, empleamos las diferentes funciones de `scale_*` que debemos adpatar a las escalas de medición (*date*, *discrete*, *continuous*, etc.). La función `labs()` nos ayuda en definir los títulos de ejes, del gráfico y de la leyenda. Por último, añadimos con `theme_light()` el estilo del gráfico (otros son `theme_bw()`, `theme_minimal()`, etc.). También podríamos hacer cambios de todos los elementos gráficos a través de `theme()`. 
+
+```{r, dpi = 300}
+# time serie plot
+ggplot(it, 
+       aes(date, resi)) + 
+  geom_line(colour = "#560A86", size = 0.8) +
+  scale_x_date(date_breaks = "10 days", 
+               date_labels = "%d %b") +
+  scale_y_continuous(breaks = seq(-0.1, 1, 0.1), 
+                     labels = scales::percent) +
+  labs(x = "", 
+       y = "Residential mobility",
+       title = "Mobility during COVID-19") +
+  theme_light()
+
+# scatter plot
+ggplot(it, 
+       aes(parks, resi)) + 
+  geom_point(alpha = .4, size = 2) +
+  geom_smooth(method = "lm") +
+  scale_x_continuous(breaks = seq(-1, 1.4, 0.2), 
+                     labels = scales::percent) +
+  scale_y_continuous(breaks = seq(-1, 1, 0.1), 
+                     labels = scales::percent) +
+  labs(x = "Park mobility", 
+       y = "Residential mobility",
+       title = "Mobility during COVID-19") +
+  theme_light()
+```
+
+
+### Boxplot
+
+Podemos visualizar diferentes aspectos de los datos de movilidad con otras geometrías. Aquí creamos *boxplots* por cada país europeo representando la variabilidad de movilidad entre y en los países durante la pandemia del COVID-19. 
+
+```{r, dpi = 300}
+# subconjunto
+subset_europe_reg <- filter(residential_mobility, 
+                           !is.na(sub_region_1),
+                           !is.na(resi)) %>%
+                     left_join(wld, by = c("country_region_code"="iso_a2")) %>% 
+                     filter(subregion %in% c("Northern Europe",
+                                         "Southern Europe",
+                                          "Western Europe",
+                                          "Eastern Europe")) %>% 
+                     mutate(resi = resi/100, 
+                            country_region = fct_reorder(country_region, resi))
+
+# boxplot
+ggplot(subset_europe_reg, 
+       aes(country_region, resi, fill = subregion)) + 
+  geom_boxplot() +
+  scale_y_continuous(breaks = seq(-0.1, 1, 0.1), labels = scales::percent) +
+  scale_fill_brewer(palette = "Set1") +
+  coord_flip() +
+   labs(x = "", 
+       y = "Residential mobility",
+       title = "Mobility during COVID-19", 
+       fill = "") +
+  theme_minimal()
+
+```
+
+
+### Heatmap
+
+Para visualizar la tendencia de todos los países europeos es recomendable usar un *heatmap* en lugar de un bulto de líneas. Antes de constuir el gráfico, creamos un vector de fechas para las etiquetas con los domingos en el período de registros.  
+
+
+```{r}
+# secuencia de fechas
+df <- data.frame(d = seq(ymd("2020-02-15"), ymd("2020-06-07"), "day"))
+
+# filtramos los domingos creando el día de la semana
+sundays <- df %>% 
+            mutate(wd = wday(d, week_start = 1)) %>% 
+             filter(wd == 7) %>% 
+              pull(d)
+```
+
+Si queremos usar etiquetas en otras lenguas, es necesario cambiar la configuración regional del sistema. 
+
+```{r}
+Sys.setlocale("LC_TIME", "English")
+```
+
+El relleno de color para los boxplots lo dibujamos por cada región de los países europeos. Podemos fijar el tipo de color con `scale_fill_*`, en este caso, de las gamas *viridis*.  
+Además, la función `guides()` nos permite modificar la barra de color de la leyenda. Por último, aquí vemos el uso de `theme()` con cambios adicionales a `theme_minimal()`. 
+
+```{r, dpi = 300, fig.width = 12.25, fig.height = 8}
+# headmap
+ggplot(subset_europe, 
+       aes(date, region, fill = resi_real)) +
+  geom_tile() +
+  scale_x_date(breaks = sundays,
+               date_labels = "%d %b") +
+  scale_fill_viridis_c(option = "A", 
+                       breaks = c(91, 146),
+                       labels = c("Less", "More"), 
+                       direction = -1) +
+  theme_minimal() +
+  theme(legend.position = "top", 
+        title = element_text(size = 14),
+        panel.grid.major.x = element_line(colour = "white", linetype = "dashed"),
+        panel.grid.minor.x = element_blank(),
+        panel.grid.major.y = element_blank(),
+        panel.ontop = TRUE,
+        plot.margin = margin(r = 1, unit = "cm")) +
+  labs(y = "", 
+       x = "", 
+       fill = "", 
+       title = "Mobility trends for places of residence",
+       caption = "Data: google.com/covid19/mobility/") +
+  guides(fill = guide_colorbar(barwidth = 10, 
+                               barheight = .5,
+                               label.position = "top", 
+                               ticks = FALSE)) +
+  coord_cartesian(expand = FALSE)
+```
+
+
+## Aplicar funciones sobre vectores o listas
+
+El paquete `purrr` contiene un conjunto de funciones avanzadas de programación funcional para trabajar con funciones y vectores. La familia de funciones `lapply()` conocido de `R Base`corresponde a las funciones de `map()` en este paquete. Una de las mayores ventajas es poder reducir el uso de bucles (`for`, etc.). 
+
+```{r}
+# lista con dos vectores
+vec_list <- list(x = 1:10, y = 50:70)
+
+# calculamos el promedio para cada uno
+map(vec_list, mean)
+
+# podemos cambiar tipo de salida map_* (dbl, chr, lgl, etc.)
+map_dbl(vec_list, mean)
+
+```
+
+Un ejemplo más complejo. Calculamos el coeficiente de correlación entre la movilidad residencial y la de los parques en todos los países europeos. Para obtener un resumen *tidy* de un modelo o un test usamos la función `tidy()` del paquete `broom`.
+
+
+```{r}
+library(broom) # tidy outputs
+
+# función adaptada 
+cor_test <- function(x, formula) { 
+  
+df <- cor.test(as.formula(formula), data = x) %>% tidy()
+
+return(df)
+  
+}
+
+# preparamos los datos
+europe_reg <- filter(google_mobility, 
+                           !is.na(sub_region_1),
+                           !is.na(residential_percent_change_from_baseline)) %>%
+                     left_join(wld, by = c("country_region_code"="iso_a2")) %>% 
+                     filter(subregion %in% c("Northern Europe",
+                                         "Southern Europe",
+                                          "Western Europe",
+                                          "Eastern Europe"))
+# aplicamos la función a cada país creando una lista
+europe_reg %>%
+  split(.$country_region_code) %>% 
+  map(cor_test, formula = "~ residential_percent_change_from_baseline + parks_percent_change_from_baseline")  
+
+```
+
+Como ya hemos visto anteriormente, existen subfunciones de `map_*` para obtener en lugar de una lista un objeto de otra clase, aquí de `data.frame`. 
+
+```{r}
+cor_mobility <- europe_reg %>%
+                  split(.$country_region_code) %>% 
+                     map_df(cor_test, 
+                            formula = "~ residential_percent_change_from_baseline + parks_percent_change_from_baseline", 
+                            .id = "country_code")
+
+arrange(cor_mobility, estimate)
+```
+
+
+Otros ejemplos prácticos aquí en este [post](https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/) or este [otro](https://dominicroye.github.io/en/2019/tidy-correlation-tests-in-r/). Podemos encontrar más detalles en el [Cheat-Sheet](https://github.com/rstudio/cheatsheets/raw/master/purrr.pdf) de `purrr`.

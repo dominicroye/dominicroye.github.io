@@ -1,0 +1,2189 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R:avanzado on Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/es/categories/ravanzado/</link>
+    <description>Recent content in R:avanzado on Dr. Dominic Royé</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Mon, 01 Mar 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://dominicroye.github.io/es/categories/ravanzado/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Mapa dasimétrico bivariante</title>
+      <link>https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/</link>
+      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;consideraciones-iniciales&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Consideraciones iniciales&lt;/h1&gt;
+&lt;p&gt;Una desventaja de los mapas coropletas es que estos suelen distorsionar la relación entre la verdadera geografía subyacente y la variable representada. Se debe a que las divisiones administrativas no suelen coincidir con la realidad geográfica, donde la gente vive. Además, grandes áreas aparentan tener un peso con poca población que no tienen realmente. Para reflejar mejor la realidad se hace uso de distribuciones más realista de la población como puede ser el uso de suelo. Con técnicas de Sistemas de Información Geográfica es posible redistribuir la variable de interés en función de una variable a menor unidad espacial.&lt;/p&gt;
+&lt;p&gt;Cuando disponemos de datos de puntos, el proceso de redistribución simplemente es recortar áreas de puntos con población a base del uso de suelo, normalmente clasificado como urbano. En caso de polígonos también podríamos recortar con polígonos de uso de suelo, pero una alternativa interesante son los mismos datos en formato raster. Veremos cómo podemos realizar un mapa dasimétrico usando datos raster con una resolución de 100 m. En este post usaremos datos de secciones censales de la renta media y el índice de Gini de España. No sólo haremos un mapa dasimétrico, sino también bivariante, representando con dos gamas de colores ambas variables en el mismo mapa.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Paquetes&lt;/h1&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple gramática para combinar ggplots separados en el mismo gráfico&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;biscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Herramientas y paletas para mapeo temático bivariado&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes en R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;biscale&amp;quot;)) install.packages(&amp;quot;biscale&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(tidyverse)
+library(sf)
+library(readxl)
+library(biscale)
+library(patchwork)
+library(raster)
+library(sysfonts)
+library(showtext)
+library(raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Primero descargamos todos los datos necesarios. Con excepción de los datos CORINE Land Cover (~200 MB), se pueden obtener los datos almacenados en este blog directamente vía los enlaces indicados .&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CORINE Land Cover 2018 (geotiff): &lt;a href=&#34;https://land.copernicus.eu/pan-european/corine-land-cover/clc2018?tab=download&#34;&gt;COPERNICUS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Datos de renta e índice Gini (excel) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/renta.zip&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Límites censales de España (vectorial) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/SECC_CE_20200101.zip&#34;&gt;descarga&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar&lt;/h2&gt;
+&lt;p&gt;Lo primero que hacemos es importar el raster del uso de suelo, los datos de renta e índice de Gini y los límites censales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster de CORINE LAND COVER 2018
+urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
+## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
+## definition&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# datos de renta y Gini
+renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
+gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
+
+# límites censales del INE
+limits &amp;lt;- read_sf(&amp;quot;SECC_CE_20200101.shp&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;usos-de-suelo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Usos de suelo&lt;/h2&gt;
+&lt;p&gt;En este primer paso filtramos las secciones censales para obtener aquellas de la Comunidad Autónoma de Madrid, y creamos los límites municipales. Para disolver los polígonos de secciones censales aplicamos la función &lt;code&gt;group_by()&lt;/code&gt; en combinación con &lt;code&gt;summarise()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la Comunidad Autónoma de Madrid
+limits &amp;lt;- filter(limits, NCA == &amp;quot;Comunidad de Madrid&amp;quot;)
+
+# obtenemos los límites municipales
+mun_limit &amp;lt;- group_by(limits, CUMUN) %&amp;gt;% summarise()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso recortamos el raster de uso de suelo con los límites de Madrid. Recomiendo usar siempre primero la función &lt;code&gt;crop()&lt;/code&gt; y después &lt;code&gt;mask()&lt;/code&gt;, la primera recorta a la extensión requerida y la segunda enmascara. Posteriormente, eliminamos todos los valores que correspondan a 1 o 2 (urbano continuo, discontinuo). Por último, proyectamos el raster.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos los límites 
+limits_prj &amp;lt;- st_transform(limits, projection(urb))
+
+# acortamos y enmascaramos 
+urb_mad &amp;lt;- crop(urb, limits_prj) %&amp;gt;% 
+              mask(limits_prj)
+
+# eliminamos píxeles no urbanos 
+urb_mad[!urb_mad %in% 1:2] &amp;lt;- NA 
+
+# plot del raster
+plot(urb_mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# proyectamos 
+urb_mad &amp;lt;- projectRaster(urb_mad, crs = CRS(&amp;quot;+proj=longlat +datum=WGS84 +no_defs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En este siguiente paso, convertimos los datos raster en un objeto &lt;code&gt;sf&lt;/code&gt; de puntos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# transformamos el raster a xyz y objeto sf 
+urb_mad &amp;lt;- as.data.frame(urb_mad, xy = TRUE, na.rm = TRUE) %&amp;gt;%
+                st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326)
+
+# añadimos las columnas de las coordinadas
+urb_mad &amp;lt;- urb_mad %&amp;gt;% rename(urb = 1) %&amp;gt;% cbind(st_coordinates(urb_mad))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;renta-media-e-índice-de-gini&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Renta media e índice de Gini&lt;/h2&gt;
+&lt;p&gt;El formato de los Excels no coincide con el original del INE, dado que he limpiado el formato antes con el objetivo de hacer más fácil este post. Lo que nos queda es crear una columna con los códigos de las secciones censales y excluir datos que corresponden a otro nivel administrativo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## datos renta y gini INE
+
+renta_sec &amp;lt;- mutate(renta, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+                nc_len = str_length(NATCODE),
+                mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)
+
+gini_sec &amp;lt;- mutate(gini, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+               nc_len = str_length(NATCODE),
+               mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso unimos ambas tablas con las secciones censales usando &lt;code&gt;left_join()&lt;/code&gt; y convertimos columnas de interés en modo numérico.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# unimos ambas tablas de renta y Gini con los límites censales
+mad &amp;lt;- left_join(limits, renta_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;)) %&amp;gt;% 
+          left_join(gini_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;))
+
+# convertimos columnas en numérico 
+mad &amp;lt;- mutate_at(mad, c(23:27, 30:31), as.numeric)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;variable-bivariante&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Variable bivariante&lt;/h2&gt;
+&lt;p&gt;Para crear un mapa bivariante debemos construir una única variable que combina diferentes clases de dos variables. Normalmente son tres de cada una lo que lleva a nueve clases en total. En nuestro caso, la renta media y el índice Gini. El paquete &lt;code&gt;biscale&lt;/code&gt; incluye funciones auxiliares para llevar a cabo este proceso. Con la función &lt;code&gt;bi_class()&lt;/code&gt; creamos esta variable de clasificación usando cuantiles como algoritmo. Dado que en ambas variables encontramos valores ausentes, corregimos aquellas combinaciones entre ambas variables donde aparece un &lt;code&gt;NA&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## creamos clasificación bivariante
+mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantile&amp;quot;, dim = 3) %&amp;gt;% 
+             mutate(bi_class = ifelse(str_detect(bi_class, &amp;quot;NA&amp;quot;), NA, bi_class))
+
+# resultado
+head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## projected CRS:  ETRS89 / UTM zone 30N
+## # A tibble: 6 x 4
+##   GINI_2017 RNMP_2017 bi_class                                          geometry
+##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
+## 1      NA          NA &amp;lt;NA&amp;gt;     (((446007.9 4552348, 446133.7 4552288, 446207.8 ~
+## 2      31       13581 2-2      (((460243.8 4487756, 460322.4 4487739, 460279 44~
+## 3      30       12407 2-2      (((457392.5 4486262, 457391.6 4486269, 457391.1 ~
+## 4      34.3     13779 3-2      (((468720.8 4481374, 468695.5 4481361, 468664.6 ~
+## 5      33.5      9176 3-1      (((417140.2 4451736, 416867.5 4451737, 416436.8 ~
+## 6      26.2     10879 1-1      (((469251.9 4480826, 469268.1 4480797, 469292.6 ~&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Terminamos redistribuyendo la variable de desigualdad sobre los píxeles del uso de suelo urbano. La función &lt;code&gt;st_join()&lt;/code&gt; une los datos con los puntos del uso de suelo.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## redistribuimos los píxeles urbanos a la desigualdad
+mapdasi &amp;lt;- st_join(urb_mad, st_transform(mapbivar, 4326))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;construcción-del-mapa&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Construcción del mapa&lt;/h1&gt;
+&lt;div id=&#34;leyenda-y-fuente&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Leyenda y fuente&lt;/h2&gt;
+&lt;p&gt;Antes de construir ambos mapas debemos crear la leyenda usando la función &lt;code&gt;bi_legend()&lt;/code&gt;. En la función definimos los títulos para cada variable, el número de dimensiones y la gama de colores. Por último, añadimos la fuente de Montserrat para los títulos del gráfico final.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# leyenda bivariante
+legend2 &amp;lt;- bi_legend(pal = &amp;quot;DkViolet&amp;quot;,
+                     dim = 3,
+                     xlab = &amp;quot;Más desigual&amp;quot;,
+                     ylab = &amp;quot;Más renta&amp;quot;,
+                     size = 9)
+
+
+#descarga de fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+showtext_auto()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-dasimétrico&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa dasimétrico&lt;/h2&gt;
+&lt;p&gt;Este mapa construimos usando &lt;code&gt;geom_tile()&lt;/code&gt; para los píxeles y &lt;code&gt;geom_sf()&lt;/code&gt; para los límites municipales. Además, será el mapa de la derecha donde ubicamos también la leyenda. Para añadir la leyenda hacemos uso de la función &lt;code&gt;annotation_custom()&lt;/code&gt; indicando la posición en las coordenadas geográficas del mapa. El paquete &lt;code&gt;biscale&lt;/code&gt; también nos ayuda con la definición del color a través de la función &lt;code&gt;bi_scale_fill()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- ggplot(mapdasi) + 
+  geom_tile(aes(X, Y, 
+                fill = bi_class), 
+            show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;grey80&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  annotation_custom(ggplotGrob(legend2), 
+                    xmin = -3.25, xmax = -2.65,
+                    ymin = 40.55, ymax = 40.95) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;dasimétrico&amp;quot;, x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-coropleta&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa coropleta&lt;/h2&gt;
+&lt;p&gt;El mapa coropleta se construye de forma similar al mapa anterior con la diferencia de que usamos &lt;code&gt;geom_sf()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- ggplot(mapbivar) + 
+  geom_sf(aes(fill = bi_class), 
+          colour = NA, 
+          size = .1, 
+          show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;white&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;coroplético&amp;quot;,  x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;combinar-ambos-mapas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Combinar ambos mapas&lt;/h2&gt;
+&lt;p&gt;Con ayuda del paquete &lt;code&gt;patchwork&lt;/code&gt; combinamos ambos mapas en una única fila, primero el mapa coropleta y a su derecha el mapa dasimétrico. Más detalles de la gramática que se usa para la combinación de gráficos &lt;a href=&#34;https://patchwork.data-imaginist.com/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Combinamos 
+p &amp;lt;- p1 | p2
+
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2021/mapa-dasim%C3%A9trico-bivariante/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>bivariante</category>
+      
+            <category>mapa</category>
+      
+            <category>desigualdad</category>
+      
+            <category>renta</category>
+      
+            <category>Madrid</category>
+      
+            <category>urbano</category>
+      
+      
+            <category>sig</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+            <category>visualización</category>
+      
+    </item>
+    
+    <item>
+      <title>Animación climática de la temperatura máxima</title>
+      <link>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</link>
+      <pubDate>Sun, 11 Oct 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;En el campo de la visualización de datos, la animación de datos espaciales en su dimensión temporal lleva a mostrar cambios y patrones fascinantes y muy visuales. A raíz de una de las últimas publicaciones que he realizado en los RRSS me pidieron que hiciera un post acerca de cómo lo creé. Pues bien, aquí vamos para empezar con datos de la España peninsular. Podéis encontrar más animaciones en la sección de &lt;a href=&#34;https://dominicroye.github.io/es/graphs/climate/&#34;&gt;gráficos&lt;/a&gt; de este mismo blog.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;I couldn&amp;#39;t resist to make another animation. Smoothed daily maximum temperature throughout the year in Europe. &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/climate?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#climate&lt;/a&gt; &lt;a href=&#34;https://t.co/ZC9L0vh3vR&#34;&gt;pic.twitter.com/ZC9L0vh3vR&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1259059168817930240?ref_src=twsrc%5Etfw&#34;&gt;May 9, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar, exportar y manipular raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Estilos para ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;gifski&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Crear gifs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes del sistema y fuentes de Google&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;ggthemes&amp;quot;)
+if(!require(&amp;quot;gifski&amp;quot;)) install.packages(&amp;quot;gifski&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(raster)
+library(tidyverse)
+library(lubridate)
+library(ggthemes)
+library(sf)
+library(rnaturalearth)
+library(extrafont)
+library(showtext)
+library(RColorBrewer)
+library(gifski)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para aquellos con menos experiencia con &lt;code&gt;tidyverse&lt;/code&gt;, recomiendo la breve introducción en este blog &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Descargamos los datos STEAD de la temperatura máxima (&lt;em&gt;tmax_pen.nc&lt;/em&gt;) en formato &lt;em&gt;netCDF&lt;/em&gt; desde el repositario del CSIC &lt;a href=&#34;https://digital.csic.es/handle/10261/177655&#34;&gt;aquí&lt;/a&gt; (el tamaño de los datos es de 2 GB). Se trata de un conjunto de datos con una resolución espacial de 5 km y comprenden las temperaturas máximas diarias desde 1901 a 2014. En la climatología y la meteorología, un formato de uso muy extendido es el de las bases de datos &lt;em&gt;netCDF&lt;/em&gt;, que permiten obtener una estructura multidimensional e intercambiar los datos de forma independiente al sistema operativo empleado. Se trata de un formato espacio-temporal con una cuadrícula regular o irregular. La estructura multidimensional en forma de matriz (&lt;em&gt;array&lt;/em&gt;) permite usar no sólo datos espacio-temporales sino también multivariables. En nuestros datos tendremos un cubo de tres dimensiones: longitud, latitud y tiempo de la temperatura máxima.&lt;/p&gt;
+&lt;div class=&#34;figure&#34;&gt;
+&lt;img src=&#34;https://dominicroye.github.io/img/3d_ncdf.es.png&#34; alt=&#34;&#34; /&gt;
+&lt;p class=&#34;caption&#34;&gt;Royé 2015. Sémata: Ciencias Sociais e Humanidades 27:11-37&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar los datos&lt;/h2&gt;
+&lt;p&gt;El formato &lt;em&gt;netCDF&lt;/em&gt; con extensión &lt;em&gt;.nc&lt;/em&gt; lo podemos importar vía dos paquetes principales: 1) &lt;code&gt;ncdf4&lt;/code&gt; y 2) &lt;code&gt;raster&lt;/code&gt;. Aunque el paquete &lt;code&gt;raster&lt;/code&gt; realmente lo que hace es usar el primer paquete para importar los datos. En este post usaremos el paquete &lt;code&gt;raster&lt;/code&gt; dado que es algo más fácil, con algunas funciones muy útiles y más universales para todo tipo de formato &lt;em&gt;raster&lt;/em&gt;. Las funciones principales de importación son: &lt;code&gt;raster()&lt;/code&gt;, &lt;code&gt;stack()&lt;/code&gt; y &lt;code&gt;brick()&lt;/code&gt;. La primera función sólo permite importar una única capa, en cambio, las últimas dos funciones se emplean para datos multidimensionales. En nuestro caso sólo tenemos una variable, por tanto no sería necesario hacer uso del argumento &lt;code&gt;varname&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los datos ncdf
+tmx &amp;lt;- brick(&amp;quot;tmax_pen.nc&amp;quot;, varname = &amp;quot;tx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Loading required namespace: ncdf4&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tmx # metadatos&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterBrick 
+## dimensions : 190, 230, 43700, 41638  (nrow, ncol, ncell, nlayers)
+## resolution : 0.0585, 0.045  (x, y)
+## extent     : -9.701833, 3.753167, 35.64247, 44.19247  (xmin, xmax, ymin, ymax)
+## crs        : +proj=longlat +datum=WGS84 +no_defs 
+## source     : tmax_pen.nc 
+## names      : X1, X2, X3, X4, X5, X6, X7, X8, X9, X10, X11, X12, X13, X14, X15, ... 
+## Time (days since 1901-01-01): 1, 41638 (min, max)
+## varname    : tx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En la estructura del objeto &lt;code&gt;RasterBrick&lt;/code&gt; vemos todos los metadatos necesarios: desde la resolución, las dimensiones o el tipo de proyección, hasta el nombre de la variable. Además nos indica que únicamente apunta a los datos (&lt;em&gt;source&lt;/em&gt;) y no los ha importado a la memoria RAM lo que facilita el trabajo con grandes conjuntos de datos.&lt;/p&gt;
+&lt;p&gt;Para acceder a cualquier capa hacemos uso de &lt;code&gt;[[ ]]&lt;/code&gt; con el índice correspondiente. Así podemos plotear fácilmente cualquier día de los 41.638 días de los que disponemos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapear cualquier día
+plot(tmx[[200]], col = rev(heat.colors(7)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-el-promedio-de-la-temperatura&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular el promedio de la temperatura&lt;/h2&gt;
+&lt;p&gt;En este paso el objetivo es calcular el promedio de la temperatura para cada día del año. Por eso, lo primero que hacemos es crear un vector, indicando el día del año para toda la serie temporal. En el paquete &lt;code&gt;raster&lt;/code&gt; disponemos de la función &lt;code&gt;stackApply()&lt;/code&gt; que permite aplicar una función sobre grupos de capas, o mejor dicho, índices. Dado que nuestro conjunto de datos es grande, incluimos esta función en las funciones de paralelización.&lt;/p&gt;
+&lt;p&gt;Empezamos con las funciones &lt;code&gt;beginClusterr()&lt;/code&gt; y &lt;code&gt;endCluster()&lt;/code&gt; que inician y finalizan la paralelización. En la primera debemos indicar el número de núcleos que queremos usar. En este caso uso 4 de 7 posibles núcleos, no obstante, se debe cambiar el número según las características de cada CPU, siendo la norma n-1. Entonces, la función &lt;code&gt;clusterR&lt;/code&gt; permite ejecutar funciones en paralelo con múltiples núcleos. El primer argumento corresponde al objeto raster, el segundo a la función empleada, y en forma de lista pasamos los argumentos de la función &lt;code&gt;stackApply()&lt;/code&gt;, los índices que crean los grupos y la función usada para cada uno de los grupos. Si añadimos el argumento &lt;code&gt;progress = &#39;text&#39;&lt;/code&gt; se muestra una barra de progreso del cálculo.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Para el conjunto de datos de EEUU hice un preprocesamiento, el cálculo del promedio en la nube a través de &lt;a href=&#34;https://earthengine.google.com/&#34;&gt;Google Earth Engine&lt;/a&gt; lo que hace todo el proceso más rápido. En el caso de Australia, el preprocesamiento fue más complejo ya que el conjunto de datos esta en archivos netCDF para cada año.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos las fechas entre 1901 y 2014 a días del año
+time_days &amp;lt;- yday(seq(as_date(&amp;quot;1901-01-01&amp;quot;), as_date(&amp;quot;2014-12-31&amp;quot;), &amp;quot;day&amp;quot;))
+
+# calculamos el promedio 
+beginCluster(4)
+tmx_mean &amp;lt;- clusterR(tmx, stackApply, args = list(indices = time_days, fun = mean))
+endCluster()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;suavizar-la-variabilidad-de-las-temperaturas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Suavizar la variabilidad de las temperaturas&lt;/h2&gt;
+&lt;p&gt;Antes de pasar a suavizar las series temporales de nuestro &lt;em&gt;RasterBrick&lt;/em&gt;, un ejemplo del por qué lo hacemos. Extraemos un píxel de nuestro conjunto de datos en las coordenadas -1º de longitud y 40º de latitud usando la función &lt;code&gt;extract()&lt;/code&gt;. Dado que la función con el mismo nombre aparece en varios paquetes, debemos cambiar a la forma &lt;code&gt;nombre_paquete::nombre_función&lt;/code&gt;. El resultado es una matriz con una fila correspondiente al píxel y 366 columnas de los días del año. El siguiente paso es la creación de un &lt;em&gt;data.frame&lt;/em&gt; con una fecha &lt;em&gt;dummy&lt;/em&gt; y la temperatura máxima extraída.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos un píxel
+point_ts &amp;lt;- raster::extract(tmx_mean, matrix(c(-1, 40), nrow = 1))
+dim(point_ts) # dimensiones &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   1 366&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos un data.frame
+df &amp;lt;- data.frame(date = seq(as_date(&amp;quot;2000-01-01&amp;quot;), as_date(&amp;quot;2000-12-31&amp;quot;), &amp;quot;day&amp;quot;),
+                 tmx = point_ts[1,])
+
+# visualizamos la temperatura máxima 
+ggplot(df, 
+       aes(date, tmx)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;El gráfico muestra claramente la todavía existente variabilidad, lo que haría fluctuar bastante una animación. Por eso, creamos una función de suavizado basado en un ajuste de regresión polinomial local (LOESS), más detalles los encontráis en la ayuda de la función &lt;code&gt;loess()&lt;/code&gt;. El argumento más importante es &lt;code&gt;span&lt;/code&gt; que determina el grado de suavizado de la función, cuanto más pequeño el valor menos suave será la curva. El mejor resultado me ha dado un valor del 0,5.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;daily_smooth &amp;lt;- function(x, span = 0.5){
+  
+  if(all(is.na(x))){
+   
+    return(x) 
+   
+  } else {
+    
+  df &amp;lt;- data.frame(yd = 1:366, ta = x)
+  m &amp;lt;- loess(ta ~ yd, span = span, data = df)
+  est &amp;lt;- predict(m, 1:366)
+
+  return(est)
+  
+  }
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Aplicamos nuestra nueva función de suavizado a la serie temporal extraída y hacemos algunos cambios para poder visualizar la diferencia entre los datos originales y suavizados.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizamos la temperatura
+df &amp;lt;- mutate(df, tmx_smoothed = daily_smooth(tmx)) %&amp;gt;% 
+          pivot_longer(2:3, names_to = &amp;quot;var&amp;quot;, values_to = &amp;quot;temp&amp;quot;)
+
+# visualizamos la diferencia 
+ggplot(df, 
+       aes(date, temp, 
+           colour = var)) + 
+     geom_line() + 
+  scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+  scale_y_continuous(breaks = seq(5, 28, 2)) +
+  scale_colour_manual(values = c(&amp;quot;#f4a582&amp;quot;, &amp;quot;#b2182b&amp;quot;)) +
+  labs(y = &amp;quot;Temperatura máxima&amp;quot;, x = &amp;quot;&amp;quot;, colour =  &amp;quot;&amp;quot;) +
+  theme_minimal()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Como vemos en el gráfico la curva suavizada sigue muy bien la curva original. En el siguiente paso empleamos nuestra función sobre el &lt;em&gt;RasterBrick&lt;/em&gt; usando la función &lt;code&gt;calc()&lt;/code&gt;. La función devuelve tantas capas como las que devuelve la función empleada a cada de las series temporales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# suavizar el RasterBrick
+tmx_smooth &amp;lt;- calc(tmx_mean, fun = daily_smooth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualización&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualización&lt;/h1&gt;
+&lt;div id=&#34;preparación-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación&lt;/h2&gt;
+&lt;p&gt;Para visualizar las temperaturas máximas durante todo el año, primero, convertimos el &lt;em&gt;RasterBrick&lt;/em&gt; a un &lt;em&gt;data.frame&lt;/em&gt;, incluyendo longitud y latitud, pero eliminando todas las series temporales sin valores (&lt;code&gt;NA&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a data.frame
+tmx_mat &amp;lt;- as.data.frame(tmx_smooth, xy = TRUE, na.rm = TRUE)
+
+# renombrar las columnas
+tmx_mat &amp;lt;- set_names(tmx_mat, c(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, str_c(&amp;quot;D&amp;quot;, 1:366)))
+str(tmx_mat[, 1:10])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    20676 obs. of  10 variables:
+##  $ lon: num  -8.03 -7.98 -7.92 -7.86 -7.8 ...
+##  $ lat: num  43.8 43.8 43.8 43.8 43.8 ...
+##  $ D1 : num  10.5 10.3 10 10.9 11.5 ...
+##  $ D2 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D3 : num  10.5 10.3 10.1 10.9 11.5 ...
+##  $ D4 : num  10.6 10.4 10.1 10.9 11.5 ...
+##  $ D5 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D6 : num  10.6 10.4 10.1 11 11.6 ...
+##  $ D7 : num  10.6 10.4 10.2 11 11.6 ...
+##  $ D8 : num  10.6 10.4 10.2 11 11.6 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Segundo, importamos los límites administrativos con la función &lt;code&gt;ne_countries()&lt;/code&gt; del paquete &lt;code&gt;rnaturalearth&lt;/code&gt; limitando la extensión a la región de la Península Ibérica, el sur de Francia y el norte de África.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# importamos los límites globales
+map &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;) %&amp;gt;% st_cast(&amp;quot;MULTILINESTRING&amp;quot;)
+
+# limitamos la extensión
+map &amp;lt;- st_crop(map, xmin = -10, xmax = 5, ymin = 35, ymax = 44) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## although coordinates are longitude/latitude, st_intersection assumes that they are planar&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapa de los límites
+plot(map)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: plotting the first 9 out of 94 attributes; use max.plot = 94 to plot
+## all&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/animaci%C3%B3n-clim%C3%A1tica-de-la-temperatura-m%C3%A1xima/index.es_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Tercero, creamos un vector con etiquetas del día del año para incluirlas en la animación. Además, definimos los cortes de la temperatura máxima, adaptados a la distribución de nuestros datos, para obtener una categorización con un total de 20 clases.&lt;/p&gt;
+&lt;p&gt;Cuarto, aplicamos la función &lt;code&gt;cut()&lt;/code&gt; con los cortes a todas las columnas con las temperaturas de cada día del año.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# etiquetas de los días del año
+lab &amp;lt;- as_date(0:365, &amp;quot;2000-01-01&amp;quot;) %&amp;gt;% format(&amp;quot;%d %B&amp;quot;)
+
+# cortes para la temperatura
+ct &amp;lt;- c(-5, 0, 4, 6, 8, 10, 12, 14, 16, 18, 20, 22, 24, 26, 28, 30, 32, 34, 40, 45)
+
+# datos categorizados con los cortes fijados
+tmx_mat_cat &amp;lt;- mutate_at(tmx_mat, 3:368, cut, breaks = ct)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Quinto, descargamos la fuente Montserrat y definimos los colores correspondientes a las clases creadas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# descarga de la fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# uso de showtext con DPI 300
+showtext_opts(dpi = 300)
+showtext_auto()
+
+# definimos una rampa de colores
+col_spec &amp;lt;- colorRampPalette(rev(brewer.pal(11, &amp;quot;Spectral&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-estático&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa estático&lt;/h2&gt;
+&lt;p&gt;En esta primera visualización hacemos un mapa del 29 de mayo (día 150). No voy a explicar todos los detalles de la construcción con &lt;code&gt;ggplot2&lt;/code&gt;, no obstante, es importante destacar que hago uso de la función &lt;code&gt;aes_string()&lt;/code&gt; en lugar de &lt;code&gt;aes()&lt;/code&gt; para poder usar los nombres de las columnas en formato de carácter. Con la función &lt;code&gt;geom_raster()&lt;/code&gt; añadimos los datos en rejilla de temperatura como primera capa del gráfico y con &lt;code&gt;geom_sf()&lt;/code&gt; los límites de clase &lt;code&gt;sf&lt;/code&gt;. Por último, la función &lt;code&gt;guide_colorsteps()&lt;/code&gt; permite crear una bonita leyenda basada en las clases creadas por la función &lt;code&gt;cut()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = &amp;quot;D150&amp;quot;)) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[150], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/fig_1.es.png&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;animación-de-todo-el-año&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Animación de todo el año&lt;/h2&gt;
+&lt;p&gt;La animación final consiste en crear un gif a partir de todas las imágenes de los 366 días, en principio, se podría usar el paquete &lt;code&gt;gganimate&lt;/code&gt;, pero en mi experiencia es más lento, dado que requiere un &lt;code&gt;data.frame&lt;/code&gt; en formato largo. En este ejemplo una tabla larga tendría más de siete millones de filas, por eso, lo que hacemos es usar un bucle sobre las columnas y unir todas las imágenes creadas con el paquete &lt;code&gt;gifski&lt;/code&gt; que también usa &lt;code&gt;gganimate&lt;/code&gt; para la reproducción en formato gif.&lt;/p&gt;
+&lt;p&gt;Antes del bucle creamos un vector con los pasos temporales o nombres de las columnas y otro vector con el nombre de las imágenes, incluida el nombre de la carpeta. Con el objetivo de obtener una lista de imágenes ordenadas por su número debemos mantener tres cifras rellenando las posiciones a la izquierda con ceros.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;time_step &amp;lt;- str_c(&amp;quot;D&amp;quot;, 1:366)
+
+files &amp;lt;- str_c(&amp;quot;./ta_anima/D&amp;quot;, str_pad(1:366, 3, &amp;quot;left&amp;quot;, &amp;quot;0&amp;quot;), &amp;quot;.png&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último, incluimos la construcción anterior del gráfico en un bucle &lt;em&gt;for&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;for(i in 1:366){
+
+ ggplot(tmx_mat_cat) + 
+         geom_raster(aes_string(&amp;quot;lon&amp;quot;, &amp;quot;lat&amp;quot;, fill = time_step[i])) +
+         geom_sf(data = map,
+                 colour = &amp;quot;grey50&amp;quot;, size = 0.2) +
+  coord_sf(expand = FALSE) +
+  scale_fill_manual(values = col_spec(20), drop = FALSE) +
+  guides(fill = guide_colorsteps(barwidth = 30, 
+                                 barheight = 0.5,
+                                 title.position = &amp;quot;right&amp;quot;,
+                                 title.vjust = .1)) +
+   theme_void() +
+   theme(legend.position = &amp;quot;top&amp;quot;,
+      legend.justification = 1,
+      plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  margin = margin(b = 5, t = 10, unit = &amp;quot;pt&amp;quot;)),                
+      plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                size = 16, face = &amp;quot;bold&amp;quot;, 
+                                margin = margin(b = 2, t = 5, unit = &amp;quot;pt&amp;quot;)),
+     legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+     plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                  size = 13, 
+                                  margin = margin(b = 10, t = 5, unit = &amp;quot;pt&amp;quot;))) +
+   labs(title = &amp;quot;Promedio de la temperatura máxima durante el año en España&amp;quot;, 
+     subtitle = lab[i], 
+     caption = &amp;quot;Período de referencia 1901-2014. Datos: STEAD&amp;quot;,
+     fill = &amp;quot;ºC&amp;quot;)
+  
+  ggsave(files[i], width = 8.28, height = 7.33, type = &amp;quot;cairo&amp;quot;)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Después de haber creado imágenes para cada día del año, únicamente nos queda por crear el gif.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;gifski(files, &amp;quot;tmx_spain.gif&amp;quot;, width = 800, height = 700, loop = FALSE, delay = 0.05)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/tmx_spain.es.gif&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>animación</category>
+      
+            <category>temperatura</category>
+      
+            <category>clima</category>
+      
+            <category>SIG</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+    </item>
+    
+    <item>
+      <title>Direcciones del flujo fluvial</title>
+      <link>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</link>
+      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Recientemente creé una visualización de la distribución de las direcciones del flujo fluvial y también de las orientaciones costeras. A raíz de su publicación en los RRSS (&lt;a href=&#34;https://twitter.com/dr_xeo/status/1277978724034465798?s=2&#34;&gt;aquí&lt;/a&gt;) me pidieron que hiciera un post acerca de cómo lo hice. Pues bien, aquí vamos para empezar con un ejemplo de los ríos, la orientación costera es algo más compleja. Lo mismo hice para una selección de ríos europeos aquí en este &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. No obstante, originalmente empecé con la orientación de las costas europeas.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;remotes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Instalación desde repositorios remotos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RQGIS3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Interfaz entre R y QGIS3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Soporte para la representación de texto mejorado con ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Cargar fuentes en R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar fuentes más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;circular&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Funciones para trabajar con datos circulares&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;geosphere&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Trigonometría esférica para aplicaciones geográficas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;En el caso del paquete &lt;code&gt;RQGIS3&lt;/code&gt; es necesario instalar QGIS en OSGeo4W &lt;a href=&#34;https://www.qgis.org/es/site/forusers/download.html&#34;&gt;aquí&lt;/a&gt;. Más adelante explicaré la razón del uso de QGIS.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;remotes&amp;quot;)) install.packages(&amp;quot;remotes&amp;quot;)
+if(!require(&amp;quot;RQGIS3&amp;quot;)) remotes::install_github(&amp;quot;jannes-m/RQGIS3&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggtext&amp;quot;)) install.packages(&amp;quot;ggtext&amp;quot;)
+if(!require(&amp;quot;circular&amp;quot;)) install.packages(&amp;quot;circular&amp;quot;)
+if(!require(&amp;quot;geosphere&amp;quot;)) install.packages(&amp;quot;geosphere&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# paquetes
+library(sf)
+library(tidyverse)
+library(ggtext)
+library(circular)
+library(geosphere)
+library(RQGIS3)
+library(showtext)
+library(sysfonts)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;consideraciones-iniciales&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Consideraciones iniciales&lt;/h1&gt;
+&lt;p&gt;Los ángulos en líneas vectoriales se basan en el ángulo entre dos vértices, y el número de vértices depende de la complejidad, y en consecuencia de la resolución, de los datos vectoriales. Por tanto, puede haber diferencias en usar distintas resoluciones de una línea vectorial, sea de la costa o del río como en este ejemplo. Una línea recta simplemente se construye con dos puntos de longitud y latitud.&lt;/p&gt;
+&lt;p&gt;Relacionado con ello está la fractalidad, una estructura aparentemente irregular pero que se repite a diferentes escalas, de la línea de costa o también del río. La característica más paradójica es que la longitud de una línea costera depende de la escala de medida, cuanto menor es el incremento de medida, la longitud medida se incrementa.&lt;/p&gt;
+&lt;p&gt;Existen dos posibiliades de obtener los ángulos de los vértices. En la primera calculamos el ángulo entre todos los vértices consecutivos.&lt;/p&gt;
+&lt;p&gt;Por ejemplo, imaginémonos dos puntos, Madrid (-3.71, 40.43) y Barcelona (2.14, 41.4).&lt;/p&gt;
+&lt;p&gt;¿Cuál es el ángulo de su línea recta?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos que es el de 77º, o sea, dirección noreste. Pero, ¿y si voy de Barcelona a Madrid?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El angúlo es diferente porque nos &lt;em&gt;movemos&lt;/em&gt; desde el noreste al suroeste. Podemos invertir fácilmente el ángulo para obtener el &lt;em&gt;movimiento&lt;/em&gt; contrario.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ángulo contrario de Barcelona -&amp;gt; Madrid
+bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43)) - 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# ángulo contrario de Madrid -&amp;gt; Barcelona
+bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La dirección en la que calculamos los ángulos es importante. En el caso de los ríos se espera que sea la dirección de flujo de origen a la desembocadura, ahora bien, un problema puede ser que los vértices, que construyen las líneas, no estén ordenados geográficamente en la tabla de atributos. Otro problema puede ser que los vértices empiecen en la desembocadura lo que daría al angúlo inverso como lo hemos visto antes.&lt;/p&gt;
+&lt;p&gt;Sin embargo, hay una forma más fácil. Podemos aprovechar los atributos de los sistemas de coordenadas proyectados (proyección Robinson, etc) que incluyen el ángulo entre los vértices. Este último enfoque lo vamos usar en este post. Aún así, debemos prestar mucha atención a los resultados según lo dicho anteriormente.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparación&lt;/h1&gt;
+&lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Datos&lt;/h2&gt;
+&lt;p&gt;Descargamos las líneas centrales de los ríos más grandes del mundo (&lt;a href=&#34;https://dominicroye.github.io/files/RiverHRCenterlinesCombo.zip&#34;&gt;descarga&lt;/a&gt;), accesible también en &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-y-proyectar&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar y proyectar&lt;/h2&gt;
+&lt;p&gt;Lo primero que hacemos es importar, proyectar y eliminar la tercera dimensión &lt;em&gt;Z&lt;/em&gt;, usando el encadenamiento de las siguientes functions: &lt;code&gt;st_read()&lt;/code&gt; nos ayuda a importar cualquier formato vectorial, &lt;code&gt;st_zm()&lt;/code&gt; elimina la dimensión Z o M de una geometría vectorial y &lt;code&gt;st_transform()&lt;/code&gt; proyecta los datos vectoriales a la nueva proyección en formato &lt;em&gt;proj4&lt;/em&gt;. La combinación de las funciones la realizamos con el famoso &lt;em&gt;pipe&lt;/em&gt; (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) que facilita la aplicación de una secuencia de funciones sobre un conjunto de datos, más detalles en este &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;post&lt;/a&gt;. Todas las funciones del paquete &lt;code&gt;sf&lt;/code&gt; comienzan por &lt;code&gt;st_*&lt;/code&gt; haciendo referencia al carácter espacial de su aplicación, similar a &lt;em&gt;PostGIS.&lt;/em&gt; Igualmente, y al mismo estilo que &lt;em&gt;PostGIS&lt;/em&gt;, se usan verbos como nombres de función.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;proj_rob &amp;lt;- &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m no_defs&amp;quot;
+
+river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
+                 st_zm() %&amp;gt;% 
+                    st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source 
+##   `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2020-07-24-direcciones-del-flujo-fluvial\RiverHRCenterlinesCombo.shp&amp;#39; 
+##   using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 78 features and 6 fields
+## Geometry type: MULTILINESTRING
+## Dimension:     XYZ
+## Bounding box:  xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:       zmin: 0 zmax: 0
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extraer-los-ángulos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Extraer los ángulos&lt;/h2&gt;
+&lt;p&gt;En el siguiente paso debemos extraer los ángulos de los vértices. Desgraciadamente, hasta donde sepa, no es posible extraer los atributos con alguna función del paquete &lt;code&gt;sf&lt;/code&gt;. Aunque la función &lt;code&gt;st_coordinates()&lt;/code&gt; nos devuelve las coordenadas, no incluye otros atributos. Por eso, debemos usar otra forma, y es que el open software Quantum GIS extrae todos los atributos de los vértices. Podríamos importar los datos vectoriales en QGIS Desktop y exportar los vértices desde allí, pero también es posible acceder a las funciones de QGIS desde R directamente.&lt;/p&gt;
+&lt;p&gt;Para ello, tenemos que tener instalado QGIS en OSGeo4W. El paquete &lt;code&gt;RQGIS3&lt;/code&gt; nos permite de forma muy fácil usar las funciones del programa en R. Primero empleamos la función &lt;code&gt;set_env()&lt;/code&gt; para definir todas las rutas necesarias de QGIS e inciamos la API con &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# rutas a QGIS
+set_env()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $root
+## [1] &amp;quot;C:/Program Files/QGIS 3.18&amp;quot;
+## 
+## $qgis_prefix_path
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis&amp;quot;
+## 
+## $python_plugins
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis/python/plugins&amp;quot;
+## 
+## $platform
+## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# inicio de QGIS Python
+open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in check_for_server(): Hey there! According to our internal checks, you are trying to run RQGIS3 on a Windows server.
+## Please note that this is only possible if you imitate a x-display.
+## QGIS needs this in the background to be able to execute its processing modules.
+## Note that you need to start the x-display with admin rights&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La función &lt;code&gt;find_algorithms()&lt;/code&gt; nos ayuda a buscar diferentes herramientas de QGIS. Además la función &lt;code&gt;get_usage()&lt;/code&gt; especifica la forma de uso con todos los argumentos requeridos.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# buscar herramientas
+find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:exportmeshvertices&amp;quot;              
+## [2] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [3] &amp;quot;native:extractvertices&amp;quot;                 
+## [4] &amp;quot;native:filterverticesbym&amp;quot;               
+## [5] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [6] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [7] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# uso de la herramienta
+get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
+## 
+## This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
+## 
+## Additional fields are added to the point indicating the vertex index (beginning at 0)
+## the vertex’s part and its index within the part (as well as its ring for polygons)
+## distance along original geometry and bisector angle of vertex for original geometry.
+## 
+## 
+## ----------------
+## Input parameters
+## ----------------
+## 
+## INPUT: Input layer
+## 
+##  Parameter type: QgsProcessingParameterFeatureSource
+## 
+##  Accepted data types:
+##      - str: layer ID
+##      - str: layer name
+##      - str: layer source
+##      - QgsProcessingFeatureSourceDefinition
+##      - QgsProperty
+##      - QgsVectorLayer
+## 
+## OUTPUT: Vertices
+## 
+##  Parameter type: QgsProcessingParameterFeatureSink
+## 
+##  Accepted data types:
+##      - str: destination vector file
+## e.g. d:/test.shp
+##      - str: memory: to store result in temporary memory layer
+##      - str: using vector provider ID prefix and destination URI
+## e.g. postgres:… to store result in PostGIS table
+##      - QgsProcessingOutputLayerDefinition
+##      - QgsProperty
+## 
+## ----------------
+## Outputs
+## ----------------
+## 
+## OUTPUT:  &amp;lt;QgsProcessingOutputVectorLayer&amp;gt;
+##  Vertices&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En nuestro caso la herramienta para extraer los vértices es simple y sólo lleva una entrada y una salida. La función &lt;code&gt;run_qgis()&lt;/code&gt; ejecuta una herramienta de QGIS indicando el algoritmo y sus argumentos. La ventaja de usar el algoritmo directamente desde R es que podemos pasar objetos de clase &lt;code&gt;sf&lt;/code&gt; (o &lt;code&gt;sp&lt;/code&gt;) y &lt;code&gt;raster&lt;/code&gt; que tenemos importados o creados en R. Como salida creamos un &lt;code&gt;geojson&lt;/code&gt;, también podría ser de otro formato vectorial, y lo guardamos en una carpeta temporal. Al mismo tiempo le indicamos que importe el resultado directamente a R (&lt;code&gt;load_output = TRUE&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- run_qgis(alg = &amp;quot;native:extractvertices&amp;quot;,
+               INPUT = river_line,
+               OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
+               load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $OUTPUT
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpUlxGVM/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Actualmente en Windows parece haber problemas con la librería de &lt;em&gt;proj&lt;/em&gt;. En principio si termina creando el objeto &lt;code&gt;river_vertices&lt;/code&gt; no debes preocuparte. En caso contrario, recomiendo mirar la discusión en el &lt;em&gt;issue&lt;/em&gt; abierto en &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;selección&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Selección&lt;/h2&gt;
+&lt;p&gt;Antes de seguir con la estimación de la distribución de los ángulos, filtramos algunos ríos de interés. Las funciones de la colección &lt;code&gt;tidyverse&lt;/code&gt; son compatibles con el paquete &lt;code&gt;sf&lt;/code&gt;. En el último post hice una introducción a &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;-  filter(river_vertices, 
+                          NAME %in% c(&amp;quot;Mississippi&amp;quot;, &amp;quot;Colorado&amp;quot;, 
+                                      &amp;quot;Amazon&amp;quot;, &amp;quot;Nile&amp;quot;, &amp;quot;Orange&amp;quot;, 
+                                      &amp;quot;Ganges&amp;quot;, &amp;quot;Yangtze&amp;quot;, &amp;quot;Danube&amp;quot;,
+                                      &amp;quot;Mackenzie&amp;quot;, &amp;quot;Lena&amp;quot;, &amp;quot;Murray&amp;quot;, 
+                                      &amp;quot;Niger&amp;quot;)
+                          ) 
+
+river_vertices &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## Geodetic CRS:  WGS 84
+## # A tibble: 94,702 x 12
+##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
+##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
+##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
+##  2 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            1           0
+##  3 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            2           0
+##  4 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            3           0
+##  5 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            4           0
+##  6 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            5           0
+##  7 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            6           0
+##  8 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            7           0
+##  9 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            8           0
+## 10 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            9           0
+## # ... with 94,692 more rows, and 4 more variables: vertex_part_index &amp;lt;int&amp;gt;,
+## #   distance &amp;lt;dbl&amp;gt;, angle &amp;lt;dbl&amp;gt;, geometry &amp;lt;POINT [°]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimar-la-distribución&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Estimar la distribución&lt;/h1&gt;
+&lt;p&gt;Para visualizar la distribución podemos usar, o bien un histograma o un gráfico de densidad. Pero en el caso de estimar la función de densidad de probabilidad nos encontramos con un problema matemático a la hora de aplicarlo a datos circulares. No debemos usar la función estandar de R &lt;code&gt;density()&lt;/code&gt; dado que en nuestros datos una dirección de 360º es la misma a 0º, lo que provocaría errores en este rango de valores. Es un problema general para diferentes métricas estadísticas. Más detalles estadísticos se explican en el paquete &lt;code&gt;circular&lt;/code&gt;. Este paquete permite definir las características de los datos circulares (unidad, tipo de datos, rotación, etc.) como una clase de objeto en R.&lt;/p&gt;
+&lt;p&gt;Por tanto, lo que hacemos es construir una función que estime la densidad y devuelva una tabla con los ángulos (x) y las estimaciones de densidad (y). Dado que los ríos tienen diferentes longitudes, y queremos ver diferencias independientemente de ello, normalizamos las estimaciones usando el valor máximo. A diferencia de la función &lt;code&gt;density()&lt;/code&gt;, en la que el ancho de banda de suavizado &lt;code&gt;bw&lt;/code&gt; es optimizado, aquí es requerido indicarlo. Es similar a definir el ancho de barra en un histograma. Existe una función de optimización para la banda, &lt;code&gt;bw.nrd.circular()&lt;/code&gt; que se podría emplear aquí.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_circ &amp;lt;- function(x){
+  
+  dens &amp;lt;- density.circular(circular(x$angle, units = &amp;quot;degrees&amp;quot;),
+                                     bw = 70, kernel = &amp;quot;vonmises&amp;quot;,
+                                     control.circular = list(units = &amp;quot;degrees&amp;quot;))
+  
+  df &amp;lt;- data.frame(x = dens$x, y = dens$y/max(dens$y))
+  
+  return(df)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para finalizar, estimamos la densidad de cada río de nuestra selección. Empleamos la función &lt;code&gt;split()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt; para obtener una tabla de cada río en una lista. Después aplicamos con la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;code&gt;purrr&lt;/code&gt; nuestra función de estimación de densidad a la lista. El sufijo &lt;code&gt;_df&lt;/code&gt; permite que obtengamos una tabla unida, en lugar de una lista con los resultados de cada río. No obstante, es necesario indicar el nombre de la columna con el argumento &lt;code&gt;.id&lt;/code&gt;, la que contendrá el nombre de cada río. En caso contrario no sabríamos diferenciar los resultados. También aquí recomiendo leer más detalles en el último post sobre &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/es/2020/una-muy-breve-introducci%C3%B3n-a-tidyverse/&#34;&gt;aquí&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_river &amp;lt;- split(river_vertices, river_vertices$NAME) %&amp;gt;% 
+                  map_df(dens_circ, .id = &amp;quot;river&amp;quot;)
+
+# resultado
+head(dens_river)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    river        x         y
+## 1 Amazon 0.000000 0.2399907
+## 2 Amazon 0.704501 0.2492548
+## 3 Amazon 1.409002 0.2585758
+## 4 Amazon 2.113503 0.2679779
+## 5 Amazon 2.818004 0.2774859
+## 6 Amazon 3.522505 0.2871232&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualización&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualización&lt;/h1&gt;
+&lt;p&gt;Ahora ya sólo nos queda la visualización mediante el famoso paquete &lt;code&gt;ggplot&lt;/code&gt;. Primero añadimos una nueva fuente &lt;em&gt;Montserrat&lt;/em&gt; para usarla en este gráfico.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# descarga de fuente
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# usar showtext para fuentes
+showtext_opts(dpi = 200)
+showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el siguiente paso creamos dos objetos con el título y con una nota de pie. En el título estamos usando un código html para dar color a una parte de texto en sustitución de una leyenda. Se puede usar html de forma muy fácil con el paquete &lt;code&gt;ggtext&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# título con html 
+title &amp;lt;- &amp;quot;Relative distribution of river &amp;lt;span style=&amp;#39;color:#011FFD;&amp;#39;&amp;gt;&amp;lt;strong&amp;gt;flow direction&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt; in the world&amp;quot;
+
+
+caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;La cuadrícula de fondo que crea &lt;code&gt;ggplot&lt;/code&gt; por defecto para coordenadas polares no me convenció, por eso creamos una tabla con las líneas de fondo del eje x.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(0, 360 - 22.5, by = 22.5), 
+                 y = rep(0, 16), 
+                 xend = seq(0, 360 - 22.5, by = 22.5), 
+                 yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A continuación definimos todos los estilos del gráfico. Lo más importante en este paso es la función &lt;code&gt;element_textbox()&lt;/code&gt; del paquete &lt;code&gt;ggtext&lt;/code&gt; para poder interpretar nuestro código html incorporado al título.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- function(){ 
+               theme_minimal() %+replace%
+               theme(axis.title.y = element_blank(),
+                     axis.text.y = element_blank(),
+                     legend.title = element_blank(),
+                     plot.title = element_textbox(family = &amp;quot;Montserrat&amp;quot;, 
+                                                   hjust = 0.5, 
+                                                   colour = &amp;quot;white&amp;quot;, 
+                                                   size = 15),
+                     plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     axis.text.x = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                               colour = &amp;quot;white&amp;quot;, 
+                                               face = &amp;quot;bold&amp;quot;),
+                     panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     panel.grid = element_blank()
+                    )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para terminar construimos el gráfico: 1) Usamos la función &lt;code&gt;geom_hline()&lt;/code&gt; con diferentes puntos de intersección en &lt;em&gt;y&lt;/em&gt; para crear la cuadrícula de fondo. La función &lt;code&gt;geom_segment()&lt;/code&gt; crea la cuadrícula en &lt;em&gt;x&lt;/em&gt;. 2) El área de densidad la creamos usando la función &lt;code&gt;geom_area()&lt;/code&gt;. 3) En &lt;code&gt;scale_x_continous()&lt;/code&gt; definimos un límite inferior
+negativo para que no colapse en un punto pequeño. Las etiquetas de las ocho direcciones principales las indicamos en la función &lt;code&gt;scale_y_continous()&lt;/code&gt;, y 4) Por último, cambiamos a un sistema de coordenadas polar y fijamos la variable para crear facetas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  geom_hline(yintercept = c(0, .2, .4, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
+  geom_segment(data = grid_x , 
+               aes(x = x, y = y, xend = xend, yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
+  geom_area(data = dens_river, 
+            aes(x = x, y = y, ymin = 0, ymax = y), 
+            alpha = .7, 
+            colour = NA, 
+            show.legend = FALSE,
+            fill = &amp;quot;#011FFD&amp;quot;) + 
+  scale_y_continuous(limits = c(-.2, 1), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 360), 
+                     breaks = seq(0, 360 - 22.5, by = 22.5),
+                     minor_breaks = NULL,
+                     labels = c(&amp;quot;N&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NE&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;E&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SE&amp;quot;, &amp;quot;&amp;quot;,
+                                &amp;quot;S&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SW&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;W&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NW&amp;quot;, &amp;quot;&amp;quot;)) +
+  coord_polar() + 
+  facet_wrap(river ~ ., ncol = 4) +
+  labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
+  theme_polar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/direcciones-del-flujo-fluvial/index.es_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>direcciones</category>
+      
+            <category>rios</category>
+      
+            <category>fluvial</category>
+      
+            <category>orientación</category>
+      
+            <category>distribución</category>
+      
+      
+            <category>sig</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+    </item>
+    
+    <item>
+      <title>Resumir tests de correlaciones en R</title>
+      <link>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</link>
+      <pubDate>Wed, 17 Apr 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Cuando pretendemos estimar la correlación entre múltiples variables, la tarea se complica para obtener un resultado simple y limpio. Una forma sencilla es usar la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt;. Como ejemplo, en este post vamos a estimar la correlación entre la precipitación anual de varias ciudades españolas y varios índices de teleconexiones climáticas: &lt;a href=&#34;https://dominicroye.github.io/files/teleconnections_indices.zip&#34;&gt;descarga&lt;/a&gt;. Los datos de las teleconexiones están preprocesados, pero pueden ser descargados directamente desde &lt;a href=&#34;https://crudata.uea.ac.uk/cru/data/pci.htm&#34;&gt;crudata.uea.ac.uk&lt;/a&gt;. La preciptiación diaria proviene de &lt;a href=&#34;https://www.ecad.eu//dailydata/index.php&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;p&gt;En este post usaremos los siguientes paquetes:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;90%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;broom&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Convierte resultados de funciones estadísticas (lm, t.test, cor.test, etc.) en bonitas tablas&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;broom&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#paquetes
+library(tidyverse)
+library(broom)
+library(fs)
+library(lubridate)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar datos&lt;/h2&gt;
+&lt;p&gt;Primero debemos importar la precipitación diaria de las estaciones meteorológicas seleccionadas.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;Creamos un vector con todos los archivos de precipitación con la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;em&gt;{fs}&lt;/em&gt;.&lt;/li&gt;
+&lt;li&gt;Importamos los datos con ayuda de la función &lt;code&gt;map_df()&lt;/code&gt; del paquete &lt;em&gt;{purrr}&lt;/em&gt; que aplica otra función a un vector o lista, y los une en una única tabla.&lt;/li&gt;
+&lt;li&gt;&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;Seleccionamos únicamente las columnas que nos interesan, b) Convertimos la fecha en objeto &lt;em&gt;date&lt;/em&gt; con la función &lt;code&gt;ymd()&lt;/code&gt; del paquete &lt;em&gt;{lubridate}&lt;/em&gt;, c) Creamos una nueva columna &lt;em&gt;yr&lt;/em&gt; con el año, d) Dividimos la precipitación entre 10 y reclasificamos valores ausentes -9999 por NA, e) Por último, reclasificamos la ID de cada estación meteorológica, creando un factor con nuevas etiquetas.&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;Más detalles sobre el uso de las funciones &lt;code&gt;dir_ls()&lt;/code&gt; y &lt;code&gt;map_df()&lt;/code&gt; en este último &lt;a href=&#34;https://dominicroye.github.io/es/2019/importar-varias-hojas-excel-en-r/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#archivos de la precipitación
+files &amp;lt;- dir_ls(regexp = &amp;quot;txt&amp;quot;)
+files&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## RR_STAID001393.txt RR_STAID001394.txt RR_STAID002969.txt RR_STAID003946.txt 
+## RR_STAID003969.txt&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#importamos todos, uniéndolos en una única tabla
+pr &amp;lt;- files %&amp;gt;% map_df(read_csv, skip = 20)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## 
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## 
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## 
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )
+## 
+## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 5
+##    STAID SOUID     DATE    RR  Q_RR
+##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1  1393 20611 19470301     0     0
+##  2  1393 20611 19470302     5     0
+##  3  1393 20611 19470303     0     0
+##  4  1393 20611 19470304    33     0
+##  5  1393 20611 19470305    15     0
+##  6  1393 20611 19470306     0     0
+##  7  1393 20611 19470307    85     0
+##  8  1393 20611 19470308     3     0
+##  9  1393 20611 19470309     0     0
+## 10  1393 20611 19470310     0     0
+## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#creamos los niveles del factor 
+id &amp;lt;- unique(pr$STAID)
+
+#las etiquetas correspondientes
+lab &amp;lt;- c(&amp;quot;Bilbao&amp;quot;, &amp;quot;Santiago&amp;quot;, &amp;quot;Barcelona&amp;quot;, &amp;quot;Madrid&amp;quot;, &amp;quot;Valencia&amp;quot;)
+
+#primeros cambios
+pr &amp;lt;- select(pr, STAID, DATE, RR)%&amp;gt;% 
+        mutate(DATE = ymd(DATE), 
+               RR = ifelse(RR == -9999, NA, RR/10), 
+               STAID = factor(STAID, id, lab), 
+               yr = year(DATE)) 
+pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 133,343 x 4
+##    STAID  DATE          RR    yr
+##    &amp;lt;fct&amp;gt;  &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Bilbao 1947-03-01   0    1947
+##  2 Bilbao 1947-03-02   0.5  1947
+##  3 Bilbao 1947-03-03   0    1947
+##  4 Bilbao 1947-03-04   3.3  1947
+##  5 Bilbao 1947-03-05   1.5  1947
+##  6 Bilbao 1947-03-06   0    1947
+##  7 Bilbao 1947-03-07   8.5  1947
+##  8 Bilbao 1947-03-08   0.3  1947
+##  9 Bilbao 1947-03-09   0    1947
+## 10 Bilbao 1947-03-10   0    1947
+## # ... with 133,333 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Lo que todavía nos hace falta es filtrar y calcular la suma anual de precipitación. En principio, no es lo más correcto sumar la precipitación sin tener en cuenta que haya valores ausentes, pero nos sirve igualmente para este ensayo. Después, cambiamos el formato de la tabla con la función &lt;code&gt;spread()&lt;/code&gt;, pasando de una tabla larga a una ancha, es decir, queremos obtener una columna por estación meteorológica.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- filter(pr, DATE &amp;gt;= &amp;quot;1950-01-01&amp;quot;, DATE &amp;lt; &amp;quot;2018-01-01&amp;quot;) %&amp;gt;%
+           group_by(STAID, yr) %&amp;gt;%
+             summarise(pr = sum(RR, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;STAID&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 324 x 3
+## # Groups:   STAID [5]
+##    STAID     yr    pr
+##    &amp;lt;fct&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Bilbao  1950 1342 
+##  2 Bilbao  1951 1306.
+##  3 Bilbao  1952 1355.
+##  4 Bilbao  1953 1372.
+##  5 Bilbao  1954 1428.
+##  6 Bilbao  1955 1062.
+##  7 Bilbao  1956 1254.
+##  8 Bilbao  1957  968.
+##  9 Bilbao  1958 1272.
+## 10 Bilbao  1959 1450.
+## # ... with 314 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_yr &amp;lt;- spread(pr_yr, STAID, pr)
+pr_yr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 6
+##       yr Bilbao Santiago Barcelona Madrid Valencia
+##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;
+##  1  1950  1342     1800.      345     NA        NA
+##  2  1951  1306.    2344.     1072.   798.       NA
+##  3  1952  1355.    1973.      415.   524.       NA
+##  4  1953  1372.     973.      683.   365.       NA
+##  5  1954  1428.    1348.      581.   246.       NA
+##  6  1955  1062.    1769.      530.   473.       NA
+##  7  1956  1254.    1533.      695.   480.       NA
+##  8  1957   968.    1599.      635.   424.       NA
+##  9  1958  1272.    2658.      479.   482.       NA
+## 10  1959  1450.    2847.     1006    665.       NA
+## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El siguiente paso es importar los índices de las teleconexiones.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#teleconexiones
+telecon &amp;lt;- read_csv(&amp;quot;teleconnections_indices.csv&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   yr = col_double(),
+##   NAO = col_double(),
+##   WeMO = col_double(),
+##   EA = col_double(),
+##   `POL-EUAS` = col_double(),
+##   `EATL/WRUS` = col_double(),
+##   MO = col_double(),
+##   SCAND = col_double(),
+##   AO = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;telecon&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 9
+##       yr   NAO   WeMO     EA `POL-EUAS` `EATL/WRUS`    MO    SCAND        AO
+##    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;      &amp;lt;dbl&amp;gt;       &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1  1950  0.49  0.555 -0.332     0.0217     -0.0567 0.335  0.301   -0.199   
+##  2  1951 -0.07  0.379 -0.372     0.402      -0.419  0.149 -0.00667 -0.365   
+##  3  1952 -0.37  0.693 -0.688    -0.0117     -0.711  0.282  0.0642  -0.675   
+##  4  1953  0.4  -0.213 -0.727    -0.0567     -0.0508 0.216  0.0233  -0.0164  
+##  5  1954  0.51  1.20  -0.912     0.142      -0.318  0.386  0.458   -0.000583
+##  6  1955 -0.64  0.138 -0.824    -0.0267      0.154  0.134  0.0392  -0.362   
+##  7  1956  0.17  0.617 -1.29     -0.197       0.0617 0.256  0.302   -0.163   
+##  8  1957 -0.02  0.321 -0.952    -0.638      -0.167  0.322 -0.134   -0.342   
+##  9  1958  0.12  0.941 -0.243     0.138       0.661  0.296  0.279   -0.868   
+## 10  1959  0.49 -0.055 -0.23     -0.0142      0.631  0.316  0.725   -0.0762  
+## # ... with 58 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Por último nos falta unir ambas tablas por año.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_all &amp;lt;- left_join(pr_yr, telecon, by = &amp;quot;yr&amp;quot;)
+data_all&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 68 x 14
+##       yr Bilbao Santiago Barcelona Madrid Valencia   NAO   WeMO     EA
+##    &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt;
+##  1  1950  1342     1800.      345     NA        NA  0.49  0.555 -0.332
+##  2  1951  1306.    2344.     1072.   798.       NA -0.07  0.379 -0.372
+##  3  1952  1355.    1973.      415.   524.       NA -0.37  0.693 -0.688
+##  4  1953  1372.     973.      683.   365.       NA  0.4  -0.213 -0.727
+##  5  1954  1428.    1348.      581.   246.       NA  0.51  1.20  -0.912
+##  6  1955  1062.    1769.      530.   473.       NA -0.64  0.138 -0.824
+##  7  1956  1254.    1533.      695.   480.       NA  0.17  0.617 -1.29 
+##  8  1957   968.    1599.      635.   424.       NA -0.02  0.321 -0.952
+##  9  1958  1272.    2658.      479.   482.       NA  0.12  0.941 -0.243
+## 10  1959  1450.    2847.     1006    665.       NA  0.49 -0.055 -0.23 
+## # ... with 58 more rows, and 5 more variables: POL-EUAS &amp;lt;dbl&amp;gt;, EATL/WRUS &amp;lt;dbl&amp;gt;,
+## #   MO &amp;lt;dbl&amp;gt;, SCAND &amp;lt;dbl&amp;gt;, AO &amp;lt;dbl&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;test-de-correlación&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Test de correlación&lt;/h2&gt;
+&lt;p&gt;Un test de correlación lo podemos hacer con la función &lt;code&gt;cor.test()&lt;/code&gt; de &lt;em&gt;R Base&lt;/em&gt;. En este caso entre la precipitación anual de Bilbao y el índice de NAO.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil &amp;lt;- cor.test(data_all$Bilbao, data_all$NAO,
+                        method=&amp;quot;spearman&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in cor.test.default(data_all$Bilbao, data_all$NAO, method = &amp;quot;spearman&amp;quot;):
+## Cannot compute exact p-value with ties&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_nao_bil&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+##  Spearman&amp;#39;s rank correlation rho
+## 
+## data:  data_all$Bilbao and data_all$NAO
+## S = 44372, p-value = 0.2126
+## alternative hypothesis: true rho is not equal to 0
+## sample estimates:
+##       rho 
+## 0.1531149&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 8
+##  $ statistic  : Named num 44372
+##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##  $ parameter  : NULL
+##  $ p.value    : num 0.213
+##  $ estimate   : Named num 0.153
+##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##  $ null.value : Named num 0
+##   ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##  $ alternative: chr &amp;quot;two.sided&amp;quot;
+##  $ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##  $ data.name  : chr &amp;quot;data_all$Bilbao and data_all$NAO&amp;quot;
+##  - attr(*, &amp;quot;class&amp;quot;)= chr &amp;quot;htest&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Vemos que el resultado está en un formato poco manejable. Nos resume la correlación con todos los parametros estadísticos necesarios para sacar una conclusión sobre la relación. La estructura orginal es una lista de vectores. No obstante, la función &lt;code&gt;tidy()&lt;/code&gt; del paquete &lt;em&gt;{broom}&lt;/em&gt; nos permite convertir el resultado en formato de tabla.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;tidy(cor_nao_bil)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 1 x 5
+##   estimate statistic p.value method                          alternative
+##      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                           &amp;lt;chr&amp;gt;      
+## 1    0.153    44372.   0.213 Spearman&amp;#39;s rank correlation rho two.sided&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;aplicar-el-test-de-correlación-a-múltiples-variables&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Aplicar el test de correlación a múltiples variables&lt;/h2&gt;
+&lt;p&gt;El objetivo es aplicar el test de correlación a todas las estaciones meteorológicas e índices de teleconexión.&lt;/p&gt;
+&lt;p&gt;Primero, debemos pasar la tabla al formato largo, o sea, crear una columna de la ciudad y el valor de la precipitación correspondiente. Después lo repetimos para las teleconexiones.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- gather(data_all, city, pr, Bilbao:Valencia) %&amp;gt;%
+                     gather(telecon, index, NAO:AO)
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,720 x 5
+##       yr city      pr telecon index
+##    &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;   &amp;lt;dbl&amp;gt;
+##  1  1950 Bilbao 1342  NAO      0.49
+##  2  1951 Bilbao 1306. NAO     -0.07
+##  3  1952 Bilbao 1355. NAO     -0.37
+##  4  1953 Bilbao 1372. NAO      0.4 
+##  5  1954 Bilbao 1428. NAO      0.51
+##  6  1955 Bilbao 1062. NAO     -0.64
+##  7  1956 Bilbao 1254. NAO      0.17
+##  8  1957 Bilbao  968. NAO     -0.02
+##  9  1958 Bilbao 1272. NAO      0.12
+## 10  1959 Bilbao 1450. NAO      0.49
+## # ... with 2,710 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para poder aplicar el test a todas las ciudades, debemos tener las correspondientes agrupaciones. Por ello, usamos la función &lt;code&gt;group_by()&lt;/code&gt; indicando los dos grupos (&lt;em&gt;city&lt;/em&gt; y &lt;em&gt;telecon&lt;/em&gt;), y además, aplicamos la función &lt;code&gt;nest()&lt;/code&gt; del paquete &lt;em&gt;{tidyr}&lt;/em&gt;, colección &lt;em&gt;{tidyverse}&lt;/em&gt;, con el objetivo de crear listas de tablas encajadas por fila. En otras palabras, en cada fila de cada ciudad y teleconexión tendremos una nueva tabla que contiene correspondientemente el año, la precipitación y el valor del índice.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- group_by(data, city, telecon) %&amp;gt;% nest()
+data_nest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 3
+## # Groups:   city, telecon [40]
+##    city      telecon data             
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;           
+##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt;
+##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt;
+## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## grouped_df [40 x 3] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##  $ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##  $ data   :List of 40
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [40 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##   ..$ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:40] 
+##   .. ..$ : int 1
+##   .. ..$ : int 2
+##   .. ..$ : int 3
+##   .. ..$ : int 4
+##   .. ..$ : int 5
+##   .. ..$ : int 6
+##   .. ..$ : int 7
+##   .. ..$ : int 8
+##   .. ..$ : int 9
+##   .. ..$ : int 10
+##   .. ..$ : int 11
+##   .. ..$ : int 12
+##   .. ..$ : int 13
+##   .. ..$ : int 14
+##   .. ..$ : int 15
+##   .. ..$ : int 16
+##   .. ..$ : int 17
+##   .. ..$ : int 18
+##   .. ..$ : int 19
+##   .. ..$ : int 20
+##   .. ..$ : int 21
+##   .. ..$ : int 22
+##   .. ..$ : int 23
+##   .. ..$ : int 24
+##   .. ..$ : int 25
+##   .. ..$ : int 26
+##   .. ..$ : int 27
+##   .. ..$ : int 28
+##   .. ..$ : int 29
+##   .. ..$ : int 30
+##   .. ..$ : int 31
+##   .. ..$ : int 32
+##   .. ..$ : int 33
+##   .. ..$ : int 34
+##   .. ..$ : int 35
+##   .. ..$ : int 36
+##   .. ..$ : int 37
+##   .. ..$ : int 38
+##   .. ..$ : int 39
+##   .. ..$ : int 40
+##   .. ..@ ptype: int(0) 
+##   ..- attr(*, &amp;quot;.drop&amp;quot;)= logi TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El siguiente paso es crear una función, en la que definimos el test de correlación y lo pasamos al formato limpio, que aplicamos a cada agrupación.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;cor_fun &amp;lt;- function(df) cor.test(df$pr, df$index, method=&amp;quot;spearman&amp;quot;) %&amp;gt;% tidy()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Ahora sólo nos queda por aplicar nuestra función a la columna que contiene las tablas por cada combinación entre ciudad y teleconexión. Para ello, usamos la función &lt;code&gt;map()&lt;/code&gt; que aplica otra función sobre un vector o lista. Lo que hacemos es crear una nueva columna que contiene el resultado, una tabla del resumen estadístico, por cada fila de cada combinación.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_nest &amp;lt;- mutate(data_nest, model = map(data, cor_fun))
+data_nest&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 4
+## # Groups:   city, telecon [40]
+##    city      telecon data              model           
+##    &amp;lt;chr&amp;gt;     &amp;lt;chr&amp;gt;   &amp;lt;list&amp;gt;            &amp;lt;list&amp;gt;          
+##  1 Bilbao    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  2 Santiago  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  3 Barcelona NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  4 Madrid    NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  5 Valencia  NAO     &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  6 Bilbao    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  7 Santiago  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  8 Barcelona WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+##  9 Madrid    WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## 10 Valencia  WeMO    &amp;lt;tibble [68 x 3]&amp;gt; &amp;lt;tibble [1 x 5]&amp;gt;
+## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;str(slice(data_nest, 1))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## grouped_df [40 x 4] (S3: grouped_df/tbl_df/tbl/data.frame)
+##  $ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##  $ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##  $ data   :List of 40
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 345 1072 415 683 581 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1342 1306 1355 1372 1428 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA 798 524 365 246 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] 1800 2344 1973 973 1348 ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.199333 -0.364667 -0.674917 -0.016417 -0.000583 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.333 -0.372 -0.688 -0.727 -0.912 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] -0.0567 -0.4192 -0.7108 -0.0508 -0.3175 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.335 0.149 0.282 0.216 0.386 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.49 -0.07 -0.37 0.4 0.51 -0.64 0.17 -0.02 0.12 0.49 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.0217 0.4025 -0.0117 -0.0567 0.1425 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.30083 -0.00667 0.06417 0.02333 0.4575 ...
+##   ..$ : tibble [68 x 3] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ yr   : num [1:68] 1950 1951 1952 1953 1954 ...
+##   .. ..$ pr   : num [1:68] NA NA NA NA NA NA NA NA NA NA ...
+##   .. ..$ index: num [1:68] 0.555 0.379 0.693 -0.213 1.196 ...
+##  $ model  :List of 40
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.00989
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 52912
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.936
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.295
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 67832
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0147
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.161
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43966
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.19
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.255
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65754
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0361
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0203
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 53460
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.869
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.178
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43082
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.147
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.161
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43970
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.19
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0292
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 50862
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.813
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.185
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 62070
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.131
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.256
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65825
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0348
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0155
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 51584
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.9
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0457
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 54788
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.711
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.153
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 44372
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.213
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.147
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 44670
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.23
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.357
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 33688
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.00296
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.404
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 31242
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.000706
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.313
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65806
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0102
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.304
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 65369
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0123
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0643
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 46893
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.605
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.497
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 75028
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 2.42e-05
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.291
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 64692
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0169
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0835
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 45930
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.501
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.306
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 34766
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.012
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.109
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 44660
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.38
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.443
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 75608
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.00018
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.01
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 52919
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.935
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.176
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 43170
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.151
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.19
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 62364
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.12
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.181
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 61902
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.139
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0504
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 49752
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.682
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.44
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 29356
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.000203
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.332
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 35014
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.00594
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.211
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 19574
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.129
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0672
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 26472
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.632
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0542
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 23460
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.7
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0478
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 25990
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.733
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.113
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 27600
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.422
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num 0.0971
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 22396
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.488
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.0795
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 26776
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.57
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##   ..$ : tibble [1 x 5] (S3: tbl_df/tbl/data.frame)
+##   .. ..$ estimate   : Named num -0.252
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;rho&amp;quot;
+##   .. ..$ statistic  : Named num 31056
+##   .. .. ..- attr(*, &amp;quot;names&amp;quot;)= chr &amp;quot;S&amp;quot;
+##   .. ..$ p.value    : num 0.0688
+##   .. ..$ method     : chr &amp;quot;Spearman&amp;#39;s rank correlation rho&amp;quot;
+##   .. ..$ alternative: chr &amp;quot;two.sided&amp;quot;
+##  - attr(*, &amp;quot;groups&amp;quot;)= tibble [40 x 3] (S3: tbl_df/tbl/data.frame)
+##   ..$ city   : chr [1:40] &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; &amp;quot;Barcelona&amp;quot; ...
+##   ..$ telecon: chr [1:40] &amp;quot;AO&amp;quot; &amp;quot;EA&amp;quot; &amp;quot;EATL/WRUS&amp;quot; &amp;quot;MO&amp;quot; ...
+##   ..$ .rows  : list&amp;lt;int&amp;gt; [1:40] 
+##   .. ..$ : int 1
+##   .. ..$ : int 2
+##   .. ..$ : int 3
+##   .. ..$ : int 4
+##   .. ..$ : int 5
+##   .. ..$ : int 6
+##   .. ..$ : int 7
+##   .. ..$ : int 8
+##   .. ..$ : int 9
+##   .. ..$ : int 10
+##   .. ..$ : int 11
+##   .. ..$ : int 12
+##   .. ..$ : int 13
+##   .. ..$ : int 14
+##   .. ..$ : int 15
+##   .. ..$ : int 16
+##   .. ..$ : int 17
+##   .. ..$ : int 18
+##   .. ..$ : int 19
+##   .. ..$ : int 20
+##   .. ..$ : int 21
+##   .. ..$ : int 22
+##   .. ..$ : int 23
+##   .. ..$ : int 24
+##   .. ..$ : int 25
+##   .. ..$ : int 26
+##   .. ..$ : int 27
+##   .. ..$ : int 28
+##   .. ..$ : int 29
+##   .. ..$ : int 30
+##   .. ..$ : int 31
+##   .. ..$ : int 32
+##   .. ..$ : int 33
+##   .. ..$ : int 34
+##   .. ..$ : int 35
+##   .. ..$ : int 36
+##   .. ..$ : int 37
+##   .. ..$ : int 38
+##   .. ..$ : int 39
+##   .. ..$ : int 40
+##   .. ..@ ptype: int(0) 
+##   ..- attr(*, &amp;quot;.drop&amp;quot;)= logi TRUE&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;¿Cómo podemos deshacer la lista de tablas en cada fila de nuestra tabla?&lt;/p&gt;
+&lt;p&gt;Pues bien, primero eliminamos la columna con los datos y después aplicamos simplemente la función &lt;code&gt;unnest()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- select(data_nest, -data) %&amp;gt;% unnest()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `cols` is now required when using unnest().
+## Please use `cols = c(model)`&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 40 x 7
+## # Groups:   city, telecon [40]
+##    city     telecon estimate statistic p.value method                alternative
+##    &amp;lt;chr&amp;gt;    &amp;lt;chr&amp;gt;      &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                 &amp;lt;chr&amp;gt;      
+##  1 Bilbao   NAO       0.153     44372. 2.13e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  2 Santiago NAO      -0.181     61902. 1.39e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  3 Barcelo~ NAO      -0.0203    53460. 8.69e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  4 Madrid   NAO      -0.291     64692. 1.69e-2 Spearman&amp;#39;s rank corr~ two.sided  
+##  5 Valencia NAO      -0.113     27600. 4.22e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  6 Bilbao   WeMO      0.404     31242  7.06e-4 Spearman&amp;#39;s rank corr~ two.sided  
+##  7 Santiago WeMO      0.332     35014  5.94e-3 Spearman&amp;#39;s rank corr~ two.sided  
+##  8 Barcelo~ WeMO      0.0292    50862  8.13e-1 Spearman&amp;#39;s rank corr~ two.sided  
+##  9 Madrid   WeMO      0.109     44660  3.80e-1 Spearman&amp;#39;s rank corr~ two.sided  
+## 10 Valencia WeMO     -0.252     31056  6.88e-2 Spearman&amp;#39;s rank corr~ two.sided  
+## # ... with 30 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una tabla en la que podemos ver las correlaciones y su significación estadística para cada ciudad y teleconexiones.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;heatmap-de-los-resultados&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Heatmap de los resultados&lt;/h2&gt;
+&lt;p&gt;Finalmente, hacemos un &lt;em&gt;heatmap&lt;/em&gt; del resultado obtenido. Antes creamos una columna que indica si la correlación es significativa con p-valor menor de 0,05.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;corr_pr &amp;lt;- mutate(corr_pr, sig = ifelse(p.value &amp;lt; 0.05, &amp;quot;Sig.&amp;quot;, &amp;quot;Non Sig.&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot()+
+  geom_tile(data = corr_pr,
+            aes(city, telecon, fill = estimate),
+            size = 1,
+            colour = &amp;quot;white&amp;quot;)+
+  geom_tile(data = filter(corr_pr, sig == &amp;quot;Sig.&amp;quot;),
+            aes(city, telecon),
+            size = 1,
+            colour = &amp;quot;black&amp;quot;,
+            fill = &amp;quot;transparent&amp;quot;)+
+  geom_text(data = corr_pr,
+            aes(city, telecon, label = round(estimate, 2),
+            fontface = ifelse(sig == &amp;quot;Sig.&amp;quot;, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)))+
+  scale_fill_gradient2(breaks = seq(-1, 1, 0.2))+
+  labs(x = &amp;quot;&amp;quot;, y = &amp;quot;&amp;quot;, fill = &amp;quot;&amp;quot;, p.value = &amp;quot;&amp;quot;)+
+  theme_minimal()+
+  theme(panel.grid.major = element_blank(),
+        panel.border = element_blank(),
+        panel.background = element_blank(),
+        axis.ticks = element_blank())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/resumir-tests-de-correlaciones-en-r/index.es_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>correlación</category>
+      
+            <category>variables</category>
+      
+            <category>resumir</category>
+      
+            <category>tests</category>
+      
+            <category>limpio</category>
+      
+      
+            <category>estadistica</category>
+      
+            <category>R</category>
+      
+            <category>R:avanzado</category>
+      
+    </item>
+    
+  </channel>
+</rss>

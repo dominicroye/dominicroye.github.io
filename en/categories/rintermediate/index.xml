@@ -1,0 +1,1791 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>R:intermediate on Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/en/categories/rintermediate/</link>
+    <description>Recent content in R:intermediate on Dr. Dominic Royé</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 01 Jun 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://dominicroye.github.io/en/categories/rintermediate/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Firefly cartography</title>
+      <link>https://dominicroye.github.io/en/2021/firefly-cartography/</link>
+      <pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2021/firefly-cartography/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;cartography-firefly&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cartography &lt;em&gt;firefly&lt;/em&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;Firefly&lt;/em&gt; maps are promoted and described by
+&lt;a href=&#34;https://twitter.com/John_M_Nelson&#34;&gt;John Nelson&lt;/a&gt; who published a &lt;a href=&#34;https://adventuresinmapping.com/2016/10/17/firefly-cartography/&#34;&gt;post&lt;/a&gt; in 2016 about its characteristics. However, these types of maps are linked to ArcGIS, which has led me to try to recreate them in R. The recent &lt;code&gt;ggplot2&lt;/code&gt; extension &lt;a href=&#34;https://github.com/marcmenem/ggshadow&#34;&gt;&lt;code&gt;ggshadow&lt;/code&gt;&lt;/a&gt; facilitates the creation of this cartographic style. It is characterized by three elements 1) a dark and unsaturated basemap (eg satellite imagery) 2) a masked vignette and highlighted area and 3) a single bright thematic layer. The essential are the colors and the brightness that is achieved with cold colors, usually neon colors. John Nelson explains more details in this &lt;a href=&#34;https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;What is the &lt;em&gt;firefly&lt;/em&gt; style for? In the words of &lt;a href=&#34;https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/&#34;&gt;John Nelson&lt;/a&gt;: “the map style that captures our attention and dutifully honors the First Law of Geography”. John refers to what was said by Waldo Tobler
+“everything is related to everything else, but near things are more related than distant things” (Tobler 1970).&lt;/p&gt;
+&lt;p&gt;In this post we will visualize all earthquakes recorded in southwestern Europe with a magnitude greater than 3.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;We will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;14%&#34; /&gt;
+&lt;col width=&#34;85%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;plotwidgets&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Contains functions for color conversion (RGB, HSL)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster (raster successor package)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggshadow&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2 extension for shaded and glow geometries&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggspatial&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2 extension for spatial objects&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2 extension to create multiple scales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple functions to examine and clean data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Vector maps of the world ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;plotwidgets&amp;quot;)) install.packages(&amp;quot;plotwidgets&amp;quot;)
+if(!require(&amp;quot;ggshadow&amp;quot;)) install.packages(&amp;quot;ggshadow&amp;quot;)
+if(!require(&amp;quot;ggspatial&amp;quot;)) install.packages(&amp;quot;ggspatial&amp;quot;)
+if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
+if(!require(&amp;quot;janitor&amp;quot;)) install.packages(&amp;quot;janitor&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# load packages
+
+library(raster)
+library(terra)
+library(sf)
+library(tidyverse)
+library(plotwidgets)
+library(ggshadow)
+library(ggspatial)
+library(ggnewscale)
+library(janitor)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;First we download all the necessary data. For the base map we will use the Blue Marble imagery via the access to worldview.earthdata.nasa.gov where I have downloaded a selection of the area of interest in geoTiff format with a resolution of 1 km. It is important to adjust the resolution to the necessary detail of the map.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Blue Marble selection via &lt;a href=&#34;https://worldview.earthdata.nasa.gov&#34;&gt;worldview.earthdata.nasa.gov&lt;/a&gt; ( ~ 66 MB) &lt;a href=&#34;https://www.dropbox.com/s/bt8qfkzw339q13l/snapshot-2017-11-30T00_00_00Z.tiff?dl=0&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Records of historical earthquakes in southwestern Europe from &lt;a href=&#34;https://www.ign.es/web/ign/portal/sis-catalogo-earthquakes&#34;&gt;IGN&lt;/a&gt; &lt;a href=&#34;https://dominicroye.github.io/files/catalogoComunSV_1621713848556.csv&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import&lt;/h2&gt;
+&lt;p&gt;The first thing we do is to import the RGB &lt;em&gt;Blue Marble&lt;/em&gt; raster and the earthquake data. To import the raster I use the new package &lt;a href=&#34;https://rspatial.org/terra/pkg/index.html&#34;&gt;&lt;code&gt;terra&lt;/code&gt;&lt;/a&gt; which is the successor of the &lt;code&gt;raster&lt;/code&gt; package. You can find a recent comparison &lt;a href=&#34;https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-raster-packages/&#34;&gt;here&lt;/a&gt;. Not all packages are yet compatible with the new &lt;code&gt;SpatRaster&lt;/code&gt; class, so we also need the &lt;code&gt;raster&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# earthquakes
+
+earthquakes &amp;lt;- read.csv2(&amp;quot;catalogoComunSV_1621713848556.csv&amp;quot;)
+str(earthquakes)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    149724 obs. of  10 variables:
+##  $ Evento       : chr  &amp;quot;          33&amp;quot; &amp;quot;          34&amp;quot; &amp;quot;          35&amp;quot; &amp;quot;          36&amp;quot; ...
+##  $ Fecha        : chr  &amp;quot;  02/03/1373&amp;quot; &amp;quot;  03/03/1373&amp;quot; &amp;quot;  08/03/1373&amp;quot; &amp;quot;  19/03/1373&amp;quot; ...
+##  $ Hora         : chr  &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; ...
+##  $ Latitud      : chr  &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; ...
+##  $ Longitud     : chr  &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; ...
+##  $ Prof...Km.   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Inten.       : chr  &amp;quot;     VIII-IX&amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Mag.         : chr  &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Tipo.Mag.    : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ LocalizaciÃ³n: chr  &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Blue Marble RGB raster
+
+bm &amp;lt;- rast(&amp;quot;snapshot-2017-11-30T00_00_00Z.tiff&amp;quot;)
+bm # contains three layers (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 7156, 7156, 3  (nrow, ncol, nlyr)
+## resolution  : 0.008789272, 0.008789272  (x, y)
+## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+## source      : snapshot-2017-11-30T00_00_00Z.tiff 
+## red-grn-blue: 1, 2, 3 
+## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot
+
+plotRGB(bm)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# country boundaries
+
+limits &amp;lt;- ne_countries(scale = 50, returnclass = &amp;quot;sf&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;earthquakes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Earthquakes&lt;/h2&gt;
+&lt;p&gt;In this step we clean the imported earthquakes data. 1) We convert longitude, latitude and magnitude into numeric using the &lt;code&gt;parse_number()&lt;/code&gt; function and clean the column names with the &lt;code&gt;clean_names()&lt;/code&gt; function, 2) We create a spatial object &lt;code&gt;sf&lt;/code&gt; and project it using the EPSG:3035 corresponding to ETRS89-extended/LAEA Europe.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# we clean the data and create an sf object
+
+earthquakes &amp;lt;-  earthquakes %&amp;gt;% clean_names() %&amp;gt;%
+                  mutate(across(c(mag, latitud, longitud),                                                                                                 parse_number)) %&amp;gt;%
+                 st_as_sf(coords = c(&amp;quot;longitud&amp;quot;, &amp;quot;latitud&amp;quot;), 
+                       crs = 4326) %&amp;gt;% 
+                 st_transform(3035) # project to Laea&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;blue-marble-background-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Blue Marble background Map&lt;/h2&gt;
+&lt;p&gt;We cropped the background map to a smaller extent, but we still haven’t limited to the final area yet.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# clip to the desired area
+
+bm &amp;lt;- crop(bm, extent(-20, 10, 30, 50)) # W, E, S, N&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To obtain an unsaturated version of the Blue Marble RGB raster, we must apply a function created for this purpose. In this, we use the &lt;code&gt;rgb2hsl()&lt;/code&gt; function from the &lt;code&gt;plotwidgets&lt;/code&gt; package, which helps us converting RGB to HSL and vice versa. The HSL model is defined by Hue, Saturation, Lightness. The last two parameters are expressed in ratio or percentage. The hue is defined on a color wheel from 0 to 360º. 0 is red, 120 is green, 240 is blue. To change the saturation we only have to reduce the value of S.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# function to change saturation from RGB
+
+saturation &amp;lt;- function(rgb, s = .5){
+  
+  hsl &amp;lt;- rgb2hsl(as.matrix(rgb))
+  hsl[2, ] &amp;lt;- s
+  
+  rgb_new &amp;lt;- as.vector(t(hsl2rgb(hsl)))
+  
+  return(rgb_new)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We employ our &lt;code&gt;saturation()&lt;/code&gt; function using the &lt;code&gt;app()&lt;/code&gt; function that applies it to each pixel with the three RGB layers. We add the argument &lt;code&gt;s&lt;/code&gt;, which defines the desired saturation level. This step may take several minutes. Then we project our RGB image.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# apply the function to unsaturate with 5%
+
+bm_desat &amp;lt;- app(bm, saturation, s = .05)
+
+# plot new RGB image
+
+plotRGB(bm_desat)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project 
+
+bm_desat &amp;lt;- terra::project(bm_desat, &amp;quot;epsg:3035&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;firefly-map-construction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;em&gt;Firefly&lt;/em&gt; map construction&lt;/h1&gt;
+&lt;div id=&#34;boundaries-and-graticules&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Boundaries and graticules&lt;/h2&gt;
+&lt;p&gt;Before starting to build the map, we create graticules and set the final map limits.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define the final map extent
+
+bx &amp;lt;- tibble(x = c(-13, 6.7), y = c(31, 47)) %&amp;gt;% 
+       st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326) %&amp;gt;%
+        st_transform(3035) %&amp;gt;% 
+         st_bbox()
+
+# create map graticules
+
+grid &amp;lt;- st_graticule(earthquakes) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-with-image-background&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map with image background&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;layer_spatial()&lt;/code&gt; function of &lt;code&gt;ggspatial&lt;/code&gt; allows us to add an RGB raster without major problems, however, it still does not support the new&lt;code&gt;SpatRaster&lt;/code&gt; class. Therefore, we must convert it to the &lt;code&gt;stack&lt;/code&gt; class with the &lt;code&gt;stack()&lt;/code&gt; function. It is also possible to use instead of &lt;code&gt;geom_sf()&lt;/code&gt;, the &lt;code&gt;layer_spatial()&lt;/code&gt; function for vector objects of class &lt;code&gt;sf&lt;/code&gt; or&lt;code&gt;sp&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) + # blue marble background map
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) + # country boundaries
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-with-background-and-earthquakes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map with background and earthquakes&lt;/h2&gt;
+&lt;p&gt;To create the glow effect on &lt;em&gt;firefly&lt;/em&gt; maps, we use the &lt;code&gt;geom_glowpoint()&lt;/code&gt; function from the &lt;code&gt;ggshadow&lt;/code&gt; package. There is also the same function for lines. Since our data is of spatial class &lt;code&gt;sf&lt;/code&gt; and the geometry &lt;code&gt;sf&lt;/code&gt; is not directly supported, we must indicate as an argument &lt;code&gt;stats = &#34;sf_coordinates&#34;&lt;/code&gt; and inside &lt;code&gt;aes()&lt;/code&gt; indicate &lt;code&gt;geometry = geometry&lt;/code&gt;. We will map the size of the points as a function of magnitude. In addition, we filter those earthquakes with a magnitude greater than 3.&lt;/p&gt;
+&lt;p&gt;Inside the &lt;code&gt;geom_glowpoint()&lt;/code&gt; function, 1) we define the desired color for the point and the glow effect, 2) the degree of transparency with &lt;code&gt;alpha&lt;/code&gt; either for the point or for the glow. Finally, in the &lt;code&gt;scale_size()&lt;/code&gt; function we set the range (minimum, maximum) of the size that the points will have.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) +
+  geom_sf(data = grid, colour = &amp;quot;white&amp;quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(earthquakes, mag &amp;gt; 3),
+                 aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &amp;quot;#6bb857&amp;quot;,
+                   shadowcolour = &amp;quot;#6bb857&amp;quot;,
+                   shadowalpha = .1,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;final-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Final map&lt;/h2&gt;
+&lt;p&gt;The glow effect of &lt;em&gt;firefly&lt;/em&gt; maps is characterized by having a white tone or a lighter tone in the center of the points. To achieve this, we must duplicate the previous created layer, changing only the color and make the glow points smaller.&lt;/p&gt;
+&lt;p&gt;By default, &lt;code&gt;ggplot2&lt;/code&gt; does not allow to use multiple scales for the same characteristic (size, color, etc) of different layers. But the &lt;code&gt;ggnewscale&lt;/code&gt; package gives us the ability to incorporate multiple scales of a feature from different layers. The only important thing to achieve this is the order in which each layer (geom) and scale is added. First we must add the geometry and then its corresponding scale. We indicate with &lt;code&gt;new_scale(&#39;size&#39;)&lt;/code&gt; that the next layer and scale is a new one independent of the previous one. If we used &lt;code&gt;color&lt;/code&gt; or &lt;code&gt;fill&lt;/code&gt; it would be done with &lt;code&gt;new_scale_*()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) +
+  geom_sf(data = grid, colour = &amp;quot;white&amp;quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(earthquakes, mag &amp;gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &amp;quot;#6bb857&amp;quot;,
+                   shadowcolour = &amp;quot;#6bb857&amp;quot;,
+                   shadowalpha = .1,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  new_scale(&amp;quot;size&amp;quot;) +
+  geom_glowpoint(data = filter(earthquakes, mag &amp;gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .6,
+                   shadowalpha = .05,
+                   color = &amp;quot;#ffffff&amp;quot;,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.01, .7)) +
+  labs(title = &amp;quot;EARTHQUAKES&amp;quot;) +
+  coord_sf(xlim = bx[c(1, 3)], ylim = bx[c(2, 4)], crs = 3035,
+           expand = FALSE) +
+  theme_void() +
+  theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>firefly</category>
+      
+            <category>map</category>
+      
+            <category>earthquake</category>
+      
+            <category>cartography</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+            <category>visualization</category>
+      
+    </item>
+    
+    <item>
+      <title>A heatmap as calendar</title>
+      <link>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</link>
+      <pubDate>Sun, 20 Dec 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Recently I was looking for a visual representation to show the daily changes of temperature, precipitation and wind in an application &lt;a href=&#34;https://xeo81.shinyapps.io/MeteoExtremosGalicia/&#34;&gt;xeo81.shinyapps.io/MeteoExtremosGalicia&lt;/a&gt; (in Spanish), which led me to use a heatmap in the form of a calendar. The &lt;a href=&#34;https://shiny.rstudio.com/&#34;&gt;shiny&lt;/a&gt; application is updated every four hours with new data showing calendars for each weather station. The heatmap as a calendar allows you to visualize any variable with a daily time reference.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ragg&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ragg provides a set of high quality and high performance raster devices&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes si hace falta
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ragg&amp;quot;)) install.packages(&amp;quot;ragg&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+# paquetes
+library(tidyverse)
+library(lubridate)
+library(ragg)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;For those with less experience with &lt;code&gt;tidyverse&lt;/code&gt;, I recommend the short introduction on this blog &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;In this example we will use the daily precipitation of Santiago de Compostela for this year 2020 (until December 20) &lt;a href=&#34;https://dominicroye.github.io/files/precipitation_santiago.csv&#34;&gt;download&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# import the data
+dat_pr &amp;lt;- read_csv(&amp;quot;precipitation_santiago.csv&amp;quot;)
+dat_pr&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 355 x 2
+##    date          pr
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 2020-01-01   0  
+##  2 2020-01-02   0  
+##  3 2020-01-03   5.4
+##  4 2020-01-04   0  
+##  5 2020-01-05   0  
+##  6 2020-01-06   0  
+##  7 2020-01-07   0  
+##  8 2020-01-08   1  
+##  9 2020-01-09   3.8
+## 10 2020-01-10   0  
+## # ... with 345 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparation&lt;/h2&gt;
+&lt;p&gt;In the first step we must 1) complement the time series from December 21 to December 31 with &lt;code&gt;NA&lt;/code&gt;, 2) add the day of the week, the month, the week number and the day. Depending on whether we want each week to start on Sunday or Monday, we indicate it in the &lt;code&gt;wday()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- dat_pr %&amp;gt;% 
+          complete(date = seq(ymd(&amp;quot;2020-01-01&amp;quot;), 
+                              ymd(&amp;quot;2020-12-31&amp;quot;), 
+                              &amp;quot;day&amp;quot;)) %&amp;gt;%
+          mutate(weekday = wday(date, label = T, week_start = 1), 
+                 month = month(date, label = T, abbr = F),
+                 week = isoweek(date),
+                 day = day(date))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we need to make a change in the week of the year, which is because in certain years there may be, for example, a few days at the end of the year as the first week of the following year. We also create two new columns. On the one hand, we categorize precipitation into 14 classes and on the other, we define a white text color for darker tones in the heatmap.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dat_pr &amp;lt;- mutate(dat_pr, 
+                 week = case_when(month == &amp;quot;December&amp;quot; &amp;amp; week == 1 ~ 53,
+                                  month == &amp;quot;January&amp;quot; &amp;amp; week %in% 52:53 ~ 0,
+                                  TRUE ~ week),
+                 pcat = cut(pr, c(-1, 0, .5, 1:5, 7, 9, 15, 20, 25, 30, 300)),
+                 text_col = ifelse(pcat %in% c(&amp;quot;(15,20]&amp;quot;, &amp;quot;(20,25]&amp;quot;, &amp;quot;(25,30]&amp;quot;, &amp;quot;(30,300]&amp;quot;), 
+                                   &amp;quot;white&amp;quot;, &amp;quot;black&amp;quot;)) 
+      
+dat_pr  &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 8
+##    date          pr weekday month    week   day pcat    text_col
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt;   &amp;lt;ord&amp;gt;   &amp;lt;dbl&amp;gt; &amp;lt;int&amp;gt; &amp;lt;fct&amp;gt;   &amp;lt;chr&amp;gt;   
+##  1 2020-01-01   0   Wed     January     1     1 (-1,0]  black   
+##  2 2020-01-02   0   Thu     January     1     2 (-1,0]  black   
+##  3 2020-01-03   5.4 Fri     January     1     3 (5,7]   black   
+##  4 2020-01-04   0   Sat     January     1     4 (-1,0]  black   
+##  5 2020-01-05   0   Sun     January     1     5 (-1,0]  black   
+##  6 2020-01-06   0   Mon     January     2     6 (-1,0]  black   
+##  7 2020-01-07   0   Tue     January     2     7 (-1,0]  black   
+##  8 2020-01-08   1   Wed     January     2     8 (0.5,1] black   
+##  9 2020-01-09   3.8 Thu     January     2     9 (3,4]   black   
+## 10 2020-01-10   0   Fri     January     2    10 (-1,0]  black   
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Visualization&lt;/h2&gt;
+&lt;p&gt;First we create a color ramp from Brewer colors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# color ramp
+pubu &amp;lt;- RColorBrewer::brewer.pal(9, &amp;quot;PuBu&amp;quot;)
+col_p &amp;lt;- colorRampPalette(pubu)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Second, before building the chart, we define a custom theme as a function. To do this, we specify all the elements and their modifications with the help of the &lt;code&gt;theme()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_calendar &amp;lt;- function(){
+
+ theme(aspect.ratio = 1/2,
+       
+       axis.title = element_blank(),
+       axis.ticks = element_blank(),
+       axis.text.y = element_blank(),
+       axis.text = element_text(family = &amp;quot;Montserrat&amp;quot;),
+       
+       panel.grid = element_blank(),
+       panel.background = element_blank(),
+       
+       strip.background = element_blank(),
+       strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, face = &amp;quot;bold&amp;quot;, size = 15),
+       
+       legend.position = &amp;quot;top&amp;quot;,
+       legend.text = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5),
+       legend.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 9, hjust = 1),
+       
+       plot.caption =  element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = 1, size = 8),
+       panel.border = element_rect(colour = &amp;quot;grey&amp;quot;, fill=NA, size=1),
+       plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 26, 
+                                 face = &amp;quot;bold&amp;quot;, 
+                                 margin = margin(0,0,0.5,0, unit = &amp;quot;cm&amp;quot;)),
+       plot.subtitle = element_text(family = &amp;quot;Montserrat&amp;quot;, hjust = .5, size = 16)
+  )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we build the final chart using &lt;code&gt;geom_tile()&lt;/code&gt; and specify the day of the week as the X axis and the week number as the Y axis. As you can see in the variable of the week number (&lt;code&gt;-week&lt;/code&gt;), I change the sign so that the first day of each month is in the first row. With &lt;code&gt;geom_text()&lt;/code&gt; we add the number of each day with its color according to what we defined previously. In &lt;code&gt;guides&lt;/code&gt; we make the adjustments of the colorbar and in &lt;code&gt;scale_fill/colour_manual()&lt;/code&gt; we define the corresponding colors. An important step is found in &lt;code&gt;facet_wrap()&lt;/code&gt; where we specify the facets composition of each month. The facets should have free scales and the ideal would be a 4 x 3 facet distribution. It is possible to modify the position of the day number to another using the arguments &lt;code&gt;nudge_*&lt;/code&gt; in &lt;code&gt;geom_text()&lt;/code&gt; (eg bottom-right corner: nudge_x = .35, nudge_y = -.25).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;    ggplot(dat_pr, 
+           aes(weekday, -week, fill = pcat)) +
+      geom_tile(colour = &amp;quot;white&amp;quot;, size = .4)  + 
+      geom_text(aes(label = day, colour = text_col), size = 2.5) +
+      guides(fill = guide_colorsteps(barwidth = 25, 
+                                     barheight = .4,
+                                    title.position = &amp;quot;top&amp;quot;)) +
+       scale_fill_manual(values = c(&amp;quot;white&amp;quot;, col_p(13)),
+                         na.value = &amp;quot;grey90&amp;quot;, drop = FALSE) +
+       scale_colour_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;), guide = FALSE) + 
+       facet_wrap(~ month, nrow = 4, ncol = 3, scales = &amp;quot;free&amp;quot;) +
+       labs(title = &amp;quot;How is 2020 being in Santiago?&amp;quot;, 
+             subtitle = &amp;quot;Precipitation&amp;quot;,
+             caption = &amp;quot;Data: Meteogalicia&amp;quot;,
+             fill = &amp;quot;mm&amp;quot;) +
+       theme_calendar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/a-heatmap-as-calendar/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;768&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To export we will use the &lt;a href=&#34;https://github.com/r-lib/ragg&#34;&gt;&lt;code&gt;ragg&lt;/code&gt;&lt;/a&gt; package, which provides higher performance and quality than the standard raster devices provided by grDevices.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;pr_calendar.png&amp;quot;, height = 10, width = 8, device = agg_png())&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In other heatmap calendars I have added the predominant wind direction of each day as an arrow using &lt;code&gt;geom_arrow()&lt;/code&gt; from the &lt;code&gt;metR&lt;/code&gt; package (it can be seen in the aforementioned application).&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>calendar</category>
+      
+            <category>temperature</category>
+      
+            <category>climate</category>
+      
+            <category>heatmap</category>
+      
+      
+            <category>visualization</category>
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+    </item>
+    
+    <item>
+      <title>Visualize climate anomalies</title>
+      <link>https://dominicroye.github.io/en/2020/visualize-climate-anomalies/</link>
+      <pubDate>Sun, 29 Mar 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2020/visualize-climate-anomalies/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;When we visualize precipitation and temperature anomalies, we simply use time series as bar graph indicating negative and positive values in red and blue. However, in order to have a better overview we need both anomalies in a single graph. In this way we could more easly answer the question of whether a particular season or month was dry-warm or wet-cold, and even compare these anomalies in the context of previous years.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggrepel&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Repel overlapping text labels in ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggrepel&amp;quot;)) install.packages(&amp;quot;ggrepel&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#packages
+library(tidyverse)
+library(lubridate)
+library(ggrepel)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparing the data&lt;/h2&gt;
+&lt;p&gt;First we import the daily precipitation and temperature data from the selected weather station (&lt;a href=&#34;https://dominicroye.github.io/files/meteo_tenerife.csv&#34;&gt;download&lt;/a&gt;). We will use the data from Tenerife South (Spain) [1981-2020] accessible through &lt;a href=&#34;https://opendata.aemet.es/&#34;&gt;Open Data AEMET&lt;/a&gt;. In R there is a package called &lt;a href=&#34;https://vegmod.ctfc.cat/software/meteoland/&#34;&gt;&lt;code&gt;meteoland&lt;/code&gt;&lt;/a&gt; that facilitates the download with specific functions to access data from AEMET (Spanish State Meteorological Agency), Meteogalicia (Galician Meteorological Service) and Meteocat (Catalan Meteorological Service).&lt;/p&gt;
+&lt;div id=&#34;step-1-import-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 1: import the data&lt;/h3&gt;
+&lt;p&gt;We import the data in &lt;em&gt;csv&lt;/em&gt; format, the first column is the date, the second column the precipitation (pr) and the last column the average daily temperature (ta).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;meteo_tenerife.csv&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   date = col_date(format = &amp;quot;&amp;quot;),
+##   pr = col_double(),
+##   ta = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 3
+##    date          pr    ta
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 1981-01-02   0    17.6
+##  2 1981-01-03   0    16.8
+##  3 1981-01-04   0    17.4
+##  4 1981-01-05   0    17.6
+##  5 1981-01-06   0    17  
+##  6 1981-01-07   0    17.6
+##  7 1981-01-08   0    18.6
+##  8 1981-01-09   0    19.8
+##  9 1981-01-10   0    21.5
+## 10 1981-01-11   3.8  17.6
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-2-preparing-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 2: preparing the data&lt;/h3&gt;
+&lt;p&gt;In the second step we prepare the data to calculate the anomalies. To do this, we create three new columns: the month, the year, and the season of the year. Since our objective is to analyse winter anomalies, we cannot use the calendar year, because winter includes the month of December of one year and the months of January and February of the following. The custom function &lt;code&gt;meteo_yr()&lt;/code&gt; extracts the year from a date indicating the starting month. The concept is similar to the hydrological year in which it starts on October 1.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;meteo_yr &amp;lt;- function(dates, start_month = NULL) {
+  # convert to POSIXlt
+  dates.posix &amp;lt;- as.POSIXlt(dates)
+  # year offset
+  offset &amp;lt;- ifelse(dates.posix$mon &amp;gt;= start_month - 1, 1, 0)
+  # new year
+  adj.year = dates.posix$year + 1900 + offset
+  return(adj.year)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We will use many functions of the package collection &lt;code&gt;tidyverse&lt;/code&gt; (&lt;a href=&#34;https://www.tidyverse.org/&#34; class=&#34;uri&#34;&gt;https://www.tidyverse.org/&lt;/a&gt;). The &lt;code&gt;mutate()&lt;/code&gt; function helps to add new columns or change existing ones. To define the seasons, we use the &lt;code&gt;case_when()&lt;/code&gt; function from the &lt;code&gt;dplyr&lt;/code&gt; package, which has many advantages compared to a chain of &lt;code&gt;ifelse()&lt;/code&gt;. In &lt;code&gt;case_when()&lt;/code&gt; we use two-side formulas, on the one hand the condition and on the other the action when that condition is met. A two-sided formula in R consists of the operator &lt;code&gt;~&lt;/code&gt;. The binary operator &lt;code&gt;%in%&lt;/code&gt; allows us to filter several values in a greater set.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, 
+               winter_yr = meteo_yr(date, 12),
+               month = month(date), 
+               season = case_when(month %in% c(12,1:2) ~ &amp;quot;Winter&amp;quot;,
+                                  month %in% 3:5 ~ &amp;quot;Spring&amp;quot;,
+                                  month %in% 6:8 ~ &amp;quot;Summer&amp;quot;,
+                                  month %in% 9:11 ~ &amp;quot;Autum&amp;quot;))
+
+data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 14,303 x 6
+##    date          pr    ta winter_yr month season
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt; 
+##  1 1981-01-02   0    17.6      1981     1 Winter
+##  2 1981-01-03   0    16.8      1981     1 Winter
+##  3 1981-01-04   0    17.4      1981     1 Winter
+##  4 1981-01-05   0    17.6      1981     1 Winter
+##  5 1981-01-06   0    17        1981     1 Winter
+##  6 1981-01-07   0    17.6      1981     1 Winter
+##  7 1981-01-08   0    18.6      1981     1 Winter
+##  8 1981-01-09   0    19.8      1981     1 Winter
+##  9 1981-01-10   0    21.5      1981     1 Winter
+## 10 1981-01-11   3.8  17.6      1981     1 Winter
+## # ... with 14,293 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-3-estimate-winter-anomalies&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 3: estimate winter anomalies&lt;/h3&gt;
+&lt;p&gt;In the next step we create a subset of the winter months. Then we group by the defined meteorological year and calculate the sum and average for precipitation and temperature, respectively. To facilitate the work, the &lt;code&gt;magrittr&lt;/code&gt; package introduces the operator called &lt;em&gt;pipe&lt;/em&gt; in the form &lt;code&gt;%&amp;gt;%&lt;/code&gt; with the aim of combining several functions without the need to assign the result to a new object. The &lt;em&gt;pipe&lt;/em&gt; operator passes the output of a function applied to the first argument of the next function. This way of combining functions allows you to chain several steps simultaneously. The &lt;code&gt;%&amp;gt;%&lt;/code&gt; must be understood and pronounced as &lt;em&gt;then&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;- filter(data, 
+                   season == &amp;quot;Winter&amp;quot;) %&amp;gt;% 
+              group_by(winter_yr) %&amp;gt;%
+                  summarise(pr = sum(pr, na.rm = TRUE),
+                            ta = mean(ta, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now we only have to calculate the anomalies of precipitation and temperature. The columns &lt;code&gt;pr_mean&lt;/code&gt; and &lt;code&gt;ta_mean&lt;/code&gt; will contain the climate average, the reference for the anomalies with respect to the normal period 1981-2010. Therefore, we need to filter the values to the period before 2010, which we will do in the usual way of filtering vectors in R. Once we have the references we estimate the anomalies &lt;code&gt;pr_anom&lt;/code&gt; and &lt;code&gt;ta_anom&lt;/code&gt;. To facilitate the interpretation, in the case of precipitation we express the anomalies as percentage, with the average set at 0% instead of 100%.&lt;/p&gt;
+&lt;p&gt;In addition, we add three required columns with information for the creation of the graph: 1) &lt;code&gt;labyr&lt;/code&gt; contains the year of each anomaly as long as it has been greater/less than -+10% or -+0.5ºC, respectively (this is for reducing the number of labels), 2) &lt;code&gt;symb_point&lt;/code&gt; is a dummy variable in order to be able to create different symbols between the cases of (1), and 3) &lt;code&gt;lab_font&lt;/code&gt; for highlighting in bold the year 2020.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv &amp;lt;-  mutate(data_inv, pr_mean = mean(pr[winter_yr &amp;lt;= 2010]), 
+                              ta_mean = mean(ta[winter_yr &amp;lt;= 2010]),
+                              pr_anom = (pr*100/pr_mean)-100, 
+                              ta_anom = ta-ta_mean,
+                              
+                              labyr = case_when(pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;lt; -10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;lt; -.5 ~ winter_yr,
+                                                pr_anom &amp;gt; 10 &amp;amp; ta_anom &amp;gt; .5 ~ winter_yr),
+                              symb_point = ifelse(!is.na(labyr), &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;),
+                              lab_font = ifelse(labyr == 2020, &amp;quot;bold&amp;quot;, &amp;quot;plain&amp;quot;)
+                    )&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the graph&lt;/h2&gt;
+&lt;p&gt;We will build the chart adding layer by layer the distinctive elements: 1) the background with the different grids (Dry-Warm, Dry-Cold, etc.), 2) the points and labels, and 3) the style adjustments.&lt;/p&gt;
+&lt;div id=&#34;part-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 1&lt;/h3&gt;
+&lt;p&gt;The idea is that the points with dry-warm anomalies are located in quadrant I (top-right) and those with wet-cold in quadrant III (bottom-left). Therefore, we must invert the sign in the precipitation anomalies. Then we create a &lt;code&gt;data.frame&lt;/code&gt; with the label positions of the four quadrants. For the positions in &lt;em&gt;x&lt;/em&gt; and &lt;em&gt;y&lt;/em&gt; &lt;code&gt;Inf&lt;/code&gt; and &lt;code&gt;-Inf&lt;/code&gt; are used, which is equivalent to the maximum panel sides with respect to the data. However, it is necessary to adjust the position towards the extreme points within the panel with the known arguments of &lt;code&gt;ggplot2&lt;/code&gt;: &lt;em&gt;hjust&lt;/em&gt; and &lt;em&gt;vjust&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_inv_p &amp;lt;- mutate(data_inv, pr_anom = pr_anom * -1)
+
+bglab &amp;lt;- data.frame(x = c(-Inf, Inf, -Inf, Inf), 
+                    y = c(Inf, Inf, -Inf, -Inf),
+                    hjust = c(1, 1, 0, 0), 
+                    vjust = c(1, 0, 1, 0),
+                    lab = c(&amp;quot;Wet-Warm&amp;quot;, &amp;quot;Dry-Warm&amp;quot;,
+                              &amp;quot;Wet-Cold&amp;quot;, &amp;quot;Dry-Cold&amp;quot;))
+
+  
+bglab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##      x    y hjust vjust      lab
+## 1 -Inf  Inf     1     1 Wet-Warm
+## 2  Inf  Inf     1     0 Dry-Warm
+## 3 -Inf -Inf     0     1 Wet-Cold
+## 4  Inf -Inf     0     0 Dry-Cold&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 2&lt;/h3&gt;
+&lt;p&gt;In the second part we can start building the chart by adding all graphical elements. First we create the background with different colors of each quadrant. The function &lt;code&gt;annotate()&lt;/code&gt; allows adding geometry layers without the use of variables within &lt;code&gt;data.frames&lt;/code&gt;. With the &lt;code&gt;geom_hline()&lt;/code&gt; and &lt;code&gt;geom_vline()&lt;/code&gt; function we mark the quadrants horizontally and vertically using a dashed line. Finally, we draw the labels of each quadrant, using the function &lt;code&gt;geom_text()&lt;/code&gt;. When we use other data sources than the main one used in &lt;code&gt;ggplot()&lt;/code&gt;, we must indicate it with the argument &lt;code&gt;data&lt;/code&gt; in the corresponding geometry function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- ggplot(data_inv_p, 
+             aes(pr_anom, ta_anom)) +
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = 0, ymax = Inf, fill = &amp;quot;#fc9272&amp;quot;, alpha = .6) + #wet-warm
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = 0, ymax = Inf, fill = &amp;quot;#cb181d&amp;quot;, alpha = .6) + #dry-warm
+         annotate(&amp;quot;rect&amp;quot;, xmin = -Inf, xmax = 0, ymin = -Inf, ymax = 0, fill = &amp;quot;#2171b5&amp;quot;, alpha = .6) + #wet-cold
+         annotate(&amp;quot;rect&amp;quot;, xmin = 0, xmax = Inf, ymin = -Inf, ymax = 0, fill = &amp;quot;#c6dbef&amp;quot;, alpha = .6) + #dry-cold
+       geom_hline(yintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_vline(xintercept = 0,
+                  linetype = &amp;quot;dashed&amp;quot;) +
+       geom_text(data = bglab, 
+                     aes(x, y, label = lab, hjust = hjust, vjust = vjust),
+                     fontface = &amp;quot;italic&amp;quot;, size = 5, 
+                     angle = 90, colour = &amp;quot;white&amp;quot;)
+
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 3&lt;/h3&gt;
+&lt;p&gt;In the third part we simply add the points of the anomalies and the labels of the years. The &lt;code&gt;geom_text_repel()&lt;/code&gt; function is similar to the one known by default in &lt;code&gt;ggplot2&lt;/code&gt;, &lt;code&gt;geom_text()&lt;/code&gt;, but it repels overlapping text labels away from each other.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g2 &amp;lt;- g1 + geom_point(aes(fill = symb_point, colour = symb_point),
+                      size = 2.8, shape = 21, show.legend = FALSE) +
+           geom_text_repel(aes(label = labyr, fontface = lab_font),
+                           max.iter = 5000, 
+                           size = 3.5) 
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-4&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 4&lt;/h3&gt;
+&lt;p&gt;In the last part we adjust, in addition to the general style, the axes, the color type and the (sub)title. Remember that we changed the sign on precipitation anomalies. Hence, we must use the arguments &lt;code&gt;breaks&lt;/code&gt; and &lt;code&gt;labels&lt;/code&gt; in the function &lt;code&gt;scale_x_continouous()&lt;/code&gt; to reverse the sign in the labels corresponding to the breaks.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g3 &amp;lt;- g2 + scale_x_continuous(&amp;quot;Precipitation anomaly in %&amp;quot;,
+                              breaks = seq(-100, 250, 10) * -1,
+                              labels = seq(-100, 250, 10),
+                              limits = c(min(data_inv_p$pr_anom), 100)) +
+           scale_y_continuous(&amp;quot;Mean temperature anomaly in ºC&amp;quot;,
+                              breaks = seq(-2, 2, 0.5)) +
+           scale_fill_manual(values = c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;)) +
+           scale_colour_manual(values = rev(c(&amp;quot;black&amp;quot;, &amp;quot;white&amp;quot;))) +
+           labs(title = &amp;quot;Winter anomalies in Tenerife South&amp;quot;, 
+                caption = &amp;quot;Data: AEMET\nNormal period 1981-2010&amp;quot;) +
+           theme_bw()
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: Removed 25 rows containing missing values (geom_text_repel).&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/visualize-climate-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;3507&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>anomaly</category>
+      
+            <category>precipitation</category>
+      
+            <category>temperature</category>
+      
+            <category>climate</category>
+      
+            <category>points</category>
+      
+      
+            <category>visualization</category>
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+    </item>
+    
+    <item>
+      <title>Visualize monthly precipitation anomalies</title>
+      <link>https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/</link>
+      <pubDate>Sun, 07 Jul 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;Normally when we visualize monthly precipitation anomalies, we simply use a bar graph indicating negative and positive values with red and blue. However, it does not explain the general context of these anomalies. For example, what was the highest or lowest anomaly in each month? In principle, we could use a &lt;em&gt;boxplot&lt;/em&gt; to visualize the distribution of the anomalies, but in this particular case they would not fit aesthetically, so we should look for an alternative. Here I present a very useful graphic form.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readr&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggthemes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Themes for ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;cowplot&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy creation of multiple graphics with ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;ggthemes&amp;quot;)) install.packages(&amp;quot;broom&amp;quot;)
+if(!require(&amp;quot;cowplot&amp;quot;)) install.packages(&amp;quot;cowplot&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+
+#packages
+library(tidyverse) #include readr
+library(ggthemes)
+library(cowplot)
+library(lubridate)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparing-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparing the data&lt;/h2&gt;
+&lt;p&gt;First we import the daily precipitation of the selected weather station (&lt;a href=&#34;https://dominicroye.github.io/files/RR_STAID001394.txt&#34;&gt;download&lt;/a&gt;). We will use data from Santiago de Compostela (Spain) accessible through &lt;a href=&#34;https://eca.knmi.nl&#34;&gt;ECA&amp;amp;D&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;step-1-import-the-data&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 1: import the data&lt;/h3&gt;
+&lt;p&gt;We not only import the data in &lt;em&gt;csv&lt;/em&gt; format, but we also make the first changes. We skip the first 21 rows that contain information about the weather station. In addition, we convert the date to the &lt;code&gt;date&lt;/code&gt; class and replace missing values (-9999) with &lt;code&gt;NA&lt;/code&gt;. The precipitation is given in 0.1 mm, therefore, we must divide the values by 10. Then we select the columns &lt;em&gt;DATE&lt;/em&gt; and &lt;em&gt;RR&lt;/em&gt;, and rename them.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- read_csv(&amp;quot;RR_STAID001394.txt&amp;quot;, skip = 21) %&amp;gt;%
+             mutate(DATE = ymd(DATE), RR = ifelse(RR == -9999, NA, RR/10)) %&amp;gt;%
+               select(DATE:RR) %&amp;gt;% 
+             rename(date = DATE, pr = RR)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+## -- Column specification --------------------------------------------------------
+## cols(
+##   STAID = col_double(),
+##   SOUID = col_double(),
+##   DATE = col_double(),
+##   RR = col_double(),
+##   Q_RR = col_double()
+## )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 27,606 x 2
+##    date          pr
+##    &amp;lt;date&amp;gt;     &amp;lt;dbl&amp;gt;
+##  1 1943-11-01   0.6
+##  2 1943-11-02   0  
+##  3 1943-11-03   0  
+##  4 1943-11-04   0  
+##  5 1943-11-05   0  
+##  6 1943-11-06   0  
+##  7 1943-11-07   0  
+##  8 1943-11-08   0  
+##  9 1943-11-09   0  
+## 10 1943-11-10   0  
+## # ... with 27,596 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-2-creating-monthly-values&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 2: creating monthly values&lt;/h3&gt;
+&lt;p&gt;In the second step we calculate the monthly amounts of precipitation. To do this, a) we limit the period to the years after 1950, b) we add the month with its labels and the year as variables.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data &amp;lt;- mutate(data, mo = month(date, label = TRUE), yr = year(date)) %&amp;gt;%
+            filter(date &amp;gt;= &amp;quot;1950-01-01&amp;quot;) %&amp;gt;%
+                group_by(yr, mo) %&amp;gt;% 
+                   summarise(prs = sum(pr, na.rm = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## `summarise()` has grouped output by &amp;#39;yr&amp;#39;. You can override using the `.groups` argument.&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 833 x 3
+## # Groups:   yr [70]
+##       yr mo      prs
+##    &amp;lt;dbl&amp;gt; &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;
+##  1  1950 Jan    55.6
+##  2  1950 Feb   349. 
+##  3  1950 Mar    85.8
+##  4  1950 Apr    33.4
+##  5  1950 May   272. 
+##  6  1950 Jun   111. 
+##  7  1950 Jul    35.4
+##  8  1950 Aug    76.4
+##  9  1950 Sep    85  
+## 10  1950 Oct    53  
+## # ... with 823 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-3-estimating-anomalies&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 3: estimating anomalies&lt;/h3&gt;
+&lt;p&gt;Now we must estimate the normals of each month and join this table to our main data in order to calculate the monthly anomaly. We express the anomalies in percentage and subtract 100 to set the average to 0. In addition, we create a variable which indicates if the anomaly is negative or positive, and another with the date.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;pr_ref &amp;lt;- filter(data, yr &amp;gt; 1981, yr &amp;lt;= 2010) %&amp;gt;%
+                   group_by(mo) %&amp;gt;%
+                      summarise(pr_ref = mean(prs))
+
+data &amp;lt;- left_join(data, pr_ref, by = &amp;quot;mo&amp;quot;)
+
+data &amp;lt;- mutate(data, 
+               anom = (prs*100/pr_ref)-100, 
+               date = str_c(yr, as.numeric(mo), 1, sep = &amp;quot;-&amp;quot;) %&amp;gt;% ymd(),
+               sign= ifelse(anom &amp;gt; 0, &amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;) %&amp;gt;% factor(c(&amp;quot;pos&amp;quot;, &amp;quot;neg&amp;quot;)))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We can do a first test graph of anomalies (the classic one), for that we filter the year 2018. In this case we use a bar graph, remember that by default the function &lt;code&gt;geom_bar()&lt;/code&gt; applies the counting of the variable. However, in this case we know &lt;code&gt;y&lt;/code&gt;, hence we indicate with the argument &lt;code&gt;stat = &#34;identity&#34;&lt;/code&gt; that it should use the given value in &lt;code&gt;aes()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;filter(data, yr == 2018) %&amp;gt;%
+   ggplot(aes(date, anom, fill = sign)) + 
+       geom_bar(stat = &amp;quot;identity&amp;quot;, show.legend = FALSE) + 
+    scale_x_date(date_breaks = &amp;quot;month&amp;quot;, date_labels = &amp;quot;%b&amp;quot;) +
+    scale_y_continuous(breaks = seq(-100, 100, 20)) +
+    scale_fill_manual(values = c(&amp;quot;#99000d&amp;quot;, &amp;quot;#034e7b&amp;quot;)) +
+         labs(y = &amp;quot;Precipitation anomaly (%)&amp;quot;, x = &amp;quot;&amp;quot;) +
+          theme_hc()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;step-4-calculating-the-statistical-metrics&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Step 4: calculating the statistical metrics&lt;/h3&gt;
+&lt;p&gt;In this last step we estimate the maximum, minimum value, the 25%/75% quantiles and the interquartile range per month of the entire time series.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;data_norm &amp;lt;-     group_by(data, mo) %&amp;gt;%
+                     summarise(mx = max(anom),
+                               min = min(anom),
+                               q25 = quantile(anom, .25),
+                               q75 = quantile(anom, .75),
+                               iqr = q75-q25)
+data_norm&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 12 x 6
+##    mo       mx    min   q25   q75   iqr
+##    &amp;lt;ord&amp;gt; &amp;lt;dbl&amp;gt;  &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 Jan    193.  -89.6 -43.6 56.3   99.9
+##  2 Feb    320.  -96.5 -51.2 77.7  129. 
+##  3 Mar    381. -100   -40.6 88.2  129. 
+##  4 Apr    198.  -93.6 -51.2 17.1   68.3
+##  5 May    141.  -90.1 -45.2 17.0   62.2
+##  6 Jun    419.  -99.3 -58.2 50.0  108. 
+##  7 Jul    311.  -98.2 -77.3 27.1  104. 
+##  8 Aug    264. -100   -68.2 39.8  108. 
+##  9 Sep    241.  -99.2 -64.9 48.6  113. 
+## 10 Oct    220.  -99.0 -54.5  4.69  59.2
+## 11 Nov    137.  -98.8 -44.0 39.7   83.7
+## 12 Dec    245.  -91.8 -49.8 36.0   85.8&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;creating-the-graph&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Creating the graph&lt;/h2&gt;
+&lt;p&gt;To create the anomaly graph with legend it is necessary to separate the main graph from the legends.&lt;/p&gt;
+&lt;div id=&#34;part-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 1&lt;/h3&gt;
+&lt;p&gt;In this first part we are adding layer by layer the different elements: 1) the range of anomalies maximum-minimum 2) the interquartile range and 3) the anomalies of the year 2018.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#range of anomalies maximum-minimum
+g1.1 &amp;lt;- ggplot(data_norm)+
+           geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
+                        fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;)
+
+g1.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding interquartile range
+g1.2 &amp;lt;- g1.1 + geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
+                              fatten = 0, fill = &amp;quot;grey70&amp;quot;)
+
+g1.2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-9-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding anomalies of the year 2018 
+
+g1.3 &amp;lt;- g1.2 + geom_crossbar(data = filter(data, yr == 2018),
+                aes(x = mo, y = 0, ymin = 0, ymax = anom, fill = sign),
+                fatten = 0, width = 0.7, alpha = .7, colour = &amp;quot;NA&amp;quot;,
+                show.legend = FALSE)
+g1.3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-9-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally we change some last style settings.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- g1.3 + geom_hline(yintercept = 0)+
+               scale_fill_manual(values=c(&amp;quot;#99000d&amp;quot;,&amp;quot;#034e7b&amp;quot;))+
+               scale_y_continuous(&amp;quot;Precipitation anomaly (%)&amp;quot;,
+                                   breaks = seq(-100, 500, 25),
+                                   expand = c(0, 5))+
+            labs(x = &amp;quot;&amp;quot;,
+                 title = &amp;quot;Precipitation anomaly in Santiago de Compostela 2018&amp;quot;,
+                 caption=&amp;quot;Dominic Royé (@dr_xeo) | Data: eca.knmi.nl&amp;quot;)+
+            theme_hc()
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 2&lt;/h3&gt;
+&lt;p&gt;We still need a legend. First we create it for the normals.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#legend data
+legend &amp;lt;- filter(data_norm, mo == &amp;quot;Jan&amp;quot;)
+
+legend_lab &amp;lt;- gather(legend, stat, y, mx:q75) %&amp;gt;%
+                 mutate(stat = factor(stat, stat, c(&amp;quot;maximum&amp;quot;,
+                                                   &amp;quot;minimum&amp;quot;,
+                                                   &amp;quot;Quantile 25%&amp;quot;,
+                                                   &amp;quot;Quantile 75%&amp;quot;)) %&amp;gt;%
+                                            as.character())&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attributes are not identical across measure variables;
+## they will be dropped&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#legend graph
+g2 &amp;lt;- legend %&amp;gt;% ggplot()+
+                  geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
+                                fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;, width = 0.2) +
+                  geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
+                                fatten = 0, fill = &amp;quot;grey70&amp;quot;, width = 0.2) +
+                  geom_text(data = legend_lab, 
+                            aes(x = mo, y = y+c(12,-8,-10,12), label = stat), 
+                            fontface = &amp;quot;bold&amp;quot;, size = 2) +
+                   annotate(&amp;quot;text&amp;quot;, x = 1.18, y = 40, 
+                            label = &amp;quot;Period 1950-2018&amp;quot;, angle = 90, size = 3) +
+              theme_void() + 
+                theme(plot.margin = unit(c(0, 0, 0, 0), &amp;quot;cm&amp;quot;))
+
+g2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Second, we create another legend for the current anomalies.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#legend data
+legend2 &amp;lt;- filter(data, yr == 1950, mo %in% c(&amp;quot;Jan&amp;quot;,&amp;quot;Feb&amp;quot;)) %&amp;gt;% 
+              ungroup() %&amp;gt;% 
+            select(mo, anom, sign)
+
+legend2[2,1] &amp;lt;- &amp;quot;Jan&amp;quot;
+
+legend_lab2 &amp;lt;- data.frame(mo = rep(&amp;quot;Jan&amp;quot;, 3), 
+                          anom= c(110, 3, -70), 
+                          label = c(&amp;quot;Positive anomaly&amp;quot;, &amp;quot;Average&amp;quot;, &amp;quot;Negative anomaly&amp;quot;))
+
+#legend graph
+g3 &amp;lt;-  ggplot() + 
+         geom_bar(data = legend2,
+                aes(x = mo, y = anom, fill = sign),
+                   alpha = .6, colour = &amp;quot;NA&amp;quot;, stat = &amp;quot;identity&amp;quot;, show.legend = FALSE, width = 0.2) +
+         geom_segment(aes(x = .85, y = 0, xend = 1.15, yend = 0), linetype = &amp;quot;dashed&amp;quot;) +
+         geom_text(data = legend_lab2, 
+                   aes(x = mo, y = anom+c(10,5,-13), label = label), 
+                   fontface = &amp;quot;bold&amp;quot;, size = 2) +
+         annotate(&amp;quot;text&amp;quot;, x = 1.25, y = 20, 
+                  label =&amp;quot;Reference 1971-2010&amp;quot;, angle = 90, size = 3) +
+         scale_fill_manual(values = c(&amp;quot;#99000d&amp;quot;, &amp;quot;#034e7b&amp;quot;)) +
+        theme_void() +
+         theme(plot.margin = unit(c(0, 0, 0, 0), &amp;quot;cm&amp;quot;))
+
+g3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-3&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 3&lt;/h3&gt;
+&lt;p&gt;Finally, we only have to join the graph and the legends with the help of the &lt;code&gt;cowplot&lt;/code&gt; package. The main function of &lt;code&gt;cowplot&lt;/code&gt; is &lt;code&gt;plot_grid()&lt;/code&gt; which is used for combining different graphs. However, in this case it is necessary to use more flexible functions to create less common formats. The &lt;code&gt;ggdraw()&lt;/code&gt; function configures the basic layer of the graph, and the functions that are intended to operate on this layer start with &lt;code&gt;draw_*&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggdraw() +
+       draw_plot(g1, x = 0, y = .3, width = 1, height = 0.6) +
+       draw_plot(g2, x = 0, y = .15, width = .2, height = .15) +
+       draw_plot(g3, x = 0.08, y = .15, width = .2, height = .15)
+
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomaly2016_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;multiple-facets&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Multiple facets&lt;/h2&gt;
+&lt;p&gt;In this section we will make the same graph as in the previous one, but for several years.&lt;/p&gt;
+&lt;div id=&#34;part-1-1&#34; class=&#34;section level3&#34;&gt;
+&lt;h3&gt;Part 1&lt;/h3&gt;
+&lt;p&gt;First we need to filter again by set of years, in this case from 2016 to 2018, using the operator &lt;code&gt;%in%&lt;/code&gt;, we also add the function &lt;code&gt;facet_grid()&lt;/code&gt; to &lt;code&gt;ggplot&lt;/code&gt;, which allows us to plot the graph according to a variable. The formula used for the facet function is similar to the use in models: &lt;code&gt;variable_by_row ~ variable_by_column&lt;/code&gt;. When we do not have a variable in the column, we should use the &lt;code&gt;.&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#range of anomalies maximum-minimum
+g1.1 &amp;lt;- ggplot(data_norm)+
+           geom_crossbar(aes(x = mo, y = 0, ymin = min, ymax = mx),
+                        fatten = 0, fill = &amp;quot;grey90&amp;quot;, colour = &amp;quot;NA&amp;quot;)
+
+g1.1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding the interquartile range
+g1.2 &amp;lt;- g1.1 + geom_crossbar(aes(x = mo, y = 0, ymin = q25, ymax = q75),
+                              fatten = 0, fill = &amp;quot;grey70&amp;quot;)
+
+g1.2&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-14-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#adding the anomalies of the year 2016-2018
+
+g1.3 &amp;lt;- g1.2 + geom_crossbar(data = filter(data, yr %in% 2016:2018),
+                aes(x = mo, y = 0, ymin = 0, ymax = anom, fill = sign),
+                fatten = 0, width = 0.7, alpha = .7, colour = &amp;quot;NA&amp;quot;,
+                show.legend = FALSE) +
+               facet_grid(yr ~ .)
+g1.3&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-14-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Finally we change some last style settings.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;g1 &amp;lt;- g1.3 + geom_hline(yintercept = 0)+
+               scale_fill_manual(values=c(&amp;quot;#99000d&amp;quot;,&amp;quot;#034e7b&amp;quot;))+
+               scale_y_continuous(&amp;quot;Anomalía de precipitación (%)&amp;quot;,
+                                   breaks = seq(-100, 500, 50),
+                                   expand = c(0, 5))+
+            labs(x = &amp;quot;&amp;quot;,
+                 title = &amp;quot;Anomalía de precipitación en Santiago de Compostela&amp;quot;,
+                 caption=&amp;quot;Dominic Royé (@dr_xeo) | Datos: eca.knmi.nl&amp;quot;)+
+            theme_hc()
+g1&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We use the same legend created for the previous graph.&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;part-2-1&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Part 2&lt;/h2&gt;
+&lt;p&gt;Finally, we join the graph and the legends with the help of the &lt;code&gt;cowplot&lt;/code&gt; package. The only thing we must adjust here are the arguments in the &lt;code&gt;draw_plot()&lt;/code&gt; function to correctly place the different parts.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p &amp;lt;- ggdraw() +
+       draw_plot(g1, x = 0, y = .18, width = 1, height = 0.8) +
+       draw_plot(g2, x = 0, y = .08, width = .2, height = .15) +
+       draw_plot(g3, x = 0.08, y = .08, width = .2, height = .15)
+
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-monthly-precipitation-anomalies/index.en_files/figure-html/unnamed-chunk-16-1.png&#34; width=&#34;3729&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;save_plot(&amp;quot;pr_anomaly20162018_scq.png&amp;quot;, p, dpi = 300, base_width = 12.43, base_height = 8.42)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>anomalies</category>
+      
+            <category>precipitation</category>
+      
+            <category>climate</category>
+      
+            <category>boxplot</category>
+      
+      
+            <category>visualization</category>
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+    </item>
+    
+    <item>
+      <title>Import Excel sheets with R</title>
+      <link>https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/</link>
+      <pubDate>Sun, 10 Mar 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2019/import-excel-sheets-with-r/</guid>
+      <description>
+
+
+&lt;p&gt;We usually work with different data sources, and sometimes we can find tables distributed over several Excel sheets. In this post we are going to import the average daily temperature of Madrid and Berlin which is found in two Excel files with sheets for each year between 2000 and 2005: &lt;a href=&#34;https://dominicroye.github.io/files/Data_Excel.zip&#34;&gt;download&lt;/a&gt;.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Packages&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Provides a cross-platform, uniform interface to file system operations&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;readxl&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import Excel files&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;readxl&amp;quot;)) install.packages(&amp;quot;readxl&amp;quot;)
+
+
+#load packages
+library(tidyverse)
+library(fs)
+library(readxl)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;By default, the &lt;code&gt;read_excel()&lt;/code&gt; function imports the first sheet. To import a different sheet it is necessary to indicate the number or name with the argument &lt;em&gt;sheet&lt;/em&gt; (second argument).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import first sheet
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import third sheet
+read_excel(&amp;quot;madrid_temp.xlsx&amp;quot;, 3)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 365 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2002-01-01 00:00:00   8.7  2002
+##  2 2002-01-02 00:00:00   7.4  2002
+##  3 2002-01-03 00:00:00   8.5  2002
+##  4 2002-01-04 00:00:00   9.2  2002
+##  5 2002-01-05 00:00:00   9.3  2002
+##  6 2002-01-06 00:00:00   7.3  2002
+##  7 2002-01-07 00:00:00   5.4  2002
+##  8 2002-01-08 00:00:00   5.6  2002
+##  9 2002-01-09 00:00:00   6.8  2002
+## 10 2002-01-10 00:00:00   6.1  2002
+## # ... with 355 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;excel_sheets()&lt;/code&gt; function can extract the names of the sheets.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+path %&amp;gt;%
+  excel_sheets()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2000&amp;quot; &amp;quot;2001&amp;quot; &amp;quot;2002&amp;quot; &amp;quot;2003&amp;quot; &amp;quot;2004&amp;quot; &amp;quot;2005&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The results are the sheet names and we find the years from 2000 to 2005. The most important function to read multiple sheets is &lt;code&gt;map()&lt;/code&gt; of the &lt;em&gt;{purrr}&lt;/em&gt; package, which is part of the &lt;em&gt;{tidyverse]&lt;/em&gt; collection. &lt;code&gt;map()&lt;/code&gt; allows you to apply a function to each element of a vector or list.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
+       map(read_excel,
+           path = path)
+        
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 6
+##  $ 2000:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:366] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ 2001:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2001-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.2 8.8 7.5 9.2 10 9 5.5 4.6 3 7.9 ...
+##   ..$ yr  : num [1:365] 2001 2001 2001 2001 2001 ...
+##  $ 2002:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2002-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 8.7 7.4 8.5 9.2 9.3 7.3 5.4 5.6 6.8 6.1 ...
+##   ..$ yr  : num [1:365] 2002 2002 2002 2002 2002 ...
+##  $ 2003:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2003-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 9.4 10.8 9.7 9.2 6.3 6.6 3.8 6.4 4.3 3.4 ...
+##   ..$ yr  : num [1:365] 2003 2003 2003 2003 2003 ...
+##  $ 2004:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    366 obs. of  3 variables:
+##   ..$ date: POSIXct[1:366], format: &amp;quot;2004-01-01&amp;quot; ...
+##   ..$ ta  : num [1:366] 6.6 5.9 7.8 8.1 6.4 5.7 5.2 6.9 11.8 12.2 ...
+##   ..$ yr  : num [1:366] 2004 2004 2004 2004 2004 ...
+##  $ 2005:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    365 obs. of  3 variables:
+##   ..$ date: POSIXct[1:365], format: &amp;quot;2005-01-01&amp;quot; ...
+##   ..$ ta  : num [1:365] 7.1 7.8 6.4 5.6 4.4 6.8 7.4 6 5.2 4.2 ...
+##   ..$ yr  : num [1:365] 2005 2005 2005 2005 2005 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The result is a named list with the name of each sheet that contains the data.frame. Since it is the same table in all sheets, we could use the function &lt;code&gt;bind_rows()&lt;/code&gt;, however, there is a variant of &lt;code&gt;map()&lt;/code&gt; that directly joins all the tables by row: &lt;code&gt;map_df()&lt;/code&gt;. If it were necessary to join by column, &lt;code&gt;map_dfc()&lt;/code&gt; could be used.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
+       map_df(read_excel,
+           path = path)
+
+mad&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 2,192 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 2,182 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In our case we have a column in each sheet (year, but also the date) that differentiates each table. If it were not the case, we should use the name of the sheets as a new column when joining all of them. In &lt;code&gt;bind_rows()&lt;/code&gt; it can be done with the &lt;em&gt;.id&lt;/em&gt; argument by assigning a name for the column. The same works for &lt;code&gt;map_df()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;path &amp;lt;- &amp;quot;madrid_temp.xlsx&amp;quot;
+
+mad &amp;lt;- path %&amp;gt;%
+        excel_sheets() %&amp;gt;%
+        set_names() %&amp;gt;%
+       map_df(read_excel,
+           path = path,
+           .id = &amp;quot;yr2&amp;quot;)
+
+str(mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  4 variables:
+##  $ yr2 : chr  &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; &amp;quot;2000&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;But how do we import multiple Excel files?&lt;/p&gt;
+&lt;p&gt;To do this, first we must know the &lt;code&gt;dir_ls()&lt;/code&gt; function from the &lt;a href=&#34;https://github.com/r-lib/fs&#34;&gt;&lt;em&gt;{fs}&lt;/em&gt;&lt;/a&gt; package. Indeed, there is the &lt;code&gt;dir()&lt;/code&gt; function of &lt;em&gt;R Base&lt;/em&gt;, but the advantages of the recent package are several, especially the compatibility with the &lt;em&gt;{tidyverse}&lt;/em&gt; collection.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dir_ls()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx featured.png     index.en.html    index.en.Rmd     
+## madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we can filter the files that we want
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## berlin_temp.xlsx madrid_temp.xlsx&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We import the two Excel files.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#without joining
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
+  map(read_excel)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $berlin_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   1.2  2000
+##  2 2000-01-02 00:00:00   3.6  2000
+##  3 2000-01-03 00:00:00   5.7  2000
+##  4 2000-01-04 00:00:00   5.1  2000
+##  5 2000-01-05 00:00:00   2.2  2000
+##  6 2000-01-06 00:00:00   1.8  2000
+##  7 2000-01-07 00:00:00   4.2  2000
+##  8 2000-01-08 00:00:00   4.2  2000
+##  9 2000-01-09 00:00:00   4.2  2000
+## 10 2000-01-10 00:00:00   1.7  2000
+## # ... with 356 more rows
+## 
+## $madrid_temp.xlsx
+## # A tibble: 366 x 3
+##    date                   ta    yr
+##    &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 2000-01-01 00:00:00   5.4  2000
+##  2 2000-01-02 00:00:00   5    2000
+##  3 2000-01-03 00:00:00   3.5  2000
+##  4 2000-01-04 00:00:00   4.3  2000
+##  5 2000-01-05 00:00:00   0.6  2000
+##  6 2000-01-06 00:00:00   3.8  2000
+##  7 2000-01-07 00:00:00   6.2  2000
+##  8 2000-01-08 00:00:00   5.4  2000
+##  9 2000-01-09 00:00:00   5.5  2000
+## 10 2000-01-10 00:00:00   4.8  2000
+## # ... with 356 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining with a new id column
+dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;%
+  map_df(read_excel, .id = &amp;quot;city&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 732 x 4
+##    city             date                   ta    yr
+##    &amp;lt;chr&amp;gt;            &amp;lt;dttm&amp;gt;              &amp;lt;dbl&amp;gt; &amp;lt;dbl&amp;gt;
+##  1 berlin_temp.xlsx 2000-01-01 00:00:00   1.2  2000
+##  2 berlin_temp.xlsx 2000-01-02 00:00:00   3.6  2000
+##  3 berlin_temp.xlsx 2000-01-03 00:00:00   5.7  2000
+##  4 berlin_temp.xlsx 2000-01-04 00:00:00   5.1  2000
+##  5 berlin_temp.xlsx 2000-01-05 00:00:00   2.2  2000
+##  6 berlin_temp.xlsx 2000-01-06 00:00:00   1.8  2000
+##  7 berlin_temp.xlsx 2000-01-07 00:00:00   4.2  2000
+##  8 berlin_temp.xlsx 2000-01-08 00:00:00   4.2  2000
+##  9 berlin_temp.xlsx 2000-01-09 00:00:00   4.2  2000
+## 10 berlin_temp.xlsx 2000-01-10 00:00:00   1.7  2000
+## # ... with 722 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;However, in this case we only import the first sheet of each Excel file. To solve this problem, we must create our own function. In this function we do what we previously did individually.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;read_multiple_excel &amp;lt;- function(path) {
+  path %&amp;gt;%
+    excel_sheets() %&amp;gt;% 
+    set_names() %&amp;gt;% 
+  map_df(read_excel, path = path)
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We apply our created function to import multiple sheets of several Excel files.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#separately
+data &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map(read_multiple_excel)
+
+str(data)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 2
+##  $ berlin_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...
+##  $ madrid_temp.xlsx:Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    2192 obs. of  3 variables:
+##   ..$ date: POSIXct[1:2192], format: &amp;quot;2000-01-01&amp;quot; ...
+##   ..$ ta  : num [1:2192] 5.4 5 3.5 4.3 0.6 3.8 6.2 5.4 5.5 4.8 ...
+##   ..$ yr  : num [1:2192] 2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#joining all data.frames
+data_df &amp;lt;- dir_ls(regexp = &amp;quot;xlsx&amp;quot;) %&amp;gt;% 
+           map_df(read_multiple_excel,
+                  .id = &amp;quot;city&amp;quot;)
+
+str(data_df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Classes &amp;#39;tbl_df&amp;#39;, &amp;#39;tbl&amp;#39; and &amp;#39;data.frame&amp;#39;:    4384 obs. of  4 variables:
+##  $ city: chr  &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; &amp;quot;berlin_temp.xlsx&amp;quot; ...
+##  $ date: POSIXct, format: &amp;quot;2000-01-01&amp;quot; &amp;quot;2000-01-02&amp;quot; ...
+##  $ ta  : num  1.2 3.6 5.7 5.1 2.2 1.8 4.2 4.2 4.2 1.7 ...
+##  $ yr  : num  2000 2000 2000 2000 2000 2000 2000 2000 2000 2000 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>excel</category>
+      
+            <category>sheets</category>
+      
+            <category>import</category>
+      
+      
+            <category>management</category>
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+    </item>
+    
+    <item>
+      <title>Access to climate reanalysis data from R</title>
+      <link>https://dominicroye.github.io/en/2018/access-to-climate-reanalysis-data-from-r/</link>
+      <pubDate>Sat, 15 Sep 2018 10:59:44 +0100</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2018/access-to-climate-reanalysis-data-from-r/</guid>
+      <description>
+
+&lt;div id=&#34;TOC&#34;&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#introduction&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#ncep&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#packages&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#data-download&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#monthly-average&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#visualization&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#era-interim&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/a&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;#installation&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#connection-and-download-with-the-ecmwf-api&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#processing-ncdf&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;#update-for-accessing-era-5&#34;&gt;&lt;span class=&#34;toc-section-number&#34;&gt;4&lt;/span&gt; Update for accessing ERA-5&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;p&gt;&lt;em&gt;A friend advised me to introduce R levels as categories. An idea that I now add to each blog post. There are three levels: elementary, intermediate, and advanced. I hope it will help the reader and the R user.&lt;/em&gt;&lt;/p&gt;
+&lt;hr /&gt;
+&lt;div id=&#34;introduction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;1&lt;/span&gt; Introduction&lt;/h1&gt;
+&lt;p&gt;In this post, I will show how we can download and work directly with data from climatic reanalysis in R. These kind of datasets are a combination of forcast models and data assimilation systems, which allows us to create corrected global grids of recent history of the atmosphere, land surface, and oceans. The two most used reanalyses are &lt;a href=&#34;https://climatedataguide.ucar.edu/climate-data/ncep-reanalysis-r2&#34;&gt;NCEP-DO&lt;/a&gt; (Reanalysis II) from the &lt;em&gt;NOAA/OAR/ESRL&lt;/em&gt;, an improved version of &lt;em&gt;NCEP-NCAR&lt;/em&gt; (Reanalysis I), and &lt;em&gt;ERA-Interim&lt;/em&gt; from the &lt;a href=&#34;https://www.ecmwf.int/en/research/climate-reanalysis&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;. Since &lt;em&gt;NCEP-DO&lt;/em&gt; is the first generation, it is recommended to use third-generation climate reanalysis, especially &lt;em&gt;ERA-Interim&lt;/em&gt;. An overview of the current atmospheric reanalysis can be found &lt;a href=&#34;https://reanalyses.org/index.php/atmosphere/overview-current-atmospheric-reanalyses&#34;&gt;here&lt;/a&gt;. First, let’s see how to access the &lt;em&gt;NCEP&lt;/em&gt; data through an R library on &lt;em&gt;CRAN&lt;/em&gt; that facilitates the download and handling of the data. Then we will do the same with the &lt;em&gt;ERA-Interim&lt;/em&gt;, however, to access this last reanalysis dataset it is necessary to use &lt;em&gt;python&lt;/em&gt; and the corresponding API of the &lt;em&gt;ECMWF&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;ncep&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;2&lt;/span&gt; NCEP&lt;/h1&gt;
+&lt;p&gt;To access the &lt;em&gt;NCEP&lt;/em&gt; reanalysis it is required to install the corresponding package &lt;em&gt;RNCEP&lt;/em&gt;. The main function is &lt;code&gt;NCEP.gather( )&lt;/code&gt;. The resolution of the &lt;em&gt;NCEP&lt;/em&gt; reanalysis is 2.5º X 2.5º.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.1&lt;/span&gt; Packages&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the RNCEP, lubridate and tidyverse packages
+if(!require(&amp;quot;RNCEP&amp;quot;)) install.packages(&amp;quot;RNCEP&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+
+#load the packages
+library(RNCEP)
+library(lubridate) #date and time manipulation
+library(tidyverse) #data manipulation and visualization
+library(RColorBrewer) #color schemes
+library(sf) #to import a spatial object and to work with geom_sf in ggplot2&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-download&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.2&lt;/span&gt; Data download&lt;/h2&gt;
+&lt;p&gt;We will download the air temperature of the 850haPa pressure level for the year 2016. The variables and pressure levels can be found in the details of the function &lt;code&gt;?NCEP.gather&lt;/code&gt;. The &lt;em&gt;reanalysis2&lt;/em&gt; argument allows us to download both version I and version II, being by default &lt;em&gt;FALSE&lt;/em&gt;, that is, we access reanalysis I. In all the requests we will obtain data of every 6 hours (00:00, 06:00, 12:00 and 18:00). This supposes a total of 1464 values for the year 2016.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#define the necessary arguments
+month_range &amp;lt;- c(1,12)     #period of months
+year_range &amp;lt;- c(2016,2016) #period of years
+
+lat_range &amp;lt;- c(30,60)      #latitude range
+lon_range &amp;lt;- c(-30,50)     #longitude range
+ 
+
+data &amp;lt;- NCEP.gather(&amp;quot;air&amp;quot;,    #name of the variable
+                    850, #pressure level 850hPa
+                    month_range,year_range,
+                    lat_range,lon_range,
+                    return.units = TRUE,
+                    reanalysis2=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] Units of variable &amp;#39;air&amp;#39; are degK
+## [1] Units of variable &amp;#39;air&amp;#39; are degK&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#dimensions                    
+dim(data) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1]   13   33 1464&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we find lon, lat and time with dimnames()
+#date and time
+date_time &amp;lt;- dimnames(data)[[3]]
+date_time &amp;lt;- ymd_h(date_time)
+head(date_time)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2016-01-01 00:00:00 UTC&amp;quot; &amp;quot;2016-01-01 06:00:00 UTC&amp;quot;
+## [3] &amp;quot;2016-01-01 12:00:00 UTC&amp;quot; &amp;quot;2016-01-01 18:00:00 UTC&amp;quot;
+## [5] &amp;quot;2016-01-02 00:00:00 UTC&amp;quot; &amp;quot;2016-01-02 06:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#longitude and latitude
+lat &amp;lt;- dimnames(data)[[1]]
+lon &amp;lt;- dimnames(data)[[2]]
+head(lon);head(lat)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;-30&amp;quot;   &amp;quot;-27.5&amp;quot; &amp;quot;-25&amp;quot;   &amp;quot;-22.5&amp;quot; &amp;quot;-20&amp;quot;   &amp;quot;-17.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;60&amp;quot;   &amp;quot;57.5&amp;quot; &amp;quot;55&amp;quot;   &amp;quot;52.5&amp;quot; &amp;quot;50&amp;quot;   &amp;quot;47.5&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;monthly-average&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.3&lt;/span&gt; Monthly average&lt;/h2&gt;
+&lt;p&gt;We see that the downloaded data is an &lt;em&gt;array&lt;/em&gt; of three dimensions with [lat, lon, time]. As above mentioned, we extracted latitude, longitude and time. The temperature is given in Kelvin. The objective in the next section will be to show two maps comparing January and July.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create our grouping variable
+group &amp;lt;- month(date_time) 
+
+#estimate the average temperature by month 
+data_month &amp;lt;- aperm(
+  apply(
+    data, #our data
+    c(1,2), #apply to each time series 1:row, 2:column a the mean( ) function
+    by, #group by
+    group, #months
+    function(x)ifelse(all(is.na(x)),NA,mean(x))),
+  c(2,3,1)) #reorder to get an array like the original
+
+dim(data_month) #850haPa temperature per month January to December&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 13 33 12&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;2.4&lt;/span&gt; Visualization&lt;/h2&gt;
+&lt;p&gt;Once we got here, we can visualize the 850hPa temperature of January and July with &lt;em&gt;ggplot2&lt;/em&gt;. In this example, I use &lt;code&gt;geom_sf( )&lt;/code&gt; from the library &lt;a href=&#34;https://github.com/r-spatial/sf&#34;&gt;&lt;em&gt;sf&lt;/em&gt;&lt;/a&gt;, which makes the work easier to visualize spatial objects in &lt;em&gt;ggplot&lt;/em&gt; (in the near future I will make a post about &lt;em&gt;sf&lt;/em&gt; and &lt;em&gt;ggplot&lt;/em&gt;). In the dimension of latitude and longitude we saw that it only indicates a value for each row and column. But we need the coordinates of all the cells in the matrix. To create all combinations between two variables we can use the &lt;code&gt;expand.grid( )&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#first we create all the combinations of lon-lat
+lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
+
+#as lonlat was a row/column name, it is character, that&amp;#39;s why we convert it into numeric
+lonlat &amp;lt;- apply(lonlat,2,as.numeric)
+
+#lon and lat are not in the order as we expect
+#row=lon; column=lat
+data_month &amp;lt;- aperm(data_month,c(2,1,3))
+
+#subtract 273.15K to convert K to ºC.
+df &amp;lt;- data.frame(lonlat,
+                 Ta01=as.vector(data_month[,,1])-273.15,
+                 Ta07=as.vector(data_month[,,7])-273.15)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Before we can make the map with &lt;em&gt;ggplot2&lt;/em&gt;, we have to adapt the table. The shapefile with the countries limits can be downloaded &lt;a href=&#34;https://dominicroye.github.io/files/CNTR_RG_03M_2014.zip&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the wide table into a long one
+df &amp;lt;- gather(df,month,Ta,Ta01:Ta07)%&amp;gt;%
+             mutate(month=factor(month,unique(month),c(&amp;quot;Jan&amp;quot;,&amp;quot;Jul&amp;quot;)))
+
+#import the countries limits
+limit &amp;lt;- st_read(&amp;quot;CNTR_RG_03M_2014.shp&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `CNTR_RG_03M_2014&amp;#39; from data source `C:\Users\xeo19\Documents\GitHub\blogR_update\content\post\en\2018-09-15-access-to-climate-reanalysis-data-from-r\CNTR_RG_03M_2014.shp&amp;#39; using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 256 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: -180 ymin: -90 xmax: 180 ymax: 83.66068
+## epsg (SRID):    NA
+## proj4string:    +proj=longlat +ellps=GRS80 +no_defs&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#color scheme
+colbr &amp;lt;- brewer.pal(11,&amp;quot;RdBu&amp;quot;)
+
+ggplot(df)+
+      geom_tile(aes(lon,lat,fill=Ta))+ #temperature data
+      geom_sf(data=limit,fill=NA,size=.5)+ #limits 
+        scale_fill_gradientn(colours=rev(colbr))+
+          coord_sf(ylim=c(30,60),xlim=c(-30,50))+
+          scale_x_continuous(breaks=seq(-30,50,10),expand=c(0,0))+
+          scale_y_continuous(breaks=seq(30,60,5),expand=c(0,0))+
+          labs(x=&amp;quot;&amp;quot;,y=&amp;quot;&amp;quot;,fill=&amp;quot;Ta 850hPa (ºC)&amp;quot;)+
+           facet_grid(month~.)+ #plot panels by month
+             theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;era-interim&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;3&lt;/span&gt; ERA-Interim&lt;/h1&gt;
+&lt;p&gt;The &lt;em&gt;ECMWF&lt;/em&gt; offers access to its public databases from a &lt;a href=&#34;https://confluence.ecmwf.int//display/WEBAPI/Access+ECMWF+Public+Datasets&#34;&gt;&lt;em&gt;pyhton-API&lt;/em&gt;&lt;/a&gt;. It is required to be registered on the &lt;em&gt;ECMWF&lt;/em&gt; website. You can register &lt;a href=&#34;https://apps.ecmwf.int/registration/&#34;&gt;here&lt;/a&gt;. When dealing with another programming language, in R we have to use an interface between both which allows the library &lt;a href=&#34;https://github.com/rstudio/reticulate&#34;&gt;&lt;em&gt;reticulate&lt;/em&gt;&lt;/a&gt;. We must also have installed a pyhton distribution (version 2.x or 3.x). In the case of Windows we can use &lt;a href=&#34;https://www.anaconda.com/download/&#34;&gt;anaconda&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Recently a new package called &lt;code&gt;ecmwfr&lt;/code&gt; has been published that facilitates accessing the Copernicus and ECMWF APIs. The major advantage is that it is not necessary to install &lt;code&gt;python&lt;/code&gt;. More details &lt;a href=&#34;https://github.com/khufkens/ecmwfr&#34;&gt;here&lt;/a&gt;.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;div id=&#34;installation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.1&lt;/span&gt; Installation&lt;/h2&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;if(!require(&amp;quot;reticulate&amp;quot;)) install.packages(&amp;quot;reticulate&amp;quot;)
+if(!require(&amp;quot;ncdf4&amp;quot;)) install.packages(&amp;quot;ncdf4&amp;quot;) #to manage netCDF format
+
+#load packages
+library(reticulate)
+library(ncdf4)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Once we have installed &lt;em&gt;anaconda&lt;/em&gt; and the package &lt;em&gt;reticulate&lt;/em&gt;, we can install the library &lt;em&gt;python ecmwfapi&lt;/em&gt;. We can carry out the installation, or through the Windows CMD using the command &lt;em&gt;conda install -c conda-forge ecmwf-api-client&lt;/em&gt;, or with the R function &lt;code&gt;py_install( )&lt;/code&gt; from the &lt;em&gt;reticulate&lt;/em&gt; package. The same function allows us to install any &lt;em&gt;python&lt;/em&gt; library from R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the python ECMWF API
+py_install(&amp;quot;ecmwf-api-client&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;connection-and-download-with-the-ecmwf-api&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.2&lt;/span&gt; Connection and download with the ECMWF API&lt;/h2&gt;
+&lt;p&gt;In order to access the API, it is required to create a file with the user’s information.&lt;/p&gt;
+&lt;p&gt;The “.ecmwfapirc” file must contain the following information:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;{
+    &amp;quot;url&amp;quot;   : &amp;quot;https://api.ecmwf.int/v1&amp;quot;,
+    &amp;quot;key&amp;quot;   : &amp;quot;XXXXXXXXXXXXXXXXXXXXXX&amp;quot;,
+    &amp;quot;email&amp;quot; : &amp;quot;john.smith@example.com&amp;quot;
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The key can be obtained with the user account &lt;a href=&#34;https://api.ecmwf.int/v1/key/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;The file can be created with the Windows notebook.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;We create a document “ecmwfapirc.txt”.&lt;/li&gt;
+&lt;li&gt;Rename this file to “.ecmwfapirc.”&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;The last point disappears automatically. Then we save this file in “C:/USERNAME/.ecmwfapirc” or “C:/USERNAME/Documents/.ecmwfapirc”.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the python library ecmwfapi
+ecmwf &amp;lt;- import(&amp;#39;ecmwfapi&amp;#39;)
+
+#for this step there must exist the file .ecmwfapirc
+server = ecmwf$ECMWFDataServer() #start the connection&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;One we get here, how do we create a query? The easiest thing is to go to the website of &lt;a href=&#34;http://apps.ecmwf.int/datasets/data/interim-full-daily/levtype=sfc/&#34;&gt;&lt;em&gt;ECMWF&lt;/em&gt;&lt;/a&gt;, where we choose the database, in this case &lt;em&gt;ERA-Interim&lt;/em&gt; surface, to create a script with all the necessary data. More details about the syntax can be found &lt;a href=&#34;https://confluence.ecmwf.int/display/WEBAPI/Brief+request+syntax&#34;&gt;here&lt;/a&gt;. When we proceed on the website, we only have to click on “View MARS Request”. This step takes us to the script in &lt;em&gt;python&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/erainterim1.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/img/erainterim2.png&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With the syntax of the script from the &lt;em&gt;MARS Request&lt;/em&gt;, we can create the query in R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create the query
+query &amp;lt;-r_to_py(list(
+  class=&amp;#39;ei&amp;#39;,
+  dataset= &amp;quot;interim&amp;quot;, #dataset
+  date= &amp;quot;2017-01-01/to/2017-12-31&amp;quot;, #time period
+  expver= &amp;quot;1&amp;quot;,
+  grid= &amp;quot;0.125/0.125&amp;quot;, #resolution
+  levtype=&amp;quot;sfc&amp;quot;,
+  param= &amp;quot;167.128&amp;quot;, # air temperature (2m)
+  area=&amp;quot;45/-10/30/5&amp;quot;, #N/W/S/E
+  step= &amp;quot;0&amp;quot;,
+  stream=&amp;quot;oper&amp;quot;,
+  time=&amp;quot;00:00:00/06:00:00/12:00:00/18:00:00&amp;quot;, #hours
+  type=&amp;quot;an&amp;quot;,
+  format= &amp;quot;netcdf&amp;quot;, #format
+  target=&amp;#39;ta2017.nc&amp;#39; #file name
+))
+
+#query to get the ncdf
+server$retrieve(query)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The result is a netCDF file that we can process with the library &lt;em&gt;ncdf4&lt;/em&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;processing-ncdf&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;&lt;span class=&#34;header-section-number&#34;&gt;3.3&lt;/span&gt; Processing ncdf&lt;/h2&gt;
+&lt;p&gt;In the next section, the objective will be the extraction of a time serie from the closest coordinate to a given one. We will use the coordinates of Madrid (40.418889, -3.691944).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load packages
+library(sf)
+library(ncdf4)
+library(tidyverse)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#open the connection with the ncdf file
+nc &amp;lt;- nc_open(&amp;quot;ta2017.nc&amp;quot;)
+
+#extract lon and lat
+lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
+lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
+dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 121&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extract the time
+t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
+
+#time unit: hours since 1900-01-01
+ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $units
+## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
+## 
+## $long_name
+## [1] &amp;quot;time&amp;quot;
+## 
+## $calendar
+## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#convert the hours into date + hour
+#as_datetime() function of the lubridate package needs seconds
+timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
+
+#import the data
+data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
+
+#close the conection with the ncdf file
+nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this next section we use the &lt;em&gt;sf&lt;/em&gt; package, which is replacing the well known &lt;em&gt;sp&lt;/em&gt; and &lt;em&gt;rgdal&lt;/em&gt; packages.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create all the combinations of lon-lat
+lonlat &amp;lt;- expand.grid(lon=lon,lat=lat)
+
+#we must convert the coordinates in a spatial object sf
+#we also indicate the coordinate system in EPSG code
+coord &amp;lt;- st_as_sf(lonlat,coords=c(&amp;quot;lon&amp;quot;,&amp;quot;lat&amp;quot;))%&amp;gt;%
+                    st_set_crs(4326)
+
+#we do the same with our coordinate of Madrid
+psj &amp;lt;- st_point(c(-3.691944,40.418889))%&amp;gt;%
+                   st_sfc()%&amp;gt;%
+                     st_set_crs(4326)
+
+#plot all points
+plot(st_geometry(coord))
+plot(psj,add=TRUE,pch = 3, col = &amp;#39;red&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;In the next steps we calculate the distance of our reference point to all the grid points. Then we look for the one with less distance.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#add the distance to the points
+coord &amp;lt;- mutate(coord,dist=st_distance(coord,psj))
+
+#create a distance matrix with the same dimensions as our data
+dist_mat &amp;lt;- matrix(coord$dist,dim(data)[-3])
+
+#the arrayInd function is useful to obtain the row and column indexes
+mat_index &amp;lt;- as.vector(arrayInd(which.min(dist_mat), dim(dist_mat)))
+
+#we extract the time serie and change the unit from K to ºC
+#we convert the time in date + hour
+df &amp;lt;- data.frame(ta=data[mat_index[1],mat_index[2],],time=timestamp)%&amp;gt;%
+        mutate(ta=ta-273.15,time=ymd_hms(time))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we visualize our time series.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot(df,
+       aes(time,ta))+
+    geom_line()+
+    labs(y=&amp;quot;Temperature (ºC)&amp;quot;,
+             x=&amp;quot;&amp;quot;)+
+    theme_bw()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;update-for-accessing-era-5&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;span class=&#34;header-section-number&#34;&gt;4&lt;/span&gt; Update for accessing ERA-5&lt;/h1&gt;
+&lt;p&gt;Recently the new reanalysis ERA-5 with &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;single level&lt;/a&gt; or &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-pressure-levels?tab=overview&#34;&gt;pressure level&lt;/a&gt; was made available to users. It is the fifth generation of the European Center for Medium-Range Weather Forecasts (ECMWF) and accessible through a new Copernicus API. The ERA-5 reanalysis has a temporary coverage from 1950 to the present at a horizontal resolution of 30km worldwide, with 137 levels from the surface to a height of 80km. An important difference with respect to the previous ERA-Interim is the temporal resolution with hourly data.&lt;/p&gt;
+&lt;p&gt;The access changes to the Climate Data Store (CDS) infrastructure with its own API. It is possible to download directly from the web or using the Python API in a similar way to the one already presented in this post. However, there are slight differences which I will explain below.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;It is necessary to have a Copernicus CDS account &lt;a href=&#34;https://cds.climate.copernicus.eu/user/register&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Again, you need a account key &lt;a href=&#34;https://cds.climate.copernicus.eu/api-how-to&#34;&gt;link&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;There are changes in the Python library and in some arguments of the query.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#load libraries 
+library(sf)
+library(ncdf4)
+library(tidyverse)
+library(reticulate)
+
+#install the CDS API
+conda_install(&amp;quot;r-reticulate&amp;quot;,&amp;quot;cdsapi&amp;quot;, pip=TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To be able to access the API, a requirement is to create a file with the user’s information.&lt;/p&gt;
+&lt;p&gt;The “.cdsapirc” file must contain the following information:&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;
+url: https://cds.climate.copernicus.eu/api/v2
+key: {uid}:{api-key}
+&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The key can be obtained with the user account in the &lt;em&gt;User profile&lt;/em&gt;.&lt;/p&gt;
+&lt;p&gt;The file can be created in the same way as it has been explained for ERA-Interim.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import python CDS-API
+cdsapi &amp;lt;- import(&amp;#39;cdsapi&amp;#39;)
+
+#for this step there must exist the file .cdsapirc
+server = cdsapi$Client() #start the connection&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;With the syntax of the script from the &lt;em&gt;Show API request&lt;/em&gt; &lt;a href=&#34;https://cds.climate.copernicus.eu/cdsapp#!/dataset/reanalysis-era5-single-levels?tab=overview&#34;&gt;single level&lt;/a&gt;, we can create the query in R.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we create the query
+query &amp;lt;- r_to_py(list(
+    variable= &amp;quot;2m_temperature&amp;quot;,
+    product_type= &amp;quot;reanalysis&amp;quot;,
+    year= &amp;quot;2018&amp;quot;,
+    month= &amp;quot;07&amp;quot;, #formato: &amp;quot;01&amp;quot;,&amp;quot;01&amp;quot;, etc.
+    day= str_pad(1:31,2,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),   
+    time= str_c(0:23,&amp;quot;00&amp;quot;,sep=&amp;quot;:&amp;quot;)%&amp;gt;%str_pad(5,&amp;quot;left&amp;quot;,&amp;quot;0&amp;quot;),
+    format= &amp;quot;netcdf&amp;quot;,
+    area = &amp;quot;45/-20/35/5&amp;quot; # North, West, South, East
+  ))
+
+#query to get the ncdf
+server$retrieve(&amp;quot;reanalysis-era5-single-levels&amp;quot;,
+                  query,
+                 &amp;quot;era5_ta_2018.nc&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;It is possible that the first time an error message is received, given that the required terms and conditions have not yet been accepted. Simply, the indicated link should be followed.&lt;/p&gt;
+&lt;pre&gt;&lt;code&gt;Error in py_call_impl(callable, dots$args, dots$keywords) : 
+  Exception: Client has not agreed to the required terms and conditions.. To access this resource, you first need to accept the termsof &amp;#39;Licence to Use Copernicus Products&amp;#39; at https://cds.climate.copernicus.eu/cdsapp/#!/terms/licence-to-use-copernicus-products&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;From here we can follow the same steps as with ERA-Interim.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#open the connection with the file
+nc &amp;lt;- nc_open(&amp;quot;era5_ta_2018.nc&amp;quot;)
+
+#extract lon, lat
+lat &amp;lt;- ncvar_get(nc,&amp;#39;latitude&amp;#39;)
+lon &amp;lt;- ncvar_get(nc,&amp;#39;longitude&amp;#39;)
+dim(lat);dim(lon)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 41&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 101&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#extract time
+t &amp;lt;- ncvar_get(nc, &amp;quot;time&amp;quot;)
+
+#time unit: hours from 1900-01-01
+ncatt_get(nc,&amp;#39;time&amp;#39;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $units
+## [1] &amp;quot;hours since 1900-01-01 00:00:00.0&amp;quot;
+## 
+## $long_name
+## [1] &amp;quot;time&amp;quot;
+## 
+## $calendar
+## [1] &amp;quot;gregorian&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#we convert the hours into date+time 
+#as_datetime from lubridate needs seconds
+timestamp &amp;lt;- as_datetime(c(t*60*60),origin=&amp;quot;1900-01-01&amp;quot;)
+
+#temperatures in K from july 2018
+head(timestamp)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;2018-07-01 00:00:00 UTC&amp;quot; &amp;quot;2018-07-01 01:00:00 UTC&amp;quot;
+## [3] &amp;quot;2018-07-01 02:00:00 UTC&amp;quot; &amp;quot;2018-07-01 03:00:00 UTC&amp;quot;
+## [5] &amp;quot;2018-07-01 04:00:00 UTC&amp;quot; &amp;quot;2018-07-01 05:00:00 UTC&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import temperature data
+data &amp;lt;- ncvar_get(nc,&amp;quot;t2m&amp;quot;)
+
+#plot 2018-07-01
+filled.contour(data[,,1])&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-18-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#time serie plot for a pixel
+plot(data.frame(date=timestamp,
+                ta=data[1,5,]),
+     type=&amp;quot;l&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/post/en/2018-09-15-access-to-climate-reanalysis-data-from-r/index.en_files/figure-html/unnamed-chunk-18-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#close the conection with the ncdf file
+nc_close(nc)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>reanalisis</category>
+      
+            <category>interim</category>
+      
+            <category>NCEP/NCAR</category>
+      
+            <category>era</category>
+      
+            <category>download</category>
+      
+            <category>ncdf</category>
+      
+            <category>access</category>
+      
+            <category>api</category>
+      
+            <category>python</category>
+      
+            <category>ECMWF</category>
+      
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+    </item>
+    
+  </channel>
+</rss>

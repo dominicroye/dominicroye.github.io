@@ -1,0 +1,1829 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gis on Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/en/categories/gis/</link>
+    <description>Recent content in gis on Dr. Dominic Royé</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Tue, 01 Jun 2021 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://dominicroye.github.io/en/categories/gis/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Firefly cartography</title>
+      <link>https://dominicroye.github.io/en/2021/firefly-cartography/</link>
+      <pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2021/firefly-cartography/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;cartography-firefly&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Cartography &lt;em&gt;firefly&lt;/em&gt;&lt;/h1&gt;
+&lt;p&gt;&lt;em&gt;Firefly&lt;/em&gt; maps are promoted and described by
+&lt;a href=&#34;https://twitter.com/John_M_Nelson&#34;&gt;John Nelson&lt;/a&gt; who published a &lt;a href=&#34;https://adventuresinmapping.com/2016/10/17/firefly-cartography/&#34;&gt;post&lt;/a&gt; in 2016 about its characteristics. However, these types of maps are linked to ArcGIS, which has led me to try to recreate them in R. The recent &lt;code&gt;ggplot2&lt;/code&gt; extension &lt;a href=&#34;https://github.com/marcmenem/ggshadow&#34;&gt;&lt;code&gt;ggshadow&lt;/code&gt;&lt;/a&gt; facilitates the creation of this cartographic style. It is characterized by three elements 1) a dark and unsaturated basemap (eg satellite imagery) 2) a masked vignette and highlighted area and 3) a single bright thematic layer. The essential are the colors and the brightness that is achieved with cold colors, usually neon colors. John Nelson explains more details in this &lt;a href=&#34;https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/&#34;&gt;post&lt;/a&gt;.&lt;/p&gt;
+&lt;p&gt;What is the &lt;em&gt;firefly&lt;/em&gt; style for? In the words of &lt;a href=&#34;https://www.esri.com/arcgis-blog/products/mapping/mapping/steal-this-firefly-style-please/&#34;&gt;John Nelson&lt;/a&gt;: “the map style that captures our attention and dutifully honors the First Law of Geography”. John refers to what was said by Waldo Tobler
+“everything is related to everything else, but near things are more related than distant things” (Tobler 1970).&lt;/p&gt;
+&lt;p&gt;In this post we will visualize all earthquakes recorded in southwestern Europe with a magnitude greater than 3.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;We will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;14%&#34; /&gt;
+&lt;col width=&#34;85%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;plotwidgets&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Contains functions for color conversion (RGB, HSL)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster (raster successor package)&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggshadow&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2 extension for shaded and glow geometries&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggspatial&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2 extension for spatial objects&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;ggplot2 extension to create multiple scales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple functions to examine and clean data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Vector maps of the world ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;plotwidgets&amp;quot;)) install.packages(&amp;quot;plotwidgets&amp;quot;)
+if(!require(&amp;quot;ggshadow&amp;quot;)) install.packages(&amp;quot;ggshadow&amp;quot;)
+if(!require(&amp;quot;ggspatial&amp;quot;)) install.packages(&amp;quot;ggspatial&amp;quot;)
+if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
+if(!require(&amp;quot;janitor&amp;quot;)) install.packages(&amp;quot;janitor&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# load packages
+
+library(raster)
+library(terra)
+library(sf)
+library(tidyverse)
+library(plotwidgets)
+library(ggshadow)
+library(ggspatial)
+library(ggnewscale)
+library(janitor)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;First we download all the necessary data. For the base map we will use the Blue Marble imagery via the access to worldview.earthdata.nasa.gov where I have downloaded a selection of the area of interest in geoTiff format with a resolution of 1 km. It is important to adjust the resolution to the necessary detail of the map.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Blue Marble selection via &lt;a href=&#34;https://worldview.earthdata.nasa.gov&#34;&gt;worldview.earthdata.nasa.gov&lt;/a&gt; ( ~ 66 MB) &lt;a href=&#34;https://www.dropbox.com/s/bt8qfkzw339q13l/snapshot-2017-11-30T00_00_00Z.tiff?dl=0&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Records of historical earthquakes in southwestern Europe from &lt;a href=&#34;https://www.ign.es/web/ign/portal/sis-catalogo-earthquakes&#34;&gt;IGN&lt;/a&gt; &lt;a href=&#34;https://dominicroye.github.io/files/catalogoComunSV_1621713848556.csv&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import&lt;/h2&gt;
+&lt;p&gt;The first thing we do is to import the RGB &lt;em&gt;Blue Marble&lt;/em&gt; raster and the earthquake data. To import the raster I use the new package &lt;a href=&#34;https://rspatial.org/terra/pkg/index.html&#34;&gt;&lt;code&gt;terra&lt;/code&gt;&lt;/a&gt; which is the successor of the &lt;code&gt;raster&lt;/code&gt; package. You can find a recent comparison &lt;a href=&#34;https://www.r-bloggers.com/2021/05/a-comparison-of-terra-and-raster-packages/&#34;&gt;here&lt;/a&gt;. Not all packages are yet compatible with the new &lt;code&gt;SpatRaster&lt;/code&gt; class, so we also need the &lt;code&gt;raster&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# earthquakes
+
+earthquakes &amp;lt;- read.csv2(&amp;quot;catalogoComunSV_1621713848556.csv&amp;quot;)
+str(earthquakes)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    149724 obs. of  10 variables:
+##  $ Evento       : chr  &amp;quot;          33&amp;quot; &amp;quot;          34&amp;quot; &amp;quot;          35&amp;quot; &amp;quot;          36&amp;quot; ...
+##  $ Fecha        : chr  &amp;quot;  02/03/1373&amp;quot; &amp;quot;  03/03/1373&amp;quot; &amp;quot;  08/03/1373&amp;quot; &amp;quot;  19/03/1373&amp;quot; ...
+##  $ Hora         : chr  &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; ...
+##  $ Latitud      : chr  &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; ...
+##  $ Longitud     : chr  &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; ...
+##  $ Prof...Km.   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Inten.       : chr  &amp;quot;     VIII-IX&amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Mag.         : chr  &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Tipo.Mag.    : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ LocalizaciÃ³n: chr  &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Blue Marble RGB raster
+
+bm &amp;lt;- rast(&amp;quot;snapshot-2017-11-30T00_00_00Z.tiff&amp;quot;)
+bm # contains three layers (red, green, blue)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class       : SpatRaster 
+## dimensions  : 7156, 7156, 3  (nrow, ncol, nlyr)
+## resolution  : 0.008789272, 0.008789272  (x, y)
+## extent      : -33.49823, 29.39781, 15.77547, 78.67151  (xmin, xmax, ymin, ymax)
+## coord. ref. : +proj=longlat +datum=WGS84 +no_defs 
+## source      : snapshot-2017-11-30T00_00_00Z.tiff 
+## red-grn-blue: 1, 2, 3 
+## names       : sna_1, sna_2, sna_3&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# plot
+
+plotRGB(bm)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# country boundaries
+
+limits &amp;lt;- ne_countries(scale = 50, returnclass = &amp;quot;sf&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;earthquakes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Earthquakes&lt;/h2&gt;
+&lt;p&gt;In this step we clean the imported earthquakes data. 1) We convert longitude, latitude and magnitude into numeric using the &lt;code&gt;parse_number()&lt;/code&gt; function and clean the column names with the &lt;code&gt;clean_names()&lt;/code&gt; function, 2) We create a spatial object &lt;code&gt;sf&lt;/code&gt; and project it using the EPSG:3035 corresponding to ETRS89-extended/LAEA Europe.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# we clean the data and create an sf object
+
+earthquakes &amp;lt;-  earthquakes %&amp;gt;% clean_names() %&amp;gt;%
+                  mutate(across(c(mag, latitud, longitud),                                                                                                 parse_number)) %&amp;gt;%
+                 st_as_sf(coords = c(&amp;quot;longitud&amp;quot;, &amp;quot;latitud&amp;quot;), 
+                       crs = 4326) %&amp;gt;% 
+                 st_transform(3035) # project to Laea&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;blue-marble-background-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Blue Marble background Map&lt;/h2&gt;
+&lt;p&gt;We cropped the background map to a smaller extent, but we still haven’t limited to the final area yet.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# clip to the desired area
+
+bm &amp;lt;- crop(bm, extent(-20, 10, 30, 50)) # W, E, S, N&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To obtain an unsaturated version of the Blue Marble RGB raster, we must apply a function created for this purpose. In this, we use the &lt;code&gt;rgb2hsl()&lt;/code&gt; function from the &lt;code&gt;plotwidgets&lt;/code&gt; package, which helps us converting RGB to HSL and vice versa. The HSL model is defined by Hue, Saturation, Lightness. The last two parameters are expressed in ratio or percentage. The hue is defined on a color wheel from 0 to 360º. 0 is red, 120 is green, 240 is blue. To change the saturation we only have to reduce the value of S.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# function to change saturation from RGB
+
+saturation &amp;lt;- function(rgb, s = .5){
+  
+  hsl &amp;lt;- rgb2hsl(as.matrix(rgb))
+  hsl[2, ] &amp;lt;- s
+  
+  rgb_new &amp;lt;- as.vector(t(hsl2rgb(hsl)))
+  
+  return(rgb_new)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We employ our &lt;code&gt;saturation()&lt;/code&gt; function using the &lt;code&gt;app()&lt;/code&gt; function that applies it to each pixel with the three RGB layers. We add the argument &lt;code&gt;s&lt;/code&gt;, which defines the desired saturation level. This step may take several minutes. Then we project our RGB image.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# apply the function to unsaturate with 5%
+
+bm_desat &amp;lt;- app(bm, saturation, s = .05)
+
+# plot new RGB image
+
+plotRGB(bm_desat)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project 
+
+bm_desat &amp;lt;- terra::project(bm_desat, &amp;quot;epsg:3035&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;firefly-map-construction&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;&lt;em&gt;Firefly&lt;/em&gt; map construction&lt;/h1&gt;
+&lt;div id=&#34;boundaries-and-graticules&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Boundaries and graticules&lt;/h2&gt;
+&lt;p&gt;Before starting to build the map, we create graticules and set the final map limits.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# define the final map extent
+
+bx &amp;lt;- tibble(x = c(-13, 6.7), y = c(31, 47)) %&amp;gt;% 
+       st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326) %&amp;gt;%
+        st_transform(3035) %&amp;gt;% 
+         st_bbox()
+
+# create map graticules
+
+grid &amp;lt;- st_graticule(earthquakes) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-with-image-background&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map with image background&lt;/h2&gt;
+&lt;p&gt;The &lt;code&gt;layer_spatial()&lt;/code&gt; function of &lt;code&gt;ggspatial&lt;/code&gt; allows us to add an RGB raster without major problems, however, it still does not support the new&lt;code&gt;SpatRaster&lt;/code&gt; class. Therefore, we must convert it to the &lt;code&gt;stack&lt;/code&gt; class with the &lt;code&gt;stack()&lt;/code&gt; function. It is also possible to use instead of &lt;code&gt;geom_sf()&lt;/code&gt;, the &lt;code&gt;layer_spatial()&lt;/code&gt; function for vector objects of class &lt;code&gt;sf&lt;/code&gt; or&lt;code&gt;sp&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) + # blue marble background map
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) + # country boundaries
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-with-background-and-earthquakes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map with background and earthquakes&lt;/h2&gt;
+&lt;p&gt;To create the glow effect on &lt;em&gt;firefly&lt;/em&gt; maps, we use the &lt;code&gt;geom_glowpoint()&lt;/code&gt; function from the &lt;code&gt;ggshadow&lt;/code&gt; package. There is also the same function for lines. Since our data is of spatial class &lt;code&gt;sf&lt;/code&gt; and the geometry &lt;code&gt;sf&lt;/code&gt; is not directly supported, we must indicate as an argument &lt;code&gt;stats = &#34;sf_coordinates&#34;&lt;/code&gt; and inside &lt;code&gt;aes()&lt;/code&gt; indicate &lt;code&gt;geometry = geometry&lt;/code&gt;. We will map the size of the points as a function of magnitude. In addition, we filter those earthquakes with a magnitude greater than 3.&lt;/p&gt;
+&lt;p&gt;Inside the &lt;code&gt;geom_glowpoint()&lt;/code&gt; function, 1) we define the desired color for the point and the glow effect, 2) the degree of transparency with &lt;code&gt;alpha&lt;/code&gt; either for the point or for the glow. Finally, in the &lt;code&gt;scale_size()&lt;/code&gt; function we set the range (minimum, maximum) of the size that the points will have.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) +
+  geom_sf(data = grid, colour = &amp;quot;white&amp;quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(earthquakes, mag &amp;gt; 3),
+                 aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &amp;quot;#6bb857&amp;quot;,
+                   shadowcolour = &amp;quot;#6bb857&amp;quot;,
+                   shadowalpha = .1,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  coord_sf(xlim = bx[c(1, 3)], 
+           ylim = bx[c(2, 4)], 
+           crs = 3035,
+           expand = FALSE) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;final-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Final map&lt;/h2&gt;
+&lt;p&gt;The glow effect of &lt;em&gt;firefly&lt;/em&gt; maps is characterized by having a white tone or a lighter tone in the center of the points. To achieve this, we must duplicate the previous created layer, changing only the color and make the glow points smaller.&lt;/p&gt;
+&lt;p&gt;By default, &lt;code&gt;ggplot2&lt;/code&gt; does not allow to use multiple scales for the same characteristic (size, color, etc) of different layers. But the &lt;code&gt;ggnewscale&lt;/code&gt; package gives us the ability to incorporate multiple scales of a feature from different layers. The only important thing to achieve this is the order in which each layer (geom) and scale is added. First we must add the geometry and then its corresponding scale. We indicate with &lt;code&gt;new_scale(&#39;size&#39;)&lt;/code&gt; that the next layer and scale is a new one independent of the previous one. If we used &lt;code&gt;color&lt;/code&gt; or &lt;code&gt;fill&lt;/code&gt; it would be done with &lt;code&gt;new_scale_*()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  layer_spatial(data = stack(bm_desat)) +
+  geom_sf(data = limits, fill = NA, size = .3, colour = &amp;quot;white&amp;quot;) +
+  geom_sf(data = grid, colour = &amp;quot;white&amp;quot;, size = .1, alpha = .5) +
+  geom_glowpoint(data = filter(earthquakes, mag &amp;gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .8,
+                   color = &amp;quot;#6bb857&amp;quot;,
+                   shadowcolour = &amp;quot;#6bb857&amp;quot;,
+                   shadowalpha = .1,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.1, 1.5)) +
+  new_scale(&amp;quot;size&amp;quot;) +
+  geom_glowpoint(data = filter(earthquakes, mag &amp;gt; 3),
+                   aes(geometry = geometry, size = mag), 
+                   alpha = .6,
+                   shadowalpha = .05,
+                   color = &amp;quot;#ffffff&amp;quot;,
+                   stat = &amp;quot;sf_coordinates&amp;quot;,
+                   show.legend = FALSE) +
+  scale_size(range = c(.01, .7)) +
+  labs(title = &amp;quot;EARTHQUAKES&amp;quot;) +
+  coord_sf(xlim = bx[c(1, 3)], ylim = bx[c(2, 4)], crs = 3035,
+           expand = FALSE) +
+  theme_void() +
+  theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>firefly</category>
+      
+            <category>map</category>
+      
+            <category>earthquake</category>
+      
+            <category>cartography</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:intermediate</category>
+      
+            <category>visualization</category>
+      
+    </item>
+    
+    <item>
+      <title>Bivariate dasymetric map</title>
+      <link>https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/</link>
+      <pubDate>Mon, 01 Mar 2021 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Initial considerations&lt;/h1&gt;
+&lt;p&gt;A disadvantage of choropleth maps is that they tend to distort the relationship between the true underlying geography and the represented variable. It is because the administrative divisions do not usually coincide with the geographical reality where people live. Besides, large areas appear to have a weight that they do not really have because of sparsely populated regions. To better reflect reality, more realistic population distributions are used, such as land use. With Geographic Information Systems techniques, it is possible to redistribute the variable of interest as a function of a variable with a smaller spatial unit.&lt;/p&gt;
+&lt;p&gt;With point data, the redistribution process is simply clipping points with population based on land use, usually classified as urban. We could also crop and mask with land use polygons when we have a vectorial polygon layer, but an interesting alternative is the same data in raster format. We will see how we can make a dasymetric map using raster data with a resolution of 100 m. This post will use data from census sections of the median income and the Gini index for Spain. We will make a dasymetric and bivariate map, representing both variables with two ranges of colours on the same map.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple grammar to combine separate ggplots into the same graphic&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;biscale&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Tools and Palettes for Bivariate Thematic Mapping&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Load fonts in R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Use fonts more easily in R graphs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;biscale&amp;quot;)) install.packages(&amp;quot;biscale&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# packages
+library(tidyverse)
+library(sf)
+library(readxl)
+library(biscale)
+library(patchwork)
+library(raster)
+library(sysfonts)
+library(showtext)
+library(raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;First we download all the necessary data. With the exception of the CORINE Land Cover (~ 200 MB), the data stored on this blog can be obtained directly via the indicated links.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;CORINE Land Cover 2018 (geotiff): &lt;a href=&#34;https://land.copernicus.eu/pan-european/corine-land-cover/clc2018?tab=download&#34;&gt;COPERNICUS&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Income data and Gini index (excel) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/renta.zip&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;Census limits of Spain (vectorial) [INE]: &lt;a href=&#34;https://dominicroye.github.io/files/SECC_CE_20200101.zip&#34;&gt;download&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import&lt;/h2&gt;
+&lt;p&gt;The first thing we do is to import the land use raster, the income and Gini index data, and the census boundaries.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# raster of CORINE LAND COVER 2018
+urb &amp;lt;- raster(&amp;quot;U2018_CLC2018_V2020_20u1.tif&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in showSRID(uprojargs, format = &amp;quot;PROJ&amp;quot;, multiline = &amp;quot;NO&amp;quot;, prefer_proj
+## = prefer_proj): Discarded datum Unknown based on GRS80 ellipsoid in Proj4
+## definition&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# income data and Gini index
+renta &amp;lt;- read_excel(&amp;quot;30824.xlsx&amp;quot;)
+gini &amp;lt;- read_excel(&amp;quot;37677.xlsx&amp;quot;)
+
+# census boundaries
+limits &amp;lt;- read_sf(&amp;quot;SECC_CE_20200101.shp&amp;quot;) &lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;land-uses&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Land uses&lt;/h2&gt;
+&lt;p&gt;In this first step we filter the census sections to obtain those of the Autonomous Community of Madrid, and we create the municipal limits. To dissolve the polygons of census tracts we apply the function &lt;code&gt;group_by()&lt;/code&gt; in combination with &lt;code&gt;summarise()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the Autonomous Community of Madrid
+limits &amp;lt;- filter(limits, NCA == &amp;quot;Comunidad de Madrid&amp;quot;)
+
+# obtain the municipal limits
+mun_limit &amp;lt;- group_by(limits, CUMUN) %&amp;gt;% summarise()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we cut the land use raster with the limits of Madrid. I recommend always using the &lt;code&gt;crop()&lt;/code&gt; function first and then &lt;code&gt;mask()&lt;/code&gt;, the first function crop to the required extent and the second mask the values. Subsequently, we remove all the cells that correspond to 1 or 2 (urban continuous, discontinuous). Finally, we project the raster.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project the limits
+limits_prj &amp;lt;- st_transform(limits, projection(urb))
+
+# crop and mask 
+urb_mad &amp;lt;- crop(urb, limits_prj) %&amp;gt;% 
+              mask(limits_prj)
+
+# remove non-urban pixels
+urb_mad[!urb_mad %in% 1:2] &amp;lt;- NA 
+
+# plot the raster
+plot(urb_mad)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project
+urb_mad &amp;lt;- projectRaster(urb_mad, crs = CRS(&amp;quot;+proj=longlat +datum=WGS84 +no_defs&amp;quot;))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In this step, we convert the raster data into a point &lt;code&gt;sf&lt;/code&gt; object.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# transform the raster to xyz and a sf object
+urb_mad &amp;lt;- as.data.frame(urb_mad, xy = TRUE, na.rm = TRUE) %&amp;gt;%
+                st_as_sf(coords = c(&amp;quot;x&amp;quot;, &amp;quot;y&amp;quot;), crs = 4326)
+
+# add the columns of the coordinates
+urb_mad &amp;lt;- urb_mad %&amp;gt;% rename(urb = 1) %&amp;gt;% cbind(st_coordinates(urb_mad))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;income-data-and-gini-index&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Income data and Gini index&lt;/h2&gt;
+&lt;p&gt;The format of the Excels does not coincide with the original of the INE, since I have cleaned the format before in order to make this post easier. What remains is to create a column with the codes of the census sections and exclude data that correspond to another administrative level.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;## income and Gini index data
+
+renta_sec &amp;lt;- mutate(renta, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+                nc_len = str_length(NATCODE),
+                mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)
+
+gini_sec &amp;lt;- mutate(gini, NATCODE = str_extract(CUSEC, &amp;quot;[0-9]{5,10}&amp;quot;), 
+               nc_len = str_length(NATCODE),
+               mun_name = str_remove(CUSEC, NATCODE) %&amp;gt;% str_trim()) %&amp;gt;%
+             filter(nc_len &amp;gt; 5)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we join both tables with the census tracts using &lt;code&gt;left_join()&lt;/code&gt; and convert columns of interest in numerical mode.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# join both the income and Gini tables with the census limits
+mad &amp;lt;- left_join(limits, renta_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;)) %&amp;gt;% 
+          left_join(gini_sec, by = c(&amp;quot;CUSEC&amp;quot;=&amp;quot;NATCODE&amp;quot;))
+
+# convert selected columns to numeric
+mad &amp;lt;- mutate_at(mad, c(23:27, 30:31), as.numeric)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;bivariate-variable&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Bivariate variable&lt;/h2&gt;
+&lt;p&gt;To create a bivariate map we must construct a single variable that combines different classes of two variables. Usually we make three classes of each variable which leads to nine combinations; in our case, the average income and the Gini index. The &lt;code&gt;biscale&lt;/code&gt; package includes helper functions to carry out this process. With the &lt;code&gt;bi_class()&lt;/code&gt; function we create the classification variable using quantiles as algorithm. Since in both variables we find missing values, we correct those combinations between both variables where an &lt;code&gt;NA&lt;/code&gt; appears.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create bivariate classification
+mapbivar &amp;lt;- bi_class(mad, GINI_2017, RNMP_2017, style = &amp;quot;quantile&amp;quot;, dim = 3) %&amp;gt;% 
+             mutate(bi_class = ifelse(str_detect(bi_class, &amp;quot;NA&amp;quot;), NA, bi_class))
+
+# results
+head(dplyr::select(mapbivar, GINI_2017, RNMP_2017, bi_class))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 6 features and 3 fields
+## geometry type:  MULTIPOLYGON
+## dimension:      XY
+## bbox:           xmin: 415538.9 ymin: 4451487 xmax: 469341.7 ymax: 4552422
+## projected CRS:  ETRS89 / UTM zone 30N
+## # A tibble: 6 x 4
+##   GINI_2017 RNMP_2017 bi_class                                          geometry
+##       &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt; &amp;lt;chr&amp;gt;                                   &amp;lt;MULTIPOLYGON [m]&amp;gt;
+## 1      NA          NA &amp;lt;NA&amp;gt;     (((446007.9 4552348, 446133.7 4552288, 446207.8 ~
+## 2      31       13581 2-2      (((460243.8 4487756, 460322.4 4487739, 460279 44~
+## 3      30       12407 2-2      (((457392.5 4486262, 457391.6 4486269, 457391.1 ~
+## 4      34.3     13779 3-2      (((468720.8 4481374, 468695.5 4481361, 468664.6 ~
+## 5      33.5      9176 3-1      (((417140.2 4451736, 416867.5 4451737, 416436.8 ~
+## 6      26.2     10879 1-1      (((469251.9 4480826, 469268.1 4480797, 469292.6 ~&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We finish by redistributing the inequality variable over the pixels of urban land use. The &lt;code&gt;st_join()&lt;/code&gt; function joins the data with the land use points.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# redistribute urban pixels to inequality
+mapdasi &amp;lt;- st_join(urb_mad, st_transform(mapbivar, 4326))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-building&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Map building&lt;/h1&gt;
+&lt;div id=&#34;legend-and-font&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Legend and font&lt;/h2&gt;
+&lt;p&gt;Before constructing both maps we must create the legend using the &lt;code&gt;bi_legend()&lt;/code&gt; function. In the function we define the titles for each variable, the number of dimensions and the color scale. Finally, we add the Montserrat font for the final titles in the graphic.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# bivariate legend
+legend2 &amp;lt;- bi_legend(pal = &amp;quot;DkViolet&amp;quot;,
+                     dim = 3,
+                     xlab = &amp;quot;Higher inequality&amp;quot;,
+                     ylab = &amp;quot;Higher income&amp;quot;,
+                     size = 9)
+
+
+# download font
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+showtext_auto()&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dasymetric-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Dasymetric map&lt;/h2&gt;
+&lt;p&gt;We build this map using &lt;code&gt;geom_tile()&lt;/code&gt; for the pixels and &lt;code&gt;geom_sf()&lt;/code&gt; for the municipal boundaries. In addition, it will be the map on the right where we also place the legend. To add the legend we use the &lt;code&gt;annotation_custom()&lt;/code&gt; function indicating the position in the geographical coordinates of the map. The &lt;code&gt;biscale&lt;/code&gt; package also helps us with the color definition via the &lt;code&gt;bi_scale_fill()&lt;/code&gt; function.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p2 &amp;lt;- ggplot(mapdasi) + 
+  geom_tile(aes(X, Y, 
+                fill = bi_class), 
+            show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;grey80&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  annotation_custom(ggplotGrob(legend2), 
+                    xmin = -3.25, xmax = -2.65,
+                    ymin = 40.55, ymax = 40.95) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;dasymetric&amp;quot;, x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;choropleth-map&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Choropleth map&lt;/h2&gt;
+&lt;p&gt;The choropleth map is built in a similar way to the previous map with the difference that we use &lt;code&gt;geom_sf()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;p1 &amp;lt;- ggplot(mapbivar) + 
+  geom_sf(aes(fill = bi_class), 
+          colour = NA, 
+          size = .1, 
+          show.legend = FALSE) +
+  geom_sf(data = mun_limit,  
+          color = &amp;quot;white&amp;quot;, 
+          fill = NA, 
+          size = 0.2) +
+  bi_scale_fill(pal = &amp;quot;DkViolet&amp;quot;, 
+                dim = 3, 
+                na.value = &amp;quot;grey90&amp;quot;) +
+  labs(title = &amp;quot;choropleth&amp;quot;,  x = &amp;quot;&amp;quot;, y =&amp;quot;&amp;quot;) +
+  bi_theme() +
+  theme(plot.title = element_text(family = &amp;quot;Montserrat&amp;quot;, size = 30, face = &amp;quot;bold&amp;quot;)) +
+  coord_sf(crs = 4326)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;merge-both-maps&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Merge both maps&lt;/h2&gt;
+&lt;p&gt;With the help of the &lt;code&gt;patchwork&lt;/code&gt; package, we combine both maps in a single row, first the choropleth map and on its right the dasymmetric map. More details of the grammar used for the combination of graphics &lt;a href=&#34;https://patchwork.data-imaginist.com/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# combine 
+p &amp;lt;- p1 | p2
+
+# final map
+p&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/bivariate-dasymetric-map/index.en_files/figure-html/unnamed-chunk-15-1.png&#34; width=&#34;3300&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>bivariate</category>
+      
+            <category>map</category>
+      
+            <category>inequality</category>
+      
+            <category>income</category>
+      
+            <category>Madrid</category>
+      
+            <category>urban</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:advanced</category>
+      
+            <category>visualization</category>
+      
+    </item>
+    
+    <item>
+      <title>River flow directions</title>
+      <link>https://dominicroye.github.io/en/2020/river-flow-directions/</link>
+      <pubDate>Fri, 24 Jul 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2020/river-flow-directions/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks (&lt;a href=&#34;%5Btweet%5D(https://twitter.com/dr_xeo/status/1277978724034465798?s=20)&#34;&gt;here&lt;/a&gt;), I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex. I did the same for a selection of European rivers here in this &lt;a href=&#34;https://twitter.com/dr_xeo/status/1277243216828473345?s=20&#34;&gt;tweet&lt;/a&gt;. However, originally I started with the orientation of the European coasts.&lt;/p&gt;
+&lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Have you ever wondered where the European &lt;a href=&#34;https://twitter.com/hashtag/coasts?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#coasts&lt;/a&gt; are oriented? &lt;a href=&#34;https://twitter.com/hashtag/rstats?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#rstats&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/geography?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#geography&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://t.co/tpWVxSoHlw&#34;&gt;pic.twitter.com/tpWVxSoHlw&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1265286552525180929?ref_src=twsrc%5Etfw&#34;&gt;May 26, 2020&lt;/a&gt;&lt;/blockquote&gt;
+&lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following packages:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Packages&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;remotes&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Installation from remote repositories&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RQGIS3&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Interface between R and QGIS3&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Improved text rendering support for ggplot2&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Load fonts in R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Use fonts more easily in R graphs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;circular&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Functions for working with circular data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;geosphere&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Spherical trigonometry for geographic applications&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;In the case of the &lt;code&gt;RQGIS3&lt;/code&gt; package, it is necessary to install QGIS in OSGeo4W &lt;a href=&#34;https://www.qgis.org/es/site/forusers/download.html&#34;&gt;here&lt;/a&gt;. I will explain the reason for using QGIS later.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;remotes&amp;quot;)) install.packages(&amp;quot;remotes&amp;quot;)
+if(!require(&amp;quot;RQGIS3&amp;quot;)) remotes::install_github(&amp;quot;jannes-m/RQGIS3&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;ggtext&amp;quot;)) install.packages(&amp;quot;ggtext&amp;quot;)
+if(!require(&amp;quot;circular&amp;quot;)) install.packages(&amp;quot;circular&amp;quot;)
+if(!require(&amp;quot;geosphere&amp;quot;)) install.packages(&amp;quot;geosphere&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+
+# packages
+library(sf)
+library(tidyverse)
+library(ggtext)
+library(circular)
+library(geosphere)
+library(RQGIS3)
+library(showtext)
+library(sysfonts)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;initial-considerations&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Initial considerations&lt;/h1&gt;
+&lt;p&gt;Angles in vectorial lines are based on the angle between two vertices, and the number of vertices depends on the complexity, and therefore the resolution, of the vector data. Consequently, there can be differences in using different resolutions of a spatial line, either from the coast or from the river as in this example. A straight line is simply constructed with two points of longitude and latitude.&lt;/p&gt;
+&lt;p&gt;Related to this is fractality, an apparently irregular structure but that is repeated at different scales, known from coastlines or also from river. The most paradoxical feature is that the length of a coastline depends on the measurement scale, the smaller the measurement increment, the longer is the measured coastline.&lt;/p&gt;
+&lt;p&gt;There are two possibilities of obtaining the vertice angles. In the first one we calculate the angle between all consecutive vertices.&lt;/p&gt;
+&lt;p&gt;For example, imagine two points, Madrid (-3.71, 40.43) and Barcelona (2.14, 41.4).&lt;/p&gt;
+&lt;p&gt;What is the angle of a straight line between both cities?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;We see that it is 77º, that is, northeast direction. But what if we go from Barcelona to Madrid?&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The angle is different because we &lt;em&gt;move&lt;/em&gt; from the northeast to the southwest. We can easily invert the direction to get the opposite angle.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# opposite angle of Barcelona -&amp;gt; Madrid
+bearingRhumb(c(2.14, 41.4), c(-3.71, 40.43)) - 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 77.62391&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# opposite angle of Madrid -&amp;gt; Barcelona
+bearingRhumb(c(-3.71, 40.43), c(2.14, 41.4)) + 180&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 257.6239&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The direction in which we calculate the angles is important. In the case of rivers, it is expected to be the direction of flow from origin to the mouth, however, a problem may be that the vertices, which build the lines, are not geographically ordered in the attribute table. Another problem may be that the vertices start at the mouth which would give the reverse angle as we have seen before.&lt;/p&gt;
+&lt;p&gt;However, there is an easier way. We can take advantage of the attributes of projected coordinate systems (Robinson projection, etc.) that include the angle between the vertices. We will use this last approach in this post. Still, we must pay close attention to the results as stated above.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparation&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Preparation&lt;/h1&gt;
+&lt;div id=&#34;data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data&lt;/h2&gt;
+&lt;p&gt;We download the central lines of the largest rivers in the world (&lt;a href=&#34;https://dominicroye.github.io/files/RiverHRCenterlinesCombo.zip&#34;&gt;here&lt;/a&gt;), also accessible in &lt;a href=&#34;https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c&#34;&gt;Zeenatul Basher et al. 2018&lt;/a&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import-and-project&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import and project&lt;/h2&gt;
+&lt;p&gt;The first thing we do is to import, project the spatial lines and delete the third dimension &lt;em&gt;Z&lt;/em&gt;, chaining the following functions: &lt;code&gt;st_read()&lt;/code&gt; helps us import any vector format, &lt;code&gt;st_zm()&lt;/code&gt; delete the dimension Z or M of a geometry and &lt;code&gt;st_transform()&lt;/code&gt; projects the vector data to the new projection in &lt;em&gt;proj4&lt;/em&gt; format. We combine the functions with the famous pipe (&lt;code&gt;%&amp;gt;%&lt;/code&gt;) that facilitates the application of a sequence of functions on a data set, more details in this &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;post&lt;/a&gt;. All functions in the &lt;code&gt;sf&lt;/code&gt; package start with &lt;code&gt;st_*&lt;/code&gt; with reference to the spatial character, similar to &lt;em&gt;PostGIS&lt;/em&gt;. In the same style as &lt;em&gt;PostGIS&lt;/em&gt;, verbs are used as function names.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;proj_rob &amp;lt;- &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m no_defs&amp;quot;
+
+river_line &amp;lt;- st_read(&amp;quot;RiverHRCenterlinesCombo.shp&amp;quot;) %&amp;gt;% 
+                 st_zm() %&amp;gt;% 
+                    st_transform(proj_rob)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `RiverHRCenterlinesCombo&amp;#39; from data source 
+##   `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\en\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp&amp;#39; 
+##   using driver `ESRI Shapefile&amp;#39;
+## Simple feature collection with 78 features and 6 fields
+## Geometry type: MULTILINESTRING
+## Dimension:     XYZ
+## Bounding box:  xmin: -164.7059 ymin: -36.97094 xmax: 151.5931 ymax: 72.64474
+## z_range:       zmin: 0 zmax: 0
+## Geodetic CRS:  WGS 84&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;extract-the-angles&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Extract the angles&lt;/h2&gt;
+&lt;p&gt;In the next step we have to extract the vertice angles. Unfortunately, as far as I know, it is not possible to extract the attributes with some function from the &lt;code&gt;sf&lt;/code&gt; package. Although the function &lt;code&gt;st_coordinates()&lt;/code&gt; returns the coordinates, it does not include other attributes. Therefore, we must use another way, and that is the open software Quantum GIS in which we can find a tool to extract all the vertice attributes. We could import the vector data into QGIS Desktop and export the vertices from there, but it is also possible to access the QGIS tools from R directly.&lt;/p&gt;
+&lt;p&gt;For this, we need to have QGIS installed in OSGeo4W. The &lt;code&gt;RQGIS3&lt;/code&gt; package allows us to use very easily all the tools of the software in R. First we use the &lt;code&gt;set_env()&lt;/code&gt; function to define all the necessary QGIS paths and start the API with &lt;code&gt;open_app()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# paths to QGIS
+set_env()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Trying to find QGIS in C:/&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $root
+## [1] &amp;quot;C:/Program Files/QGIS 3.18&amp;quot;
+## 
+## $qgis_prefix_path
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis&amp;quot;
+## 
+## $python_plugins
+## [1] &amp;quot;C:/Program Files/QGIS 3.18/apps/qgis/python/plugins&amp;quot;
+## 
+## $platform
+## [1] &amp;quot;Windows&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# start of QGIS Python
+open_app()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in check_for_server(): Hey there! According to our internal checks, you are trying to run RQGIS3 on a Windows server.
+## Please note that this is only possible if you imitate a x-display.
+## QGIS needs this in the background to be able to execute its processing modules.
+## Note that you need to start the x-display with admin rights&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;find_algorithms()&lt;/code&gt; function helps us to search for different QGIS tools. In addition the &lt;code&gt;get_usage()&lt;/code&gt; function specifies the way of usage with all the required parameters.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# search tools
+find_algorithms(search_term = &amp;quot;vertices&amp;quot;, name_only = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;native:exportmeshvertices&amp;quot;              
+## [2] &amp;quot;native:extractspecificvertices&amp;quot;         
+## [3] &amp;quot;native:extractvertices&amp;quot;                 
+## [4] &amp;quot;native:filterverticesbym&amp;quot;               
+## [5] &amp;quot;native:filterverticesbyz&amp;quot;               
+## [6] &amp;quot;native:removeduplicatevertices&amp;quot;         
+## [7] &amp;quot;saga:convertpolygonlineverticestopoints&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# usage of tool
+get_usage(alg = &amp;quot;native:extractvertices&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Extract vertices (native:extractvertices)
+## 
+## This algorithm takes a line or polygon layer and generates a point layer with points representing the vertices in the input lines or polygons. The attributes associated to each point are the same ones associated to the line or polygon that the point belongs to.
+## 
+## Additional fields are added to the point indicating the vertex index (beginning at 0)
+## the vertex’s part and its index within the part (as well as its ring for polygons)
+## distance along original geometry and bisector angle of vertex for original geometry.
+## 
+## 
+## ----------------
+## Input parameters
+## ----------------
+## 
+## INPUT: Input layer
+## 
+##  Parameter type: QgsProcessingParameterFeatureSource
+## 
+##  Accepted data types:
+##      - str: layer ID
+##      - str: layer name
+##      - str: layer source
+##      - QgsProcessingFeatureSourceDefinition
+##      - QgsProperty
+##      - QgsVectorLayer
+## 
+## OUTPUT: Vertices
+## 
+##  Parameter type: QgsProcessingParameterFeatureSink
+## 
+##  Accepted data types:
+##      - str: destination vector file
+## e.g. d:/test.shp
+##      - str: memory: to store result in temporary memory layer
+##      - str: using vector provider ID prefix and destination URI
+## e.g. postgres:… to store result in PostGIS table
+##      - QgsProcessingOutputLayerDefinition
+##      - QgsProperty
+## 
+## ----------------
+## Outputs
+## ----------------
+## 
+## OUTPUT:  &amp;lt;QgsProcessingOutputVectorLayer&amp;gt;
+##  Vertices&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In our case the tool to extract the vertices is simple and only has one input and one output. The function &lt;code&gt;run_qgis()&lt;/code&gt; executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class &lt;code&gt;sf&lt;/code&gt; (or &lt;code&gt;sp&lt;/code&gt;) and &lt;code&gt;raster&lt;/code&gt; that we have imported or created in R. As output we create a &lt;code&gt;geojson&lt;/code&gt;, it could also be of another vector format, and we save it in a temporary folder. At the same time we indicate to import the result directly into R (&lt;code&gt;load_output = TRUE&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;- run_qgis(alg = &amp;quot;native:extractvertices&amp;quot;,
+               INPUT = river_line,
+               OUTPUT = file.path(tempdir(), &amp;quot;rivers_world_vertices.geojson&amp;quot;),
+               load_output = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## $OUTPUT
+## [1] &amp;quot;C:/Users/xeo19/AppData/Local/Temp/RtmpageMET/rivers_world_vertices.geojson&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Currently on Windows there seem to be problems with the &lt;em&gt;proj&lt;/em&gt; library. In principle, if the function ends up creating the &lt;code&gt;river_vertices&lt;/code&gt; object, you should not worry. Otherwise, I recommend looking at the discussion in the issue opened at &lt;a href=&#34;https://github.com/r-spatial/RQGIS3/issues/20&#34;&gt;gitbub&lt;/a&gt;.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;selection&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Selection&lt;/h2&gt;
+&lt;p&gt;Before continuing with the distribution estimation of the angles, we filter some rivers of interest. The functions of the &lt;code&gt;tidyverse&lt;/code&gt; collection are compatible with the &lt;code&gt;sf&lt;/code&gt; package. In the last post I made an introduction to &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;river_vertices &amp;lt;-  filter(river_vertices, 
+                          NAME %in% c(&amp;quot;Mississippi&amp;quot;, &amp;quot;Colorado&amp;quot;, 
+                                      &amp;quot;Amazon&amp;quot;, &amp;quot;Nile&amp;quot;, &amp;quot;Orange&amp;quot;, 
+                                      &amp;quot;Ganges&amp;quot;, &amp;quot;Yangtze&amp;quot;, &amp;quot;Danube&amp;quot;,
+                                      &amp;quot;Mackenzie&amp;quot;, &amp;quot;Lena&amp;quot;, &amp;quot;Murray&amp;quot;, 
+                                      &amp;quot;Niger&amp;quot;)
+                          ) 
+
+river_vertices &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 94702 features and 11 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -10377520 ymin: -3953778 xmax: 13124340 ymax: 7507359
+## Geodetic CRS:  WGS 84
+## # A tibble: 94,702 x 12
+##    NAME  SYSTEM name_alt scalerank rivernum Length_km vertex_index vertex_part
+##  * &amp;lt;chr&amp;gt; &amp;lt;chr&amp;gt;  &amp;lt;chr&amp;gt;        &amp;lt;dbl&amp;gt;    &amp;lt;dbl&amp;gt;     &amp;lt;dbl&amp;gt;        &amp;lt;int&amp;gt;       &amp;lt;int&amp;gt;
+##  1 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            0           0
+##  2 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            1           0
+##  3 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            2           0
+##  4 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            3           0
+##  5 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            4           0
+##  6 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            5           0
+##  7 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            6           0
+##  8 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            7           0
+##  9 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            8           0
+## 10 Nile  &amp;lt;NA&amp;gt;   &amp;lt;NA&amp;gt;             1        4     3344.            9           0
+## # ... with 94,692 more rows, and 4 more variables: vertex_part_index &amp;lt;int&amp;gt;,
+## #   distance &amp;lt;dbl&amp;gt;, angle &amp;lt;dbl&amp;gt;, geometry &amp;lt;POINT [°]&amp;gt;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;/div&gt;
+&lt;div id=&#34;estimate-the-distribution&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Estimate the distribution&lt;/h1&gt;
+&lt;p&gt;To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the &lt;code&gt;density()&lt;/code&gt; standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the &lt;code&gt;circular&lt;/code&gt; package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.&lt;/p&gt;
+&lt;p&gt;So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the &lt;code&gt;density()&lt;/code&gt; function, in which the smoothing bandwidth &lt;code&gt;bw&lt;/code&gt; is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, &lt;code&gt;bw.nrd.circular()&lt;/code&gt; that could be used here.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_circ &amp;lt;- function(x){
+  
+  dens &amp;lt;- density.circular(circular(x$angle, units = &amp;quot;degrees&amp;quot;),
+                                     bw = 70, kernel = &amp;quot;vonmises&amp;quot;,
+                                     control.circular = list(units = &amp;quot;degrees&amp;quot;))
+  
+  df &amp;lt;- data.frame(x = dens$x, y = dens$y/max(dens$y))
+  
+  return(df)
+  
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally, we estimate the density of each river in our selection. We use the &lt;code&gt;split()&lt;/code&gt; function of R Base to get a table of each river in a list object. Then we apply our density estimation function to the list with the function &lt;code&gt;map_df()&lt;/code&gt; from the &lt;code&gt;purrr&lt;/code&gt; package. The suffix &lt;code&gt;_df&lt;/code&gt; allows us to get a joined table, instead of a list with the results of each river. However, it is necessary to indicate the name of the column with the argument &lt;code&gt;.id&lt;/code&gt;, which will contain the name of each river. Otherwise we would not know how to differentiate the results. Also here I recommend reading more details in the last post about &lt;code&gt;tidyverse&lt;/code&gt; &lt;a href=&#34;https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/&#34;&gt;here&lt;/a&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;dens_river &amp;lt;- split(river_vertices, river_vertices$NAME) %&amp;gt;% 
+                  map_df(dens_circ, .id = &amp;quot;river&amp;quot;)
+
+# results
+head(dens_river)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##    river        x         y
+## 1 Amazon 0.000000 0.2399907
+## 2 Amazon 0.704501 0.2492548
+## 3 Amazon 1.409002 0.2585758
+## 4 Amazon 2.113503 0.2679779
+## 5 Amazon 2.818004 0.2774859
+## 6 Amazon 3.522505 0.2871232&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;visualization&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Visualization&lt;/h1&gt;
+&lt;p&gt;Now we only have to make the graph through the famous &lt;code&gt;ggplot&lt;/code&gt; package. First we add a new font &lt;em&gt;Montserrat&lt;/em&gt; for it use in this plot.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# font download
+font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+# use of showtext
+showtext_opts(dpi = 200)
+showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step we create two objects with the title and the plot caption. In the title we are using an html code to color part of the text instead of a legend. You can use html very easily with the &lt;code&gt;ggtext&lt;/code&gt; package.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# title with html
+title &amp;lt;- &amp;quot;Relative distribution of river &amp;lt;span style=&amp;#39;color:#011FFD;&amp;#39;&amp;gt;&amp;lt;strong&amp;gt;flow direction&amp;lt;/strong&amp;gt;&amp;lt;/span&amp;gt; in the world&amp;quot;
+
+
+caption &amp;lt;- &amp;quot;Based on data from Zeenatul Basher, 20180215&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The background grid that creates &lt;code&gt;ggplot&lt;/code&gt; by default for polar coordinates did not convince me, so we create a table with x axis background lines.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;grid_x &amp;lt;- tibble(x = seq(0, 360 - 22.5, by = 22.5), 
+                 y = rep(0, 16), 
+                 xend = seq(0, 360 - 22.5, by = 22.5), 
+                 yend = rep(Inf, 16))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Next we define all the styles of the graph. The most important thing in this step is the &lt;code&gt;element_textbox()&lt;/code&gt; function of the &lt;code&gt;ggtext&lt;/code&gt; package to be able to interpret our html code incorporated into the title.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;theme_polar &amp;lt;- function(){
+               theme_minimal() %+replace%
+               theme(axis.title.y = element_blank(),
+                     axis.text.y = element_blank(),
+                     legend.title = element_blank(),
+                     plot.title = element_textbox(family = &amp;quot;Montserrat&amp;quot;, 
+                                                   hjust = 0.5, 
+                                                   colour = &amp;quot;white&amp;quot;, 
+                                                   size = 15),
+                     plot.caption = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     axis.text.x = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                                 colour = &amp;quot;white&amp;quot;),
+                     strip.text = element_text(family = &amp;quot;Montserrat&amp;quot;, 
+                                               colour = &amp;quot;white&amp;quot;, 
+                                               face = &amp;quot;bold&amp;quot;),
+                     panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+                     panel.grid = element_blank()
+                    )
+}&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Finally we build the graph: 1) We use the &lt;code&gt;geom_hline()&lt;/code&gt; function with different y intersection points to create the background grid. The &lt;code&gt;geom_segment()&lt;/code&gt; function creates the x grid. 2) We create the density area using the &lt;code&gt;geom_area()&lt;/code&gt; function. 3) In &lt;code&gt;scale_x_continous()&lt;/code&gt; we define a negative lower limit so that it does not collapse at a small point. The labels of the eight main directions are indicated in the &lt;code&gt;scale_y_continous()&lt;/code&gt; function, and 4) Finally, we change to a polar coordinate system and set the variable to create facets.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggplot() +
+  geom_hline(yintercept = c(0, .2, .4, .6, .8, 1), colour = &amp;quot;white&amp;quot;) +
+  geom_segment(data = grid_x , 
+               aes(x = x, y = y, xend = xend, yend = yend), 
+               linetype = &amp;quot;dashed&amp;quot;, col = &amp;quot;white&amp;quot;) +
+  geom_area(data = dens_river, 
+            aes(x = x, y = y, ymin = 0, ymax = y), 
+            alpha = .7, 
+            colour = NA, 
+            show.legend = FALSE,
+            fill = &amp;quot;#011FFD&amp;quot;) + 
+  scale_y_continuous(limits = c(-.2, 1), expand = c(0, 0)) +
+  scale_x_continuous(limits = c(0, 360), 
+                     breaks = seq(0, 360 - 22.5, by = 22.5),
+                     minor_breaks = NULL,
+                     labels = c(&amp;quot;N&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NE&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;E&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SE&amp;quot;, &amp;quot;&amp;quot;,
+                                &amp;quot;S&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;SW&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;W&amp;quot;, &amp;quot;&amp;quot;, &amp;quot;NW&amp;quot;, &amp;quot;&amp;quot;)) +
+  coord_polar() + 
+  facet_wrap(river ~ ., ncol = 4) +
+  labs(title = title, caption = caption, x = &amp;quot;&amp;quot;) +
+  theme_polar()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/river-flow-directions/index.en_files/figure-html/unnamed-chunk-19-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>directions</category>
+      
+            <category>river</category>
+      
+            <category>fluvial</category>
+      
+            <category>orientation</category>
+      
+            <category>distribution</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:advanced</category>
+      
+    </item>
+    
+    <item>
+      <title>Geographic distance</title>
+      <link>https://dominicroye.github.io/en/2020/geographic-distance/</link>
+      <pubDate>Sun, 19 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2020/geographic-distance/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The first post of this year 2020, I will dedicate to a question that I was recently asked. The question was how to calculate the shortest distance between different points and how to know which is the closest point. When we work with spatial data in R, currently the easiest thing is to use the &lt;code&gt;sf&lt;/code&gt; package in combination with the &lt;code&gt;tidyverse&lt;/code&gt; collection of packages. We also use the &lt;code&gt;units&lt;/code&gt; package which is very useful for working with units of measurement.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;12%&#34; /&gt;
+&lt;col width=&#34;87%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;units&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Support for measurement units in R vectors, matrices and arrays: propagation, conversion, derivation&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;maps&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Draw geographical maps&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Hold and facilitate interaction with Natural Earth map data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the necessary packages
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;units&amp;quot;)) install.packages(&amp;quot;units&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;maps&amp;quot;)) install.packages(&amp;quot;maps&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# load packages
+library(maps)
+library(sf) 
+library(tidyverse)
+library(units)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;measurement-units&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Measurement units&lt;/h2&gt;
+&lt;p&gt;The use of vectors and matrices with the &lt;code&gt;units&lt;/code&gt; class allows us to calculate and transform units of measurement.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# length
+l &amp;lt;- set_units(1:10, m)
+l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##  [1]  1  2  3  4  5  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert units
+set_units(l, cm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  100  200  300  400  500  600  700  800  900 1000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sum different units
+set_units(l, cm) + l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  200  400  600  800 1000 1200 1400 1600 1800 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# area
+a &amp;lt;- set_units(355, ha)
+set_units(a, km2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 3.55 [km2]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# velocity
+vel &amp;lt;- set_units(seq(20, 50, 10), km/h)
+set_units(vel, m/s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m/s]
+## [1]  5.555556  8.333333 11.111111 13.888889&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;capital-cities-of-the-world&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Capital cities of the world&lt;/h2&gt;
+&lt;p&gt;We will use the capital cities of the whole world with the objective of calculating the distance to the nearest capital city and indicating the name/country.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# set of world cities with coordinates
+head(world.cities) # from the maps package&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                 name country.etc   pop   lat  long capital
+## 1 &amp;#39;Abasan al-Jadidah   Palestine  5629 31.31 34.34       0
+## 2 &amp;#39;Abasan al-Kabirah   Palestine 18999 31.32 34.35       0
+## 3       &amp;#39;Abdul Hakim    Pakistan 47788 30.55 72.11       0
+## 4 &amp;#39;Abdullah-as-Salam      Kuwait 21817 29.36 47.98       0
+## 5              &amp;#39;Abud   Palestine  2456 32.03 35.07       0
+## 6            &amp;#39;Abwein   Palestine  3434 32.03 35.20       0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;To convert points with longitude and latitude into a spatial object of class &lt;code&gt;sf&lt;/code&gt;, we use the function &lt;code&gt;st_as_sf()&lt;/code&gt;, indicating the coordinate columns and the coordinate reference system (WSG84, epsg: 4326).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the points into an sf object with CRS WSG84
+cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
+cities&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##                  name  country.etc   pop capital            geometry
+## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
+## 2  &amp;#39;Abasan al-Kabirah    Palestine 18999       0 POINT (34.35 31.32)
+## 3        &amp;#39;Abdul Hakim     Pakistan 47788       0 POINT (72.11 30.55)
+## 4  &amp;#39;Abdullah-as-Salam       Kuwait 21817       0 POINT (47.98 29.36)
+## 5               &amp;#39;Abud    Palestine  2456       0 POINT (35.07 32.03)
+## 6             &amp;#39;Abwein    Palestine  3434       0  POINT (35.2 32.03)
+## 7            &amp;#39;Adadlay      Somalia  9198       0  POINT (44.65 9.77)
+## 8              &amp;#39;Adale      Somalia  5492       0   POINT (46.3 2.75)
+## 9               &amp;#39;Afak         Iraq 22706       0 POINT (45.26 32.07)
+## 10              &amp;#39;Afif Saudi Arabia 41731       0 POINT (42.93 23.92)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the next step, we filter by the capital cities encoded in the column &lt;em&gt;capital&lt;/em&gt; with 1. The advantage of the &lt;code&gt;sf&lt;/code&gt; package is the possibility of applying functions of the &lt;code&gt;tidyverse&lt;/code&gt; collection to manipulate the attributes. In addition, we add a column with new labels using the &lt;code&gt;str_c()&lt;/code&gt; function of the &lt;code&gt;stringr&lt;/code&gt; package, which is similar to that of &lt;em&gt;R Base&lt;/em&gt; &lt;code&gt;paste()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the capital cities
+capitals &amp;lt;- filter(cities, capital == 1)
+
+# create a new label combining name and country
+capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;quot;, country.etc, &amp;quot;)&amp;quot;))
+
+capitals &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##           name          country.etc     pop capital               geometry
+## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
+## 2    Abu Dhabi United Arab Emirates  619316       1    POINT (54.37 24.48)
+## 3        Abuja              Nigeria  178462       1      POINT (7.17 9.18)
+## 4        Accra                Ghana 2029143       1      POINT (-0.2 5.56)
+## 5    Adamstown             Pitcairn      51       1  POINT (-130.1 -25.05)
+## 6  Addis Abeba             Ethiopia 2823167       1     POINT (38.74 9.03)
+## 7        Agana                 Guam    1041       1   POINT (144.75 13.47)
+## 8      Algiers              Algeria 2029936       1     POINT (3.04 36.77)
+## 9        Alofi                 Niue     627       1 POINT (-169.92 -19.05)
+## 10   Amsterdam          Netherlands  744159       1     POINT (4.89 52.37)
+##                        city_country
+## 1                   &amp;#39;Amman (Jordan)
+## 2  Abu Dhabi (United Arab Emirates)
+## 3                   Abuja (Nigeria)
+## 4                     Accra (Ghana)
+## 5              Adamstown (Pitcairn)
+## 6            Addis Abeba (Ethiopia)
+## 7                      Agana (Guam)
+## 8                 Algiers (Algeria)
+## 9                      Alofi (Niue)
+## 10          Amsterdam (Netherlands)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calculate-distances&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calculate distances&lt;/h2&gt;
+&lt;p&gt;Geographical distance (Euclidean or greater circle) is calculated with the &lt;code&gt;st_distance()&lt;/code&gt; function, either between two points, between one point and others or between all points. In the latter case we obtain a symmetric matrix of distances (NxN), taken pairwise between the elements of the capital city set. In the diagonal we find the combinations between the same points giving all null values.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;340&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;259&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;340&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;337&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;259&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;337&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;For instance, when we want to know the distance from Amsterdam to Abu Dhabi, Washington and Tokyo we pass two spatial objects.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculate distance
+dist_amsterdam &amp;lt;- st_distance(slice(capitals, 10), 
+                              slice(capitals, c(2, 220, 205)))
+
+dist_amsterdam # distance in meters&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##         [,1]    [,2]    [,3]
+## [1,] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The result is a matrix with a single row or column (depending on the order of the spatial objects) with a class of &lt;code&gt;units&lt;/code&gt;. Thus it is possible to convert easily to another unit of measure. If we want to obtain a vector without class &lt;code&gt;units&lt;/code&gt;, we only have to apply the function &lt;code&gt;as.vector()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change from m to km
+set_units(dist_amsterdam, &amp;quot;km&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [km]
+##          [,1]     [,2]    [,3]
+## [1,] 5167.859 6203.802 9316.79&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# units class to vector
+as.vector(dist_amsterdam)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;In the second step, we estimate the distance matrix between all the capital cities. It is important to convert the null values to &lt;code&gt;NA&lt;/code&gt; to subsequently obtain the correct matrix index.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calculate distance
+m_distance &amp;lt;- st_distance(capitals)
+
+# matrix
+dim(m_distance)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 230 230&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# change m to km
+m_distance_km &amp;lt;- set_units(m_distance, km)
+
+# replace the distance of 0 m with NA
+m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+When the result is of the &lt;code&gt;units&lt;/code&gt; class, it is necessary to use the same class to be able to make logical queries. For example, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;To obtain the shortest distance, in addition to its position, we use the &lt;code&gt;apply ()&lt;/code&gt; function which in turn allows us to apply the function &lt;code&gt;which.min()&lt;/code&gt; and &lt;code&gt;min()&lt;/code&gt; on each row. It would also be possible to use the function on columns giving the same result. Finally, we add the results as new columns with the &lt;code&gt;mutate()&lt;/code&gt; function. The indices in &lt;em&gt;pos&lt;/em&gt; allow us to obtain the names of the nearest cities.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the index (position) of the city and the distance
+pos &amp;lt;- apply(m_distance_km, 1, which.min)
+dist &amp;lt;- apply(m_distance_km, 1, min, na.rm = TRUE)
+
+# add the distance and get the name of the city
+capitals &amp;lt;- mutate(capitals, nearest_city =  city_country[pos], 
+                             geometry_nearest = geometry[pos],
+                             distance_city = dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-of-distances-to-the-next-capital-city&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map of distances to the next capital city&lt;/h2&gt;
+&lt;p&gt;Finally, we build a map representing the distance in proportional circles. To do this, we use the usual grammar of &lt;code&gt;ggplot()&lt;/code&gt; by adding the geometry &lt;code&gt;geom_sf()&lt;/code&gt;, first for the world map as background and then for the cities. In &lt;code&gt;aes()&lt;/code&gt; we indicate, with the argument &lt;code&gt;size = distance_city&lt;/code&gt;, the variable which we want to map proportionally. The &lt;code&gt;theme_void()&lt;/code&gt; function removes all style elements. In addition, we define with the function &lt;code&gt;coord_sf()&lt;/code&gt; a new projection indicating the &lt;em&gt;proj4&lt;/em&gt; format.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# world map
+world &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;)
+
+# map
+ggplot(world) +
+   geom_sf(fill = &amp;quot;black&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+   geom_sf(data = capitals, 
+           aes(size = distance_city),
+           alpha = 0.7,
+           fill = &amp;quot;#bd0026&amp;quot;,
+           shape = 21,
+           show.legend = &amp;#39;point&amp;#39;) +
+   coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
+  labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital city&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2020/geographic-distance/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>distance</category>
+      
+            <category>points</category>
+      
+            <category>cities</category>
+      
+      
+            <category>spatial analysis</category>
+      
+            <category>R</category>
+      
+            <category>R:elementary</category>
+      
+            <category>gis</category>
+      
+    </item>
+    
+    <item>
+      <title>Visualize urban growth</title>
+      <link>https://dominicroye.github.io/en/2019/visualize-urban-growth/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2019/visualize-urban-growth/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The General Directorate for the Cadastre of Spain has spatial information of the all buildings except for the Basque Country and Navarra. This data set is part of the implementation of &lt;a href=&#34;https://inspire.ec.europa.eu/&#34;&gt;INSPIRE&lt;/a&gt;, the Space Information Infrastructure in Europe. More information can be found &lt;a href=&#34;http://www.catastro.meh.es/webinspire/index.html&#34;&gt;here&lt;/a&gt;. We will use the links (&lt;em&gt;urls&lt;/em&gt;) in &lt;em&gt;ATOM&lt;/em&gt; format, which is an RSS type for web feeds, allowing us to obtain the download link for each municipality.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+This blog post is a reduced version of the case study that you can find in our recent publication - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introduction to GIS with R&lt;/a&gt; - published by Dominic Royé and Roberto Serrano-Notivoli (in Spanish).
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;10%&#34; /&gt;
+&lt;col width=&#34;89%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Package&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Provides a cross-platform, uniform interface to file system operations&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy manipulation of dates and times&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;feedeR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import feeds RSS or ATOM&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tmap&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Easy creation of thematic maps&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;classInt&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Create univariate class intervals&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Loading system fonts and Google Fonts&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Using fonts more easily in R graphs&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;feedeR&amp;quot;)) install.packages(&amp;quot;feedeR&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;tmap&amp;quot;)) install.packages(&amp;quot;tmap&amp;quot;)
+if(!require(&amp;quot;classInt&amp;quot;)) install.packages(&amp;quot;classInt&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;rvest&amp;quot;)) install.packages(&amp;quot;rvest&amp;quot;)
+
+# load packages
+library(feedeR)
+library(sf) 
+library(fs)
+library(tidyverse)
+library(lubridate)
+library(classInt)
+library(tmap)
+library(rvest)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;download-links&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Download links&lt;/h2&gt;
+&lt;p&gt;The first &lt;em&gt;url&lt;/em&gt; will give us access to a list of provinces, territorial headquarters (they do not always coincide with the oficial province), with new RSS links, which include the final download link for each municipality. In this case, we will download the buildings of Valencia. Cadastre data is updated every six months.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;url &amp;lt;- &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.bu.atom.xml&amp;quot;
+
+# import RSS feed with provincial links
+prov_enlaces &amp;lt;- feed.extract(url)
+str(prov_enlaces) # object is a list&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
+##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2021-03-04&amp;quot;
+##  $ items  : tibble[,5] [52 x 5] (S3: tbl_df/tbl/data.frame)
+##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-03-04&amp;quot; &amp;quot;2021-03-04&amp;quot; ...
+##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
+##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
+##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extract the table with the links
+prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;% 
+                       mutate(title = repair_encoding(title))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `html_encoding_repair()` was deprecated in rvest 1.0.0.
+## Instead, re-load using the `encoding` argument of `read_html()`&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prov_enlaces_tab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
+##    title         date                link                    description hash   
+##    &amp;lt;chr&amp;gt;         &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;  
+##  1 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ d21ebb~
+##  2 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ bdba5e~
+##  3 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 03bcbc~
+##  4 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 8a1542~
+##  5 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 7d3fd3~
+##  6 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 9c0874~
+##  7 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ ff722b~
+##  8 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ b431aa~
+##  9 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ f79c65~
+## 10 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ d702a6~
+## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Now, we access and download the data from Valencia. To filter the final download link we use the &lt;code&gt;filter()&lt;/code&gt; function of the &lt;code&gt;dplyr&lt;/code&gt; package, searching for the name of the territorial headquarter and then the name of the municipality in capital letters with the &lt;code&gt;str_detect()&lt;/code&gt; function of &lt;code&gt;stringr&lt;/code&gt;. The &lt;code&gt;pull()&lt;/code&gt; function allows us to extract a column from a &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Currently the &lt;code&gt;feed.extract()&lt;/code&gt; function does not import correctly in the encoding UTF-8 under Windows. For this reason, in some cities a bad codification of special characters may appear “CÃ¡diz”. To solve this problem we apply the &lt;code&gt;repair_encoding()&lt;/code&gt; function of the &lt;code&gt;rvest&lt;/code&gt; package. Nevertheless, problems can arise that have to be corrected manually.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filter the province and get the RSS link
+val_atom &amp;lt;- filter(prov_enlaces_tab, str_detect(title, &amp;quot;Valencia&amp;quot;)) %&amp;gt;% pull(link)
+
+# import the RSS
+val_enlaces &amp;lt;- feed.extract(val_atom)
+
+# get the table with the download links
+val_enlaces_tab &amp;lt;- val_enlaces$items
+val_enlaces_tab &amp;lt;- mutate(val_enlaces_tab, title = repair_encoding(title),
+                          link = repair_encoding(link)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)
+## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#  filter the table with the name of the city
+val_link &amp;lt;- filter(val_enlaces_tab, str_detect(title, &amp;quot;VALENCIA&amp;quot;)) %&amp;gt;% pull(link)
+val_link&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;http://www.catastro.minhap.es/INSPIRE/Buildings/46/46900-VALENCIA/A.ES.SDGC.BU.46900.zip&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-download&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data download&lt;/h2&gt;
+&lt;p&gt;The download is done with the &lt;code&gt;download.file()&lt;/code&gt; function that only has two main arguments, the download link and the path with the file name. In this case, we use the &lt;code&gt;tempfile()&lt;/code&gt; function, which is useful for creating temporary files, that is, files that only exist in the memory for a certain time.
+The file we download has the extension &lt;code&gt;*.zip&lt;/code&gt;, so we must unzip it with another function (&lt;code&gt;unzip()&lt;/code&gt;), which requires the name of the file and the name of the folder, where we want to unzip it. Finally, the &lt;code&gt;URLencode()&lt;/code&gt; function encodes an &lt;em&gt;URL&lt;/em&gt; address that contains special characters.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create a temporary file
+temp &amp;lt;- tempfile()
+
+# download the data
+download.file(URLencode(val_link), temp)
+
+# unzip to a folder called buildings
+unzip(temp, exdir = &amp;quot;buildings_valencia&amp;quot;) # change the name according to the city&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;import-the-data&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Import the data&lt;/h2&gt;
+&lt;p&gt;To import the data we use the &lt;code&gt;dir_ls()&lt;/code&gt; function of the &lt;code&gt;fs&lt;/code&gt; package, which can obtain the files and folders of a specific path while filtering through a text pattern (&lt;em&gt;regexp &lt;/em&gt;: regular expression). We apply the &lt;code&gt;st_read()&lt;/code&gt; function of the &lt;code&gt;sf&lt;/code&gt; package to the &lt;em&gt;Geography Markup Language&lt;/em&gt; (GML) file.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the path with the file
+file_val &amp;lt;- dir_ls(&amp;quot;buildings_valencia&amp;quot;, regexp = &amp;quot;building.gml&amp;quot;) # change the folder if needed
+
+# import the data
+buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `Building&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\en\2019-11-01-visualize-urban-growth\buildings_valencia\A.ES.SDGC.BU.46900.building.gml&amp;#39; using driver `GML&amp;#39;
+## Simple feature collection with 36279 features and 24 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;data-preparation&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Data preparation&lt;/h2&gt;
+&lt;p&gt;We only have to convert the column of the construction year (beginning) into a &lt;code&gt;Date&lt;/code&gt; class. The date column contains some dates in &lt;code&gt;--01-01&lt;/code&gt; format, which does not correspond to any recognizable date. Therefore, we replace the first &lt;code&gt;-&lt;/code&gt; with &lt;code&gt;0000&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;buildings_val &amp;lt;- mutate(buildings_val, 
+               beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
+                            ymd_hms() %&amp;gt;% as_date()
+               )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;distribution-chart&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Distribution chart&lt;/h2&gt;
+&lt;p&gt;Before creating the maps of the construction years, which will reflect urban growth, we will make a graph of distribution of the beginning variable. We can clearly identify periods of urban expansion. We will use the &lt;code&gt;ggplot2&lt;/code&gt; package with the geometry of &lt;code&gt;geom_density()&lt;/code&gt; for this purpose. The &lt;code&gt;font_add_google()&lt;/code&gt; function of the &lt;code&gt;sysfonts&lt;/code&gt; package allows us to download and include font families from Google.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#font download
+sysfonts::font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+#use showtext for fonts
+showtext::showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# limit the period after 1750
+filter(buildings_val, beginning &amp;gt;= &amp;quot;1750-01-01&amp;quot;) %&amp;gt;%
+ ggplot(aes(beginning)) + 
+    geom_density(fill = &amp;quot;#2166ac&amp;quot;, alpha = 0.7) +
+  scale_x_date(date_breaks = &amp;quot;20 year&amp;quot;, 
+               date_labels = &amp;quot;%Y&amp;quot;) +
+  theme_minimal(base_family = &amp;quot;Montserrat&amp;quot;) +
+  labs(y = &amp;quot;&amp;quot;,x = &amp;quot;&amp;quot;, title = &amp;quot;Evolution of urban development&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;buffer-of-25-km-for-valencia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Buffer of 2,5 km for Valencia&lt;/h2&gt;
+&lt;p&gt;To visualize better the distribution of urban growth, we limit the map to a radius of 2.5 km from the city center. Therefore, we use the &lt;code&gt;geocode_OSM()&lt;/code&gt; function of the &lt;code&gt;tmaptools&lt;/code&gt; package to obtain the coordinates of Valencia in class &lt;code&gt;sf&lt;/code&gt;. Then we project the points to the system we use for the buildings (EPSG: 25830). The &lt;code&gt;st_crs()&lt;/code&gt; function returns the coordinate system of a spatial object &lt;code&gt;sf&lt;/code&gt;. Finally, we create with the function &lt;code&gt;st_buffer()&lt;/code&gt; a buffer with 2500 m and the intersection with our building data. It is also possible to create a buffer in the form of a rectangle indicating the style with the argument &lt;code&gt;endCapStyle =&#34; SQUARE &#34;&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the coordinates of Valencia
+ciudad_point &amp;lt;- tmaptools::geocode_OSM(&amp;quot;Valencia&amp;quot;, 
+                                      as.sf = TRUE)
+
+#  project the points
+ciudad_point &amp;lt;- st_transform(ciudad_point, st_crs(buildings_val))
+
+# create the buffer
+point_bf &amp;lt;- st_buffer(ciudad_point, 2500) # radius of 2500 m
+
+
+# get the intersection between the buffer and the building
+buildings_val25 &amp;lt;- st_intersection(buildings_val, point_bf)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;prepare-data-for-mapping&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Prepare data for mapping&lt;/h2&gt;
+&lt;p&gt;We categorize the year into 15 groups using quartiles. It is also possible to modify the number of classes or the applied method (eg jenks, fisher, etc), you can find more details in the help &lt;code&gt;?classIntervals&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# find 15 classes
+br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;): var
+## has missing values, omitted in finding classes&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create labels
+lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## style: quantile
+##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
+##         939        1361         957         595        1708        1055 
+## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
+##        1454        1029        1224        1160        1154        1191 
+## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
+##        1148        1111        1207&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# categorize the year
+buildings_val25 &amp;lt;- mutate(buildings_val25, 
+                          yr_cl = cut(year(beginning), 
+                                       br$brks, 
+                                       labels = lab, 
+                                       include.lowest = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;map-of-valencia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Map of Valencia&lt;/h2&gt;
+&lt;p&gt;For the mapping, we will use the &lt;code&gt;tmap&lt;/code&gt; package. It is an interesting alternative to &lt;code&gt;ggplot2&lt;/code&gt;. It is a package of functions specialized in creating thematic maps. The philosophy of the package follows the same as in &lt;code&gt;ggplot2&lt;/code&gt;, creating multiple layers with different functions, which always start with &lt;code&gt;tm_ *&lt;/code&gt;and combine with &lt;code&gt;+&lt;/code&gt;. Building a map with &lt;em&gt;tmap&lt;/em&gt; always starts with &lt;em&gt;tm_shape()&lt;/em&gt;, where the data, we want to draw, is defined. Then we add the corresponding geometry to the data type (&lt;code&gt;tm_polygon()&lt;/code&gt;, &lt;code&gt;tm_border()&lt;/code&gt;, &lt;code&gt;tm_dots()&lt;/code&gt; or even &lt;code&gt;tm_raster()&lt;/code&gt;). The &lt;code&gt;tm_layout()&lt;/code&gt; function help us to configure the map style.&lt;/p&gt;
+&lt;p&gt;When we need more colors than the maximum allowed by &lt;code&gt;RColorBrewer&lt;/code&gt;, we can pass the colors to the &lt;code&gt;colorRampPalette()&lt;/code&gt; function. This function interpolates a set of given colors.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# colours
+col_spec &amp;lt;- RColorBrewer::brewer.pal(11, &amp;quot;Spectral&amp;quot;)
+
+# colour ramp function
+col_spec_fun &amp;lt;- colorRampPalette(col_spec)
+
+
+# create the final map
+tm_shape(buildings_val25) +
+  tm_polygons(&amp;quot;yr_cl&amp;quot;, 
+              border.col = &amp;quot;transparent&amp;quot;,
+              palette = col_spec_fun(15), # adapt to the number of classes
+              textNA = &amp;quot;Without data&amp;quot;,
+              title = &amp;quot;&amp;quot;) +
+ tm_layout(bg.color = &amp;quot;black&amp;quot;,
+           outer.bg.color = &amp;quot;black&amp;quot;,
+           legend.outside = TRUE,
+           legend.text.color = &amp;quot;white&amp;quot;,
+           legend.text.fontfamily = &amp;quot;Montserrat&amp;quot;, 
+            panel.label.fontfamily = &amp;quot;Montserrat&amp;quot;,
+            panel.label.color = &amp;quot;white&amp;quot;,
+            panel.label.bg.color = &amp;quot;black&amp;quot;,
+            panel.label.size = 5,
+            panel.label.fontface = &amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;We can export our map using the function &lt;code&gt;tmap_save(&#34;name.png&#34;, dpi = 300)&lt;/code&gt;. I recommend using the &lt;code&gt;dpi = 300&lt;/code&gt; argument for a good image quality.&lt;/p&gt;
+&lt;p&gt;An alternative way to the &lt;code&gt;tmap&lt;/code&gt; package is &lt;code&gt;ggplot2&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create the final map
+ggplot(buildings_val25) +
+     geom_sf(aes(fill = yr_cl), colour = &amp;quot;transparent&amp;quot;) +
+  scale_fill_manual(values = col_spec_fun(15)) + # adapt to the number of classes
+    labs(title = &amp;quot;VALÈNCIA&amp;quot;, fill = &amp;quot;&amp;quot;) +
+  guides(fill = guide_legend(keywidth = .7, keyheight = 2.7)) +
+theme_void(base_family = &amp;quot;Montserrat&amp;quot;) +
+theme(panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+      plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+      legend.justification = .5,
+      legend.text = element_text(colour = &amp;quot;white&amp;quot;, size = 12),
+      plot.title = element_text(colour = &amp;quot;white&amp;quot;, hjust = .5, size = 60,
+      margin = margin(t = 30)),
+      plot.caption = element_text(colour = &amp;quot;white&amp;quot;,
+      margin = margin(b = 20), hjust = .5, size = 16),
+      plot.margin = margin(r = 40, l = 40))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/visualize-urban-growth/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;1536&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;To export the result of ggplot we can use the function &lt;code&gt;ggsave(&#34;name.png&#34;)&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;dynamic-map-with-leaflet&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Dynamic map with leaflet&lt;/h2&gt;
+&lt;p&gt;A very interesting advantage is the &lt;code&gt;tmap_leaflet()&lt;/code&gt; function of the &lt;code&gt;tmap&lt;/code&gt; package to easily pass a map created in the same frame to &lt;code&gt;leaflet&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# tmap object
+m &amp;lt;-   tm_shape(buildings_val25) +
+          tm_polygons(&amp;quot;yr_cl&amp;quot;, 
+              border.col = &amp;quot;transparent&amp;quot;,
+              palette = col_spec_fun(15), # adapt to the number of classes
+              textNA = &amp;quot;Without data&amp;quot;,
+              title = &amp;quot;&amp;quot;)
+
+
+# dynamic map
+tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
+&lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>urban growth</category>
+      
+            <category>city</category>
+      
+            <category>urban geography</category>
+      
+      
+            <category>visualization</category>
+      
+            <category>R</category>
+      
+            <category>R:elementary</category>
+      
+            <category>gis</category>
+      
+    </item>
+    
+    <item>
+      <title>Calculating the distance to the sea in R</title>
+      <link>https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/</link>
+      <pubDate>Tue, 08 Jan 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;The distance to the sea is a fundamental variable in geography, especially relevant when it comes to modeling. For example, in interpolations of air temperature, the distance to the sea is usually used as a predictor variable, since there is a casual relationship between the two that explains the spatial variation. How can we estimate the (shortest) distance to the coast in R?&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Packages&lt;/h2&gt;
+&lt;p&gt;In this post we will use the following libraries:&lt;/p&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;15%&#34; /&gt;
+&lt;col width=&#34;84%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Library&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Description&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Set of vector maps ‘natural earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;RColorBrewer&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Color palettes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#install the libraries if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+#packages
+library(rnaturalearth)
+library(sf)
+library(raster)
+library(tidyverse)
+library(RColorBrewer)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;the-coast-of-iceland-as-an-example&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;The coast of Iceland as an example&lt;/h2&gt;
+&lt;p&gt;Our example in this post will be Iceland, and, as it is an island territory it will facilitate the tutorial showing the process in a simple manner. The &lt;em&gt;rnaturalearth&lt;/em&gt; package allows you to import the boundaries of countries (with different administrative levels) from around the world. The data comes from the platform &lt;a href=&#34;http://www.naturalearthdata.com/&#34;&gt;naturalearthdata.com&lt;/a&gt;. I recommend exploring the package, more info &lt;a href=&#34;https://github.com/ropensci/rnaturalearth&#34;&gt;here&lt;/a&gt;. The &lt;code&gt;ne_countries( )&lt;/code&gt; function imports the country boundaries. In this case we indicate with the argument &lt;em&gt;scale&lt;/em&gt; the resolution (10, 50 or 110m), with &lt;em&gt;country&lt;/em&gt; we indicate the specific country of interest and with &lt;em&gt;returnclass&lt;/em&gt; we determine which class we want (&lt;em&gt;sf&lt;/em&gt; or &lt;em&gt;sp&lt;/em&gt;), in our case &lt;em&gt;sf&lt;/em&gt; (simple feature).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;world &amp;lt;- ne_countries(scale = 50) #world map with 50m resolution
+
+plot(world) #sp class by default&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#import the limits of Iceland
+iceland &amp;lt;- ne_countries(scale = 10, country = &amp;quot;Iceland&amp;quot;, returnclass = &amp;quot;sf&amp;quot;)
+
+#info of our spatial vector object
+iceland&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 1 feature and 94 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: -24.53991 ymin: 63.39671 xmax: -13.50292 ymax: 66.56415
+## CRS:           +proj=longlat +datum=WGS84 +no_defs +ellps=WGS84 +towgs84=0,0,0
+##          featurecla scalerank labelrank sovereignt sov_a3 adm0_dif level
+## 188 Admin-0 country         0         3    Iceland    ISL        0     2
+##                  type   admin adm0_a3 geou_dif geounit gu_a3 su_dif subunit
+## 188 Sovereign country Iceland     ISL        0 Iceland   ISL      0 Iceland
+##     su_a3 brk_diff    name name_long brk_a3 brk_name brk_group  abbrev postal
+## 188   ISL        0 Iceland   Iceland    ISL  Iceland      &amp;lt;NA&amp;gt; Iceland     IS
+##               formal_en formal_fr name_ciawf note_adm0 note_brk name_sort
+## 188 Republic of Iceland      &amp;lt;NA&amp;gt;    Iceland      &amp;lt;NA&amp;gt;     &amp;lt;NA&amp;gt;   Iceland
+##     name_alt mapcolor7 mapcolor8 mapcolor9 mapcolor13 pop_est pop_rank
+## 188     &amp;lt;NA&amp;gt;         1         4         4          9  339747       10
+##     gdp_md_est pop_year lastcensus gdp_year                    economy
+## 188      16150     2017         NA     2016 2. Developed region: nonG7
+##               income_grp wikipedia fips_10_ iso_a2 iso_a3 iso_a3_eh iso_n3
+## 188 1. High income: OECD        NA       IC     IS    ISL       ISL    352
+##     un_a3 wb_a2 wb_a3   woe_id woe_id_eh                   woe_note adm0_a3_is
+## 188   352    IS   ISL 23424845  23424845 Exact WOE match as country        ISL
+##     adm0_a3_us adm0_a3_un adm0_a3_wb continent region_un       subregion
+## 188        ISL         NA         NA    Europe    Europe Northern Europe
+##                 region_wb name_len long_len abbrev_len tiny homepart min_zoom
+## 188 Europe &amp;amp; Central Asia        7        7          7   NA        1        0
+##     min_label max_label      ne_id wikidataid name_ar name_bn name_de name_en
+## 188         2         7 1159320917       Q189    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Island Iceland
+##      name_es name_fr name_el name_hi name_hu  name_id name_it name_ja name_ko
+## 188 Islandia Islande    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;  Izland Islandia Islanda    &amp;lt;NA&amp;gt;    &amp;lt;NA&amp;gt;
+##     name_nl  name_pl  name_pt name_ru name_sv name_tr name_vi name_zh
+## 188 IJsland Islandia Islândia    &amp;lt;NA&amp;gt;  Island Izlanda Iceland    &amp;lt;NA&amp;gt;
+##                           geometry
+## 188 MULTIPOLYGON (((-14.56363 6...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#here Iceland
+plot(iceland)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-3-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;By default, the &lt;code&gt;plot( )&lt;/code&gt; function with the class &lt;em&gt;sf&lt;/em&gt; creates as many facets of the map as there are variables in it. To limit this behavior we can use either a variable name &lt;code&gt;plot(iceland[&#34;admin&#34;])&lt;/code&gt; or the limit argument &lt;code&gt;plot(iceland, max.plot = 1)&lt;/code&gt;. With the argument &lt;em&gt;max.plot = 1&lt;/em&gt; the function uses the first available variable of the map.&lt;/p&gt;
+&lt;p&gt;In addition, we see in the information of the object &lt;em&gt;sf&lt;/em&gt; that the projection is WGS84 with decimal degrees (EPSG code: 4326). For the calculation of distances it is more convenient to use meters instead of degrees. Because of this, the first thing we do is to transform the map of Iceland to UTM Zone 27 (EPSG code: 3055). More information about EPSG and projections &lt;a href=&#34;http://spatialreference.org/ref/epsg/wgs-84/&#34;&gt;here&lt;/a&gt;. For that purpose, we use the &lt;code&gt;st_transform( )&lt;/code&gt; function. We simply indicate the map and the EPSG code.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform to UTM
+iceland &amp;lt;- st_transform(iceland, 3055)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;create-a-fishnet-of-points&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Create a fishnet of points&lt;/h2&gt;
+&lt;p&gt;We still need the points where we want to know the distance. In our case it will be a regular fishnet of points in Iceland with a resolution of 5km. We do this with the function &lt;code&gt;st_make_grid( )&lt;/code&gt;, indicating the resolution in the unit of the coordinate system (meters in our case) with the argument &lt;em&gt;cellsize&lt;/em&gt;, and what geometry we would like to create &lt;em&gt;what&lt;/em&gt; (polygons, centers or corners).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create the fishnet
+grid &amp;lt;- st_make_grid(iceland, cellsize = 5000, what = &amp;quot;centers&amp;quot;)
+
+#our fishnet with the extension of Iceland
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#only extract the points in the limits of Iceland
+grid &amp;lt;- st_intersection(grid, iceland)   
+
+#our fishnet now
+plot(grid)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calculating-the-distance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calculating the distance&lt;/h2&gt;
+&lt;p&gt;To estimate the distance we use the &lt;code&gt;st_distance( )&lt;/code&gt; function that returns a vector of distances for all our points in the fishnet. But first it is necessary to transform the map of Iceland from a polygon shape (MULTIPOLYGON) to a line (MULTILINESTRING). More details with &lt;code&gt;?st_cast&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#transform Iceland from polygon shape to line
+iceland &amp;lt;- st_cast(iceland, &amp;quot;MULTILINESTRING&amp;quot;)
+
+#calculation of the distance between the coast and our points
+dist &amp;lt;- st_distance(iceland, grid)
+
+#distance with unit in meters
+head(dist[1,])&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+## [1]  790.7906 1151.4360 1270.7603 3128.9057 2428.5677 4197.7472&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;plotting-the-calculated-distance&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Plotting the calculated distance&lt;/h2&gt;
+&lt;p&gt;Once obtained the distance for our points, we can combine them with the coordinates and plot them in &lt;em&gt;ggplot2&lt;/em&gt;. For this, we create a &lt;em&gt;data.frame&lt;/em&gt;. The object &lt;em&gt;dist&lt;/em&gt; is a matrix of one column, so we have to convert it to a vector with the function &lt;code&gt;as.vector( )&lt;/code&gt;. In addition, we divide by 1000 to convert the distance in meters to km. The &lt;code&gt;st_coordinates( )&lt;/code&gt; function extracts the coordinates of our points. For the final visualization we use a vector of colors with the RdGy palette (more &lt;a href=&#34;http://colorbrewer2.org&#34;&gt;here&lt;/a&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#create a data.frame with the distance and the coordinates of the points
+df &amp;lt;- data.frame(dist = as.vector(dist)/1000,
+                    st_coordinates(grid))
+
+#structure
+str(df)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    4104 obs. of  3 variables:
+##  $ dist: num  0.791 1.151 1.271 3.129 2.429 ...
+##  $ X   : num  608796 613796 583796 588796 593796 ...
+##  $ Y   : num  7033371 7033371 7038371 7038371 7038371 ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colors 
+col_dist &amp;lt;- brewer.pal(11, &amp;quot;RdGy&amp;quot;)
+
+
+ggplot(df, aes(X, Y, fill = dist))+ #variables
+         geom_tile()+ #geometry
+           scale_fill_gradientn(colours = rev(col_dist))+ #colors for plotting the distance
+             labs(fill = &amp;quot;Distance (km)&amp;quot;)+ #legend name
+             theme_void()+ #map theme
+              theme(legend.position = &amp;quot;bottom&amp;quot;) #legend position&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;export-the-distance-as-a-raster&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Export the distance as a raster&lt;/h2&gt;
+&lt;p&gt;To be able to export the estimated distance to the sea of Iceland, we need to use the &lt;code&gt;rasterize( )&lt;/code&gt; function of the library &lt;em&gt;raster&lt;/em&gt;.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: decimal&#34;&gt;
+&lt;li&gt;&lt;p&gt;First, it is necessary to create an empty raster. In this raster we have to indicate the resolution, in our case it is of 5000m, the projection and the extension of the raster.&lt;/p&gt;
+&lt;ol style=&#34;list-style-type: lower-alpha&#34;&gt;
+&lt;li&gt;&lt;p&gt;We can extract the projection from the information of the map of Iceland.&lt;/p&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;The extension can be extracted from our &lt;em&gt;grid&lt;/em&gt; points with the function &lt;code&gt;extent( )&lt;/code&gt;. However, this last function needs the class &lt;em&gt;sp&lt;/em&gt;, so we pass the object &lt;em&gt;grid&lt;/em&gt; in &lt;em&gt;sf&lt;/em&gt; format, only for this time, to the class &lt;em&gt;sp&lt;/em&gt; using the function &lt;code&gt;as( )&lt;/code&gt; and the argument “Spatial”.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;&lt;/li&gt;
+&lt;li&gt;&lt;p&gt;In addition to the above, the &lt;em&gt;data.frame&lt;/em&gt; &lt;strong&gt;df&lt;/strong&gt;, that we created earlier, has to be converted into the &lt;em&gt;sf&lt;/em&gt; class. Therefore, we apply the function &lt;code&gt;st_as_sf( )&lt;/code&gt; with the argument &lt;em&gt;coords&lt;/em&gt; indicating the names of the coordinates. Additionally, we also define the coordinate system that we know.&lt;/p&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#get the extension
+ext &amp;lt;- extent(as(grid, &amp;quot;Spatial&amp;quot;))
+
+#extent object
+ext&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : Extent 
+## xmin       : 338795.6 
+## xmax       : 848795.6 
+## ymin       : 7033371 
+## ymax       : 7383371&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#raster destination
+r &amp;lt;- raster(resolution = 5000, ext = ext, crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+
+#convert the points to a spatial object class sf
+dist_sf &amp;lt;- st_as_sf(df, coords = c(&amp;quot;X&amp;quot;, &amp;quot;Y&amp;quot;)) %&amp;gt;%
+                      st_set_crs(3055)
+
+#create the distance raster
+dist_raster &amp;lt;- rasterize(dist_sf, r, &amp;quot;dist&amp;quot;, fun = mean)
+
+#raster
+dist_raster&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## class      : RasterLayer 
+## dimensions : 70, 102, 7140  (nrow, ncol, ncell)
+## resolution : 5000, 5000  (x, y)
+## extent     : 338795.6, 848795.6, 7033371, 7383371  (xmin, xmax, ymin, ymax)
+## crs        : +proj=utm +zone=27 +ellps=intl +units=m +no_defs 
+## source     : memory
+## names      : layer 
+## values     : 0.006124901, 115.1712  (min, max)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#plot the raster
+plot(dist_raster)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#export the raster
+writeRaster(dist_raster, file = &amp;quot;dist_islandia.tif&amp;quot;, format = &amp;quot;GTiff&amp;quot;, overwrite = TRUE)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;The &lt;code&gt;rasterize( )&lt;/code&gt; function is designed to create rasters from an irregular grid. In case we have a regular grid, like this one, we can use an easier alternative way. The &lt;code&gt;rasterFromXYZ( )&lt;/code&gt; function converts a &lt;em&gt;data.frame&lt;/em&gt; with longitude, latitude and the variable &lt;em&gt;Z&lt;/em&gt; into a raster object. It is important that the order should be longitude, latitude, variables.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;r &amp;lt;- rasterFromXYZ(df[, c(2:3, 1)], crs = &amp;quot;+proj=utm +zone=27 +ellps=intl +towgs84=-73,47,-83,0,0,0,0 +units=m +no_defs&amp;quot;)
+
+plot(r)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2019/calculating-the-distance-to-the-sea-in-r/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;With the calculation of distance we can create art, as seen in the header of this post, which includes a world map only with the distance to the sea of all continents. A different perspective to our world (&lt;a href=&#34;https://www.geografiainfinita.com/2017/06/una-radiografia-del-mundo-a-traves-de-la-distancia-al-mar/&#34;&gt;here more (spanish)&lt;/a&gt;) .&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>distance</category>
+      
+            <category>raster</category>
+      
+            <category>estimation</category>
+      
+            <category>variable</category>
+      
+      
+            <category>gis</category>
+      
+            <category>R</category>
+      
+            <category>R:elementary</category>
+      
+    </item>
+    
+  </channel>
+</rss>

@@ -1,0 +1,625 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>gis on Dr. Dominic Royé</title>
+    <link>https://dominicroye.github.io/es/categories/gis/</link>
+    <description>Recent content in gis on Dr. Dominic Royé</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <copyright>&amp;copy; 2018-2021 Dominic Royé. All rights reserved.</copyright>
+    <lastBuildDate>Sun, 19 Jan 2020 00:00:00 +0000</lastBuildDate>
+    
+        <atom:link href="https://dominicroye.github.io/es/categories/gis/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+    <item>
+      <title>Distancias geográficas</title>
+      <link>https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/</link>
+      <pubDate>Sun, 19 Jan 2020 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;El primer post del año 2020, lo dedicaré a una consulta que me hicieron recientemente. Me plantearon la pregunta de cómo se podría calcular la distancia más corta entre diferentes puntos y cómo saber cúal es el punto más próximo a uno dado. Cuando trabajamos con datos espaciales en R, en la actualidad lo más fácil es usar el paquete &lt;code&gt;sf&lt;/code&gt; en combinación con la colección de paquetes &lt;code&gt;tidyverse&lt;/code&gt;. Además usamos el paquete &lt;code&gt;units&lt;/code&gt; que es muy útil para trabajar con unidades de medida.&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;13%&#34; /&gt;
+&lt;col width=&#34;86%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;units&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona unidades de medida para vectores R: conversión, derivación, simplificación&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;maps&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas geográficos y conjuntos de datos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Mapas vectoriales del mundo ‘Natural Earth’&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes necesarios
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;units&amp;quot;)) install.packages(&amp;quot;units&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;maps&amp;quot;)) install.packages(&amp;quot;maps&amp;quot;)
+if(!require(&amp;quot;rnaturalearth&amp;quot;)) install.packages(&amp;quot;rnaturalearth&amp;quot;)
+
+# cargamos los paquetes
+library(maps)
+library(sf) 
+library(tidyverse)
+library(units)
+library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;unidades-de-medida&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Unidades de medida&lt;/h2&gt;
+&lt;p&gt;El uso de vectores y matrices de clase &lt;code&gt;units&lt;/code&gt; nos permite calcular y transformar unidades de medida.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# longitud
+l &amp;lt;- set_units(1:10, m)
+l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##  [1]  1  2  3  4  5  6  7  8  9 10&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertir a otras unidades
+set_units(l, cm)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  100  200  300  400  500  600  700  800  900 1000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# sumar diferentes unidades
+set_units(l, cm) + l&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [cm]
+##  [1]  200  400  600  800 1000 1200 1400 1600 1800 2000&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# area
+a &amp;lt;- set_units(355, ha)
+set_units(a, km2)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 3.55 [km2]&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# velocidad
+vel &amp;lt;- set_units(seq(20, 50, 10), km/h)
+set_units(vel, m/s)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m/s]
+## [1]  5.555556  8.333333 11.111111 13.888889&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;capitales-del-mundo&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Capitales del mundo&lt;/h2&gt;
+&lt;p&gt;Vamos a usar las capitales de todo el mundo con el objetivo de calcular la distancia a la capital más próxima y indicar el nombre de la ciudad.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# conjunto de ciudades del mundo con coordenadas
+head(world.cities) # proviene del paquete maps&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;##                 name country.etc   pop   lat  long capital
+## 1 &amp;#39;Abasan al-Jadidah   Palestine  5629 31.31 34.34       0
+## 2 &amp;#39;Abasan al-Kabirah   Palestine 18999 31.32 34.35       0
+## 3       &amp;#39;Abdul Hakim    Pakistan 47788 30.55 72.11       0
+## 4 &amp;#39;Abdullah-as-Salam      Kuwait 21817 29.36 47.98       0
+## 5              &amp;#39;Abud   Palestine  2456 32.03 35.07       0
+## 6            &amp;#39;Abwein   Palestine  3434 32.03 35.20       0&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Para convertir puntos con longitud y latitud en un objeto espacial de clase &lt;code&gt;sf&lt;/code&gt;, empleamos la función &lt;code&gt;st_as_sf()&lt;/code&gt;, indicando las columnas de las coordenadas y el sistema de referencia de coordenadas (WSG84, epsg:4326).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convertimos los puntos en un objeto sf con CRS WSG84
+cities &amp;lt;- st_as_sf(world.cities, coords = c(&amp;quot;long&amp;quot;, &amp;quot;lat&amp;quot;), crs = 4326)
+cities&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 43645 features and 4 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -178.8 ymin: -54.79 xmax: 179.81 ymax: 78.93
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##                  name  country.etc   pop capital            geometry
+## 1  &amp;#39;Abasan al-Jadidah    Palestine  5629       0 POINT (34.34 31.31)
+## 2  &amp;#39;Abasan al-Kabirah    Palestine 18999       0 POINT (34.35 31.32)
+## 3        &amp;#39;Abdul Hakim     Pakistan 47788       0 POINT (72.11 30.55)
+## 4  &amp;#39;Abdullah-as-Salam       Kuwait 21817       0 POINT (47.98 29.36)
+## 5               &amp;#39;Abud    Palestine  2456       0 POINT (35.07 32.03)
+## 6             &amp;#39;Abwein    Palestine  3434       0  POINT (35.2 32.03)
+## 7            &amp;#39;Adadlay      Somalia  9198       0  POINT (44.65 9.77)
+## 8              &amp;#39;Adale      Somalia  5492       0   POINT (46.3 2.75)
+## 9               &amp;#39;Afak         Iraq 22706       0 POINT (45.26 32.07)
+## 10              &amp;#39;Afif Saudi Arabia 41731       0 POINT (42.93 23.92)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;En el próximo paso, simplemente filtramos por las capitales codificadas en la columna &lt;code&gt;capital&lt;/code&gt; con 1. La ventaja del paquete &lt;code&gt;sf&lt;/code&gt; es la posibilidad de aplicar funciones de la colección &lt;code&gt;tidyverse&lt;/code&gt; para manipular los atributos. Además, añadimos una columna con nuevas etiquetas usando la función &lt;code&gt;str_c()&lt;/code&gt; del paquete &lt;code&gt;stringr&lt;/code&gt;, la cúal es similar a la de &lt;em&gt;R Base&lt;/em&gt; &lt;code&gt;paste()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos por las capitales
+capitals &amp;lt;- filter(cities, capital == 1)
+
+# creamos una nueva etiqueta combinando nombre y país
+capitals &amp;lt;- mutate(capitals, city_country = str_c(name, &amp;quot; (&amp;quot;, country.etc, &amp;quot;)&amp;quot;))
+
+capitals &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Simple feature collection with 230 features and 5 fields
+## Geometry type: POINT
+## Dimension:     XY
+## Bounding box:  xmin: -176.13 ymin: -51.7 xmax: 179.2 ymax: 78.21
+## Geodetic CRS:  WGS 84
+## First 10 features:
+##           name          country.etc     pop capital               geometry
+## 1       &amp;#39;Amman               Jordan 1303197       1    POINT (35.93 31.95)
+## 2    Abu Dhabi United Arab Emirates  619316       1    POINT (54.37 24.48)
+## 3        Abuja              Nigeria  178462       1      POINT (7.17 9.18)
+## 4        Accra                Ghana 2029143       1      POINT (-0.2 5.56)
+## 5    Adamstown             Pitcairn      51       1  POINT (-130.1 -25.05)
+## 6  Addis Abeba             Ethiopia 2823167       1     POINT (38.74 9.03)
+## 7        Agana                 Guam    1041       1   POINT (144.75 13.47)
+## 8      Algiers              Algeria 2029936       1     POINT (3.04 36.77)
+## 9        Alofi                 Niue     627       1 POINT (-169.92 -19.05)
+## 10   Amsterdam          Netherlands  744159       1     POINT (4.89 52.37)
+##                        city_country
+## 1                   &amp;#39;Amman (Jordan)
+## 2  Abu Dhabi (United Arab Emirates)
+## 3                   Abuja (Nigeria)
+## 4                     Accra (Ghana)
+## 5              Adamstown (Pitcairn)
+## 6            Addis Abeba (Ethiopia)
+## 7                      Agana (Guam)
+## 8                 Algiers (Algeria)
+## 9                      Alofi (Niue)
+## 10          Amsterdam (Netherlands)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;calcular-distancias&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Calcular distancias&lt;/h2&gt;
+&lt;p&gt;La distancia geográfica (euclidiana o de gran círculo) se calcula con la función &lt;code&gt;st_distance()&lt;/code&gt;, o bien entre dos puntos, entre un punto y otros múltiples o entre todos. En el último caso obtenemos una matriz simétrica de distancias (NxN), tomados por pares de un conjunto. En la diagonal encontramos las combinaciones entre los mismos puntos dando todas nulas.&lt;/p&gt;
+&lt;table&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;A&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;246&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;344&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;B&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;246&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;118&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;C&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;344&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;118&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;0&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;p&gt;Cuando queremos saber, por ejemplo, la distancia de Amsterdam a Abu Dhabi, Washington y Tokyo pasamos dos objetos espaciales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calcular la distancia
+dist_amsterdam &amp;lt;- st_distance(slice(capitals, 10), 
+                              slice(capitals, c(2, 220, 205)))
+
+dist_amsterdam # distancia en metros&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [m]
+##         [,1]    [,2]    [,3]
+## [1,] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;El resultado es una matriz de una fila o de una columna (en función del orden de los objetos) con clase de &lt;code&gt;units&lt;/code&gt;. Así es posible cambiar fácilmente a otra unidad de medida. Si queremos obtener un vector sin clase &lt;code&gt;units&lt;/code&gt;, únicamente aplicamos la función &lt;code&gt;as.vector()&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cambiamos de m a km
+set_units(dist_amsterdam, &amp;quot;km&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Units: [km]
+##          [,1]     [,2]    [,3]
+## [1,] 5167.859 6203.802 9316.79&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# units class a vector
+as.vector(dist_amsterdam)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 5167859 6203802 9316790&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;A continuación estimamos la matriz de distancia entre todas las capitales. Es importante convertir los valores nulos a &lt;code&gt;NA&lt;/code&gt; para obtener posteriormente el índice correcto de la matriz.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# calcular la distancia
+m_distance &amp;lt;- st_distance(capitals)
+
+# matriz
+dim(m_distance)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] 230 230&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cambiamos de m a km
+m_distance_km &amp;lt;- set_units(m_distance, km)
+
+# reemplazamos la distance de 0 con NA
+m_distance_km[m_distance_km == set_units(0, km)] &amp;lt;- NA&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Cuando el resultado es de clase &lt;code&gt;units&lt;/code&gt; es necesario usar la misma clase para poder hacer consultas logicas. Por ejemplo, &lt;code&gt;set_units(1, m) == set_units(1, m)&lt;/code&gt; vs. &lt;code&gt;set_units(1, m) == 1&lt;/code&gt;.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;p&gt;Con el objetivo de obtener la distancia más corta, además de la posición de la misma, usamos la función &lt;code&gt;apply()&lt;/code&gt; que a su vez nos permite aplicar la función &lt;code&gt;which.min()&lt;/code&gt; y &lt;code&gt;min()&lt;/code&gt; sobre cada fila. También sería posible emplear la función sobre columnas que daría el mismo resulado. Para finalizar, añadimos los resultados como nuevas columnas con la función &lt;code&gt;mutate()&lt;/code&gt;. Las posiciones en &lt;em&gt;pos&lt;/em&gt; nos permiten obtener los nombres de las ciudades más próximas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos la posición de la ciudad y la distancia
+pos &amp;lt;- apply(m_distance_km, 1, which.min)
+dist &amp;lt;- apply(m_distance_km, 1, min, na.rm = TRUE)
+
+# añadimos la distancia y obtenemos el nombre de la ciudad
+capitals &amp;lt;- mutate(capitals, nearest_city =  city_country[pos], 
+                             geometry_nearest = geometry[pos],
+                             distance_city = dist)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-distancias-a-la-próxima-capital&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa de distancias a la próxima capital&lt;/h2&gt;
+&lt;p&gt;Por último, construimos un mapa representando la distancia en circulos proporcionales. Para ello, usamos la gramática habitual de &lt;code&gt;ggplot()&lt;/code&gt; añadiendo la geometría &lt;code&gt;geom_sf()&lt;/code&gt;, primero para el mapamundi de fondo y después para los circulos de las ciudades. En &lt;code&gt;aes()&lt;/code&gt; indicamos con el argumento &lt;code&gt;size = distance_city&lt;/code&gt; la variable que debe ser mapeado proporcionalmente. La función &lt;code&gt;theme_void()&lt;/code&gt; elimina todos los elementos de estilo. Además, definimos con la función &lt;code&gt;coord_sf()&lt;/code&gt; una nueva proyección indicando el formato &lt;em&gt;proj4&lt;/em&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# mapamundi
+world &amp;lt;- ne_countries(scale = 10, returnclass = &amp;quot;sf&amp;quot;)
+
+# mapa 
+ggplot(world) +
+   geom_sf(fill = &amp;quot;black&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+   geom_sf(data = capitals, 
+           aes(size = distance_city),
+           alpha = 0.7,
+           fill = &amp;quot;#bd0026&amp;quot;,
+           shape = 21,
+           show.legend = &amp;#39;point&amp;#39;) +
+   coord_sf(crs = &amp;quot;+proj=robin +lon_0=0 +x_0=0 +y_0=0 +ellps=WGS84 +datum=WGS84 +units=m +no_defs&amp;quot;) +
+  labs(size = &amp;quot;Distance (km)&amp;quot;, title = &amp;quot;Distance to the next capital&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2020/distancias-geogr%C3%A1ficas/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>distancia</category>
+      
+            <category>puntos</category>
+      
+            <category>ciudades</category>
+      
+      
+            <category>análisis espacial</category>
+      
+            <category>R</category>
+      
+            <category>R:principante</category>
+      
+            <category>gis</category>
+      
+    </item>
+    
+    <item>
+      <title>Visualizar el crecimiento urbano</title>
+      <link>https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/</link>
+      <pubDate>Fri, 01 Nov 2019 00:00:00 +0000</pubDate>
+      
+      <guid>https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/</guid>
+      <description>
+&lt;script src=&#34;https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/index.es_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
+
+
+&lt;p&gt;La Dirección General del Catastro de España dispone de información espacial de toda la edificación a excepción del País Vasco y Navarra. Este conjunto de datos forma parte de la implantación de &lt;a href=&#34;https://inspire.ec.europa.eu/&#34;&gt;INSPIRE&lt;/a&gt;, la Infraestructura de Información Espacial en Europa. Más información podemos encontrar &lt;a href=&#34;http://www.catastro.meh.es/webinspire/index.html&#34;&gt;aquí&lt;/a&gt;. Utilizaremos los enlaces (&lt;em&gt;urls&lt;/em&gt;) en formato &lt;em&gt;ATOM&lt;/em&gt;, que es un formato de redifusión de tipo RSS, permitiéndonos obtener el enlace de descarga para cada municipio.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Esta entrada de blog es una versión reducida del caso práctico que podéis encontrar en nuestra reciente publicación - &lt;a href=&#34;https://dominicroye.github.io/es/publication/manual_rgis_2019/&#34;&gt;Introducción a los SIG con R&lt;/a&gt; - publicado por Dominic Royé y Roberto Serrano-Notivoli.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;div id=&#34;paquetes&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Paquetes&lt;/h2&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;9%&#34; /&gt;
+&lt;col width=&#34;90%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Conjunto de paquetes (visualización y manipulación de datos): ggplot2, dplyr, purrr,etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: importar, exportar y manipular datos vectoriales&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;fs&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Proporciona una interfaz uniforme y multiplataforma para las operaciones del sistema de archivos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;lubridate&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil manipulación de fechas y tiempos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;feedeR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Importar formatos de redifusión RSS&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tmap&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Fácil creación de mapas temáticos&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;classInt&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Para crear intervalos de clase univariantes&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sysfonts&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Carga familias tipográficas del sistema y de Google&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;showtext&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Usar familias tipográficas más fácilmente en gráficos R&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# instalamos los paquetes necesarios
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;feedeR&amp;quot;)) install.packages(&amp;quot;feedeR&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;lubridate&amp;quot;)) install.packages(&amp;quot;lubridate&amp;quot;)
+if(!require(&amp;quot;fs&amp;quot;)) install.packages(&amp;quot;fs&amp;quot;)
+if(!require(&amp;quot;tmap&amp;quot;)) install.packages(&amp;quot;tmap&amp;quot;)
+if(!require(&amp;quot;classInt&amp;quot;)) install.packages(&amp;quot;classInt&amp;quot;)
+if(!require(&amp;quot;showtext&amp;quot;)) install.packages(&amp;quot;showtext&amp;quot;)
+if(!require(&amp;quot;sysfonts&amp;quot;)) install.packages(&amp;quot;sysfonts&amp;quot;)
+if(!require(&amp;quot;rvest&amp;quot;)) install.packages(&amp;quot;rvest&amp;quot;)
+
+# cargamos los paquetes
+library(feedeR)
+library(sf) 
+library(fs)
+library(tidyverse)
+library(lubridate)
+library(classInt)
+library(tmap)
+library(rvest)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;enlaces-de-descarga&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Enlaces de descarga&lt;/h2&gt;
+&lt;p&gt;La primera &lt;em&gt;url&lt;/em&gt; nos dará acceso a un listado de provincias, sedes territoriales (no siempre coinciden con la provincia), con nuevos enlaces RSS los cuales incluyen los enlaces finales de descarga para cada municipio. En este caso, descargaremos el edificado de Valencia. Los datos del Catastro se actualizan cada seis meses.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;url &amp;lt;- &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.bu.atom.xml&amp;quot;
+
+# importamos los RSS con enlaces de provincias
+prov_enlaces &amp;lt;- feed.extract(url)
+str(prov_enlaces) #estructura es lista&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## List of 4
+##  $ title  : chr &amp;quot;Download service of Buildings. Territorial Office&amp;quot;
+##  $ link   : chr &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/ES.SDGC.BU.atom.xml&amp;quot;
+##  $ updated: POSIXct[1:1], format: &amp;quot;2021-03-04&amp;quot;
+##  $ items  : tibble [52 x 5] (S3: tbl_df/tbl/data.frame)
+##   ..$ title      : chr [1:52] &amp;quot;Territorial office 02 Albacete&amp;quot; &amp;quot;Territorial office 03 Alicante&amp;quot; &amp;quot;Territorial office 04 Almería&amp;quot; &amp;quot;Territorial office 05 Avila&amp;quot; ...
+##   ..$ date       : POSIXct[1:52], format: &amp;quot;2021-03-04&amp;quot; &amp;quot;2021-03-04&amp;quot; ...
+##   ..$ link       : chr [1:52] &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/02/ES.SDGC.bu.atom_02.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/03/ES.SDGC.bu.atom_03.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/04/ES.SDGC.bu.atom_04.xml&amp;quot; &amp;quot;http://www.catastro.minhap.es/INSPIRE/buildings/05/ES.SDGC.bu.atom_05.xml&amp;quot; ...
+##   ..$ description: chr [1:52] &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; &amp;quot;\n\n\t\t  &amp;quot; ...
+##   ..$ hash       : chr [1:52] &amp;quot;d21ebb7975e59937&amp;quot; &amp;quot;bdba5e149f09e9d8&amp;quot; &amp;quot;03bcbcc7c5be2e17&amp;quot; &amp;quot;8a154202dd778143&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# extraemos la tabla con los enlaces
+prov_enlaces_tab &amp;lt;- as_tibble(prov_enlaces$items) %&amp;gt;% 
+                       mutate(title = repair_encoding(title))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: `html_encoding_repair()` was deprecated in rvest 1.0.0.
+## Instead, re-load using the `encoding` argument of `read_html()`&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;prov_enlaces_tab&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## # A tibble: 52 x 5
+##    title         date                link                    description hash   
+##    &amp;lt;chr&amp;gt;         &amp;lt;dttm&amp;gt;              &amp;lt;chr&amp;gt;                   &amp;lt;chr&amp;gt;       &amp;lt;chr&amp;gt;  
+##  1 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ d21ebb~
+##  2 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ bdba5e~
+##  3 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 03bcbc~
+##  4 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 8a1542~
+##  5 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 7d3fd3~
+##  6 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ 9c0874~
+##  7 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ ff722b~
+##  8 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ b431aa~
+##  9 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ f79c65~
+## 10 &amp;quot;Territorial~ 2021-03-04 00:00:00 http://www.catastro.mi~ &amp;quot;\n\n\t\t ~ d702a6~
+## # ... with 42 more rows&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;Accedemos y descargamos los datos de Valencia. Para encontrar el enlace final de descarga usamos la función &lt;code&gt;filter()&lt;/code&gt; del paquete &lt;code&gt;dplyr&lt;/code&gt; buscando el nombre de la sede territorial y posteriormente el nombre del municipio en mayúsculas con la función &lt;code&gt;str_detect()&lt;/code&gt; de &lt;code&gt;stringr&lt;/code&gt;. La función &lt;code&gt;pull()&lt;/code&gt; nos permite extraer una columna de un &lt;code&gt;data.frame&lt;/code&gt;.&lt;/p&gt;
+&lt;p&gt;&lt;div class=&#34;alert alert-note&#34;&gt;
+  
+Actualmente la función &lt;code&gt;feed.extract()&lt;/code&gt; no importa correctamente en el &lt;em&gt;encoding&lt;/em&gt; UTF-8 (Windows). Por eso, en algunas ciudades pueden aparecer una mala codificación de caracteres especiales “CÃ¡diz”. Para subsanar este problema aplicamos la función &lt;code&gt;repair_encoding()&lt;/code&gt; del paquete &lt;code&gt;rvest&lt;/code&gt;. Áún así pueden surgir problemas que deban corregirse manualmente.
+
+&lt;/div&gt;
+&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la provincia y obtenemos la url RSS
+val_atom &amp;lt;- filter(prov_enlaces_tab, str_detect(title, &amp;quot;Valencia&amp;quot;)) %&amp;gt;% pull(link)
+
+# importamos la RSS
+val_enlaces &amp;lt;- feed.extract(val_atom)
+
+# obtenemos la tabla con los enlaces de descarga
+val_enlaces_tab &amp;lt;- val_enlaces$items
+val_enlaces_tab &amp;lt;- mutate(val_enlaces_tab, title = repair_encoding(title),
+                          link = repair_encoding(link)) &lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Best guess: UTF-8 (100% confident)
+## Best guess: UTF-8 (100% confident)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# filtramos la tabla con el nombre de la ciudad
+val_link &amp;lt;- filter(val_enlaces_tab, str_detect(title, &amp;quot;VALENCIA&amp;quot;)) %&amp;gt;% pull(link)
+val_link&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## [1] &amp;quot;http://www.catastro.minhap.es/INSPIRE/Buildings/46/46900-VALENCIA/A.ES.SDGC.BU.46900.zip&amp;quot;&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;descarga-de-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Descarga de datos&lt;/h2&gt;
+&lt;p&gt;La descarga se realiza con la función &lt;code&gt;download.file()&lt;/code&gt; que únicamente tiene dos argumentos principales, el enlace de descarga y la ruta con el nombre del archivo. En este caso hacemos uso de la función &lt;code&gt;tempfile()&lt;/code&gt;, que nos es útil para crear archivos temporales, es decir, archivos que únicamente existen en la memoría RAM por un tiempo determinado.
+El archivo que descargamos tiene extensión &lt;code&gt;*.zip&lt;/code&gt;, por lo que debemos descomprimirlo con otra función (&lt;code&gt;unzip()&lt;/code&gt;), que requiere el nombre del archivo y el nombre de la carpeta donde lo queremos descomprimir. Por último, la función &lt;code&gt;URLencode()&lt;/code&gt; codifica una dirección &lt;em&gt;URL&lt;/em&gt; que contiene caracteres especiales.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# creamos un archivo temporal 
+temp &amp;lt;- tempfile()
+
+# descargamos los datos
+download.file(URLencode(val_link), temp)
+
+# descomprimimos a una carpeta llamda buildings
+unzip(temp, exdir = &amp;quot;buildings_valencia&amp;quot;) # cambia el nombre según la ciudad&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;importar-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Importar los datos&lt;/h2&gt;
+&lt;p&gt;Para importar los datos utilizamos la función &lt;code&gt;dir_ls()&lt;/code&gt; del paquete &lt;code&gt;fs&lt;/code&gt;, que nos permite obtener los archivos y carpetas de una ruta concreta al mismo tiempo que filtramos por un patrón de texto (&lt;em&gt;regexp&lt;/em&gt;: expresión regular). Aplicamos la función &lt;code&gt;st_read()&lt;/code&gt; del paquete &lt;code&gt;sf&lt;/code&gt; al archivo espacial de formato &lt;em&gt;Geography Markup Language&lt;/em&gt; (GML).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos la ruta con el archivo
+file_val &amp;lt;- dir_ls(&amp;quot;buildings_valencia&amp;quot;, regexp = &amp;quot;building.gml&amp;quot;) # cambia el nombre de carpeta si es necesario
+
+# importamos los datos
+buildings_val &amp;lt;- st_read(file_val)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Reading layer `Building&amp;#39; from data source `D:\OneDriveUSC\OneDrive - Universidade de Santiago de Compostela\Documentos\GitHub\blogR_update\content\post\es\2019-11-01-visualizar-crecimiento-urbano\buildings_valencia\A.ES.SDGC.BU.46900.building.gml&amp;#39; using driver `GML&amp;#39;
+## Simple feature collection with 36279 features and 24 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 720608 ymin: 4351286 xmax: 734981.9 ymax: 4382906
+## Projected CRS: ETRS89 / UTM zone 30N&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparación-de-los-datos&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparación de los datos&lt;/h2&gt;
+&lt;p&gt;Únicamente convertimos la columna de la edad del edificio (&lt;em&gt;beginning&lt;/em&gt;) en clase &lt;code&gt;Date&lt;/code&gt;. La columna de la fecha contiene algunas fechas en formato &lt;code&gt;--01-01&lt;/code&gt; lo que no corresponde a ninguna fecha reconocible. Por eso, reemplazamos el primer &lt;code&gt;-&lt;/code&gt; por &lt;code&gt;0000&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# 
+buildings_val &amp;lt;- mutate(buildings_val, 
+               beginning = str_replace(beginning, &amp;quot;^-&amp;quot;, &amp;quot;0000&amp;quot;) %&amp;gt;% 
+                            ymd_hms() %&amp;gt;% as_date()
+               )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: 5 failed to parse.&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;gráfico-de-distribución&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Gráfico de distribución&lt;/h2&gt;
+&lt;p&gt;Antes de crear el mapa de la edad del edificado, lo que reflejará el crecimiento urbano, haremos un gráfico de distribución de la fecha de construcción de los edificios. Podremos identificar claramente períodos de expansión urbana. Usaremos el paquete &lt;code&gt;ggplot2&lt;/code&gt; con la geometría de &lt;code&gt;geom_density()&lt;/code&gt; para este objetivo. La función &lt;code&gt;font_add_google()&lt;/code&gt; del paquete &lt;code&gt;sysfonts&lt;/code&gt; nos permite descargar e incluir familias tipográficas de Google.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#descarga de familia tipográfica
+sysfonts::font_add_google(&amp;quot;Montserrat&amp;quot;, &amp;quot;Montserrat&amp;quot;)
+
+#usar showtext para familias tipográficas
+showtext::showtext_auto() &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#limitamos al periodo posterior a 1750
+filter(buildings_val, beginning &amp;gt;= &amp;quot;1750-01-01&amp;quot;) %&amp;gt;%
+ ggplot(aes(beginning)) + 
+    geom_density(fill = &amp;quot;#2166ac&amp;quot;, alpha = 0.7) +
+  scale_x_date(date_breaks = &amp;quot;20 year&amp;quot;, 
+               date_labels = &amp;quot;%Y&amp;quot;) +
+  theme_minimal(base_family = &amp;quot;Montserrat&amp;quot;) +
+  labs(y = &amp;quot;&amp;quot;,x = &amp;quot;&amp;quot;, title = &amp;quot;Evolución del desarrollo urbano&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;buffer-de-25-km-de-valencia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Buffer de 2,5 km de Valencia&lt;/h2&gt;
+&lt;p&gt;Para poder visualizar bien la distribución del crecimiento, limitamos el mapa a un radio de 2,5 km desde el centro de la ciudad. Usamos la función &lt;code&gt;geocode_OSM()&lt;/code&gt; del paquete &lt;code&gt;tmaptools&lt;/code&gt; para obtener las coordenadas de Valencia en clase &lt;code&gt;sf&lt;/code&gt;. Después proyectamos los puntos al sistema que usamos para el edificado (EPSG:25830). La función &lt;code&gt;st_crs()&lt;/code&gt; nos devuelve el sistema de coordenadas de un objeto espacial &lt;code&gt;sf&lt;/code&gt;. Como último paso creamos con la función &lt;code&gt;st_buffer()&lt;/code&gt; un &lt;em&gt;buffer&lt;/em&gt; con 2500 m y la intersección con nuestros datos de los edificios. También es posible crear un buffer en forma de un rectángulo indicando el tipo de estilo con el argumento &lt;code&gt;endCapStyle = &#34;SQUARE&#34;&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtenemos las coordinadas de Valencia
+ciudad_point &amp;lt;- tmaptools::geocode_OSM(&amp;quot;Valencia&amp;quot;, 
+                                      as.sf = TRUE)
+
+# proyectamos los datos
+ciudad_point &amp;lt;- st_transform(ciudad_point, st_crs(buildings_val))
+
+# creamos un buffer
+point_bf &amp;lt;- st_buffer(ciudad_point, 2500) # radio de 2500 m
+
+
+# obtenemos la intersección entre el buffer y la edificación
+buildings_val25 &amp;lt;- st_intersection(buildings_val, point_bf)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: attribute variables are assumed to be spatially constant throughout all
+## geometries&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;preparar-los-datos-para-el-mapas&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Preparar los datos para el mapas&lt;/h2&gt;
+&lt;p&gt;Para poder visualizar bien las diferentes épocas de crecimiento, categorizamos el año en 15 grupos empleando cuartiles. También es posible modificar el número de clases o bien el método aplicado (p.j. jenks, fisher, etc), más detalles encontráis en la ayuda &lt;code&gt;?classIntervals&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#encontrar 15 clases
+br &amp;lt;- classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning in classIntervals(year(buildings_val25$beginning), 15, &amp;quot;quantile&amp;quot;): var
+## has missing values, omitted in finding classes&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#crear etiquetas
+lab &amp;lt;- names(print(br, under = &amp;quot;&amp;lt;&amp;quot;, over = &amp;quot;&amp;gt;&amp;quot;, cutlabels = FALSE))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## style: quantile
+##      &amp;lt; 1890 1890 - 1912 1912 - 1925 1925 - 1930 1930 - 1940 1940 - 1950 
+##         939        1361         957         595        1708        1055 
+## 1950 - 1958 1958 - 1962 1962 - 1966 1966 - 1970 1970 - 1973 1973 - 1978 
+##        1454        1029        1224        1160        1154        1191 
+## 1978 - 1988 1988 - 1999      &amp;gt; 1999 
+##        1148        1111        1207&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#categorizar el año
+buildings_val25 &amp;lt;- mutate(buildings_val25, 
+                          yr_cl = cut(year(beginning), 
+                                      br$brks, 
+                                      labels = lab, 
+                                      include.lowest = TRUE))&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-de-valencia&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa de Valencia&lt;/h2&gt;
+&lt;p&gt;El mapa creamos con el paquete &lt;code&gt;tmap&lt;/code&gt;. Es una interesante alternativa a &lt;code&gt;ggplot2&lt;/code&gt;. Se trata de un paquete de funciones especializadas en crear mapas temáticos. La filosofía del paquete sigue a la de &lt;code&gt;ggplot2&lt;/code&gt;, creando multiples capas con diferentes funciones, que siempre empiezan con &lt;code&gt;tm_*&lt;/code&gt; y se combinan con &lt;code&gt;+&lt;/code&gt;. La construcción de un mapa con &lt;code&gt;tmap&lt;/code&gt; siempre comienza con &lt;code&gt;tm_shape()&lt;/code&gt;, donde se definen los datos que queremos dibujar. Luego agregamos la geometría correspondiente al tipo de datos (&lt;code&gt;tm_polygon()&lt;/code&gt;, &lt;code&gt;tm_border()&lt;/code&gt;, &lt;code&gt;tm_dots()&lt;/code&gt; o incluso &lt;code&gt;tm_raster()&lt;/code&gt;). La función &lt;code&gt;tm_layout()&lt;/code&gt; ayuda a configurar el estilo del mapa.&lt;/p&gt;
+&lt;p&gt;Cuando necesitamos más colores del máximo permitido por &lt;code&gt;RColorBrewer&lt;/code&gt; podemos pasar los colores a la función &lt;code&gt;colorRampPalette()&lt;/code&gt;. Esta función interpola para un mayor número más colores de la gama.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#colores
+col_spec &amp;lt;- RColorBrewer::brewer.pal(11, &amp;quot;Spectral&amp;quot;)
+
+#función de una gama de colores
+col_spec_fun &amp;lt;- colorRampPalette(col_spec)
+
+
+#crear los mapas
+tm_shape(buildings_val25) +
+  tm_polygons(&amp;quot;yr_cl&amp;quot;, 
+              border.col = &amp;quot;transparent&amp;quot;,
+              palette = col_spec_fun(15), # adapta al número clases
+              textNA = &amp;quot;Sin dato&amp;quot;,
+              title = &amp;quot;&amp;quot;) +
+ tm_layout(bg.color = &amp;quot;black&amp;quot;,
+           outer.bg.color = &amp;quot;black&amp;quot;,
+           legend.outside = TRUE,
+           legend.text.color = &amp;quot;white&amp;quot;,
+           legend.text.fontfamily = &amp;quot;Montserrat&amp;quot;, 
+            panel.label.fontfamily = &amp;quot;Montserrat&amp;quot;,
+            panel.label.color = &amp;quot;white&amp;quot;,
+            panel.label.bg.color = &amp;quot;black&amp;quot;,
+            panel.label.size = 5,
+            panel.label.fontface = &amp;quot;bold&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Podemos exportar nuestro mapa usando la función &lt;code&gt;tmap_save(&#34;nombre.png&#34;, dpi = 300)&lt;/code&gt;. Recomiendo usar el argumento &lt;code&gt;dpi = 300&lt;/code&gt; para obtener una buena calidad de imagen.&lt;/p&gt;
+&lt;p&gt;Una alternativa al paquete &lt;code&gt;tmap&lt;/code&gt; es &lt;code&gt;ggplot2&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#crear el mapa
+ggplot(buildings_val25) +
+     geom_sf(aes(fill = yr_cl), colour = &amp;quot;transparent&amp;quot;) +
+  scale_fill_manual(values = col_spec_fun(15)) + # adapta al número clases
+    labs(title = &amp;quot;VALÈNCIA&amp;quot;, fill = &amp;quot;&amp;quot;) +
+  guides(fill = guide_legend(keywidth = .7, keyheight = 2.7)) +
+theme_void(base_family = &amp;quot;Montserrat&amp;quot;) +
+theme(panel.background = element_rect(fill = &amp;quot;black&amp;quot;),
+      plot.background = element_rect(fill = &amp;quot;black&amp;quot;),
+      legend.justification = .5,
+      legend.text = element_text(colour = &amp;quot;white&amp;quot;, size = 12),
+      plot.title = element_text(colour = &amp;quot;white&amp;quot;, hjust = .5, size = 60,
+      margin = margin(t = 30)),
+      plot.caption = element_text(colour = &amp;quot;white&amp;quot;,
+      margin = margin(b = 20), hjust = .5, size = 16),
+      plot.margin = margin(r = 40, l = 40))&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/es/2019/visualizar-el-crecimiento-urbano/index.es_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;1536&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;Para exportar el resultado de ggplot podemos emplear la función &lt;code&gt;ggsave(&#34;nombre.png&#34;)&lt;/code&gt;.&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;mapa-dinámico-en-leaflet&#34; class=&#34;section level2&#34;&gt;
+&lt;h2&gt;Mapa dinámico en leaflet&lt;/h2&gt;
+&lt;p&gt;Una ventaja muy interesante es la función &lt;code&gt;tmap_leaflet()&lt;/code&gt; del paquete &lt;code&gt;tmap&lt;/code&gt; para pasar de forma sencilla un mapa creado en el mismo marco a &lt;code&gt;leaflet&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;#mapa tmap de Santiago
+m &amp;lt;-   tm_shape(buildings_val25) +
+          tm_polygons(&amp;quot;yr_cl&amp;quot;, 
+              border.col = &amp;quot;transparent&amp;quot;,
+              palette = col_spec_fun(15), # adapta al número clases
+              textNA = &amp;quot;Without data&amp;quot;,
+              title = &amp;quot;&amp;quot;)
+
+
+#mapa dinámico
+tmap_leaflet(m)&lt;/code&gt;&lt;/pre&gt;
+&lt;iframe src=&#34;https://dominicroye.github.io/files/urban_growth_leaflet.html&#34; width=&#34;672&#34; height=&#34;500px&#34;&gt;
+&lt;/iframe&gt;
+&lt;/div&gt;
+</description>
+      
+            <category>crecimiento urbano</category>
+      
+            <category>ciudad</category>
+      
+            <category>geografia urbana</category>
+      
+      
+            <category>visualización</category>
+      
+            <category>R</category>
+      
+            <category>R:principante</category>
+      
+            <category>gis</category>
+      
+    </item>
+    
+  </channel>
+</rss>
