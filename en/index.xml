@@ -715,6 +715,10 @@ labeling&lt;/code&gt;&lt;/pre&gt;
 &lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Extension for ggplot2 of multiple ‘scales’&lt;/td&gt;
 &lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggblend&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extension for mixing colors in ggplot graphs&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
@@ -727,6 +731,7 @@ if(!require(&amp;quot;whitebox&amp;quot;)) install.packages(&amp;quot;whitebox&a
 if(!require(&amp;quot;tidyterra&amp;quot;)) install.packages(&amp;quot;tidyterra&amp;quot;)
 if(!require(&amp;quot;giscoR&amp;quot;)) install.packages(&amp;quot;giscoR&amp;quot;)
 if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
+if(!require(&amp;quot;ggblend&amp;quot;)) install.packages(&amp;quot;ggblend&amp;quot;)
 
 # packages
 library(sf)
@@ -737,7 +742,8 @@ library(whitebox)
 library(ggnewscale)
 library(tidyterra)
 library(giscoR)
-library(units)&lt;/code&gt;&lt;/pre&gt;
+library(units)
+library(ggblend)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Data&lt;/h1&gt;
@@ -775,6 +781,22 @@ plot(suiz_lakes)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After obtaining the DEM from Switzerland, we must mask the country’s boundaries. The object’s class is &lt;em&gt;RasterLayer&lt;/em&gt; from the &lt;code&gt;raster&lt;/code&gt; package, however, the new standard is &lt;code&gt;terra&lt;/code&gt; with the class &lt;em&gt;SpatRaster&lt;/em&gt;. That’s why we convert it and then apply the mask. Finally, we reproject to the Swiss coordinate system obtained from the vector data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the DEM with
 mdt &amp;lt;- get_elev_raster(suiz, z = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Please note that rgdal will be retired during October 2023,
+## plan transition to sf/stars/terra functions using GDAL and PROJ
+## at your earliest convenience.
+## See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution
+## rgdal: version: 1.6-7, (SVN revision 1203)
+## Geospatial Data Abstraction Library extensions to R successfully loaded
+## Loaded GDAL runtime: GDAL 3.6.2, released 2023/01/02
+## Path to GDAL shared files: C:/Users/xeo19/AppData/Local/R/win-library/4.3/rgdal/gdal
+##  GDAL does not use iconv for recoding strings.
+## GDAL binary built with GEOS: TRUE 
+## Loaded PROJ runtime: Rel. 9.2.0, March 1st, 2023, [PJ_VERSION: 920]
+## Path to PROJ shared files: C:/Users/xeo19/AppData/Local/R/win-library/4.3/rgdal/proj
+## PROJ CDN enabled: FALSE
+## Linking to sp version:1.6-1
+## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
+## use options(&amp;quot;rgdal_show_exportToProj4_warnings&amp;quot;=&amp;quot;none&amp;quot;) before loading sp or rgdal.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Mosaicing &amp;amp; Projecting&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Note: Elevation units are in meters.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mdt # old RasterLayer class&lt;/code&gt;&lt;/pre&gt;
@@ -783,9 +805,8 @@ mdt &amp;lt;- get_elev_raster(suiz, z = 10)&lt;/code&gt;&lt;/pre&gt;
 ## resolution : 0.0006219649, 0.0006219649  (x, y)
 ## extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : file1a383b30325d.tif 
-## names      : file1a383b30325d 
-## values     : -32768, 32767  (min, max)&lt;/code&gt;&lt;/pre&gt;
+## source     : file5fe02e084cd2.tif 
+## names      : file5fe02e084cd2&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(mdt)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert to terra and mask area of interest
@@ -854,7 +875,7 @@ hilldf_single &amp;lt;- as.data.frame(hill_single, xy = TRUE)
 # map 
 ggplot() +
   geom_raster(data = hilldf_single,
-              aes(x, y, fill = lyr1),
+              aes(x, y, fill = hillshade),
               show.legend = FALSE) +
   scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;) +
   new_scale_fill() +
@@ -885,12 +906,18 @@ hillmulti &amp;lt;- map(c(270, 15, 60, 330), function(dir){
                           angle = 45, 
                           direction = dir,
                           normalize= TRUE)}
-  )
-
-# create a multidimensional raster and reduce it by summing up
-hillmulti &amp;lt;- rast(hillmulti) %&amp;gt;% sum()
-
-# multidirectional
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+|---------|---------|---------|---------|
+=========================================
+                                          &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create a multidimensional raster and reduce it by summing up
+hillmulti &amp;lt;- rast(hillmulti) %&amp;gt;% sum()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+|---------|---------|---------|---------|
+=========================================
+                                          &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# multidirectional
 plot(hillmulti, col = grey(1:100/100))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# unidirectional
@@ -923,6 +950,40 @@ ggplot() +
   theme_void() +
     theme(legend.position = &amp;quot;top&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The color blending technique is very useful to obtain remarkable results in the shading effect. Recently the &lt;code&gt;ggblend&lt;/code&gt; package offers this possibility. In order to blend several layers, it is necessary to insert the &lt;code&gt;geom_raster()&lt;/code&gt; and the &lt;code&gt;scale_fill_*()&lt;/code&gt; objects in a comma-separated list. Then follows the &lt;em&gt;pipe&lt;/em&gt; with the &lt;code&gt;blend(&#34;mix_type&#34;)&lt;/code&gt; function to which we add the other &lt;code&gt;ggplot2&lt;/code&gt; objects. In this case we apply multiplication as a form of blending.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# map
+m &amp;lt;- ggplot() +
+  list(
+  geom_raster(data = hillmultidf,
+              aes(x, y, fill = sum),
+              show.legend = FALSE),
+  scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;),
+  new_scale_fill(),
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7),
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000))
+  ) %&amp;gt;% blend(&amp;quot;multiply&amp;quot;) +
+  geom_sf(data = suiz_lakes,
+          fill = &amp;quot;#c6dbef&amp;quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &amp;quot;right&amp;quot;)) +
+  labs(fill = &amp;quot;m&amp;quot;) +
+  coord_sf() +
+  theme_void() +
+    theme(legend.position = &amp;quot;top&amp;quot;)
+
+ggsave(&amp;quot;mdt_hillshade_blend.png&amp;quot;, m, 
+       width = 10, 
+       height = 8, 
+       unit = &amp;quot;in&amp;quot;,
+       device = png, 
+       type = &amp;quot;cairo&amp;quot;,
+       bg = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;mdt_hillshade_blend.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;another-alternative-for-multidirectional-shadows&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Another alternative for multidirectional shadows&lt;/h1&gt;
@@ -943,11 +1004,12 @@ wbt_multidirectional_hillshade(&amp;quot;mdt.tiff&amp;quot;,
 # re-import the hillshade
 hillwb &amp;lt;- rast(&amp;quot;hillshade.tiff&amp;quot;)
 plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# remask 
-hillwb &amp;lt;- mask(hillwb, vect(suiz))
-plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-12-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+hillwb &amp;lt;- mask(hillwb, vect(suiz))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: [mask] CRS do not match&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the hillshade to xyz
 hillwbdf &amp;lt;- as.data.frame(hillwb, xy = TRUE)
 
@@ -971,7 +1033,7 @@ ggplot() +
   coord_sf() +
   theme_void()  +
   theme(legend.position = &amp;quot;top&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>
@@ -2038,7 +2100,6 @@ ggplot(ny_city) +
       <pubDate>Tue, 01 Jun 2021 00:00:00 +0000</pubDate>
       <guid>https://dominicroye.github.io/en/2021/firefly-cartography/</guid>
       <description>
-&lt;script src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/header-attrs/header-attrs.js&#34;&gt;&lt;/script&gt;
 
 
 &lt;div id=&#34;cartography-firefly&#34; class=&#34;section level1&#34;&gt;
@@ -2069,38 +2130,34 @@ ggplot(ny_city) +
 &lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
 &lt;/tr&gt;
 &lt;tr class=&#34;even&#34;&gt;
-&lt;td align=&#34;left&#34;&gt;plotwidgets&lt;/td&gt;
-&lt;td align=&#34;left&#34;&gt;Contains functions for color conversion (RGB, HSL)&lt;/td&gt;
-&lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;terra&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster (raster successor package)&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
+&lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;raster&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Import, export and manipulate raster&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
+&lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
+&lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;ggshadow&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;ggplot2 extension for shaded and glow geometries&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
+&lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;ggspatial&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;ggplot2 extension for spatial objects&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
+&lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;ggplot2 extension to create multiple scales&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;odd&#34;&gt;
+&lt;tr class=&#34;even&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;janitor&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Simple functions to examine and clean data&lt;/td&gt;
 &lt;/tr&gt;
-&lt;tr class=&#34;even&#34;&gt;
+&lt;tr class=&#34;odd&#34;&gt;
 &lt;td align=&#34;left&#34;&gt;rnaturalearth&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Vector maps of the world ‘Natural Earth’&lt;/td&gt;
 &lt;/tr&gt;
@@ -2112,7 +2169,6 @@ if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse
 if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
 if(!require(&amp;quot;terra&amp;quot;)) install.packages(&amp;quot;terra&amp;quot;)
 if(!require(&amp;quot;raster&amp;quot;)) install.packages(&amp;quot;raster&amp;quot;)
-if(!require(&amp;quot;plotwidgets&amp;quot;)) install.packages(&amp;quot;plotwidgets&amp;quot;)
 if(!require(&amp;quot;ggshadow&amp;quot;)) install.packages(&amp;quot;ggshadow&amp;quot;)
 if(!require(&amp;quot;ggspatial&amp;quot;)) install.packages(&amp;quot;ggspatial&amp;quot;)
 if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
@@ -2125,7 +2181,6 @@ library(raster)
 library(terra)
 library(sf)
 library(tidyverse)
-library(plotwidgets)
 library(ggshadow)
 library(ggspatial)
 library(ggnewscale)
@@ -2149,17 +2204,17 @@ library(rnaturalearth)&lt;/code&gt;&lt;/pre&gt;
 
 earthquakes &amp;lt;- read.csv2(&amp;quot;catalogoComunSV_1621713848556.csv&amp;quot;)
 str(earthquakes)&lt;/code&gt;&lt;/pre&gt;
-&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:    149724 obs. of  10 variables:
-##  $ Evento       : chr  &amp;quot;          33&amp;quot; &amp;quot;          34&amp;quot; &amp;quot;          35&amp;quot; &amp;quot;          36&amp;quot; ...
-##  $ Fecha        : chr  &amp;quot;  02/03/1373&amp;quot; &amp;quot;  03/03/1373&amp;quot; &amp;quot;  08/03/1373&amp;quot; &amp;quot;  19/03/1373&amp;quot; ...
-##  $ Hora         : chr  &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; ...
-##  $ Latitud      : chr  &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; ...
-##  $ Longitud     : chr  &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; ...
-##  $ Prof...Km.   : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ Inten.       : chr  &amp;quot;     VIII-IX&amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
-##  $ Mag.         : chr  &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
-##  $ Tipo.Mag.    : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ LocalizaciÃ³n: chr  &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; &amp;quot;RibagorÃ§a.L&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## &amp;#39;data.frame&amp;#39;:	149724 obs. of  10 variables:
+##  $ Evento      : chr  &amp;quot;          33&amp;quot; &amp;quot;          34&amp;quot; &amp;quot;          35&amp;quot; &amp;quot;          36&amp;quot; ...
+##  $ Fecha       : chr  &amp;quot;  02/03/1373&amp;quot; &amp;quot;  03/03/1373&amp;quot; &amp;quot;  08/03/1373&amp;quot; &amp;quot;  19/03/1373&amp;quot; ...
+##  $ Hora        : chr  &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; &amp;quot;    00:00:00&amp;quot; ...
+##  $ Latitud     : chr  &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; &amp;quot;     42.5000&amp;quot; ...
+##  $ Longitud    : chr  &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; &amp;quot;      0.7500&amp;quot; ...
+##  $ Prof...Km.  : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Inten.      : chr  &amp;quot;     VIII-IX&amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Mag.        : chr  &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; &amp;quot;            &amp;quot; ...
+##  $ Tipo.Mag.   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Localización: chr  &amp;quot;Ribagorça.L&amp;quot; &amp;quot;Ribagorça.L&amp;quot; &amp;quot;Ribagorça.L&amp;quot; &amp;quot;Ribagorça.L&amp;quot; ...&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# Blue Marble RGB raster
 
 bm &amp;lt;- rast(&amp;quot;snapshot-2017-11-30T00_00_00Z.tiff&amp;quot;)
@@ -2197,28 +2252,18 @@ earthquakes &amp;lt;-  earthquakes %&amp;gt;% clean_names() %&amp;gt;%
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# clip to the desired area
 
 bm &amp;lt;- crop(bm, extent(-20, 10, 30, 50)) # W, E, S, N&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;To obtain an unsaturated version of the Blue Marble RGB raster, we must apply a function created for this purpose. In this, we use the &lt;code&gt;rgb2hsl()&lt;/code&gt; function from the &lt;code&gt;plotwidgets&lt;/code&gt; package, which helps us converting RGB to HSL and vice versa. The HSL model is defined by Hue, Saturation, Lightness. The last two parameters are expressed in ratio or percentage. The hue is defined on a color wheel from 0 to 360º. 0 is red, 120 is green, 240 is blue. To change the saturation we only have to reduce the value of S.&lt;/p&gt;
-&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# function to change saturation from RGB
-
-saturation &amp;lt;- function(rgb, s = .5){
-  
-  hsl &amp;lt;- rgb2hsl(as.matrix(rgb))
-  hsl[2, ] &amp;lt;- s
-  
-  rgb_new &amp;lt;- as.vector(t(hsl2rgb(hsl)))
-  
-  return(rgb_new)
-  
-}&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;We employ our &lt;code&gt;saturation()&lt;/code&gt; function using the &lt;code&gt;app()&lt;/code&gt; function that applies it to each pixel with the three RGB layers. We add the argument &lt;code&gt;s&lt;/code&gt;, which defines the desired saturation level. This step may take several minutes. Then we project our RGB image.&lt;/p&gt;
+&lt;p&gt;To obtain an unsaturated version of the Blue Marble RGB raster, we must apply a function created for this purpose. In this, we use the &lt;code&gt;colorize()&lt;/code&gt;, which helps us converting RGB to HSL and vice versa. The HSL model is defined by Hue, Saturation, Lightness. The last two parameters are expressed in ratio or percentage. The hue is defined on a color wheel from 0 to 360º. 0 is red, 120 is green, 240 is blue. To change the saturation we only have to reduce the value of S.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# apply the function to unsaturate with 5%
 
-bm_desat &amp;lt;- app(bm, saturation, s = .05)
+bm_desat &amp;lt;- colorize(bm, to = &amp;quot;hsl&amp;quot;)
+bm_desat[[2]] &amp;lt;- .05 # ratio of saturation
+set.RGB(bm_desat, 1:3, &amp;quot;hsl&amp;quot;)
+bm_desat &amp;lt;- colorize(bm_desat, to = &amp;quot;rgb&amp;quot;)
 
 # plot new RGB image
 
 plotRGB(bm_desat)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;2100&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# project 
 
 bm_desat &amp;lt;- terra::project(bm_desat, &amp;quot;epsg:3035&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
@@ -2251,7 +2296,7 @@ grid &amp;lt;- st_graticule(earthquakes) &lt;/code&gt;&lt;/pre&gt;
            crs = 3035,
            expand = FALSE) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;map-with-background-and-earthquakes&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Map with background and earthquakes&lt;/h2&gt;
@@ -2275,7 +2320,7 @@ grid &amp;lt;- st_graticule(earthquakes) &lt;/code&gt;&lt;/pre&gt;
            crs = 3035,
            expand = FALSE) +
   theme_void()&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;final-map&#34; class=&#34;section level2&#34;&gt;
 &lt;h2&gt;Final map&lt;/h2&gt;
@@ -2308,7 +2353,7 @@ grid &amp;lt;- st_graticule(earthquakes) &lt;/code&gt;&lt;/pre&gt;
            expand = FALSE) +
   theme_void() +
   theme(plot.title = element_text(size = 50, vjust = -5, colour = &amp;quot;white&amp;quot;, hjust = .95))&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-11-1.png&#34; width=&#34;4500&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;ggsave(&amp;quot;firefly_map.png&amp;quot;, width = 15, height = 15, units = &amp;quot;in&amp;quot;, dpi = 300)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;

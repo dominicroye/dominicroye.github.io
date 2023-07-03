@@ -776,7 +776,7 @@
   
   <span class="middot-divider"></span>
   <span class="article-reading-time">
-    8 min de lectura
+    9 min de lectura
   </span>
   
 
@@ -867,6 +867,10 @@
 <td align="left">ggnewscale</td>
 <td align="left">Extensión para ggplot2 de múltiples ‘scales’</td>
 </tr>
+<tr class="odd">
+<td align="left">ggblend</td>
+<td align="left">Extensión para mezclar colores de gráficos ggplot</td>
+</tr>
 </tbody>
 </table>
 <pre class="r"><code># instalamos los paquetes si hace falta
@@ -879,6 +883,7 @@ if(!require(&quot;whitebox&quot;)) install.packages(&quot;whitebox&quot;)
 if(!require(&quot;tidyterra&quot;)) install.packages(&quot;tidyterra&quot;)
 if(!require(&quot;giscoR&quot;)) install.packages(&quot;giscoR&quot;)
 if(!require(&quot;ggnewscale&quot;)) install.packages(&quot;ggnewscale&quot;)
+if(!require(&quot;ggblend&quot;)) install.packages(&quot;ggblend&quot;)
 
 # paquetes
 library(sf)
@@ -889,7 +894,8 @@ library(whitebox)
 library(ggnewscale)
 library(tidyterra)
 library(giscoR)
-library(units)</code></pre>
+library(units)
+library(ggblend)</code></pre>
 </div>
 <div id="datos" class="section level1">
 <h1>Datos</h1>
@@ -927,6 +933,22 @@ plot(suiz_lakes)</code></pre>
 <p>Después de obtener el MDT de Suiza debemos enmascarar los límites del país. La clase del objeto es <em>RasterLayer</em> del paquete <code>raster</code>, no obstante, el nuevo estándar es <code>terra</code> con la clase <em>SpatRaster</em>. Por eso lo convertimos y después aplicamos la máscara. Finalmente reproyectamos al sistema de coordenadas de Suiza obtenido de los datos vectoriales.</p>
 <pre class="r"><code># obtenemos el mdt con 
 mdt &lt;- get_elev_raster(suiz, z = 10)</code></pre>
+<pre><code>## Please note that rgdal will be retired during October 2023,
+## plan transition to sf/stars/terra functions using GDAL and PROJ
+## at your earliest convenience.
+## See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution
+## rgdal: version: 1.6-7, (SVN revision 1203)
+## Geospatial Data Abstraction Library extensions to R successfully loaded
+## Loaded GDAL runtime: GDAL 3.6.2, released 2023/01/02
+## Path to GDAL shared files: C:/Users/xeo19/AppData/Local/R/win-library/4.3/rgdal/gdal
+##  GDAL does not use iconv for recoding strings.
+## GDAL binary built with GEOS: TRUE 
+## Loaded PROJ runtime: Rel. 9.2.0, March 1st, 2023, [PJ_VERSION: 920]
+## Path to PROJ shared files: C:/Users/xeo19/AppData/Local/R/win-library/4.3/rgdal/proj
+## PROJ CDN enabled: FALSE
+## Linking to sp version:1.6-1
+## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
+## use options(&quot;rgdal_show_exportToProj4_warnings&quot;=&quot;none&quot;) before loading sp or rgdal.</code></pre>
 <pre><code>## Mosaicing &amp; Projecting</code></pre>
 <pre><code>## Note: Elevation units are in meters.</code></pre>
 <pre class="r"><code>mdt # clase antigua de RasterLayer</code></pre>
@@ -935,9 +957,8 @@ mdt &lt;- get_elev_raster(suiz, z = 10)</code></pre>
 ## resolution : 0.0006219649, 0.0006219649  (x, y)
 ## extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : file3f7c489b49.tif 
-## names      : file3f7c489b49 
-## values     : -32768, 32767  (min, max)</code></pre>
+## source     : file29f8298e24b2.tif 
+## names      : file29f8298e24b2</code></pre>
 <pre class="r"><code>plot(mdt)</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-5-1.png" width="672" /></p>
 <pre class="r"><code># convertir a terra y enmascarar la zona de interés
@@ -971,7 +992,6 @@ ggplot() +
   coord_sf() +
   theme_void() +
   theme(legend.position = &quot;bottom&quot;)</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_raster).</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-6-1.png" width="672" /></p>
 </div>
 <div id="calcular-el-hillshade" class="section level1">
@@ -1007,7 +1027,7 @@ hilldf_single &lt;- as.data.frame(hill_single, xy = TRUE)
 # mapa 
 ggplot() +
   geom_raster(data = hilldf_single,
-              aes(x, y, fill = lyr1),
+              aes(x, y, fill = hillshade),
               show.legend = FALSE) +
   scale_fill_distiller(palette = &quot;Greys&quot;) +
   new_scale_fill() +
@@ -1038,12 +1058,22 @@ hillmulti &lt;- map(c(270, 15, 60, 330), function(dir){
                           angle = 45, 
                           direction = dir,
                           normalize= TRUE)}
-  )
+  )</code></pre>
+<pre><code>## 
+|---------|---------|---------|---------|
+=========================================
+                                          
 
-# creamos un raster multidimensional y lo reducimos sumando
-hillmulti &lt;- rast(hillmulti) %&gt;% sum()
-
-# multidireccional
+|---------|---------|---------|---------|
+=========================================
+                                          </code></pre>
+<pre class="r"><code># creamos un raster multidimensional y lo reducimos sumando
+hillmulti &lt;- rast(hillmulti) %&gt;% sum()</code></pre>
+<pre><code>## 
+|---------|---------|---------|---------|
+=========================================
+                                          </code></pre>
+<pre class="r"><code># multidireccional
 plot(hillmulti, col = grey(1:100/100))</code></pre>
 <p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
 <pre class="r"><code># unidireccional
@@ -1075,8 +1105,41 @@ ggplot() +
   coord_sf() +
   theme_void() +
     theme(legend.position = &quot;top&quot;)</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_raster).</code></pre>
-<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-10-1.png" width="672" />
+La técnica de mezcla de colores es muy útil para obtener resultados notables en el efecto de sombreado. Desde hace poco el paquete <code>ggblend</code> ofrece esta posibilidad. Con el objetivo de combinar varias capas, es necesario insertar los objetos <code>geom_raster()</code> y los <code>scale_fill_*()</code> en una lista seperados por coma. Después le sigue el <em>pipe</em> con la función <code>blend("tipo_de_mezcal")</code> al que le sumamos los otros objetos de <code>ggplot2</code>. En este caso aplicamos la multiplicación como forma de mezcla.</p>
+<pre class="r"><code># mapa
+m &lt;- ggplot() +
+  list(
+  geom_raster(data = hillmultidf,
+              aes(x, y, fill = sum),
+              show.legend = FALSE),
+  scale_fill_distiller(palette = &quot;Greys&quot;),
+  new_scale_fill(),
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7),
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000))
+  ) %&gt;% blend(&quot;multiply&quot;) +
+  geom_sf(data = suiz_lakes,
+          fill = &quot;#c6dbef&quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &quot;right&quot;)) +
+  labs(fill = &quot;m&quot;) +
+  coord_sf() +
+  theme_void() +
+    theme(legend.position = &quot;top&quot;)
+
+ggsave(&quot;mdt_hillshade_blend.png&quot;, m, 
+       width = 10, 
+       height = 8, 
+       unit = &quot;in&quot;,
+       device = png, 
+       type = &quot;cairo&quot;,
+       bg = &quot;white&quot;)</code></pre>
+<p><img src="mdt_hillshade_blend.png" /></p>
 </div>
 <div id="otra-alternativa-para-direcciones-multidireccionales" class="section level1">
 <h1>Otra alternativa para direcciones multidireccionales</h1>
@@ -1097,11 +1160,12 @@ wbt_multidirectional_hillshade(&quot;mdt.tiff&quot;,
 # volvemos a importar el hillshade
 hillwb &lt;- rast(&quot;hillshade.tiff&quot;)
 plot(hillwb)</code></pre>
-<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-12-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
 <pre class="r"><code># volver a enmascarar
-hillwb &lt;- mask(hillwb, vect(suiz))
-plot(hillwb)</code></pre>
-<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-12-2.png" width="672" /></p>
+hillwb &lt;- mask(hillwb, vect(suiz))</code></pre>
+<pre><code>## Warning: [mask] CRS do not match</code></pre>
+<pre class="r"><code>plot(hillwb)</code></pre>
+<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-13-2.png" width="672" /></p>
 <pre class="r"><code># convertimos el hillshade a xyz
 hillwbdf &lt;- as.data.frame(hillwb, xy = TRUE)
 
@@ -1125,8 +1189,7 @@ ggplot() +
   coord_sf() +
   theme_void()  +
   theme(legend.position = &quot;top&quot;)</code></pre>
-<pre><code>## Warning: Removed 1 rows containing missing values (geom_raster).</code></pre>
-<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-13-1.png" width="672" /></p>
+<p><img src="https://dominicroye.github.io/es/2022/efecto-hillshade-o-sombras-de-laderas/index.es_files/figure-html/unnamed-chunk-14-1.png" width="672" /></p>
 <p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
 

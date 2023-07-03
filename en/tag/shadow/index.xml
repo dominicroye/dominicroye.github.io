@@ -67,6 +67,10 @@
 &lt;td align=&#34;left&#34;&gt;ggnewscale&lt;/td&gt;
 &lt;td align=&#34;left&#34;&gt;Extension for ggplot2 of multiple ‘scales’&lt;/td&gt;
 &lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;ggblend&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Extension for mixing colors in ggplot graphs&lt;/td&gt;
+&lt;/tr&gt;
 &lt;/tbody&gt;
 &lt;/table&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
@@ -79,6 +83,7 @@ if(!require(&amp;quot;whitebox&amp;quot;)) install.packages(&amp;quot;whitebox&a
 if(!require(&amp;quot;tidyterra&amp;quot;)) install.packages(&amp;quot;tidyterra&amp;quot;)
 if(!require(&amp;quot;giscoR&amp;quot;)) install.packages(&amp;quot;giscoR&amp;quot;)
 if(!require(&amp;quot;ggnewscale&amp;quot;)) install.packages(&amp;quot;ggnewscale&amp;quot;)
+if(!require(&amp;quot;ggblend&amp;quot;)) install.packages(&amp;quot;ggblend&amp;quot;)
 
 # packages
 library(sf)
@@ -89,7 +94,8 @@ library(whitebox)
 library(ggnewscale)
 library(tidyterra)
 library(giscoR)
-library(units)&lt;/code&gt;&lt;/pre&gt;
+library(units)
+library(ggblend)&lt;/code&gt;&lt;/pre&gt;
 &lt;/div&gt;
 &lt;div id=&#34;data&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Data&lt;/h1&gt;
@@ -127,6 +133,22 @@ plot(suiz_lakes)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;After obtaining the DEM from Switzerland, we must mask the country’s boundaries. The object’s class is &lt;em&gt;RasterLayer&lt;/em&gt; from the &lt;code&gt;raster&lt;/code&gt; package, however, the new standard is &lt;code&gt;terra&lt;/code&gt; with the class &lt;em&gt;SpatRaster&lt;/em&gt;. That’s why we convert it and then apply the mask. Finally, we reproject to the Swiss coordinate system obtained from the vector data.&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# get the DEM with
 mdt &amp;lt;- get_elev_raster(suiz, z = 10)&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Please note that rgdal will be retired during October 2023,
+## plan transition to sf/stars/terra functions using GDAL and PROJ
+## at your earliest convenience.
+## See https://r-spatial.org/r/2023/05/15/evolution4.html and https://github.com/r-spatial/evolution
+## rgdal: version: 1.6-7, (SVN revision 1203)
+## Geospatial Data Abstraction Library extensions to R successfully loaded
+## Loaded GDAL runtime: GDAL 3.6.2, released 2023/01/02
+## Path to GDAL shared files: C:/Users/xeo19/AppData/Local/R/win-library/4.3/rgdal/gdal
+##  GDAL does not use iconv for recoding strings.
+## GDAL binary built with GEOS: TRUE 
+## Loaded PROJ runtime: Rel. 9.2.0, March 1st, 2023, [PJ_VERSION: 920]
+## Path to PROJ shared files: C:/Users/xeo19/AppData/Local/R/win-library/4.3/rgdal/proj
+## PROJ CDN enabled: FALSE
+## Linking to sp version:1.6-1
+## To mute warnings of possible GDAL/OSR exportToProj4() degradation,
+## use options(&amp;quot;rgdal_show_exportToProj4_warnings&amp;quot;=&amp;quot;none&amp;quot;) before loading sp or rgdal.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Mosaicing &amp;amp; Projecting&lt;/code&gt;&lt;/pre&gt;
 &lt;pre&gt;&lt;code&gt;## Note: Elevation units are in meters.&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;mdt # old RasterLayer class&lt;/code&gt;&lt;/pre&gt;
@@ -135,9 +157,8 @@ mdt &amp;lt;- get_elev_raster(suiz, z = 10)&lt;/code&gt;&lt;/pre&gt;
 ## resolution : 0.0006219649, 0.0006219649  (x, y)
 ## extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
 ## crs        : +proj=longlat +datum=WGS84 +no_defs 
-## source     : file1a383b30325d.tif 
-## names      : file1a383b30325d 
-## values     : -32768, 32767  (min, max)&lt;/code&gt;&lt;/pre&gt;
+## source     : file5fe02e084cd2.tif 
+## names      : file5fe02e084cd2&lt;/code&gt;&lt;/pre&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(mdt)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert to terra and mask area of interest
@@ -206,7 +227,7 @@ hilldf_single &amp;lt;- as.data.frame(hill_single, xy = TRUE)
 # map 
 ggplot() +
   geom_raster(data = hilldf_single,
-              aes(x, y, fill = lyr1),
+              aes(x, y, fill = hillshade),
               show.legend = FALSE) +
   scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;) +
   new_scale_fill() +
@@ -237,12 +258,18 @@ hillmulti &amp;lt;- map(c(270, 15, 60, 330), function(dir){
                           angle = 45, 
                           direction = dir,
                           normalize= TRUE)}
-  )
-
-# create a multidimensional raster and reduce it by summing up
-hillmulti &amp;lt;- rast(hillmulti) %&amp;gt;% sum()
-
-# multidirectional
+  )&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+|---------|---------|---------|---------|
+=========================================
+                                          &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# create a multidimensional raster and reduce it by summing up
+hillmulti &amp;lt;- rast(hillmulti) %&amp;gt;% sum()&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## 
+|---------|---------|---------|---------|
+=========================================
+                                          &lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# multidirectional
 plot(hillmulti, col = grey(1:100/100))&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-9-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# unidirectional
@@ -275,6 +302,40 @@ ggplot() +
   theme_void() +
     theme(legend.position = &amp;quot;top&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
 &lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-10-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;The color blending technique is very useful to obtain remarkable results in the shading effect. Recently the &lt;code&gt;ggblend&lt;/code&gt; package offers this possibility. In order to blend several layers, it is necessary to insert the &lt;code&gt;geom_raster()&lt;/code&gt; and the &lt;code&gt;scale_fill_*()&lt;/code&gt; objects in a comma-separated list. Then follows the &lt;em&gt;pipe&lt;/em&gt; with the &lt;code&gt;blend(&#34;mix_type&#34;)&lt;/code&gt; function to which we add the other &lt;code&gt;ggplot2&lt;/code&gt; objects. In this case we apply multiplication as a form of blending.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# map
+m &amp;lt;- ggplot() +
+  list(
+  geom_raster(data = hillmultidf,
+              aes(x, y, fill = sum),
+              show.legend = FALSE),
+  scale_fill_distiller(palette = &amp;quot;Greys&amp;quot;),
+  new_scale_fill(),
+  geom_raster(data = mdtdf,
+              aes(x, y, fill = alt),
+              alpha = .7),
+  scale_fill_hypso_tint_c(breaks = c(180, 250, 500, 1000,
+                                     1500,  2000, 2500,
+                                     3000, 3500, 4000))
+  ) %&amp;gt;% blend(&amp;quot;multiply&amp;quot;) +
+  geom_sf(data = suiz_lakes,
+          fill = &amp;quot;#c6dbef&amp;quot;, colour = NA) +
+  guides(fill = guide_colorsteps(barwidth = 20,
+                                 barheight = .5,
+                                 title.position = &amp;quot;right&amp;quot;)) +
+  labs(fill = &amp;quot;m&amp;quot;) +
+  coord_sf() +
+  theme_void() +
+    theme(legend.position = &amp;quot;top&amp;quot;)
+
+ggsave(&amp;quot;mdt_hillshade_blend.png&amp;quot;, m, 
+       width = 10, 
+       height = 8, 
+       unit = &amp;quot;in&amp;quot;,
+       device = png, 
+       type = &amp;quot;cairo&amp;quot;,
+       bg = &amp;quot;white&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;mdt_hillshade_blend.png&#34; /&gt;&lt;/p&gt;
 &lt;/div&gt;
 &lt;div id=&#34;another-alternative-for-multidirectional-shadows&#34; class=&#34;section level1&#34;&gt;
 &lt;h1&gt;Another alternative for multidirectional shadows&lt;/h1&gt;
@@ -295,11 +356,12 @@ wbt_multidirectional_hillshade(&amp;quot;mdt.tiff&amp;quot;,
 # re-import the hillshade
 hillwb &amp;lt;- rast(&amp;quot;hillshade.tiff&amp;quot;)
 plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-12-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# remask 
-hillwb &amp;lt;- mask(hillwb, vect(suiz))
-plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-12-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+hillwb &amp;lt;- mask(hillwb, vect(suiz))&lt;/code&gt;&lt;/pre&gt;
+&lt;pre&gt;&lt;code&gt;## Warning: [mask] CRS do not match&lt;/code&gt;&lt;/pre&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;plot(hillwb)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# convert the hillshade to xyz
 hillwbdf &amp;lt;- as.data.frame(hillwb, xy = TRUE)
 
@@ -323,7 +385,7 @@ ggplot() +
   coord_sf() +
   theme_void()  +
   theme(legend.position = &amp;quot;top&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
-&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-13-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2022/hillshade-effects/index.en_files/figure-html/unnamed-chunk-14-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
 &lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
 &lt;/div&gt;
 </description>

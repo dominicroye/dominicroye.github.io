@@ -800,7 +800,6 @@
 
     <div class="article-style">
       
-<script src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/header-attrs/header-attrs.js"></script>
 
 
 <div id="cartography-firefly" class="section level1">
@@ -831,38 +830,34 @@
 <td align="left">Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.</td>
 </tr>
 <tr class="even">
-<td align="left">plotwidgets</td>
-<td align="left">Contains functions for color conversion (RGB, HSL)</td>
-</tr>
-<tr class="odd">
 <td align="left">terra</td>
 <td align="left">Import, export and manipulate raster (raster successor package)</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">raster</td>
 <td align="left">Import, export and manipulate raster</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">sf</td>
 <td align="left">Simple Feature: import, export and manipulate vector data</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">ggshadow</td>
 <td align="left">ggplot2 extension for shaded and glow geometries</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">ggspatial</td>
 <td align="left">ggplot2 extension for spatial objects</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">ggnewscale</td>
 <td align="left">ggplot2 extension to create multiple scales</td>
 </tr>
-<tr class="odd">
+<tr class="even">
 <td align="left">janitor</td>
 <td align="left">Simple functions to examine and clean data</td>
 </tr>
-<tr class="even">
+<tr class="odd">
 <td align="left">rnaturalearth</td>
 <td align="left">Vector maps of the world ‘Natural Earth’</td>
 </tr>
@@ -874,7 +869,6 @@ if(!require(&quot;tidyverse&quot;)) install.packages(&quot;tidyverse&quot;)
 if(!require(&quot;sf&quot;)) install.packages(&quot;sf&quot;)
 if(!require(&quot;terra&quot;)) install.packages(&quot;terra&quot;)
 if(!require(&quot;raster&quot;)) install.packages(&quot;raster&quot;)
-if(!require(&quot;plotwidgets&quot;)) install.packages(&quot;plotwidgets&quot;)
 if(!require(&quot;ggshadow&quot;)) install.packages(&quot;ggshadow&quot;)
 if(!require(&quot;ggspatial&quot;)) install.packages(&quot;ggspatial&quot;)
 if(!require(&quot;ggnewscale&quot;)) install.packages(&quot;ggnewscale&quot;)
@@ -887,7 +881,6 @@ library(raster)
 library(terra)
 library(sf)
 library(tidyverse)
-library(plotwidgets)
 library(ggshadow)
 library(ggspatial)
 library(ggnewscale)
@@ -911,17 +904,17 @@ library(rnaturalearth)</code></pre>
 
 earthquakes &lt;- read.csv2(&quot;catalogoComunSV_1621713848556.csv&quot;)
 str(earthquakes)</code></pre>
-<pre><code>## &#39;data.frame&#39;:    149724 obs. of  10 variables:
-##  $ Evento       : chr  &quot;          33&quot; &quot;          34&quot; &quot;          35&quot; &quot;          36&quot; ...
-##  $ Fecha        : chr  &quot;  02/03/1373&quot; &quot;  03/03/1373&quot; &quot;  08/03/1373&quot; &quot;  19/03/1373&quot; ...
-##  $ Hora         : chr  &quot;    00:00:00&quot; &quot;    00:00:00&quot; &quot;    00:00:00&quot; &quot;    00:00:00&quot; ...
-##  $ Latitud      : chr  &quot;     42.5000&quot; &quot;     42.5000&quot; &quot;     42.5000&quot; &quot;     42.5000&quot; ...
-##  $ Longitud     : chr  &quot;      0.7500&quot; &quot;      0.7500&quot; &quot;      0.7500&quot; &quot;      0.7500&quot; ...
-##  $ Prof...Km.   : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ Inten.       : chr  &quot;     VIII-IX&quot; &quot;            &quot; &quot;            &quot; &quot;            &quot; ...
-##  $ Mag.         : chr  &quot;            &quot; &quot;            &quot; &quot;            &quot; &quot;            &quot; ...
-##  $ Tipo.Mag.    : int  NA NA NA NA NA NA NA NA NA NA ...
-##  $ LocalizaciÃ³n: chr  &quot;RibagorÃ§a.L&quot; &quot;RibagorÃ§a.L&quot; &quot;RibagorÃ§a.L&quot; &quot;RibagorÃ§a.L&quot; ...</code></pre>
+<pre><code>## &#39;data.frame&#39;:	149724 obs. of  10 variables:
+##  $ Evento      : chr  &quot;          33&quot; &quot;          34&quot; &quot;          35&quot; &quot;          36&quot; ...
+##  $ Fecha       : chr  &quot;  02/03/1373&quot; &quot;  03/03/1373&quot; &quot;  08/03/1373&quot; &quot;  19/03/1373&quot; ...
+##  $ Hora        : chr  &quot;    00:00:00&quot; &quot;    00:00:00&quot; &quot;    00:00:00&quot; &quot;    00:00:00&quot; ...
+##  $ Latitud     : chr  &quot;     42.5000&quot; &quot;     42.5000&quot; &quot;     42.5000&quot; &quot;     42.5000&quot; ...
+##  $ Longitud    : chr  &quot;      0.7500&quot; &quot;      0.7500&quot; &quot;      0.7500&quot; &quot;      0.7500&quot; ...
+##  $ Prof...Km.  : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Inten.      : chr  &quot;     VIII-IX&quot; &quot;            &quot; &quot;            &quot; &quot;            &quot; ...
+##  $ Mag.        : chr  &quot;            &quot; &quot;            &quot; &quot;            &quot; &quot;            &quot; ...
+##  $ Tipo.Mag.   : int  NA NA NA NA NA NA NA NA NA NA ...
+##  $ Localización: chr  &quot;Ribagorça.L&quot; &quot;Ribagorça.L&quot; &quot;Ribagorça.L&quot; &quot;Ribagorça.L&quot; ...</code></pre>
 <pre class="r"><code># Blue Marble RGB raster
 
 bm &lt;- rast(&quot;snapshot-2017-11-30T00_00_00Z.tiff&quot;)
@@ -959,28 +952,18 @@ earthquakes &lt;-  earthquakes %&gt;% clean_names() %&gt;%
 <pre class="r"><code># clip to the desired area
 
 bm &lt;- crop(bm, extent(-20, 10, 30, 50)) # W, E, S, N</code></pre>
-<p>To obtain an unsaturated version of the Blue Marble RGB raster, we must apply a function created for this purpose. In this, we use the <code>rgb2hsl()</code> function from the <code>plotwidgets</code> package, which helps us converting RGB to HSL and vice versa. The HSL model is defined by Hue, Saturation, Lightness. The last two parameters are expressed in ratio or percentage. The hue is defined on a color wheel from 0 to 360º. 0 is red, 120 is green, 240 is blue. To change the saturation we only have to reduce the value of S.</p>
-<pre class="r"><code># function to change saturation from RGB
-
-saturation &lt;- function(rgb, s = .5){
-  
-  hsl &lt;- rgb2hsl(as.matrix(rgb))
-  hsl[2, ] &lt;- s
-  
-  rgb_new &lt;- as.vector(t(hsl2rgb(hsl)))
-  
-  return(rgb_new)
-  
-}</code></pre>
-<p>We employ our <code>saturation()</code> function using the <code>app()</code> function that applies it to each pixel with the three RGB layers. We add the argument <code>s</code>, which defines the desired saturation level. This step may take several minutes. Then we project our RGB image.</p>
+<p>To obtain an unsaturated version of the Blue Marble RGB raster, we must apply a function created for this purpose. In this, we use the <code>colorize()</code>, which helps us converting RGB to HSL and vice versa. The HSL model is defined by Hue, Saturation, Lightness. The last two parameters are expressed in ratio or percentage. The hue is defined on a color wheel from 0 to 360º. 0 is red, 120 is green, 240 is blue. To change the saturation we only have to reduce the value of S.</p>
 <pre class="r"><code># apply the function to unsaturate with 5%
 
-bm_desat &lt;- app(bm, saturation, s = .05)
+bm_desat &lt;- colorize(bm, to = &quot;hsl&quot;)
+bm_desat[[2]] &lt;- .05 # ratio of saturation
+set.RGB(bm_desat, 1:3, &quot;hsl&quot;)
+bm_desat &lt;- colorize(bm_desat, to = &quot;rgb&quot;)
 
 # plot new RGB image
 
 plotRGB(bm_desat)</code></pre>
-<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-8-1.png" width="2100" /></p>
+<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-7-1.png" width="2100" /></p>
 <pre class="r"><code># project 
 
 bm_desat &lt;- terra::project(bm_desat, &quot;epsg:3035&quot;)</code></pre>
@@ -1013,7 +996,7 @@ grid &lt;- st_graticule(earthquakes) </code></pre>
            crs = 3035,
            expand = FALSE) +
   theme_void()</code></pre>
-<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-10-1.png" width="4500" /></p>
+<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-9-1.png" width="4500" /></p>
 </div>
 <div id="map-with-background-and-earthquakes" class="section level2">
 <h2>Map with background and earthquakes</h2>
@@ -1037,7 +1020,7 @@ grid &lt;- st_graticule(earthquakes) </code></pre>
            crs = 3035,
            expand = FALSE) +
   theme_void()</code></pre>
-<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-11-1.png" width="4500" /></p>
+<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-10-1.png" width="4500" /></p>
 </div>
 <div id="final-map" class="section level2">
 <h2>Final map</h2>
@@ -1070,7 +1053,7 @@ grid &lt;- st_graticule(earthquakes) </code></pre>
            expand = FALSE) +
   theme_void() +
   theme(plot.title = element_text(size = 50, vjust = -5, colour = &quot;white&quot;, hjust = .95))</code></pre>
-<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-12-1.png" width="4500" /></p>
+<p><img src="https://dominicroye.github.io/en/2021/firefly-cartography/index.en_files/figure-html/unnamed-chunk-11-1.png" width="4500" /></p>
 <pre class="r"><code>ggsave(&quot;firefly_map.png&quot;, width = 15, height = 15, units = &quot;in&quot;, dpi = 300)</code></pre>
 <p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 </div>
