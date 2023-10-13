@@ -5,12 +5,224 @@
     <link>https://dominicroye.github.io/en/tag/spain/</link>
       <atom:link href="https://dominicroye.github.io/en/tag/spain/index.xml" rel="self" type="application/rss+xml" />
     <description>spain</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2023 Dominic Royé. All rights reserved</copyright><lastBuildDate>Wed, 01 Mar 2023 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>en-us</language><copyright>© 2018-2023 Dominic Royé. All rights reserved</copyright><lastBuildDate>Sun, 08 Oct 2023 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
       <title>spain</title>
       <link>https://dominicroye.github.io/en/tag/spain/</link>
     </image>
+    
+    <item>
+      <title>Inserted maps with ggplot2</title>
+      <link>https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/</link>
+      <pubDate>Sun, 08 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/</guid>
+      <description>
+
+
+&lt;p&gt;Today I present a short post on how we can position an outermost territory near the main map or insert an orientation map. In this example we use the typical map of Spain where the Canary Islands are located in the southwest of the peninsula.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;11%&#34; /&gt;
+&lt;col width=&#34;88%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;mapSpain&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Administrative boundaries of Spain at different levels&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;giscoR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Administrative boundaries of the world&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple grammar to combine separate ggplots into the same graphic&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rmapshaper&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;mapshaper library client for geospatial operations&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;mapSpain&amp;quot;)) install.packages(&amp;quot;mapSpain&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;giscoR&amp;quot;)) install.packages(&amp;quot;giscoR&amp;quot;)
+if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
+if(!require(&amp;quot;rmapshaper&amp;quot;)) install.packages(&amp;quot;rmapshaper&amp;quot;)
+
+# packages
+library(sf)
+library(giscoR)
+library(mapSpain)
+library(tidyverse)
+library(patchwork)
+library(rmapshaper)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;option-1&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Option 1&lt;/h1&gt;
+&lt;p&gt;We can easily find some administrative boundaries of states such as Spain, where the actual geographical position of a remote territory has been changed, such as the Canary Islands. The default &lt;code&gt;mapSpain&lt;/code&gt; package shifts the islands to the southwest of the Iberian Peninsula, a common position we see in many maps. However, these vector boundaries with displacement cannot be used in all assumptions, as this is a false geographical position and is not suitable for spatial calculations or other projections.&lt;/p&gt;
+&lt;p&gt;We obtain the vector boundaries using the &lt;code&gt;esp_get_prov()&lt;/code&gt; function for the provincial level with the projection code EPSG:4326 (WGS84). In the construction of the map via &lt;code&gt;ggplot2&lt;/code&gt; we simply add the object to the &lt;code&gt;geom_sf()&lt;/code&gt; geometry specifically designed for handling vector objects of class &lt;code&gt;sf&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# province boundaries with Canary Islands displacement
+esp &amp;lt;- esp_get_prov(epsg = 4326)
+
+# simple map
+ggplot(esp) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+    theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;mapSpain&lt;/code&gt; also includes a function to get the separator box (&lt;code&gt;esp_get_can_box()&lt;/code&gt;) in order to indicate the false location. With the &lt;code&gt;gisco_get_countries()&lt;/code&gt; function we get the global country boundaries to add as geographical context, although we clipped it to the extent of the Iberian Peninsula. It may be surprising to see a curved cutout using the WGS84 projection, but this is because spherical geometry is used by default in all &lt;code&gt;sf&lt;/code&gt; operations (&lt;code&gt;sf_use_s2()&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# we add the Canary Islands box and the boundaries of the environment
+can_bx &amp;lt;- esp_get_can_box(epsg = 4326)
+entorno &amp;lt;- gisco_get_countries(resolution = &amp;quot;10&amp;quot;) %&amp;gt;% 
+             st_crop(xmin = -10, xmax = 5, ymin = 34, ymax = 45)
+
+# with displacement
+ggplot(esp) +
+  geom_sf(data = entorno, fill = &amp;quot;grey70&amp;quot;, colour = NA) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  geom_sf(data = can_bx, linewidth = .3, colour = &amp;quot;grey80&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;option-2&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Option 2&lt;/h1&gt;
+&lt;p&gt;The most correct way is to create an object for the inserted map, here the Canary Islands, and another one for the main map, mainland Spain and the Balearic Islands. In the &lt;code&gt;esp_get_prov()&lt;/code&gt; function we must indicate that it returns the limits without displacement with the agrument &lt;code&gt;moveCAN = FALSE&lt;/code&gt;. First, we build the map of the Canary Islands, filtering the autonomous community. The geometries &lt;code&gt;geom_hline()&lt;/code&gt; and &lt;code&gt;geom_vline()&lt;/code&gt; will draw the separation line to the peninsula. The second step is to create the main map excluding the Canary Islands. Then the map of the Canary Islands needs to be included as an object using the &lt;code&gt;annotation_custom()&lt;/code&gt; function. The &lt;code&gt;ggplot&lt;/code&gt; object must be converted to a &lt;em&gt;grob&lt;/em&gt; with &lt;code&gt;ggplotGrob()&lt;/code&gt; and the position area (the X and Y extreme points) must be indicated in the coordinate system of the main map. This form can be used for all types of maps.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# boundaries of provinces without displacement of the Canary Islands
+esp &amp;lt;- esp_get_prov(epsg = 4326, moveCAN = F)
+
+# Canary Island map
+can &amp;lt;-  filter(esp, nuts2.name == &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+          ggplot() +
+            geom_vline(xintercept = -13.3, colour = &amp;quot;grey80&amp;quot;) +
+            geom_hline(yintercept = 29.5, colour = &amp;quot;grey80&amp;quot;) +
+            geom_sf(fill = &amp;quot;red&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+            coord_sf(expand = F) +
+            theme_void() 
+can&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# add ggplot map with annotation_custom() absolute position according to the SRC
+filter(esp, nuts2.name != &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+  ggplot() +
+  geom_sf(data = entorno, fill = &amp;quot;grey70&amp;quot;, colour = NA) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  annotation_custom(ggplotGrob(can),
+                    xmin = -14, xmax = -9,
+                    ymin = 33, ymax = 38) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-5-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we want to project the main map, we only need to project the position area of the inserted map first.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# position box with some adjustment 
+pos &amp;lt;- c(xmin = -13.5, ymin = 32.5, xmax = -8.5, ymax = 37.5) 
+class(pos) &amp;lt;- &amp;quot;bbox&amp;quot; # definimos como bbox
+
+# reproject to LAEA Europe EPSG:3035
+pos_prj &amp;lt;- st_as_sfc(pos) %&amp;gt;% 
+  st_set_crs(4326) %&amp;gt;%
+  st_transform(3035) %&amp;gt;% 
+  st_bbox()
+
+# create the final map
+filter(esp, nuts2.name != &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+  ggplot() +
+  geom_sf(data = entorno, fill = &amp;quot;grey70&amp;quot;, colour = NA) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  annotation_custom(ggplotGrob(can),
+                    xmin = pos_prj[1], xmax = pos_prj[3],
+                    ymin = pos_prj[2], ymax = pos_prj[4]) +
+  coord_sf(crs = 3035) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;option-3&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Option 3&lt;/h1&gt;
+&lt;p&gt;The last option for inserting a secondary map is to use the &lt;code&gt;inset_element()&lt;/code&gt; function of the &lt;code&gt;patchwork&lt;/code&gt; package. The difference with the previous method is the relative position, which limits the use. In this case proportional symbols should not be represented as the relative insertion does not maintain the same dimensions as the main map.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# provincial boundaries
+esp &amp;lt;- esp_get_prov(epsg = 4326, moveCAN = F)
+
+# Canary Island map
+can &amp;lt;-  filter(esp, nuts2.name == &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+          ggplot() +
+            geom_vline(xintercept = -13.3, colour = &amp;quot;grey80&amp;quot;) +
+            geom_hline(yintercept = 29.5, colour = &amp;quot;grey80&amp;quot;) +
+            geom_sf(fill = &amp;quot;red&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+            coord_sf(expand = F) +
+            theme_void() 
+
+# main map
+m &amp;lt;- filter(esp, nuts2.name != &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+  ggplot() +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  theme_void()
+
+# insert with relative position 
+m + inset_element(can, left = -.1, bottom = 0, 
+                  right = .2, top = .2, 
+                  align_to = &amp;quot;full&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;earth-globe-as-inset-map&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Earth globe as inset map&lt;/h1&gt;
+&lt;p&gt;The only difficulty here is the orthogonal projection while preserving the visible geometry of the earth.
+The first step is the creation of the “ocean” using the radius of the earth from the point 0,0. Then we only have to cut out the visible part and reproject the boundaries. In the definition of the orthogonal projection it is possible to centre at different latitudes and longitudes by changing the &lt;code&gt;+lat_0&lt;/code&gt; and &lt;code&gt;+lon_0&lt;/code&gt; values. The &lt;code&gt;ms_innerlines()&lt;/code&gt; functions of the &lt;code&gt;rmapshaper&lt;/code&gt; package easily create the inner boundaries of polygons, which is recommended to avoid blurring small areas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# overall country boundaries
+wld &amp;lt;- gisco_get_countries(resolution = &amp;quot;20&amp;quot;)
+
+# definition of orthogonal projection
+ortho_crs &amp;lt;-&amp;#39;+proj=ortho +lat_0=30 +lon_0=0.5 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs&amp;#39;
+
+# creation of the ocean 
+ocean &amp;lt;- st_point(x = c(0,0)) %&amp;gt;%
+            st_buffer(dist = 6371000) %&amp;gt;% # radio Tierra
+              st_sfc(crs = ortho_crs)
+plot(ocean)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cut out the visible land and reproject it
+world &amp;lt;-   st_intersection(wld, st_transform(ocean, 4326)) %&amp;gt;%
+            st_transform(crs = ortho_crs) %&amp;gt;% 
+            mutate(dummy = ifelse(NAME_ENGL == &amp;quot;Spain&amp;quot;, &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;))
+
+plot(world)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtain only the inner limits
+world_line &amp;lt;- ms_innerlines(world)
+plot(world_line)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# main map of Spain 
+wld_map &amp;lt;- ggplot(world) +
+            geom_sf(data = ocean, fill = &amp;quot;#deebf7&amp;quot;, linewidth = .2) +
+            geom_sf(aes(fill = dummy), 
+                    colour = NA,
+                    show.legend = F) +
+            geom_sf(data = world_line, linewidth = .05, colour = &amp;quot;white&amp;quot;) +
+            scale_fill_manual(values = c(&amp;quot;grey50&amp;quot;, &amp;quot;red&amp;quot;)) + 
+            theme_void()
+
+# insert the globe marking the location of Spain 
+m + inset_element(wld_map, left = 0.65, bottom = 0.82, right = 1.1, top = 1, align_to = &amp;quot;full&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-4.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
     
     <item>
       <title>HISDAC-ES: Historical Settlement Data Compilation for Spain (1900 -2020)</title>

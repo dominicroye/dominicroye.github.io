@@ -128,6 +128,250 @@ The variance of the distribution is $\sigma^{2}$.
     </item>
     
     <item>
+      <title>From Research to the Development of an Innovative Application for Monitoring Heat-Related Mortality in Spain</title>
+      <link>https://dominicroye.github.io/en/publication/2023-mace-shiny-app-environment-health/</link>
+      <pubDate>Tue, 10 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/publication/2023-mace-shiny-app-environment-health/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Inserted maps with ggplot2</title>
+      <link>https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/</link>
+      <pubDate>Sun, 08 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/</guid>
+      <description>
+
+
+&lt;p&gt;Today I present a short post on how we can position an outermost territory near the main map or insert an orientation map. In this example we use the typical map of Spain where the Canary Islands are located in the southwest of the peninsula.&lt;/p&gt;
+&lt;div id=&#34;packages&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Packages&lt;/h1&gt;
+&lt;table&gt;
+&lt;colgroup&gt;
+&lt;col width=&#34;11%&#34; /&gt;
+&lt;col width=&#34;88%&#34; /&gt;
+&lt;/colgroup&gt;
+&lt;thead&gt;
+&lt;tr class=&#34;header&#34;&gt;
+&lt;th align=&#34;left&#34;&gt;Paquete&lt;/th&gt;
+&lt;th align=&#34;left&#34;&gt;Descripción&lt;/th&gt;
+&lt;/tr&gt;
+&lt;/thead&gt;
+&lt;tbody&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;tidyverse&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;mapSpain&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Administrative boundaries of Spain at different levels&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;sf&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple Feature: import, export and manipulate vector data&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;giscoR&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Administrative boundaries of the world&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;odd&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;patchwork&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;Simple grammar to combine separate ggplots into the same graphic&lt;/td&gt;
+&lt;/tr&gt;
+&lt;tr class=&#34;even&#34;&gt;
+&lt;td align=&#34;left&#34;&gt;rmapshaper&lt;/td&gt;
+&lt;td align=&#34;left&#34;&gt;mapshaper library client for geospatial operations&lt;/td&gt;
+&lt;/tr&gt;
+&lt;/tbody&gt;
+&lt;/table&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# install the packages if necessary
+if(!require(&amp;quot;tidyverse&amp;quot;)) install.packages(&amp;quot;tidyverse&amp;quot;)
+if(!require(&amp;quot;mapSpain&amp;quot;)) install.packages(&amp;quot;mapSpain&amp;quot;)
+if(!require(&amp;quot;sf&amp;quot;)) install.packages(&amp;quot;sf&amp;quot;)
+if(!require(&amp;quot;giscoR&amp;quot;)) install.packages(&amp;quot;giscoR&amp;quot;)
+if(!require(&amp;quot;patchwork&amp;quot;)) install.packages(&amp;quot;patchwork&amp;quot;)
+if(!require(&amp;quot;rmapshaper&amp;quot;)) install.packages(&amp;quot;rmapshaper&amp;quot;)
+
+# packages
+library(sf)
+library(giscoR)
+library(mapSpain)
+library(tidyverse)
+library(patchwork)
+library(rmapshaper)&lt;/code&gt;&lt;/pre&gt;
+&lt;/div&gt;
+&lt;div id=&#34;option-1&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Option 1&lt;/h1&gt;
+&lt;p&gt;We can easily find some administrative boundaries of states such as Spain, where the actual geographical position of a remote territory has been changed, such as the Canary Islands. The default &lt;code&gt;mapSpain&lt;/code&gt; package shifts the islands to the southwest of the Iberian Peninsula, a common position we see in many maps. However, these vector boundaries with displacement cannot be used in all assumptions, as this is a false geographical position and is not suitable for spatial calculations or other projections.&lt;/p&gt;
+&lt;p&gt;We obtain the vector boundaries using the &lt;code&gt;esp_get_prov()&lt;/code&gt; function for the provincial level with the projection code EPSG:4326 (WGS84). In the construction of the map via &lt;code&gt;ggplot2&lt;/code&gt; we simply add the object to the &lt;code&gt;geom_sf()&lt;/code&gt; geometry specifically designed for handling vector objects of class &lt;code&gt;sf&lt;/code&gt;.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# province boundaries with Canary Islands displacement
+esp &amp;lt;- esp_get_prov(epsg = 4326)
+
+# simple map
+ggplot(esp) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+    theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-3-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;code&gt;mapSpain&lt;/code&gt; also includes a function to get the separator box (&lt;code&gt;esp_get_can_box()&lt;/code&gt;) in order to indicate the false location. With the &lt;code&gt;gisco_get_countries()&lt;/code&gt; function we get the global country boundaries to add as geographical context, although we clipped it to the extent of the Iberian Peninsula. It may be surprising to see a curved cutout using the WGS84 projection, but this is because spherical geometry is used by default in all &lt;code&gt;sf&lt;/code&gt; operations (&lt;code&gt;sf_use_s2()&lt;/code&gt;).&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# we add the Canary Islands box and the boundaries of the environment
+can_bx &amp;lt;- esp_get_can_box(epsg = 4326)
+entorno &amp;lt;- gisco_get_countries(resolution = &amp;quot;10&amp;quot;) %&amp;gt;% 
+             st_crop(xmin = -10, xmax = 5, ymin = 34, ymax = 45)
+
+# with displacement
+ggplot(esp) +
+  geom_sf(data = entorno, fill = &amp;quot;grey70&amp;quot;, colour = NA) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  geom_sf(data = can_bx, linewidth = .3, colour = &amp;quot;grey80&amp;quot;) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-4-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;option-2&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Option 2&lt;/h1&gt;
+&lt;p&gt;The most correct way is to create an object for the inserted map, here the Canary Islands, and another one for the main map, mainland Spain and the Balearic Islands. In the &lt;code&gt;esp_get_prov()&lt;/code&gt; function we must indicate that it returns the limits without displacement with the agrument &lt;code&gt;moveCAN = FALSE&lt;/code&gt;. First, we build the map of the Canary Islands, filtering the autonomous community. The geometries &lt;code&gt;geom_hline()&lt;/code&gt; and &lt;code&gt;geom_vline()&lt;/code&gt; will draw the separation line to the peninsula. The second step is to create the main map excluding the Canary Islands. Then the map of the Canary Islands needs to be included as an object using the &lt;code&gt;annotation_custom()&lt;/code&gt; function. The &lt;code&gt;ggplot&lt;/code&gt; object must be converted to a &lt;em&gt;grob&lt;/em&gt; with &lt;code&gt;ggplotGrob()&lt;/code&gt; and the position area (the X and Y extreme points) must be indicated in the coordinate system of the main map. This form can be used for all types of maps.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# boundaries of provinces without displacement of the Canary Islands
+esp &amp;lt;- esp_get_prov(epsg = 4326, moveCAN = F)
+
+# Canary Island map
+can &amp;lt;-  filter(esp, nuts2.name == &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+          ggplot() +
+            geom_vline(xintercept = -13.3, colour = &amp;quot;grey80&amp;quot;) +
+            geom_hline(yintercept = 29.5, colour = &amp;quot;grey80&amp;quot;) +
+            geom_sf(fill = &amp;quot;red&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+            coord_sf(expand = F) +
+            theme_void() 
+can&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-5-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# add ggplot map with annotation_custom() absolute position according to the SRC
+filter(esp, nuts2.name != &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+  ggplot() +
+  geom_sf(data = entorno, fill = &amp;quot;grey70&amp;quot;, colour = NA) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  annotation_custom(ggplotGrob(can),
+                    xmin = -14, xmax = -9,
+                    ymin = 33, ymax = 38) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-5-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;If we want to project the main map, we only need to project the position area of the inserted map first.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# position box with some adjustment 
+pos &amp;lt;- c(xmin = -13.5, ymin = 32.5, xmax = -8.5, ymax = 37.5) 
+class(pos) &amp;lt;- &amp;quot;bbox&amp;quot; # definimos como bbox
+
+# reproject to LAEA Europe EPSG:3035
+pos_prj &amp;lt;- st_as_sfc(pos) %&amp;gt;% 
+  st_set_crs(4326) %&amp;gt;%
+  st_transform(3035) %&amp;gt;% 
+  st_bbox()
+
+# create the final map
+filter(esp, nuts2.name != &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+  ggplot() +
+  geom_sf(data = entorno, fill = &amp;quot;grey70&amp;quot;, colour = NA) +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  annotation_custom(ggplotGrob(can),
+                    xmin = pos_prj[1], xmax = pos_prj[3],
+                    ymin = pos_prj[2], ymax = pos_prj[4]) +
+  coord_sf(crs = 3035) +
+  theme_void()&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-6-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;option-3&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Option 3&lt;/h1&gt;
+&lt;p&gt;The last option for inserting a secondary map is to use the &lt;code&gt;inset_element()&lt;/code&gt; function of the &lt;code&gt;patchwork&lt;/code&gt; package. The difference with the previous method is the relative position, which limits the use. In this case proportional symbols should not be represented as the relative insertion does not maintain the same dimensions as the main map.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# provincial boundaries
+esp &amp;lt;- esp_get_prov(epsg = 4326, moveCAN = F)
+
+# Canary Island map
+can &amp;lt;-  filter(esp, nuts2.name == &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+          ggplot() +
+            geom_vline(xintercept = -13.3, colour = &amp;quot;grey80&amp;quot;) +
+            geom_hline(yintercept = 29.5, colour = &amp;quot;grey80&amp;quot;) +
+            geom_sf(fill = &amp;quot;red&amp;quot;, colour = &amp;quot;white&amp;quot;) +
+            coord_sf(expand = F) +
+            theme_void() 
+
+# main map
+m &amp;lt;- filter(esp, nuts2.name != &amp;quot;Canarias&amp;quot;) %&amp;gt;%
+  ggplot() +
+  geom_sf(colour = &amp;quot;white&amp;quot;, linewidth = .2) +
+  theme_void()
+
+# insert with relative position 
+m + inset_element(can, left = -.1, bottom = 0, 
+                  right = .2, top = .2, 
+                  align_to = &amp;quot;full&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-7-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;/div&gt;
+&lt;div id=&#34;earth-globe-as-inset-map&#34; class=&#34;section level1&#34;&gt;
+&lt;h1&gt;Earth globe as inset map&lt;/h1&gt;
+&lt;p&gt;The only difficulty here is the orthogonal projection while preserving the visible geometry of the earth.
+The first step is the creation of the “ocean” using the radius of the earth from the point 0,0. Then we only have to cut out the visible part and reproject the boundaries. In the definition of the orthogonal projection it is possible to centre at different latitudes and longitudes by changing the &lt;code&gt;+lat_0&lt;/code&gt; and &lt;code&gt;+lon_0&lt;/code&gt; values. The &lt;code&gt;ms_innerlines()&lt;/code&gt; functions of the &lt;code&gt;rmapshaper&lt;/code&gt; package easily create the inner boundaries of polygons, which is recommended to avoid blurring small areas.&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# overall country boundaries
+wld &amp;lt;- gisco_get_countries(resolution = &amp;quot;20&amp;quot;)
+
+# definition of orthogonal projection
+ortho_crs &amp;lt;-&amp;#39;+proj=ortho +lat_0=30 +lon_0=0.5 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs&amp;#39;
+
+# creation of the ocean 
+ocean &amp;lt;- st_point(x = c(0,0)) %&amp;gt;%
+            st_buffer(dist = 6371000) %&amp;gt;% # radio Tierra
+              st_sfc(crs = ortho_crs)
+plot(ocean)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-1.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# cut out the visible land and reproject it
+world &amp;lt;-   st_intersection(wld, st_transform(ocean, 4326)) %&amp;gt;%
+            st_transform(crs = ortho_crs) %&amp;gt;% 
+            mutate(dummy = ifelse(NAME_ENGL == &amp;quot;Spain&amp;quot;, &amp;quot;yes&amp;quot;, &amp;quot;no&amp;quot;))
+
+plot(world)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-2.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# obtain only the inner limits
+world_line &amp;lt;- ms_innerlines(world)
+plot(world_line)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-3.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;pre class=&#34;r&#34;&gt;&lt;code&gt;# main map of Spain 
+wld_map &amp;lt;- ggplot(world) +
+            geom_sf(data = ocean, fill = &amp;quot;#deebf7&amp;quot;, linewidth = .2) +
+            geom_sf(aes(fill = dummy), 
+                    colour = NA,
+                    show.legend = F) +
+            geom_sf(data = world_line, linewidth = .05, colour = &amp;quot;white&amp;quot;) +
+            scale_fill_manual(values = c(&amp;quot;grey50&amp;quot;, &amp;quot;red&amp;quot;)) + 
+            theme_void()
+
+# insert the globe marking the location of Spain 
+m + inset_element(wld_map, left = 0.65, bottom = 0.82, right = 1.1, top = 1, align_to = &amp;quot;full&amp;quot;)&lt;/code&gt;&lt;/pre&gt;
+&lt;p&gt;&lt;img src=&#34;https://dominicroye.github.io/en/2023/inserted-maps-with-ggplot2/index.en_files/figure-html/unnamed-chunk-8-4.png&#34; width=&#34;672&#34; /&gt;&lt;/p&gt;
+&lt;p&gt;&lt;a href=&#34;https://www.buymeacoffee.com/drxeo&#34; target=&#34;_blank&#34;&gt;&lt;img src=&#34;https://cdn.buymeacoffee.com/buttons/default-orange.png&#34; alt=&#34;Buy Me A Coffee&#34; height=&#34;41&#34; width=&#34;174&#34;&gt;&lt;/a&gt;&lt;/p&gt;
+&lt;/div&gt;
+</description>
+    </item>
+    
+    <item>
+      <title>Interactive effects of ambient fine particulate matter and ozone on daily mortality in 372 cities: two stage time series analysis</title>
+      <link>https://dominicroye.github.io/en/publication/2023-pm25-o3-mortality-bmj/</link>
+      <pubDate>Wed, 04 Oct 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/publication/2023-pm25-o3-mortality-bmj/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Cold wave intensity on the Iberian Peninsula: Future climate projections</title>
+      <link>https://dominicroye.github.io/en/publication/2023-cold-wave-intensity-climate-projections-atmospheric-research/</link>
+      <pubDate>Tue, 19 Sep 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/publication/2023-cold-wave-intensity-climate-projections-atmospheric-research/</guid>
+      <description></description>
+    </item>
+    
+    <item>
+      <title>Rapid increase in the risk of heat-related mortality</title>
+      <link>https://dominicroye.github.io/en/publication/2023-rapid-increase-risk-heat-mortality-nature-communication/</link>
+      <pubDate>Thu, 24 Aug 2023 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/en/publication/2023-rapid-increase-risk-heat-mortality-nature-communication/</guid>
+      <description></description>
+    </item>
+    
+    <item>
       <title>Global short-term mortality risk and burden associated with tropical cyclones from 1980 to 2019: a multi-country time-series study</title>
       <link>https://dominicroye.github.io/en/publication/2023-mortality-cyclones-tropicales-lancet-planetary-health/</link>
       <pubDate>Tue, 01 Aug 2023 00:00:00 +0000</pubDate>
@@ -7823,15 +8067,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/anomalia_verano_maps.jpg&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/anomalia_verano_maps_hu32d3d85a75f6b2360377d210a25c927b_878681_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;anomalia_verano_maps.jpg&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_barcelona.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/anomalias_barcelona_hu0bd99db1e6f1e55a921acff7bffe48e6_299060_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;anomalias_barcelona.png&#34; width=&#34;309&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -7994,15 +8229,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/europe_tropical.gif&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/europe_tropical_hu96758340c03b74d6dc9e3bebc16ca78f_422563_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;europe_tropical.gif&#34; width=&#34;254&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/extreme_heat_spain_spain.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/extreme_heat_spain_spain_hufe268d34aff6e0ee040eab8eab0e83ad_1269751_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;extreme_heat_spain_spain.png&#34; width=&#34;204&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8111,8 +8337,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/horasdesol2017.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/horasdesol2017_hu60831b41b7f2cf2bc0b217c84e9546c4_63097_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;horasdesol2017.png&#34; width=&#34;161&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/leslie_stream.gif&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/leslie_stream_hu399641d68d7d25b2aacaeca99066e0c9_3013906_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;leslie_stream.gif&#34; width=&#34;224&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8120,8 +8346,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/leslie_stream.gif&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/leslie_stream_hu399641d68d7d25b2aacaeca99066e0c9_3013906_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;leslie_stream.gif&#34; width=&#34;224&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/mortalidad_futura.jpeg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/mortalidad_futura_hu7e2b3a04f1b944f931ca72bd62c886fe_318453_0x190_resize_q75_lanczos.jpeg&#34; loading=&#34;lazy&#34; alt=&#34;mortalidad_futura.jpeg&#34; width=&#34;296&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8165,15 +8391,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/pluvi_regimes_usa.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/pluvi_regimes_usa_hu087a37dedfa32bbdf68e8e3675cb64bc_76222_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;pluvi_regimes_usa.png&#34; width=&#34;361&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/pr_anomalia2017_scq.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/pr_anomalia2017_scq_hu27ff1b2e2c3b95d43f5596930aedcebc_80099_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;pr_anomalia2017_scq.png&#34; width=&#34;369&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8192,17 +8409,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/rachas_estaciones.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/rachas_estaciones_hu5acbc6e1c1fc3331d84eebb27c63579c_489686_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;rachas_estaciones.png&#34; width=&#34;197&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
-    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/rachas_secas.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/rachas_secas_hu8791db0f547495f67a795820c682449f_131804_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;rachas_secas.png&#34; width=&#34;196&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/primavera_futura.jpeg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/primavera_futura_hu6e9ef048ad2f1f35eda72b30cc596115_332790_0x190_resize_q75_lanczos.jpeg&#34; loading=&#34;lazy&#34; alt=&#34;primavera_futura.jpeg&#34; width=&#34;352&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8345,6 +8553,15 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
+    &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/sst_anom_july_med.jpeg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/sst_anom_july_med_hua930ba883eb335201d6acba7d56a9c2c_566392_0x190_resize_q75_lanczos.jpeg&#34; loading=&#34;lazy&#34; alt=&#34;sst_anom_july_med.jpeg&#34; width=&#34;385&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
     &lt;a data-fancybox=&#34;gallery-climate&#34; href=&#34;https://dominicroye.github.io/media/albums/climate/sst_anom_med2%20.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/climate/sst_anom_med2%20_hue581938679983103c0f5ebcc95a717ee_2811627_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;sst_anom_med2 .png&#34; width=&#34;385&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8426,24 +8643,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/10airports_vuelos_density.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/10airports_vuelos_density_hudf49ed9f705e92a7c1029e5e5105d7a4_402412_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;10airports_vuelos_density.png&#34; width=&#34;225&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/accesibilidad_eu.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/accesibilidad_eu_hu51ef93669a9a4e8152deb97688516eca_410374_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;accesibilidad_eu.png&#34; width=&#34;220&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/accesibilidad_prov.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/accesibilidad_prov_huab4c9c8f34dafe6757362b696199811b_757433_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;accesibilidad_prov.png&#34; width=&#34;191&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8507,8 +8706,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/coef_var_nightlights.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/coef_var_nightlights_hu0d3b5b81245e2c345169009cf5539de3_436380_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;coef_var_nightlights.png&#34; width=&#34;208&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/corine2_carto18.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/corine2_carto18_hu7cff3236095acffc450764c29c9d23bc_687852_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;corine2_carto18.png&#34; width=&#34;232&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8516,8 +8715,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/corine_mapa_2018.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/corine_mapa_2018_hu28c57c21d9751f7adf043fe77eea75b8_2460266_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;corine_mapa_2018.png&#34; width=&#34;254&#34; height=&#34;190&#34;&gt;
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/corine2_carto18_eu.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/corine2_carto18_eu_hu548610868d0d969e75dd280152911f79_1250018_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;corine2_carto18_eu.png&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8561,6 +8760,15 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/drinking.jpeg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/drinking_huc6fc695f0a742aa45ea4e1b187ff0fcf_1748227_0x190_resize_q75_lanczos.jpeg&#34; loading=&#34;lazy&#34; alt=&#34;drinking.jpeg&#34; width=&#34;257&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/driving_mobi_apple.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/driving_mobi_apple_huc8b6b1ea567c7f2a87d0884b1fe3613e_211048_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;driving_mobi_apple.png&#34; width=&#34;180&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8581,15 +8789,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/elecciones_angles.jpg&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/elecciones_angles_hu574699947ed9c5fa55cf0c0aa6681ce1_315027_0x190_resize_q75_lanczos.jpg&#34; loading=&#34;lazy&#34; alt=&#34;elecciones_angles.jpg&#34; width=&#34;231&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/Esp_devolp.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/Esp_devolp_hu8ee00fe5892e301e57499341ac82ae59_1516202_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;Esp_devolp.png&#34; width=&#34;171&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8732,6 +8931,15 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
+    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/moon_prop.jpeg&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/moon_prop_hud8138d7f8c93b5fd4ad0de231f80eae3_368561_0x190_resize_q75_lanczos.jpeg&#34; loading=&#34;lazy&#34; alt=&#34;moon_prop.jpeg&#34; width=&#34;166&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/naturalrisks.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/naturalrisks_hueefbba2e8376c74950993dcfd5090741_303199_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;naturalrisks.png&#34; width=&#34;279&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8741,26 +8949,8 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/no2_pi_autum.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/no2_pi_autum_hu05330208108914592b53de14350f1e78_683643_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;no2_pi_autum.png&#34; width=&#34;199&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/obesity_europe.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/obesity_europe_hu2610abfa470d61c8d4e8f443ab63c083_327923_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;obesity_europe.png&#34; width=&#34;274&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/olivar.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/olivar_huae0f216db48220ece1b123fee93c9264_490152_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;olivar.png&#34; width=&#34;222&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -8795,15 +8985,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     
     
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_prov2_low.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_prov2_low_hu3a14b0cacf7d8f7909954d5501212a14_1263531_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_prov2_low.png&#34; width=&#34;181&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_usa.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/orientacion_usa_hu5de49d861cef8791de7c8b28c95e78b8_2079595_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;orientacion_usa.png&#34; width=&#34;227&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
@@ -8815,15 +8996,6 @@ palette = brewer.pal(5,&amp;quot;Set1&amp;quot;) #colors
     
     &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/paris_crecimiento.png&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/paris_crecimiento_hu09de7c699bf36921c531db150ef30a42_2584576_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;paris_crecimiento.png&#34; width=&#34;203&#34; height=&#34;190&#34;&gt;
-    &lt;/a&gt;
-  
-    
-    
-    
-    
-    
-    &lt;a data-fancybox=&#34;gallery-geography&#34; href=&#34;https://dominicroye.github.io/media/albums/geography/paris_vuelos.png&#34; &gt;
-      &lt;img src=&#34;https://dominicroye.github.io/media/albums/geography/paris_vuelos_huf29c1477a8172aced7d8e434c949804d_275084_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;paris_vuelos.png&#34; width=&#34;199&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
     
@@ -9260,6 +9432,33 @@ Alternative datasets for Spain in ncdf format can be downloaded:&lt;/p&gt;
     
     &lt;a data-fancybox=&#34;gallery-population&#34; href=&#34;https://dominicroye.github.io/media/albums/population/pop_pyr_galprov.gif&#34; &gt;
       &lt;img src=&#34;https://dominicroye.github.io/media/albums/population/pop_pyr_galprov_hu8aa812e29449acc64f2e93e662e21e3a_1194482_0x190_resize_lanczos.gif&#34; loading=&#34;lazy&#34; alt=&#34;pop_pyr_galprov.gif&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-population&#34; href=&#34;https://dominicroye.github.io/media/albums/population/touristas.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/population/touristas_hudec42568fd7715b4917f0fdb41ed88af_8078760_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;touristas.png&#34; width=&#34;220&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-population&#34; href=&#34;https://dominicroye.github.io/media/albums/population/touristas2023_can.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/population/touristas2023_can_hubcc1c2b0254e6cefb104e73b595aff80_1223337_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;touristas2023_can.png&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
+    &lt;/a&gt;
+  
+    
+    
+    
+    
+    
+    &lt;a data-fancybox=&#34;gallery-population&#34; href=&#34;https://dominicroye.github.io/media/albums/population/touristas_sep.png&#34; &gt;
+      &lt;img src=&#34;https://dominicroye.github.io/media/albums/population/touristas_sep_hua75f531f6642d8f6608cc0ece710aea2_3391085_0x190_resize_lanczos_3.png&#34; loading=&#34;lazy&#34; alt=&#34;touristas_sep.png&#34; width=&#34;190&#34; height=&#34;190&#34;&gt;
     &lt;/a&gt;
   
 
