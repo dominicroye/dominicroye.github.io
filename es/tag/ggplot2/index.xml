@@ -5,12 +5,20 @@
     <link>https://dominicroye.github.io/es/tag/ggplot2/</link>
       <atom:link href="https://dominicroye.github.io/es/tag/ggplot2/index.xml" rel="self" type="application/rss+xml" />
     <description>ggplot2</description>
-    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2023 Dominic Royé. All rights reserved</copyright><lastBuildDate>Wed, 05 Dec 2018 00:00:00 +0000</lastBuildDate>
+    <generator>Wowchemy (https://wowchemy.com)</generator><language>es-ES</language><copyright>© 2018-2023 Dominic Royé. All rights reserved</copyright><lastBuildDate>Mon, 01 Jan 2024 00:00:00 +0000</lastBuildDate>
     <image>
       <url>https://dominicroye.github.io/media/logo_hu6637600e1c36fe7812a10a6623aaebda_116520_300x300_fit_lanczos_3.png</url>
       <title>ggplot2</title>
       <link>https://dominicroye.github.io/es/tag/ggplot2/</link>
     </image>
+    
+    <item>
+      <title>Una nota sobre el cambio climático</title>
+      <link>https://dominicroye.github.io/es/publication/2024-una-nota-cambio-climatico-con-r/</link>
+      <pubDate>Mon, 01 Jan 2024 00:00:00 +0000</pubDate>
+      <guid>https://dominicroye.github.io/es/publication/2024-una-nota-cambio-climatico-con-r/</guid>
+      <description></description>
+    </item>
     
     <item>
       <title>Cómo crear &#39;Warming Stripes&#39; in R</title>
@@ -24,10 +32,12 @@
 &lt;p&gt;Este año se hicieron muy famosos en todo el mundo los llamados &lt;em&gt;warming stripes&lt;/em&gt;, las tiras del calentamiento global, que fueron creadas por el científico &lt;a href=&#34;https://twitter.com/ed_hawkins?lang=es&#34;&gt;Ed Hawkins&lt;/a&gt; de la Universidad de Reading. Estos gráficos representan y comunican el cambio climático de una forma muy ilustrativa y eficaz.&lt;/p&gt;
 &lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;en&#34; dir=&#34;ltr&#34;&gt;Visualising global temperature change since records began in 1850. Versions for USA, central England &amp;amp; Toronto available too: &lt;a href=&#34;https://t.co/H5Hv9YgZ7v&#34;&gt;https://t.co/H5Hv9YgZ7v&lt;/a&gt; &lt;a href=&#34;https://t.co/YMzdySrr3A&#34;&gt;pic.twitter.com/YMzdySrr3A&lt;/a&gt;&lt;/p&gt;&amp;mdash; Ed Hawkins (@ed_hawkins) &lt;a href=&#34;https://twitter.com/ed_hawkins/status/999242147135188993?ref_src=twsrc%5Etfw&#34;&gt;May 23, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
 &lt;/p&gt;
 &lt;p&gt;A partir de su idea, creé tiras para ejemplos de España, como el siguiente de Madrid.&lt;/p&gt;
 &lt;p&gt;&lt;blockquote class=&#34;twitter-tweet&#34;&gt;&lt;p lang=&#34;es&#34; dir=&#34;ltr&#34;&gt;&lt;a href=&#34;https://twitter.com/hashtag/Temperatura?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#Temperatura&lt;/a&gt; anual en &lt;a href=&#34;https://twitter.com/hashtag/MadridRetiro?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#MadridRetiro&lt;/a&gt; desde 1920 a 2017.  &lt;a href=&#34;https://twitter.com/hashtag/CambioClimatico?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#CambioClimatico&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/dataviz?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#dataviz&lt;/a&gt; &lt;a href=&#34;https://twitter.com/hashtag/ggplot2?src=hash&amp;amp;ref_src=twsrc%5Etfw&#34;&gt;#ggplot2&lt;/a&gt; (idea de &lt;a href=&#34;https://twitter.com/ed_hawkins?ref_src=twsrc%5Etfw&#34;&gt;@ed_hawkins&lt;/a&gt; 🙏) &lt;a href=&#34;https://twitter.com/Divulgameteo?ref_src=twsrc%5Etfw&#34;&gt;@Divulgameteo&lt;/a&gt; &lt;a href=&#34;https://twitter.com/edupenabad?ref_src=twsrc%5Etfw&#34;&gt;@edupenabad&lt;/a&gt; &lt;a href=&#34;https://twitter.com/climayagua?ref_src=twsrc%5Etfw&#34;&gt;@climayagua&lt;/a&gt; &lt;a href=&#34;https://twitter.com/ClimaGroupUB?ref_src=twsrc%5Etfw&#34;&gt;@ClimaGroupUB&lt;/a&gt; &lt;a href=&#34;https://twitter.com/4gotas_com?ref_src=twsrc%5Etfw&#34;&gt;@4gotas_com&lt;/a&gt; &lt;a href=&#34;https://t.co/wmLb5uczpT&#34;&gt;pic.twitter.com/wmLb5uczpT&lt;/a&gt;&lt;/p&gt;&amp;mdash; Dr. Dominic Royé (@dr_xeo) &lt;a href=&#34;https://twitter.com/dr_xeo/status/1002954473927561217?ref_src=twsrc%5Etfw&#34;&gt;June 2, 2018&lt;/a&gt;&lt;/blockquote&gt;
 &lt;script async src=&#34;https://platform.twitter.com/widgets.js&#34; charset=&#34;utf-8&#34;&gt;&lt;/script&gt;
+
 &lt;/p&gt;
 &lt;p&gt;En este post voy a enseñar cómo se pueden crear estas tiras en R con el paquete &lt;em&gt;ggplot2&lt;/em&gt;. Aunque debo decir que existen muchos caminos en R que nos pueden llevar al mismo resultado o a uno similar, incluso dentro de &lt;em&gt;ggplot2&lt;/em&gt;.&lt;/p&gt;
 &lt;div id=&#34;datos&#34; class=&#34;section level2&#34;&gt;
