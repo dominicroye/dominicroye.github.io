@@ -101,6 +101,12 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
+<meta name="twitter:title" content="Hillshade effects">
+<meta name="twitter:description" content="It is very common to see relief maps with shadow effects, also known as ‘hillshade’, which generates visual depth. How can we create these effects in R and how to include them in ggplot2?">
+<meta name="twitter:image" content="https://dominicroye.github.io/blog/2022-07-19-hillshade-effect/featured.png">
+<meta name="twitter:image-height" content="1500">
+<meta name="twitter:image-width" content="4500">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-fixed">
 
@@ -298,7 +304,7 @@ ga('send', {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://mjskay.github.io/ggblend/">ggblend</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="data" class="level1 page-columns page-full"><h1>Data</h1>
-<p>As an area of interest, we use Switzerland in this example. Except for lake boundaries <a href="../..\files/switzerland_lakes.zip">download</a>, the necessary data is obtained through APIs using different packages. For example, the <code>giscoR</code> package allows you to get country boundaries with different resolutions.</p>
+<p>As an area of interest, we use Switzerland in this example. Except for lake boundaries <a href="../www/switzerland_lakes.zip">download</a>, the necessary data is obtained through APIs using different packages. For example, the <code>giscoR</code> package allows you to get country boundaries with different resolutions.</p>
 <div class="cell page-columns page-full">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">suiz</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op">(</span>country <span class="op">=</span> <span class="st">"Switzerland"</span>, resolution <span class="op">=</span> <span class="st">"03"</span><span class="op">)</span></span>
 <span></span>
@@ -316,7 +322,7 @@ ga('send', {
 <span><span class="va">suiz_lakes</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"22_DKM500_GEWAESSER_PLY.shp"</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `22_DKM500_GEWAESSER_PLY' from data source 
-  `C:\Users\xeo19\Downloads\website_quarto\blog\2022-07-19-hillshade-effect\22_DKM500_GEWAESSER_PLY.shp' 
+  `C:\Users\xeo19\Downloads\dominicroye.github.io\blog\2022-07-19-hillshade-effect\22_DKM500_GEWAESSER_PLY.shp' 
   using driver `ESRI Shapefile'
 Simple feature collection with 596 features and 14 fields
 Geometry type: POLYGON
@@ -367,8 +373,8 @@ dimensions : 3869, 7913, 30615397  (nrow, ncol, ncell)
 resolution : 0.0006219649, 0.0006219649  (x, y)
 extent     : 5.625, 10.54661, 45.58354, 47.98992  (xmin, xmax, ymin, ymax)
 crs        : +proj=longlat +datum=WGS84 +no_defs 
-source     : file5f98684033.tif 
-names      : file5f98684033 </code></pre>
+source     : file5fe061943a2.tif 
+names      : file5fe061943a2 </code></pre>
 </div>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">mdt</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 

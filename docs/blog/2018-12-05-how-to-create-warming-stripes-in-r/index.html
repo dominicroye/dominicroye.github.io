@@ -101,6 +101,12 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
+<meta name="twitter:title" content="How to create ‘Warming Stripes’ in R">
+<meta name="twitter:description" content="This year, the so-called warming stripes, which were created by the scientist Ed Hawkins of the University of Reading, became very famous all over the world. These graphs represent and communicate climate change in a very illustrative and effective way.">
+<meta name="twitter:image" content="https://dominicroye.github.io/blog/2018-12-05-how-to-create-warming-stripes-in-r/featured.png">
+<meta name="twitter:image-height" content="696">
+<meta name="twitter:image-width" content="3431">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-fixed">
 
@@ -225,7 +231,7 @@ ga('send', {
 </div>
 <p>In this post I will show how you can create these strips in R with the <em>ggplot2</em> library. Although I must say that there are many ways in R that can lead us to the same result or to a similar one, even within <em>ggplot2</em>.</p>
 <section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>In this case we will use the annual temperatures of Lisbon <a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a>, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded <a href="../..\files/temp_lisboa.csv">here</a>. First, we should, as long as we have not done it, install the collection of <em>tidyverse</em> packages that also include <em>ggplot2</em>. Then, we import the data of Lisbon in csv format.</p>
+<p>In this case we will use the annual temperatures of Lisbon <a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a>, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded <a href="../www/temp_lisboa.csv">here</a>. First, we should, as long as we have not done it, install the collection of <em>tidyverse</em> packages that also include <em>ggplot2</em>. Then, we import the data of Lisbon in csv format.</p>
 <div class="cell">
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># install the lubridate and tidyverse libraries</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tidyverse"</span><span class="op">)</span></span>
@@ -414,7 +420,6 @@ YlOrRd           9      seq       TRUE</code></pre>
 </div>
 </div>
 </div>
-<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 
 
 </section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2018" class="csl-entry quarto-appendix-citeas" role="listitem">

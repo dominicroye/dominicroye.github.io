@@ -101,6 +101,12 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
+<meta name="twitter:title" content="Visualize the day-night cycle on a world map">
+<meta name="twitter:description" content="In April of this year, I made an animation of the 24-hour average temperature of January 2020, also showing the day-night cycle. My biggest problem was finding a way to project correctly the area at night without breaking the geometry. The easiest solution I found was rasterising the night polygon and then reprojecting it. Indeed, a vector approach could be used, but I have preferred to use raster data here.">
+<meta name="twitter:image" content="https://dominicroye.github.io/blog/2021-12-20-night-day-world/featured.png">
+<meta name="twitter:image-height" content="1278">
+<meta name="twitter:image-width" content="2519">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-fixed">
 
@@ -305,10 +311,9 @@ ga('send', {
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://hms.tidyverse.org/">hms</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-rust.r-universe.dev/gifski">gifski</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
-<p>{{% callout note %}} To use the 50 and 10 m resolution of the <a href="https://docs.ropensci.org/rnaturalearth/">rnaturalearth</a> package it is necessary to install the following additional packages. The <a href="https://devtools.r-lib.org/">devtools</a> package must be installed. <code>devtools::install_github("ropensci/rnaturalearthdata")</code> <code>devtools::install_github("ropensci/rnaturalearthhires")</code> {{% /callout %}}</p>
 </section><section id="preparation" class="level1 page-columns page-full"><h1>Preparation</h1>
 <section id="external-functions" class="level2"><h2 class="anchored" data-anchor-id="external-functions">External functions</h2>
-<p>The functions to estimate the separator line between day and night are based on a javascript <em>L.Terminator.js</em> from the <code>{Leaflet}</code> package I found on <a href="https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions">stackoverflow</a>. You can download the script with the functions <a href="../..\files/terminator.R">here</a> or access it on <a href="https://github.com/JoGall/terminator/blob/master/terminator.R">github</a>.</p>
+<p>The functions to estimate the separator line between day and night are based on a javascript <em>L.Terminator.js</em> from the <code>{Leaflet}</code> package I found on <a href="https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions">stackoverflow</a>. You can download the script with the functions <a href="../www/terminator.R">here</a> or access it on <a href="https://github.com/JoGall/terminator/blob/master/terminator.R">github</a>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"terminator.R"</span><span class="op">)</span> <span class="co"># import the functions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -318,7 +323,7 @@ ga('send', {
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">t0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># date and time of our operating system</span></span>
 <span><span class="va">t0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "2025-01-03 11:43:17 CET"</code></pre>
+<pre><code>[1] "2025-01-05 17:51:03 CET"</code></pre>
 </div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">coord_nightday</span> <span class="op">&lt;-</span> <span class="fu">terminator</span><span class="op">(</span><span class="va">t0</span>, <span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="fl">0.2</span><span class="op">)</span> <span class="co"># estimate the day-night line</span></span>
 <span></span>

@@ -111,6 +111,12 @@ ga('send', {
 <style>html{ scroll-behavior: smooth; }</style>
 
 
+<meta name="twitter:title" content="Climate circles">
+<meta name="twitter:description" content="The climate of a place is usually presented through climographs that combine monthly precipitation and temperature in a single chart. However, it is also interesting to visualize the climate on a daily scale showing the thermal amplitude and the daily average temperature. To do this, the averages for each day of the year of the daily minimums, maximums and averages are calculated. The annual climate cycle presents a good opportunity to use a radial or polar which allows us to clearly visualize seasonal patterns.">
+<meta name="twitter:image" content="https://dominicroye.github.io/blog/2021-09-04-climate-circles/featured.png">
+<meta name="twitter:image-height" content="4500">
+<meta name="twitter:image-width" content="3540">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -268,8 +274,8 @@ ga('send', {
 <div class="cell-output-display">
 <table class="caption-top table table-sm table-striped small">
 <colgroup>
-<col style="width: 10%">
-<col style="width: 89%">
+<col style="width: 13%">
+<col style="width: 86%">
 </colgroup>
 <thead>
 <tr class="header">
@@ -287,8 +293,8 @@ ga('send', {
 <td style="text-align: left;">Provides a cross-platform, uniform interface to file system operations</td>
 </tr>
 <tr class="odd">
-<td style="text-align: left;">lubridate</td>
-<td style="text-align: left;">Easy manipulation of dates and times</td>
+<td style="text-align: left;">geomtextpath</td>
+<td style="text-align: left;">ggplot2 extension for curved text on lines</td>
 </tr>
 <tr class="even">
 <td style="text-align: left;">janitor</td>
@@ -317,7 +323,7 @@ ga('send', {
 <h1>Preparation</h1>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>We download the temperature data for a selection of US cities <a href="../..\files/weather_stats_usa.zip">here</a>. You can access other cities of the entire world through the WMO or GHCN datasets at <a href="https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily">NCDC/NOAA</a>.</p>
+<p>We download the temperature data for a selection of US cities <a href="../www/weather_stats_usa.zip">here</a>. You can access other cities of the entire world through the WMO or GHCN datasets at <a href="https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily">NCDC/NOAA</a>.</p>
 </section>
 <section id="import" class="level2">
 <h2 class="anchored" data-anchor-id="import">Import</h2>
@@ -541,7 +547,7 @@ ga('send', {
 <span id="cb18-23"><a href="#cb18-23" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_breaks =</span> <span class="st">"month"</span>,</span>
 <span id="cb18-24"><a href="#cb18-24" aria-hidden="true" tabindex="-1"></a>    <span class="at">date_labels =</span> <span class="st">"%b"</span></span>
 <span id="cb18-25"><a href="#cb18-25" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
-<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_radial</span>(<span class="at">r.axis.inside =</span> T, <span class="at">expand =</span> F) <span class="sc">+</span></span>
+<span id="cb18-26"><a href="#cb18-26" aria-hidden="true" tabindex="-1"></a>  <span class="fu">coord_radial</span>(<span class="at">expand =</span> F) <span class="sc">+</span></span>
 <span id="cb18-27"><a href="#cb18-27" aria-hidden="true" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
 <span id="cb18-28"><a href="#cb18-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">"CLIMATE CIRCLES"</span>,</span>
 <span id="cb18-29"><a href="#cb18-29" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"Daily average temperature"</span></span>
@@ -574,7 +580,7 @@ ga('send', {
 <span id="annotated-cell-14-16"><a href="#annotated-cell-14-16" aria-hidden="true" tabindex="-1"></a>    ),</span>
 <span id="annotated-cell-14-17"><a href="#annotated-cell-14-17" aria-hidden="true" tabindex="-1"></a>    <span class="at">linetype =</span> <span class="st">"dashed"</span>,</span>
 <span id="annotated-cell-14-18"><a href="#annotated-cell-14-18" aria-hidden="true" tabindex="-1"></a>    <span class="at">colour =</span> <span class="st">"white"</span>,</span>
-<span id="annotated-cell-14-19"><a href="#annotated-cell-14-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> .<span class="dv">2</span></span>
+<span id="annotated-cell-14-19"><a href="#annotated-cell-14-19" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> .<span class="dv">2</span></span>
 <span id="annotated-cell-14-20"><a href="#annotated-cell-14-20" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="annotated-cell-14-21"><a href="#annotated-cell-14-21" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_linerange</span>(</span>
 <span id="annotated-cell-14-22"><a href="#annotated-cell-14-22" aria-hidden="true" tabindex="-1"></a>    <span class="fu">aes</span>(yd,</span>
@@ -582,7 +588,7 @@ ga('send', {
 <span id="annotated-cell-14-24"><a href="#annotated-cell-14-24" aria-hidden="true" tabindex="-1"></a>      <span class="at">ymin =</span> tmin,</span>
 <span id="annotated-cell-14-25"><a href="#annotated-cell-14-25" aria-hidden="true" tabindex="-1"></a>      <span class="at">colour =</span> ta</span>
 <span id="annotated-cell-14-26"><a href="#annotated-cell-14-26" aria-hidden="true" tabindex="-1"></a>    ),</span>
-<span id="annotated-cell-14-27"><a href="#annotated-cell-14-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">size =</span> <span class="fl">0.5</span>,</span>
+<span id="annotated-cell-14-27"><a href="#annotated-cell-14-27" aria-hidden="true" tabindex="-1"></a>    <span class="at">linewidth =</span> <span class="fl">0.5</span>,</span>
 <span id="annotated-cell-14-28"><a href="#annotated-cell-14-28" aria-hidden="true" tabindex="-1"></a>    <span class="at">alpha =</span> .<span class="dv">7</span></span>
 <span id="annotated-cell-14-29"><a href="#annotated-cell-14-29" aria-hidden="true" tabindex="-1"></a>  ) <span class="sc">+</span></span>
 <span id="annotated-cell-14-30"><a href="#annotated-cell-14-30" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(</span>
@@ -628,7 +634,6 @@ ga('send', {
 </div>
 </div>
 </div>
-<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 
 
 </section>

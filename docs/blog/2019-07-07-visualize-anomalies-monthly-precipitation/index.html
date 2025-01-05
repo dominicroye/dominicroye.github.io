@@ -111,6 +111,12 @@ ga('send', {
 <style>html{ scroll-behavior: smooth; }</style>
 
 
+<meta name="twitter:title" content="Visualize monthly precipitation anomalies">
+<meta name="twitter:description" content="Normally when we visualize monthly precipitation anomalies, we simply use a bar graph indicating negative and positive values with red and blue. However, it does not explain the general context of these anomalies. For example, what was the highest or lowest anomaly in each month? In principle, we could use a boxplot to visualize the distribution of the anomalies, but in this particular case they would not fit aesthetically, so we should look for an alternative. Here I present a very useful graphic form.">
+<meta name="twitter:image" content="https://dominicroye.github.io/blog/2019-07-07-visualize-anomalies-monthly-precipitation/featured.png">
+<meta name="twitter:image-height" content="1934">
+<meta name="twitter:image-width" content="3729">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 
 <body class="nav-fixed">
@@ -317,7 +323,7 @@ ga('send', {
 </section>
 <section id="preparing-the-data" class="level2">
 <h2 class="anchored" data-anchor-id="preparing-the-data">Preparing the data</h2>
-<p>First we import the daily precipitation of the selected weather station (<a href="../..\files/RR_STAID001394.txt">download</a>). We will use data from Santiago de Compostela (Spain) accessible through <a href="https://eca.knmi.nl">ECA&amp;D</a>.</p>
+<p>First we import the daily precipitation of the selected weather station (<a href="../www/RR_STAID001394.txt">download</a>). We will use data from Santiago de Compostela (Spain) accessible through <a href="https://eca.knmi.nl">ECA&amp;D</a>.</p>
 <section id="step-1-import-the-data" class="level3">
 <h3 class="anchored" data-anchor-id="step-1-import-the-data">Step 1: import the data</h3>
 <p>We not only import the data in <em>csv</em> format, but we also make the first changes. We skip the first 21 rows that contain information about the weather station. In addition, we convert the date to the <code>date</code> class and replace missing values (-9999) with <code>NA</code>. The precipitation is given in 0.1 mm, therefore, we must divide the values by 10. Then we select the columns <em>DATE</em> and <em>RR</em>, and rename them.</p>
@@ -737,7 +743,6 @@ argument.</code></pre>
 </div>
 </div>
 </div>
-<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
 
 
 </section>

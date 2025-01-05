@@ -101,6 +101,12 @@ ga('send', {
   'anonymizeIp': true,
 });
 </script><style>html{ scroll-behavior: smooth; }</style>
+<meta name="twitter:title" content="River flow directions">
+<meta name="twitter:description" content="I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks, I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex.">
+<meta name="twitter:image" content="https://dominicroye.github.io/blog/2020-07-24-river-flow-directions/featured.png">
+<meta name="twitter:image-height" content="2438">
+<meta name="twitter:image-width" content="2620">
+<meta name="twitter:card" content="summary_large_image">
 </head>
 <body class="nav-fixed">
 
@@ -340,7 +346,7 @@ ga('send', {
 <p>However, there is an easier way. We can take advantage of the attributes of projected coordinate systems (Robinson projection, etc.) that include the angle between the vertices. We will use this last approach in this post. Still, we must pay close attention to the results as stated above.</p>
 </section><section id="preparation" class="level1"><h1>Preparation</h1>
 <section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>We download the central lines of the largest rivers in the world (<a href="../..\files/RiverHRCenterlinesCombo.zip">here</a>), also accessible in <a href="https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c">Zeenatul Basher et al.&nbsp;2018</a>.</p>
+<p>We download the central lines of the largest rivers in the world (<a href="../www/RiverHRCenterlinesCombo.zip">here</a>), also accessible in <a href="https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c">Zeenatul Basher et al.&nbsp;2018</a>.</p>
 </section><section id="import-and-project" class="level2"><h2 class="anchored" data-anchor-id="import-and-project">Import and project</h2>
 <p>The first thing we do is to import, project the spatial lines and delete the third dimension <em>Z</em>, chaining the following functions: <code><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read()</a></code> helps us import any vector format, <code><a href="https://r-spatial.github.io/sf/reference/st_zm.html">st_zm()</a></code> delete the dimension Z or M of a geometry and <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform()</a></code> projects the vector data to the new projection in <em>proj4</em> format. We combine the functions with the famous pipe (<code>|&gt;</code>) that facilitates the application of a sequence of functions on a data set. All functions in the <code>sf</code> package start with <code>st_*</code> with reference to the spatial character, similar to <em>PostGIS</em>. In the same style as <em>PostGIS</em>, verbs are used as function names.</p>
 <div class="cell">
@@ -351,7 +357,7 @@ ga('send', {
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">proj_rob</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `RiverHRCenterlinesCombo' from data source 
-  `C:\Users\xeo19\Downloads\website_quarto\blog\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp' 
+  `C:\Users\xeo19\Downloads\dominicroye.github.io\blog\2020-07-24-river-flow-directions\RiverHRCenterlinesCombo.shp' 
   using driver `ESRI Shapefile'
 Simple feature collection with 78 features and 6 fields
 Geometry type: MULTILINESTRING
@@ -511,7 +517,7 @@ OUTPUT: &lt;outputVector&gt;
 <span><span class="va">river_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_extract_output.html">qgis_extract_output</a></span><span class="op">(</span><span class="va">river_vertices</span>, <span class="st">"OUTPUT"</span><span class="op">)</span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `rivers_world_vertices' from data source 
-  `C:\Users\xeo19\AppData\Local\Temp\RtmpGYx64p\rivers_world_vertices.geojson' 
+  `C:\Users\xeo19\AppData\Local\Temp\RtmpiSAWPU\rivers_world_vertices.geojson' 
   using driver `GeoJSON'
 Simple feature collection with 339734 features and 12 fields
 Geometry type: POINT
