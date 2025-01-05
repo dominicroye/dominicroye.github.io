@@ -313,7 +313,7 @@ ga('send', {
 </div>
 </section><section id="preparation" class="level1 page-columns page-full"><h1>Preparation</h1>
 <section id="external-functions" class="level2"><h2 class="anchored" data-anchor-id="external-functions">External functions</h2>
-<p>The functions to estimate the separator line between day and night are based on a javascript <em>L.Terminator.js</em> from the <code>{Leaflet}</code> package I found on <a href="https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions">stackoverflow</a>. You can download the script with the functions <a href="../www/terminator.R">here</a> or access it on <a href="https://github.com/JoGall/terminator/blob/master/terminator.R">github</a>.</p>
+<p>The functions to estimate the separator line between day and night are based on a javascript <em>L.Terminator.js</em> from the <code>{Leaflet}</code> package I found on <a href="https://stackoverflow.com/questions/48384058/world-map-showing-day-and-night-regions">stackoverflow</a>. You can download the script with the functions <a href="../..\assets/www/terminator.R">here</a> or access it on <a href="https://github.com/JoGall/terminator/blob/master/terminator.R">github</a>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/source.html">source</a></span><span class="op">(</span><span class="st">"terminator.R"</span><span class="op">)</span> <span class="co"># import the functions</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
@@ -323,7 +323,7 @@ ga('send', {
 <div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">t0</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.time</a></span><span class="op">(</span><span class="op">)</span> <span class="co"># date and time of our operating system</span></span>
 <span><span class="va">t0</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>[1] "2025-01-05 17:51:03 CET"</code></pre>
+<pre><code>[1] "2025-01-05 18:29:03 CET"</code></pre>
 </div>
 <div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">coord_nightday</span> <span class="op">&lt;-</span> <span class="fu">terminator</span><span class="op">(</span><span class="va">t0</span>, <span class="op">-</span><span class="fl">180</span>, <span class="fl">180</span>, <span class="fl">0.2</span><span class="op">)</span> <span class="co"># estimate the day-night line</span></span>
 <span></span>

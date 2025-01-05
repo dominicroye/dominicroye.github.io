@@ -323,16 +323,16 @@ ga('send', {
 <h1>Preparation</h1>
 <section id="data" class="level2">
 <h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>We download the temperature data for a selection of US cities <a href="../www/weather_stats_usa.zip">here</a>. You can access other cities of the entire world through the WMO or GHCN datasets at <a href="https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily">NCDC/NOAA</a>.</p>
+<p>We download the temperature data for a selection of US cities <a href="../..\assets/www/weather_stats_usa.zip">here</a>. You can access other cities of the entire world through the WMO or GHCN datasets at <a href="https://gis.ncdc.noaa.gov/maps/ncei/cdo/daily">NCDC/NOAA</a>.</p>
 </section>
 <section id="import" class="level2">
 <h2 class="anchored" data-anchor-id="import">Import</h2>
-<p>To import the temperature time series of each city, which we find in several files, we apply the <code>read_csv()</code> function using <code>map_df()</code>. The <code>dir_ls()</code> function of the <code>fs</code> package returns the list of files with <em>csv</em> extension. The suffix <em>df</em> of <code>map()</code> indicates that we want to join all imported tables into a single one. For those with less experience with <code>tidyverse</code>, I recommend a short introduction on this blog <a href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">post</a>.</p>
+<p>To import the temperature time series of each city, which we find in several files, we apply the <code>read_csv()</code> function using <code>map()</code>. The <code>dir_ls()</code> function of the <code>fs</code> package returns the list of files with <em>csv</em> extension. The <code>list_rbind()</code> function join all imported tables into a single one.</p>
 <p>Then we obtain the names of the weather stations and define a new vector with the new city names.</p>
 <div class="cell">
 <div class="sourceCode cell-code" id="cb2"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># import data</span></span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>meteo <span class="ot">&lt;-</span> <span class="fu">dir_ls</span>(<span class="at">regexp =</span> <span class="st">".csv$"</span>) <span class="sc">|&gt;</span></span>
-<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">map_df</span>(read_csv)</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>          <span class="fu">map</span>(read_csv) <span class="sc">|&gt;</span> <span class="fu">list_rbind</span>()</span>
 <span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>meteo</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 211,825 × 12
