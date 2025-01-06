@@ -28,6 +28,7 @@
 /* social links: block of links */
 .about-entity .about-links {
   justify-content: flex-end !important;
+  flex-direction: row;
   column-gap: 0em !important;
   font-size: 1.2em !important;
 }
@@ -35,7 +36,17 @@
 /* social links: individual links */
 .about-entity .about-link {
   padding: 0.25em 0.25em !important;
-  border: none !important;  
+  border: none !important;
+  flex-direction: row;
+}
+
+@media (max-width: 991.98px) {
+    div.quarto-about-solana .about-entity .about-links {
+        flex-direction: row;
+        row-gap: 1em;
+        width: 100%;
+        padding-bottom: 1.5em;
+    }
 }
 
 /* Learn More About Me */
@@ -47,7 +58,7 @@
 
 /* image */
 .about-image {
-  margin-top: -2em;
+  margin-top: 0em;
   padding: 0 2em 0em 0;
 }
 
