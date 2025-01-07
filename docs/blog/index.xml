@@ -20563,18 +20563,10 @@ Temperatures.”</span> October 11, 2020. <a href="https://dominicroye.github.io
   <title>River flow directions</title>
   <dc:creator>Dominic Royé</dc:creator>
   <link>https://dominicroye.github.io/blog/river-flow-directions/</link>
-  <description><![CDATA[ 
-
-<!-- source: https://github.com/gadenbuie/garrickadenbuie-com/blob/main/_partials/title-block-link-buttons/title-block.html -->
-<!-- 
+  <description><![CDATA[ <!-- source: https://github.com/gadenbuie/garrickadenbuie-com/blob/main/_partials/title-block-link-buttons/title-block.html --><!-- 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title"> 
--->
-<!-- <header id="title-block-header" class="quarto-title-block default page-columns"> -->
-<!-- <div class="quarto-title page-columns page-full featured-image p-4" style="background-image: url(featured.png), url(featured.jpg), url(../featured.jpg);"> -->
-
-
-<style type="text/css">
+--><!-- <header id="title-block-header" class="quarto-title-block default page-columns"> --><!-- <div class="quarto-title page-columns page-full featured-image p-4" style="background-image: url(featured.png), url(featured.jpg), url(../featured.jpg);"> --><style type="text/css">
 
 #toc-title {
   
@@ -20589,26 +20581,21 @@ Temperatures.”</span> October 11, 2020. <a href="https://dominicroye.github.io
 }
   
 </style>
-
-
 <p>I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks, I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex. I did the same for a selection of European rivers here in this. However, originally I started with the orientation of the European coasts.</p>
 <p><a href="orientacion_eu.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="https://dominicroye.github.io/blog/river-flow-directions/orientacion_eu.png" class="img-fluid"></a></p>
-<section id="packages" class="level2">
-<h2>Packages</h2>
+<section id="packages" class="level2"><h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <p>In this post we will use the following packages:</p>
 <div class="cell">
 <div class="cell-output-display">
-<table class="caption-top">
+<table class="caption-top table table-sm table-striped small">
 <colgroup>
 <col style="width: 13%">
 <col style="width: 86%">
 </colgroup>
-<thead>
-<tr class="header">
+<thead><tr class="header">
 <th style="text-align: left;">Packages</th>
 <th style="text-align: left;">Description</th>
-</tr>
-</thead>
+</tr></thead>
 <tbody>
 <tr class="odd">
 <td style="text-align: left;">tidyverse</td>
@@ -20648,255 +20635,456 @@ Temperatures.”</span> October 11, 2020. <a href="https://dominicroye.github.io
 </div>
 <p>In the case of the <code>qgisprocess</code> package, it is necessary to install QIGS &gt;= 3.16 <a href="https://download.qgis.org/">here</a>. I will explain the reason for using QGIS later.</p>
 <div class="cell">
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb1-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># install the packages if necessary</span></span>
-<span id="cb1-2"></span>
-<span id="cb1-3"><span class="cf" style="color: #003B4F;
+<span></span>
+<span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"tidyverse"</span>)) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"tidyverse"</span>)</span>
-<span id="cb1-4"><span class="cf" style="color: #003B4F;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"remotes"</span>)) <span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">"remotes"</span>)</span>
-<span id="cb1-5"><span class="cf" style="color: #003B4F;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tidyverse"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">"qgisprocess"</span>)) remotes<span class="sc" style="color: #5E5E5E;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"><a href="https://remotes.r-lib.org">"remotes"</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"remotes"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/">"qgisprocess"</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">remotes</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">install_github</span>(<span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://remotes.r-lib.org/reference/install_github.html">install_github</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"paleolimbot/qgisprocess"</span>)</span>
-<span id="cb1-6"><span class="cf" style="color: #003B4F;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">"paleolimbot/qgisprocess"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"sf"</span>)) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"sf"</span>)</span>
-<span id="cb1-7"><span class="cf" style="color: #003B4F;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ggtext"</span>)) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"ggtext"</span>)</span>
-<span id="cb1-8"><span class="cf" style="color: #003B4F;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://r-spatial.github.io/sf/">"sf"</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"circular"</span>)) <span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">"circular"</span>)</span>
-<span id="cb1-9"><span class="cf" style="color: #003B4F;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">"sf"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"geosphere"</span>)) <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"geosphere"</span>)</span>
-<span id="cb1-10"><span class="cf" style="color: #003B4F;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">if</span> (<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">"geomtextpath"</span>)) <span class="fu" style="color: #4758AB;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"geomtextpath"</span>)</span>
-<span id="cb1-11"></span>
-<span id="cb1-12"><span class="co" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://wilkelab.org/ggtext/">"ggtext"</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggtext"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"circular"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"circular"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"geosphere"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"geosphere"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;"><a href="https://allancameron.github.io/geomtextpath/">"geomtextpath"</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"geomtextpath"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># packages</span></span>
-<span id="cb1-13"></span>
-<span id="cb1-14"><span class="fu" style="color: #4758AB;
+<span></span>
+<span><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">library</span>(sf)</span>
-<span id="cb1-15"><span class="fu" style="color: #4758AB;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">library</span>(tidyverse)</span>
-<span id="cb1-16"><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">library</span>(ggtext)</span>
-<span id="cb1-17"><span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://r-spatial.github.io/sf/">sf</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">library</span>(circular)</span>
-<span id="cb1-18"><span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
 background-color: null;
-font-style: inherit;">library</span>(geosphere)</span>
-<span id="cb1-19"><span class="fu" style="color: #4758AB;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">library</span>(qgisprocess)</span>
-<span id="cb1-20"><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">library</span>(geomtextpath)</span></code></pre></div>
+font-style: inherit;"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://wilkelab.org/ggtext/">ggtext</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">circular</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">geosphere</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/">qgisprocess</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;"><a href="https://allancameron.github.io/geomtextpath/">geomtextpath</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 </div>
-</section>
-<section id="initial-considerations" class="level1">
-<h1>Initial considerations</h1>
+</section><section id="initial-considerations" class="level1"><h1>Initial considerations</h1>
 <p>Angles in vectorial lines are based on the angle between two vertices, and the number of vertices depends on the complexity, and therefore the resolution, of the vector data. Consequently, there can be differences in using different resolutions of a spatial line, either from the coast or from the river as in this example. A straight line is simply constructed with two points of longitude and latitude.</p>
 <p>Related to this is fractality, an apparently irregular structure but that is repeated at different scales, known from coastlines or also from river. The most paradoxical feature is that the length of a coastline depends on the measurement scale, the smaller the measurement increment, the longer is the measured coastline.</p>
 <p>There are two possibilities of obtaining the vertice angles. In the first one we calculate the angle between all consecutive vertices.</p>
 <p>For example, imagine two points, Madrid (-3.71, 40.43) and Barcelona (2.14, 41.4).</p>
 <p>What is the angle of a straight line between both cities?</p>
 <div class="cell">
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3.71</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">40.43</span>), <span class="fu" style="color: #4758AB;
+font-style: inherit;">40.43</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+font-style: inherit;">)</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2.14</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">41.4</span>))</span></code></pre></div>
+font-style: inherit;">41.4</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 77.62391</code></pre>
 </div>
 </div>
 <p>We see that it is 77º, that is, northeast direction. But what if we go from Barcelona to Madrid?</p>
 <div class="cell">
-<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb4-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2.14</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">41.4</span>), <span class="fu" style="color: #4758AB;
+font-style: inherit;">41.4</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">)</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3.71</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">40.43</span>))</span></code></pre></div>
+font-style: inherit;">40.43</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 257.6239</code></pre>
 </div>
 </div>
 <p>The angle is different because we <em>move</em> from the northeast to the southwest. We can easily invert the direction to get the opposite angle.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb6-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># opposite angle of Barcelona -&gt; Madrid</span></span>
-<span id="cb6-2"><span class="fu" style="color: #4758AB;
+<span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2.14</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">41.4</span>), <span class="fu" style="color: #4758AB;
+font-style: inherit;">41.4</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">)</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3.71</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">40.43</span>)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">40.43</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">180</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>[1] 77.62391</code></pre>
 </div>
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb8-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># opposite angle of Madrid -&gt; Barcelona</span></span>
-<span id="cb8-2"><span class="fu" style="color: #4758AB;
+<span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">3.71</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">40.43</span>), <span class="fu" style="color: #4758AB;
+font-style: inherit;">40.43</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="fl" style="color: #AD0000;
+font-style: inherit;">)</span>, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">2.14</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">41.4</span>)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">41.4</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">+</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">180</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
@@ -20905,40 +21093,53 @@ font-style: inherit;">180</span></span></code></pre></div>
 </div>
 <p>The direction in which we calculate the angles is important. In the case of rivers, it is expected to be the direction of flow from origin to the mouth, however, a problem may be that the vertices, which build the lines, are not geographically ordered in the attribute table. Another problem may be that the vertices start at the mouth which would give the reverse angle as we have seen before.</p>
 <p>However, there is an easier way. We can take advantage of the attributes of projected coordinate systems (Robinson projection, etc.) that include the angle between the vertices. We will use this last approach in this post. Still, we must pay close attention to the results as stated above.</p>
-</section>
-<section id="preparation" class="level1">
-<h1>Preparation</h1>
-<section id="data" class="level2">
-<h2>Data</h2>
+</section><section id="preparation" class="level1"><h1>Preparation</h1>
+<section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
 <p>We download the central lines of the largest rivers in the world (<a href="assets/www/RiverHRCenterlinesCombo.zip">here</a>), also accessible in <a href="https://www.sciencebase.gov/catalog/item/5a145fdde4b09fc93dcfd36c">Zeenatul Basher et al.&nbsp;2018</a>.</p>
-</section>
-<section id="import-and-project" class="level2">
-<h2>Import and project</h2>
-<p>The first thing we do is to import, project the spatial lines and delete the third dimension <em>Z</em>, chaining the following functions: <code>st_read()</code> helps us import any vector format, <code>st_zm()</code> delete the dimension Z or M of a geometry and <code>st_transform()</code> projects the vector data to the new projection in <em>proj4</em> format. We combine the functions with the famous pipe (<code>|&gt;</code>) that facilitates the application of a sequence of functions on a data set. All functions in the <code>sf</code> package start with <code>st_*</code> with reference to the spatial character, similar to <em>PostGIS</em>. In the same style as <em>PostGIS</em>, verbs are used as function names.</p>
+</section><section id="import-and-project" class="level2"><h2 class="anchored" data-anchor-id="import-and-project">Import and project</h2>
+<p>The first thing we do is to import, project the spatial lines and delete the third dimension <em>Z</em>, chaining the following functions: <code><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read()</a></code> helps us import any vector format, <code><a href="https://r-spatial.github.io/sf/reference/st_zm.html">st_zm()</a></code> delete the dimension Z or M of a geometry and <code><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform()</a></code> projects the vector data to the new projection in <em>proj4</em> format. We combine the functions with the famous pipe (<code>|&gt;</code>) that facilitates the application of a sequence of functions on a data set. All functions in the <code>sf</code> package start with <code>st_*</code> with reference to the spatial character, similar to <em>PostGIS</em>. In the same style as <em>PostGIS</em>, verbs are used as function names.</p>
 <div class="cell">
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb10-1">proj_rob <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">proj_rob</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"ESRI:54030"</span></span>
-<span id="cb10-2"></span>
-<span id="cb10-3">river_line <span class="ot" style="color: #003B4F;
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_line</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">st_read</span>(<span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"RiverHRCenterlinesCombo.shp"</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RiverHRCenterlinesCombo.shp"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb10-4">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">st_zm</span>() <span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-spatial.github.io/sf/reference/st_zm.html">st_zm</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb10-5">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">st_transform</span>(proj_rob)</span></code></pre></div>
+font-style: inherit;"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">proj_rob</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `RiverHRCenterlinesCombo' from data source 
   `C:\Users\xeo19\Downloads\dominicroye.github.io\blog\river-flow-directions\RiverHRCenterlinesCombo.shp' 
@@ -20951,18 +21152,20 @@ z_range:       zmin: 0 zmax: 0
 Geodetic CRS:  WGS 84</code></pre>
 </div>
 </div>
-</section>
-<section id="extract-the-angles" class="level2">
-<h2>Extract the angles</h2>
-<p>In the next step we have to extract the vertice angles. Unfortunately, as far as I know, it is not possible to extract the attributes with some function from the <code>sf</code> package. Although the function <code>st_coordinates()</code> returns the coordinates, it does not include other attributes. Therefore, we must use another way, and that is the open software Quantum GIS in which we can find a tool to extract all the vertice attributes. We could import the vector data into QGIS Desktop and export the vertices from there, but it is also possible to access the QGIS tools from R directly.</p>
-<p>For this, we need to have QGIS installed. The <code>qgisprocess</code> package allows us to use very easily all the tools of the software in R. First we use the <code>qgis_configure()</code> function to define all the necessary QGIS paths.</p>
+</section><section id="extract-the-angles" class="level2"><h2 class="anchored" data-anchor-id="extract-the-angles">Extract the angles</h2>
+<p>In the next step we have to extract the vertice angles. Unfortunately, as far as I know, it is not possible to extract the attributes with some function from the <code>sf</code> package. Although the function <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates()</a></code> returns the coordinates, it does not include other attributes. Therefore, we must use another way, and that is the open software Quantum GIS in which we can find a tool to extract all the vertice attributes. We could import the vector data into QGIS Desktop and export the vertices from there, but it is also possible to access the QGIS tools from R directly.</p>
+<p>For this, we need to have QGIS installed. The <code>qgisprocess</code> package allows us to use very easily all the tools of the software in R. First we use the <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_configure.html">qgis_configure()</a></code> function to define all the necessary QGIS paths.</p>
 <div class="cell">
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># paths to QGIS</span></span>
-<span id="cb12-2"><span class="fu" style="color: #4758AB;
+<span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">qgis_configure</span>()</span></code></pre></div>
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_configure.html">qgis_configure</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stderr">
 <pre><code>getOption('qgisprocess.path') was not found.</code></pre>
 </div>
@@ -21037,14 +21240,18 @@ Saving configuration to 'C:\Users\xeo19\AppData\Local\R-qgisprocess\R-qgisproces
 qgis_version() to inspect the cache environment.</code></pre>
 </div>
 </div>
-<p>The <code>qgis_algorithms()</code> function helps us to search for different QGIS tools. In addition the <code>qgis_show_help()</code> function specifies the way of usage with all the required parameters.</p>
+<p>The <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_algorithms()</a></code> function helps us to search for different QGIS tools. In addition the <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help()</a></code> function specifies the way of usage with all the required parameters.</p>
 <div class="cell">
-<div class="sourceCode" id="cb34" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb34-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb34" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># search tools</span></span>
-<span id="cb34-2"><span class="fu" style="color: #4758AB;
+<span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">qgis_algorithms</span>()</span></code></pre></div>
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_algorithms</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code># A tibble: 376 × 24
    provider provider_title algorithm                algorithm_id algorithm_title
@@ -21067,14 +21274,18 @@ font-style: inherit;">qgis_algorithms</span>()</span></code></pre></div>
 #   short_description &lt;chr&gt;, tags &lt;list&gt;, default_raster_file_extension &lt;chr&gt;,
 #   default_vector_file_extension &lt;chr&gt;, …</code></pre>
 </div>
-<div class="sourceCode" id="cb36" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb36-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb36" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># usage of tool</span></span>
-<span id="cb36-2"><span class="fu" style="color: #4758AB;
+<span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">qgis_show_help</span>(<span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"native:extractvertices"</span>)</span></code></pre></div>
+font-style: inherit;">(</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"native:extractvertices"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Extract vertices (native:extractvertices)
 
@@ -21106,41 +21317,69 @@ OUTPUT: &lt;outputVector&gt;
     Vertices</code></pre>
 </div>
 </div>
-<p>In our case the tool to extract the vertices is simple and only has one input and one output. The function <code>qgis_run_algorithm()</code> executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class <code>sf</code> (or <code>sp</code>) and <code>raster</code> that we have imported or created in R. As output we create a <code>geojson</code>, it could also be of another vector format, and we save it in a temporary folder. To obtain the QGIS output we need to use <code>qgis_extract_output()</code> function.</p>
+<p>In our case the tool to extract the vertices is simple and only has one input and one output. The function <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm()</a></code> executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class <code>sf</code> (or <code>sp</code>) and <code>raster</code> that we have imported or created in R. As output we create a <code>geojson</code>, it could also be of another vector format, and we save it in a temporary folder. To obtain the QGIS output we need to use <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_extract_output.html">qgis_extract_output()</a></code> function.</p>
 <div class="cell">
-<div class="sourceCode" id="cb38" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb38-1">river_vertices <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb38" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">qgis_run_algorithm</span>(</span>
-<span id="cb38-2">  <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">alg =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">(</span></span>
+<span>  alg <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"native:extractvertices"</span>,</span>
-<span id="cb38-3">  <span class="at" style="color: #657422;
+<span>  INPUT <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">INPUT =</span> river_line,</span>
-<span id="cb38-4">  <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">OUTPUT =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">river_line</span>,</span>
+<span>  OUTPUT <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">file.path</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tempdir</span>(), <span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"rivers_world_vertices.geojson"</span>)</span>
-<span id="cb38-5">)</span>
-<span id="cb38-6"></span>
-<span id="cb38-7">river_vertices <span class="ot" style="color: #003B4F;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rivers_world_vertices.geojson"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">st_read</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">qgis_extract_output</span>(river_vertices, <span class="st" style="color: #20794D;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">"OUTPUT"</span>))</span></code></pre></div>
+font-style: inherit;"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_extract_output.html">qgis_extract_output</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"OUTPUT"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Reading layer `rivers_world_vertices' from data source 
   `C:\Users\xeo19\AppData\Local\Temp\RtmpSIybwj\rivers_world_vertices.geojson' 
@@ -21152,55 +21391,69 @@ Bounding box:  xmin: -12117400 ymin: -3953778 xmax: 13751910 ymax: 7507359
 Projected CRS: World_Robinson</code></pre>
 </div>
 </div>
-</section>
-<section id="selection" class="level2">
-<h2>Selection</h2>
+</section><section id="selection" class="level2"><h2 class="anchored" data-anchor-id="selection">Selection</h2>
 <p>Before continuing with the distribution estimation of the angles, we filter some rivers of interest. The functions of the <code>tidyverse</code> collection are compatible with the <code>sf</code> package. In the last post I made an introduction to <code>tidyverse</code> <a href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">here</a>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb40" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb40-1">river_vertices <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb40" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">filter</span>(</span>
-<span id="cb40-2">  river_vertices,</span>
-<span id="cb40-3">  NAME <span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">%in%</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span></span>
+<span>  <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">c</span>(</span>
-<span id="cb40-4">    <span class="st" style="color: #20794D;
+font-style: inherit;">river_vertices</span>,</span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">NAME</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Mississippi"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Colorado"</span>,</span>
-<span id="cb40-5">    <span class="st" style="color: #20794D;
+<span>    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Amazon"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Nile"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Orange"</span>,</span>
-<span id="cb40-6">    <span class="st" style="color: #20794D;
+<span>    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Ganges"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Yangtze"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Danube"</span>,</span>
-<span id="cb40-7">    <span class="st" style="color: #20794D;
+<span>    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Mackenzie"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Lena"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Murray"</span>,</span>
-<span id="cb40-8">    <span class="st" style="color: #20794D;
+<span>    <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Niger"</span></span>
-<span id="cb40-9">  )</span>
-<span id="cb40-10">)</span>
-<span id="cb40-11"></span>
-<span id="cb40-12">river_vertices</span></code></pre></div>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>Simple feature collection with 94702 features and 12 fields
 Geometry type: POINT
@@ -21232,103 +21485,183 @@ First 10 features:
 10           0                 9 18376.526 347.480822 POINT (3039972 1690210)</code></pre>
 </div>
 </div>
-</section>
-</section>
-<section id="estimate-the-distribution" class="level1">
-<h1>Estimate the distribution</h1>
-<p>To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the <code>density()</code> standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the <code>circular</code> package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.</p>
-<p>So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the <code>density()</code> function, in which the smoothing bandwidth <code>bw</code> is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, <code>bw.nrd.circular()</code> that could be used here.</p>
+</section></section><section id="estimate-the-distribution" class="level1"><h1>Estimate the distribution</h1>
+<p>To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code> standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the <code>circular</code> package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.</p>
+<p>So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code> function, in which the smoothing bandwidth <code>bw</code> is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, <code><a href="https://rdrr.io/pkg/circular/man/bw.circular.html">bw.nrd.circular()</a></code> that could be used here.</p>
 <div class="cell">
-<div class="sourceCode" id="cb42" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb42-1">dens_circ <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb42" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+font-style: inherit;">dens_circ</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">function</span>(x) {</span>
-<span id="cb42-2">  </span>
-<span id="cb42-3">  dens <span class="ot" style="color: #003B4F;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">{</span></span>
+<span>  </span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dens</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">density.circular</span>(<span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://rdrr.io/pkg/circular/man/density.circular.html">density.circular</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">circular</span>(x<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">$</span>angle, <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://rdrr.io/pkg/circular/man/circular.html">circular</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">units =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">"degrees"</span>),</span>
-<span id="cb42-4">    <span class="at" style="color: #657422;
+font-style: inherit;">x</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">bw =</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">70</span>, <span class="at" style="color: #657422;
+font-style: inherit;">angle</span>, units <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">kernel =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"degrees"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    bw <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">70</span>, kernel <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"vonmises"</span>,</span>
-<span id="cb42-5">    <span class="at" style="color: #657422;
+<span>    control.circular <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">control.circular =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">units =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">(</span>units <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"degrees"</span>)</span>
-<span id="cb42-6">  )</span>
-<span id="cb42-7"></span>
-<span id="cb42-8">  df <span class="ot" style="color: #003B4F;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"degrees"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span>  <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">data.frame</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://rdrr.io/r/base/data.frame.html">data.frame</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">x =</span> dens<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>x, <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">y =</span> dens<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">dens</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>y <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">x</span>, y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dens</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">y</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">/</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">max</span>(dens<span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/r/base/Extremes.html">max</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>y))</span>
-<span id="cb42-9"></span>
-<span id="cb42-10">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">return</span>(df)</span>
-<span id="cb42-11">}</span></code></pre></div>
+font-style: inherit;">dens</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">y</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span>  <span class="kw" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;"><a href="https://rdrr.io/r/base/function.html">return</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">df</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div>
 </div>
-<p>Finally, we estimate the density of each river in our selection. We use the <code>split()</code> function of R Base to get a table of each river in a list object. Then we apply our density estimation function to the list with the function <code>map_df()</code> from the <code>purrr</code> package. The suffix <code>_df</code> allows us to get a joined table, instead of a list with the results of each river. However, it is necessary to indicate the name of the column with the argument <code>.id</code>, which will contain the name of each river. Otherwise we would not know how to differentiate the results. Also here I recommend reading more details in the last post about <code>tidyverse</code> <a href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">here</a>.</p>
+<p>Finally, we estimate the density of each river in our selection. We use the <code><a href="https://rdrr.io/r/base/split.html">split()</a></code> function of R Base to get a table of each river in a list object. Then we apply our density estimation function to the list with the function <code><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_df()</a></code> from the <code>purrr</code> package. The suffix <code>_df</code> allows us to get a joined table, instead of a list with the results of each river. However, it is necessary to indicate the name of the column with the argument <code>.id</code>, which will contain the name of each river. Otherwise we would not know how to differentiate the results. Also here I recommend reading more details in the last post about <code>tidyverse</code> <a href="https://dominicroye.github.io/en/2020/a-very-short-introduction-to-tidyverse/">here</a>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb43" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb43-1">dens_river <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb43" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dens_river</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">split</span>(river_vertices, river_vertices<span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/r/base/split.html">split</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">$</span>NAME) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">river_vertices</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">NAME</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span></span>
-<span id="cb43-2">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">map_df</span>(dens_circ, <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://purrr.tidyverse.org/reference/map_dfr.html">map_df</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">.id =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">"river"</span>)</span>
-<span id="cb43-3"></span>
-<span id="cb43-4"><span class="co" style="color: #5E5E5E;
+font-style: inherit;">dens_circ</span>, .id <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"river"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span></span>
+<span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># results</span></span>
-<span id="cb43-5"><span class="fu" style="color: #4758AB;
+<span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">head</span>(dens_river)</span></code></pre></div>
+font-style: inherit;"><a href="https://rdrr.io/r/utils/head.html">head</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">dens_river</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>   river        x         y
 1 Amazon 0.000000 0.2399907
@@ -21339,22 +21672,24 @@ font-style: inherit;">head</span>(dens_river)</span></code></pre></div>
 6 Amazon 3.522505 0.2871232</code></pre>
 </div>
 </div>
-</section>
-<section id="visualization" class="level1">
-<h1>Visualization</h1>
+</section><section id="visualization" class="level1"><h1>Visualization</h1>
 <p>In the next step we create two objects with the title and the plot caption. In the title we are using an html code to color part of the text instead of a legend. You can use html very easily with the <code>ggtext</code> package.</p>
 <div class="cell">
-<div class="sourceCode" id="cb45" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb45-1"><span class="co" style="color: #5E5E5E;
+<div class="sourceCode" id="cb45" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># title with html</span></span>
-<span id="cb45-2">title <span class="ot" style="color: #003B4F;
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">title</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Relative distribution of river &lt;span style='color:#011FFD;'&gt;&lt;strong&gt;flow direction&lt;/strong&gt;&lt;/span&gt; in the world"</span></span>
-<span id="cb45-3"></span>
-<span id="cb45-4"></span>
-<span id="cb45-5">caption <span class="ot" style="color: #003B4F;
+<span></span>
+<span></span>
+<span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">caption</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="st" style="color: #20794D;
 background-color: null;
@@ -21362,392 +21697,550 @@ font-style: inherit;">"Based on data from Zeenatul Basher, 20180215"</span></spa
 </div>
 <p>The background grid that creates <code>ggplot</code> by default for polar coordinates did not convince me, so we create a table with x axis background lines.</p>
 <div class="cell">
-<div class="sourceCode" id="cb46" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb46-1">grid_x <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb46" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">grid_x</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tibble</span>(</span>
-<span id="cb46-2">  <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://tibble.tidyverse.org/reference/tibble.html">tibble</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span></span>
+<span>  x <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">360</span> <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">22.5</span>, <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">by =</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">22.5</span>),</span>
-<span id="cb46-3">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">y =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">rep</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">16</span>),</span>
-<span id="cb46-4">  <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">xend =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">360</span> <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">360</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">22.5</span>, <span class="at" style="color: #657422;
+font-style: inherit;">22.5</span>, by <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">by =</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">22.5</span>),</span>
-<span id="cb46-5">  <span class="at" style="color: #657422;
+font-style: inherit;">22.5</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">yend =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span>,</span>
+<span>  y <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">rep</span>(<span class="cn" style="color: #8f5902;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">Inf</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">16</span>)</span>
-<span id="cb46-6">)</span></code></pre></div>
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  xend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">360</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22.5</span>, by <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">22.5</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>  yend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/rep.html">rep</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">Inf</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">16</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 </div>
-<p>Next we define all the styles of the graph. The most important thing in this step is the <code>element_textbox()</code> function of the <code>ggtext</code> package to be able to interpret our html code incorporated into the title.</p>
+<p>Next we define all the styles of the graph. The most important thing in this step is the <code><a href="https://wilkelab.org/ggtext/reference/element_textbox.html">element_textbox()</a></code> function of the <code>ggtext</code> package to be able to interpret our html code incorporated into the title.</p>
 <div class="cell">
-<div class="sourceCode" id="cb47" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb47-1">theme_polar <span class="ot" style="color: #003B4F;
+<div class="sourceCode" id="cb47" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+font-style: inherit;">theme_polar</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
 background-color: null;
 font-weight: bold;
-font-style: inherit;">function</span>() {</span>
-<span id="cb47-2">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">theme_minimal</span>(<span class="at" style="color: #657422;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">base_family =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"Montserrat"</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">{</span></span>
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">%+replace%</span></span>
-<span id="cb47-3">    <span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">theme</span>(</span>
-<span id="cb47-4">      <span class="at" style="color: #657422;
+font-style: inherit;">(</span>base_family <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">axis.title.y =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb47-5">      <span class="at" style="color: #657422;
+font-style: inherit;">"Montserrat"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">axis.text.y =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb47-6">      <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span></span>
+<span>    <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">element_blank</span>(),</span>
-<span id="cb47-7">      <span class="at" style="color: #657422;
+font-style: inherit;">(</span></span>
+<span>      axis.title.y <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">plot.title =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">element_textbox</span>(</span>
-<span id="cb47-8">        <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">hjust =</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>      axis.text.y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>      legend.title <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>      plot.title <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://wilkelab.org/ggtext/reference/element_textbox.html">element_textbox</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>        hjust <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">0.5</span>,</span>
-<span id="cb47-9">        <span class="at" style="color: #657422;
+<span>        colour <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"white"</span>,</span>
-<span id="cb47-10">        <span class="at" style="color: #657422;
+<span>        size <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">18</span>,</span>
-<span id="cb47-11">        <span class="at" style="color: #657422;
+<span>        margin <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">margin =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">margin</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">t =</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">(</span>t <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">10</span>, <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">b =</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">10</span>, b <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">15</span>)</span>
-<span id="cb47-12">      ),</span>
-<span id="cb47-13">      <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">plot.caption =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">15</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">element_text</span>(</span>
-<span id="cb47-14">        <span class="at" style="color: #657422;
+font-style: inherit;">)</span></span>
+<span>      <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">)</span>,</span>
+<span>      plot.caption <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>        colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"white"</span></span>
-<span id="cb47-15">      ),</span>
-<span id="cb47-16">      <span class="at" style="color: #657422;
+<span>      <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">axis.text.x =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span>,</span>
+<span>      axis.text.x <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">element_text</span>(</span>
-<span id="cb47-17">        <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"white"</span>,</span>
-<span id="cb47-18">        <span class="at" style="color: #657422;
+font-style: inherit;">(</span></span>
+<span>        colour <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">margin =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">margin</span>(<span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">b =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span>)</span>
-<span id="cb47-19">      ),</span>
-<span id="cb47-20">      <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">strip.text =</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">element_text</span>(</span>
-<span id="cb47-21">        <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"white"</span>,</span>
-<span id="cb47-22">        <span class="at" style="color: #657422;
+<span>        margin <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">face =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>b <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>      <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>      strip.text <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>        colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span>        face <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"bold"</span></span>
-<span id="cb47-23">      ),</span>
-<span id="cb47-24">      <span class="at" style="color: #657422;
+<span>      <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">panel.background =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">)</span>,</span>
+<span>      panel.background <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"black"</span>),</span>
-<span id="cb47-25">      <span class="at" style="color: #657422;
+font-style: inherit;">(</span>fill <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">plot.background =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">element_rect</span>(<span class="at" style="color: #657422;
+font-style: inherit;">"black"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">)</span>,</span>
+<span>      plot.background <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">"black"</span>),</span>
-<span id="cb47-26">      <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">panel.grid =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_rect</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">element_blank</span>()</span>
-<span id="cb47-27">    )</span>
-<span id="cb47-28">}</span></code></pre></div>
+font-style: inherit;">(</span>fill <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"black"</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>      panel.grid <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">}</span></span></code></pre></div>
 </div>
-<p>Finally we build the graph: 1) We use the <code>geom_hline()</code> function with different y intersection points to create the background grid. The <code>geom_segment()</code> function creates the x grid. 2) We create the density area using the <code>geom_area()</code> function. 3) In <code>scale_x_continous()</code> we define a negative lower limit so that it does not collapse at a small point. The labels of the eight main directions are indicated in the <code>scale_y_continous()</code> function, and 4) Finally, we change to a polar coordinate system and set the variable to create facets.</p>
+<p>Finally we build the graph: 1) We use the <code><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline()</a></code> function with different y intersection points to create the background grid. The <code><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment()</a></code> function creates the x grid. 2) We create the density area using the <code><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_area()</a></code> function. 3) In <code>scale_x_continous()</code> we define a negative lower limit so that it does not collapse at a small point. The labels of the eight main directions are indicated in the <code>scale_y_continous()</code> function, and 4) Finally, we change to a polar coordinate system and set the variable to create facets.</p>
 <div class="cell">
-<div class="sourceCode" id="cb48" style="background: #f1f3f5;"><pre class="sourceCode r cell-code"><code class="sourceCode r"><span id="cb48-1"><span class="fu" style="color: #4758AB;
+<div class="sourceCode" id="cb48" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-2"> <span class="fu" style="color: #4758AB;
+<span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geom_hline</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_abline.html">geom_hline</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">yintercept =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span>yintercept <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">0</span>, .<span class="dv" style="color: #AD0000;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, .<span class="dv" style="color: #AD0000;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">4</span>, .<span class="dv" style="color: #AD0000;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">6</span>, .<span class="dv" style="color: #AD0000;
+font-style: inherit;">.2</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">8</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">.4</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>), </span>
-<span id="cb48-3">            <span class="at" style="color: #657422;
+font-style: inherit;">.6</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">.8</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>, </span>
+<span>            colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"white"</span>,</span>
-<span id="cb48-4">            <span class="at" style="color: #657422;
+<span>            linewidth <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">linewidth =</span> .<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">4</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">.4</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-5"> <span class="fu" style="color: #4758AB;
+<span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geom_segment</span>(</span>
-<span id="cb48-6">    <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_segment.html">geom_segment</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">data =</span> grid_x,</span>
-<span id="cb48-7">    <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span></span>
+<span>    data <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">aes</span>(</span>
-<span id="cb48-8">      <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">x =</span> x,</span>
-<span id="cb48-9">      <span class="at" style="color: #657422;
+font-style: inherit;">grid_x</span>,</span>
+<span>    <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">y =</span> y,</span>
-<span id="cb48-10">      <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">xend =</span> xend,</span>
-<span id="cb48-11">      <span class="at" style="color: #657422;
+font-style: inherit;">(</span></span>
+<span>      x <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">yend =</span> yend</span>
-<span id="cb48-12">    ),</span>
-<span id="cb48-13">    <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">linetype =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">x</span>,</span>
+<span>      y <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">y</span>,</span>
+<span>      xend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">xend</span>,</span>
+<span>      yend <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">yend</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    linetype <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"dashed"</span>,</span>
-<span id="cb48-14">    <span class="at" style="color: #657422;
+<span>    colour <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"white"</span>,</span>
-<span id="cb48-15">    <span class="at" style="color: #657422;
+<span>    linewidth <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">linewidth =</span> .<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span></span>
-<span id="cb48-16">  ) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">.2</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-17">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geom_area</span>(</span>
-<span id="cb48-18">    <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_ribbon.html">geom_area</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">data =</span> dens_river,</span>
-<span id="cb48-19">    <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span></span>
+<span>    data <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">aes</span>(<span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">x =</span> x, <span class="at" style="color: #657422;
+font-style: inherit;">dens_river</span>,</span>
+<span>    <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">y =</span> y, <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">ymin =</span> <span class="dv" style="color: #AD0000;
+font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">0</span>, <span class="at" style="color: #657422;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">ymax =</span> y),</span>
-<span id="cb48-20">    <span class="at" style="color: #657422;
+font-style: inherit;">x</span>, y <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">7</span>,</span>
-<span id="cb48-21">    <span class="at" style="color: #657422;
+font-style: inherit;">y</span>, ymin <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">colour =</span> <span class="cn" style="color: #8f5902;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, ymax <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">y</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span>,</span>
+<span>    alpha <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.7</span>,</span>
+<span>    colour <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NA</span>,</span>
-<span id="cb48-22">    <span class="at" style="color: #657422;
+<span>    show.legend <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">show.legend =</span> <span class="cn" style="color: #8f5902;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">FALSE</span>,</span>
-<span id="cb48-23">    <span class="at" style="color: #657422;
+<span>    fill <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">fill =</span> <span class="st" style="color: #20794D;
+font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"#011FFD"</span></span>
-<span id="cb48-24">  ) <span class="sc" style="color: #5E5E5E;
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-25">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">scale_y_continuous</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_y_continuous</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span>limits <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">-</span>.<span class="dv" style="color: #AD0000;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">2</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">1</span>), <span class="at" style="color: #657422;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">expand =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">.2</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">expansion</span>(<span class="dv" style="color: #AD0000;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">0</span>)) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">)</span>, expand <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/expansion.html">expansion</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-26">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">scale_x_continuous</span>(</span>
-<span id="cb48-27">    <span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/scale_continuous.html">scale_x_continuous</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span></span>
+<span>    limits <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">360</span>),</span>
-<span id="cb48-28">    <span class="at" style="color: #657422;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">seq</span>(<span class="dv" style="color: #AD0000;
+font-style: inherit;">360</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+font-style: inherit;">)</span>,</span>
+<span>    breaks <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">360</span> <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">360</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">22.5</span>, <span class="at" style="color: #657422;
+font-style: inherit;">22.5</span>, by <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">by =</span> <span class="fl" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">22.5</span><span class="sc" style="color: #5E5E5E;
+font-style: inherit;">22.5</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">*</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">*</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span>),</span>
-<span id="cb48-29">    <span class="at" style="color: #657422;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">minor_breaks =</span> <span class="cn" style="color: #8f5902;
+font-style: inherit;">)</span>,</span>
+<span>    minor_breaks <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
 font-style: inherit;">NULL</span>,</span>
-<span id="cb48-30">    <span class="at" style="color: #657422;
+<span>    labels <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">labels =</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">c</span>(</span>
-<span id="cb48-31">      <span class="st" style="color: #20794D;
+font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span></span>
+<span>      <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"N"</span>, <span class="st" style="color: #20794D;
 background-color: null;
@@ -21756,7 +22249,7 @@ background-color: null;
 font-style: inherit;">"E"</span>, <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"SE"</span>,</span>
-<span id="cb48-32">      <span class="st" style="color: #20794D;
+<span>      <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"S"</span>, <span class="st" style="color: #20794D;
 background-color: null;
@@ -21765,74 +22258,89 @@ background-color: null;
 font-style: inherit;">"W"</span>,  <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"NW"</span></span>
-<span id="cb48-33">    )</span>
-<span id="cb48-34">  ) <span class="sc" style="color: #5E5E5E;
+<span>    <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span>
+<span>  <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-35">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">coord_curvedpolar</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://allancameron.github.io/geomtextpath/reference/coord_curvedpolar.html">coord_curvedpolar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">direction =</span> <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">(</span>direction <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+font-style: inherit;">=</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">-</span><span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">+</span></span>
-<span id="cb48-36">  <span class="fu" style="color: #4758AB;
+font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">facet_wrap</span>(river <span class="sc" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">~</span> ., <span class="at" style="color: #657422;
-background-color: null;
-font-style: inherit;">ncol =</span> <span class="dv" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">4</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-37">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/facet_wrap.html">facet_wrap</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">title =</span> title, <span class="at" style="color: #657422;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">caption =</span> caption, <span class="at" style="color: #657422;
+font-style: inherit;">river</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">x =</span> <span class="cn" style="color: #8f5902;
+font-style: inherit;">~</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">NULL</span>) <span class="sc" style="color: #5E5E5E;
+font-style: inherit;">.</span>, ncol <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span id="cb48-38">  <span class="fu" style="color: #4758AB;
+<span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">theme_polar</span>()</span></code></pre></div>
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span>title <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">title</span>, caption <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">caption</span>, x <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NULL</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_polar</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div>
 <div class="cell-output-display">
 <div>
-<figure>
-<p><a href="index_files/figure-html/unnamed-chunk-16-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/river-flow-directions/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid" width="2400"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-16-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/river-flow-directions/index_files/figure-html/unnamed-chunk-16-1.png" class="img-fluid figure-img" width="2400"></a></p>
 </figure>
 </div>
 </div>
 </div>
-<div id="quarto-navigation-envelope" class="hidden">
-<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1zaWRlYmFyLXRpdGxl">Dr Dominic Royé</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXItdGl0bGU=">Dr Dominic Royé</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6QWJvdXQ=">About</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6L2Fib3V0L2luZGV4Lmh0bWw=">/about/index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6QmxvZw==">Blog</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6L2Jsb2cvaW5kZXguaHRtbA==">/blog/index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6UHVibGljYXRpb25z">Publications</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6L3B1YmxpY2F0aW9uL2luZGV4Lmh0bWw=">/publication/index.html</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6RGF0YSBWaXo=">Data Viz</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLWludC1uYXZiYXI6L3Byb2plY3QvaW5kZXguaHRtbA==">/project/index.html</span></p>
-<div class="hidden quarto-markdown-envelope-contents" data-render-id="Zm9vdGVyLWxlZnQ=">
-<p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
-</div>
-<div class="hidden quarto-markdown-envelope-contents" data-render-id="Zm9vdGVyLWNlbnRlcg==">
-<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"><i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"><i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"><i class="ai  ai-orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"><i class="ai  ai-google-scholar"></i></a></p>
-</div>
-<div class="hidden quarto-markdown-envelope-contents" data-render-id="Zm9vdGVyLXJpZ2h0LS9jb250YWN0Lmh0bWw=">
-<p>Contact</p>
-</div>
-</div>
-<div id="quarto-meta-markdown" class="hidden">
-<p><span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW1ldGF0aXRsZQ==">River flow directions</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLXR3aXR0ZXJjYXJkdGl0bGU=">River flow directions</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW9nY2FyZHRpdGxl">River flow directions</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW1ldGFzaXRlbmFtZQ==">Dr Dominic Royé</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLXR3aXR0ZXJjYXJkZGVzYw==">I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks, I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex.</span> <span class="hidden quarto-markdown-envelope-contents" data-render-id="cXVhcnRvLW9nY2FyZGRkZXNj">I recently created a visualization of the distribution of river flow directions and also of coastal orientations. Following its publication in social networks, I was asked to make a post about how I did it. Well, here we go to start with an example of rivers, coastal orientation is somewhat more complex.</span></p>
-</div>
-</section>
 
- ]]></description>
+
+</section><a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2020" class="csl-entry quarto-appendix-citeas">
+Royé, Dominic. 2020. <span>“River Flow Directions.”</span> July 24,
+2020. <a href="https://dominicroye.github.io/blog/river-flow-directions/">https://dominicroye.github.io/blog/river-flow-directions/</a>.
+</div></div></section></div> ]]></description>
   <category>gis</category>
   <category>R</category>
   <category>R:advanced</category>
