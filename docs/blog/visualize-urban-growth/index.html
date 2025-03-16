@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.6.40">
+<meta name="generator" content="quarto-1.6.42">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2019-11-01">
@@ -64,7 +64,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-14abb8284ba5d94560a5fbf30c1a4bef.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-ce80fb680f754bdddd2e33f428b7c2fe.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-2d5219dc4efcf797a71b2753c0e331aa.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -135,6 +135,10 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
   <li class="nav-item">
     <a class="nav-link" href="../../publication/index.html"> 
 <span class="menu-text">Publications</span></a>
+  </li>  
+  <li class="nav-item">
+    <a class="nav-link" href="../../bioclim/index.html"> 
+<span class="menu-text">Bioclim</span></a>
   </li>  
   <li class="nav-item">
     <a class="nav-link" href="../../project/index.html"> 
@@ -274,7 +278,7 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tidyverse"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://ropenspain.github.io/CatastRo/">"CatastRo"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"CatastRo"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://r-spatial.github.io/sf/">"sf"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"sf"</span><span class="op">)</span></span>
-<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://r-tmap.github.io/tmap/">"tmap"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tmap"</span><span class="op">)</span></span>
+<span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://github.com/r-tmap/tmap">"tmap"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"tmap"</span><span class="op">)</span></span>
 <span><span class="kw">if</span> <span class="op">(</span><span class="op">!</span><span class="kw"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op">(</span><span class="st"><a href="https://r-spatial.github.io/classInt/">"classInt"</a></span><span class="op">)</span><span class="op">)</span> <span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op">(</span><span class="st">"classInt"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># load packages</span></span>
@@ -283,7 +287,7 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://ropenspain.github.io/CatastRo/">CatastRo</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-spatial.github.io/classInt/">classInt</a></span><span class="op">)</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://r-tmap.github.io/tmap/">tmap</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://github.com/r-tmap/tmap">tmap</a></span><span class="op">)</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
 </div>
 </section><section id="access-the-data" class="level2"><h2 class="anchored" data-anchor-id="access-the-data">Access the data</h2>
 <p>To import the building data we use the <code><a href="https://ropenspain.github.io/CatastRo/reference/catr_atom_get_buildings.html">catr_atom_get_buildings()</a></code> function.</p>
@@ -374,7 +378,7 @@ font family not found in Windows font database</code></pre>
 <p>To visualize better the distribution of urban growth, we limit the map to a radius of 2.5 km from the city center. Therefore, we use the <code>geocode_OSM()</code> function of the <code>tmaptools</code> package to obtain the coordinates of Valencia in class <code>sf</code>. Then we project the points to the system we use for the buildings (EPSG: 25830). The <code><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs()</a></code> function returns the coordinate system of a spatial object <code>sf</code>. Finally, we create with the function <code><a href="https://r-spatial.github.io/sf/reference/geos_unary.html">st_buffer()</a></code> a buffer with 2500 m and the intersection with our building data. It is also possible to create a buffer in the form of a rectangle indicating the style with the argument <code>endCapStyle =" SQUARE "</code>.</p>
 <div class="cell">
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># get the coordinates of Valencia</span></span>
-<span><span class="va">ciudad_point</span> <span class="op">&lt;-</span> <span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://rdrr.io/pkg/tmaptools/man/geocode_OSM.html">geocode_OSM</a></span><span class="op">(</span><span class="st">"Valencia"</span>, as.sf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
+<span><span class="va">ciudad_point</span> <span class="op">&lt;-</span> <span class="fu">tmaptools</span><span class="fu">::</span><span class="fu"><a href="https://r-tmap.github.io/tmaptools/reference/geocode_OSM.html">geocode_OSM</a></span><span class="op">(</span><span class="st">"Valencia"</span>, as.sf <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co">#  project the points</span></span>
 <span><span class="va">ciudad_point</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_transform.html">st_transform</a></span><span class="op">(</span><span class="va">ciudad_point</span>, <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_crs.html">st_crs</a></span><span class="op">(</span><span class="va">buildings_val</span><span class="op">)</span><span class="op">)</span></span>
