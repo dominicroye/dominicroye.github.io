@@ -11,7 +11,2108 @@
 <description>This is my blog where I practice sharing my curiosity about R, particularly, the world of cartography and data visualization.&lt;br&gt; I take this opportunity to invite you to participate in the [#30DayChartChallenge](https://bsky.app/profile/30daychartchall.bsky.social).
 </description>
 <generator>quarto-1.6.42</generator>
-<lastBuildDate>Sat, 04 Jan 2025 23:00:00 GMT</lastBuildDate>
+<lastBuildDate>Mon, 31 Mar 2025 22:00:00 GMT</lastBuildDate>
+<item>
+  <title>Tomorrow’s weather</title>
+  <dc:creator>Dominic Royé</dc:creator>
+  <link>https://dominicroye.github.io/blog/gfs-forecast-globe/</link>
+  <description><![CDATA[ 
+
+<!-- source: https://github.com/gadenbuie/garrickadenbuie-com/blob/main/_partials/title-block-link-buttons/title-block.html -->
+<!-- 
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title"> 
+-->
+<!-- <header id="title-block-header" class="quarto-title-block default page-columns"> -->
+<!-- <div class="quarto-title page-columns page-full featured-image p-4" style="background-image: url(featured.png), url(featured.jpg), url(../featured.jpg);"> -->
+
+
+<style type="text/css">
+
+#toc-title {
+  
+  display:none;
+
+}
+
+#quarto-toc-toggle {
+  
+    display:none;
+    
+}
+  
+</style>
+
+
+<p>A while back I saw Chris Campbell’s global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 we’ll see how we can access the GFS (Global Forecast System) data and visualize it with <code>{ggplot2}</code>, even though there are several ways, in this case we use the Google Earth Engine API via the <code>{rgee}</code> package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days.</p>
+<section id="packages" class="level1">
+<h1>Packages</h1>
+<div class="cell">
+<div class="cell-output-display">
+<table class="caption-top table table-sm table-striped small">
+<colgroup>
+<col style="width: 10%">
+<col style="width: 89%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: left;">Package</th>
+<th style="text-align: left;">Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;">tidyverse</td>
+<td style="text-align: left;">Collection of packages (visualization, manipulation): ggplot2, dplyr, purrr, etc.</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">lubridate</td>
+<td style="text-align: left;">Easy manipulation of dates and times</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">sf</td>
+<td style="text-align: left;">Simple Feature: import, export and manipulate vector data</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">terra</td>
+<td style="text-align: left;">Import, export and manipulate raster ({raster} successor package)</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">rgee</td>
+<td style="text-align: left;">Access to Google Earth Engine API</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">giscoR</td>
+<td style="text-align: left;">Administrative boundaries of the world</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ggshadow</td>
+<td style="text-align: left;">Extension to ggplot2 for shaded and glow geometries</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;">fs</td>
+<td style="text-align: left;">Provides a cross-platform, uniform interface to file system operations</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;">ggforce</td>
+<td style="text-align: left;">Provides missing functionality to ggplot2</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="annotated-cell-1" style="background: #f1f3f5;"><pre class="sourceCode r code-annotation-code code-with-copy code-annotated"><code class="sourceCode r"><span id="annotated-cell-1-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#  install the packages if necessary</span></span>
+<span id="annotated-cell-1-2"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tidyverse"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tidyverse"</span>)</span>
+<span id="annotated-cell-1-3"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"sf"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"sf"</span>)</span>
+<span id="annotated-cell-1-4"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"terra"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"terra"</span>)</span>
+<span id="annotated-cell-1-5"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fs"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"fs"</span>)</span>
+<span id="annotated-cell-1-6"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rgee"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"rgee"</span>)</span>
+<span id="annotated-cell-1-7"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"giscoR"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"giscoR"</span>)</span>
+<a class="code-annotation-anchor" data-target-cell="annotated-cell-1" data-target-annotation="1" onclick="event.preventDefault();">1</a><span id="annotated-cell-1-8" class="code-annotation-target"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggshadow"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggshadow"</span>)</span>
+<span id="annotated-cell-1-9"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggforce"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ggforce"</span>)</span>
+<span id="annotated-cell-1-10"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">if</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">!</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">require</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"googledrive"</span>)) <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">install.packages</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"googledrive"</span>)</span>
+<span id="annotated-cell-1-11"></span>
+<span id="annotated-cell-1-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">#  packages</span></span>
+<span id="annotated-cell-1-13"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(rgee)</span>
+<span id="annotated-cell-1-14"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(terra)</span>
+<span id="annotated-cell-1-15"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(sf)</span>
+<span id="annotated-cell-1-16"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(giscoR)</span>
+<span id="annotated-cell-1-17"></span>
+<span id="annotated-cell-1-18"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(fs)</span>
+<span id="annotated-cell-1-19"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(tidyverse)</span>
+<span id="annotated-cell-1-20"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(lubridate)</span>
+<span id="annotated-cell-1-21"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggshadow)</span>
+<span id="annotated-cell-1-22"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(ggforce)</span>
+<span id="annotated-cell-1-23"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">library</span>(googledrive)</span><div class="code-annotation-gutter-bg"></div><div class="code-annotation-gutter"></div></code></pre></div>
+<div class="cell-annotation">
+<dl class="code-annotation-container-grid">
+<dt data-target-cell="annotated-cell-1" data-target-annotation="1">1</dt>
+<dd>
+<span data-code-cell="annotated-cell-1" data-code-lines="8" data-code-annotation="1">Today the newest version 0.0.5 is not working correctly. Here I used the 0.0.4 version.</span>
+</dd>
+</dl>
+</div>
+</div>
+</section>
+<section id="part-i.-geoprocessing-with-google-earth-engine-gee" class="level1">
+<h1>Part I. Geoprocessing with Google Earth Engine (GEE)</h1>
+<section id="before-using-gee-in-r" class="level2">
+<h2 class="anchored" data-anchor-id="before-using-gee-in-r">Before using GEE in R</h2>
+<p>The first step is to sign up at earthengine.google.com. In addition, it is necessary to install <em>CLI</em> of <em>gcloud</em> (https://cloud.google.com/sdk/docs/install?hl=es-419), you just have to follow the instructions in Google. Regarding the GEE language, many functions that are applied are similar to what is known from <code>{tidyverse}</code>. More help can be found at https://r-spatial.github.io/rgee/reference/rgee-package.html and on the GEE page itself.</p>
+<p>The most essential of GEE’s native Javascript language is that it is characterized by the way of combining functions and variables using the dot, which is replaced by the $ in R. All GEE functions start with the prefix ee_* (<code>ee_print( )</code>, <code>ee_image_to_drive()</code>).</p>
+<p>Once we have <em>gcloud</em> and the <code>{rgee}</code> package installed we can proceed to create the Python virtual environment. The <code>ee_install()</code> function takes care of installing Anaconda 3 and all necessary packages. To check the correct installation of Python, and particularly of the <em>numpy</em> and <em>earthengine-api</em> packages, we can use <code>ee_check()</code>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb1" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb1-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_install</span>() <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create python virtual environment</span></span>
+<span id="cb1-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_check</span>() <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># check if everything is correct</span></span></code></pre></div>
+</div>
+<p>Before programming with GEE’s own syntax, GEE must be authenticated and initialized using the <code>ee_Initialize()</code> function. Not working! See issue https://github.com/r-spatial/rgee/issues/355</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb2" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb2-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_Initialize</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">drive =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>) </span></code></pre></div>
+</div>
+<p>Instead you should do:</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb3" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb3-1">ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Authenticate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">auth_mode=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'notebook'</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb4" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb4-1">ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Initialize</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">project=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'ee-dominicroye'</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="access-the-global-forecast-system" class="level2">
+<h2 class="anchored" data-anchor-id="access-the-global-forecast-system">Access the Global Forecast System</h2>
+<p>A time series of images or multidimensional data is called an <em>ImageCollection</em> in GEE. Each dataset is assigned an ID and we can access it by making the following call <code>ee$ImageCollection('ID_IMAGECOLLECTION')</code>. There are helper functions that allow conversion of purely R classes to Javascript, e.g.&nbsp;for dates <code>rdate_to_eedate()</code>. The first thing we do is to filter to the most recent date with the last run of the GFS model.</p>
+<p>We have to know that, unlike R, only when GEE tasks are sent, the calculation are executed on the servers using all the created GEE objects. Most steps create only <em>EarthEngine</em> objects what you will see soon in this post.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb5" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb5-1"><span class="do" style="color: #5E5E5E;
+background-color: null;
+font-style: italic;">## GFS forecast</span></span>
+<span id="cb5-2">dataset <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ImageCollection</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'NOAA/GFS0P25'</span>)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Filter<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">date</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)),</span>
+<span id="cb5-3">                                                                    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))))</span>
+<span id="cb5-4">dataset</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>EarthEngine Object: ImageCollection</code></pre>
+</div>
+</div>
+<p>The model runs every 6 hours (0, 6, 12, 18), so the <code>ee_get_date_ic()</code> function extracts the dates to choose the most recent one. This is the first time that calculations are run.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb7" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb7-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># vector of unique run dates</span></span>
+<span id="cb7-2">last_run <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_get_date_ic</span>(dataset)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>time_start <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unique</span>()</span>
+<span id="cb7-3">last_run</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>[1] "2025-04-24 00:00:00 GMT" "2025-04-24 06:00:00 GMT"
+[3] "2025-04-24 12:00:00 GMT" "2025-04-24 18:00:00 GMT"
+[5] "2025-04-25 00:00:00 GMT" "2025-04-25 06:00:00 GMT"</code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb9" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb9-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># select the last one</span></span>
+<span id="cb9-2">last_run <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(last_run)</span></code></pre></div>
+</div>
+<p>Next we filter the date of the last run and select the band of the air temperature at 2m. Forecast dates are attributes of each model run up to 336 hours (14 days) from the day of execution. When we want to make changes to each image in an ImageCollection we must make use of the <code>map()</code> function, similar to the one we know from the <code>{purrr}</code> package. In this case we redefine the date of each image (<em>system:time_start</em>: run date) by that of the forecast (<em>forecast_time</em>). It is important that the R function to apply is inside <code>ee_utils_pyfunc()</code>, which translates it into Python. Then we extract the dates from the 14 day forecast.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb10" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb10-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># last run and variable selection</span></span>
+<span id="cb10-2">temp <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> dataset<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Filter<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">date</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(last_run)))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">select</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'temperature_2m_above_ground'</span>)</span>
+<span id="cb10-3"></span>
+<span id="cb10-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># define the forecast dates for each hour</span></span>
+<span id="cb10-5">forcast_time <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> temp<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_utils_pyfunc</span>(<span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(img)  {</span>
+<span id="cb10-6">  </span>
+<span id="cb10-7"> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Image</span>(img)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'system:time_start'</span>,ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Image</span>(img)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"forecast_time"</span>)))</span>
+<span id="cb10-8"></span>
+<span id="cb10-9">  })</span>
+<span id="cb10-10">)</span>
+<span id="cb10-11"></span>
+<span id="cb10-12"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># get the forecast dates</span></span>
+<span id="cb10-13">date_forcast <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_get_date_ic</span>(forcast_time)</span>
+<span id="cb10-14"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(date_forcast)</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                           id          time_start
+1 NOAA/GFS0P25/2025042506F000 2025-04-25 06:00:00
+2 NOAA/GFS0P25/2025042506F001 2025-04-25 07:00:00
+3 NOAA/GFS0P25/2025042506F002 2025-04-25 08:00:00
+4 NOAA/GFS0P25/2025042506F003 2025-04-25 09:00:00
+5 NOAA/GFS0P25/2025042506F004 2025-04-25 10:00:00
+6 NOAA/GFS0P25/2025042506F005 2025-04-25 11:00:00</code></pre>
+</div>
+</div>
+<p>Here we could export the hourly temperature data, but it would also be possible to estimate the maximum or minimum daily temperature for the next 14 days. To achieve this we define the beginning and end of the period, and calculate the number of days. What we do in simple terms is map over the number of days to filter on each day and apply the <code>max()</code> function or any other similar function.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb12" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb12-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># define start end of the period</span></span>
+<span id="cb12-2">endDate <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round_date</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>(date_forcast<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>time_start)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>))</span>
+<span id="cb12-3">startDate <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">round_date</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">min</span>(date_forcast<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>time_start), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>))</span>
+<span id="cb12-4"></span>
+<span id="cb12-5"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># number of days</span></span>
+<span id="cb12-6">numberOfDays <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> endDate<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">difference</span>(startDate, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'days'</span>)</span>
+<span id="cb12-7"></span>
+<span id="cb12-8"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># calculate the daily maximum</span></span>
+<span id="cb12-9">daily <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ImageCollection</span>(</span>
+<span id="cb12-10">  ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>List<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">sequence</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, numberOfDays<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">subtract</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>))<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span></span>
+<span id="cb12-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">map</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_utils_pyfunc</span>(<span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span> (dayOffset) {</span>
+<span id="cb12-12">    start <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> startDate<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">advance</span>(dayOffset, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'days'</span>)</span>
+<span id="cb12-13">    end <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">=</span> start<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">advance</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'days'</span>)</span>
+<span id="cb12-14">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">return</span>(forcast_time<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span></span>
+<span id="cb12-15">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filterDate</span>(start, end)<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span></span>
+<span id="cb12-16">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">max</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># alternativa: min(), mean()</span></span>
+<span id="cb12-17">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">set</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'system:time_start'</span>, start<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">millis</span>()))</span>
+<span id="cb12-18">  }))</span>
+<span id="cb12-19">)</span>
+<span id="cb12-20"></span>
+<span id="cb12-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># dates of the daily maximum</span></span>
+<span id="cb12-22"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">head</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_get_date_ic</span>(daily))</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     id time_start
+1 no_id 2025-04-25
+2 no_id 2025-04-26
+3 no_id 2025-04-27
+4 no_id 2025-04-28
+5 no_id 2025-04-29
+6 no_id 2025-04-30</code></pre>
+</div>
+</div>
+</section>
+<section id="dynamic-map-via-gee" class="level2">
+<h2 class="anchored" data-anchor-id="dynamic-map-via-gee">Dynamic map via GEE</h2>
+<p>Since there is the possibility of adding images to a dynamic map in the GEE code editor, we can also do it from R using the GEE function <a href="https://developers.google.com/earth%20-engine/apidocs/map-addlayer"><code>Map.addLayer()</code></a>. We simply select the first day with <code>first()</code>. In the other argument we define the range of the temperature values and the color ramp.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb14" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb14-1">Map<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">addLayer</span>(</span>
+<span id="cb14-2">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">eeObject =</span> daily<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">first</span>(),</span>
+<span id="cb14-3">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">visParams =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>,</span>
+<span id="cb14-4">                        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">palette =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rev</span>(RColorBrewer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>))),</span>
+<span id="cb14-5">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"GFS"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb14-6">Map<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">addLegend</span>(</span>
+<span id="cb14-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">min =</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">max =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, </span>
+<span id="cb14-8">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">palette =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rev</span>(RColorBrewer<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">brewer.pal</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>))), </span>
+<span id="cb14-9">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">name =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Maximum temperature"</span>, </span>
+<span id="cb14-10">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottomright"</span>, </span>
+<span id="cb14-11">       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">bins =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)</span></code></pre></div>
+<div class="cell-output-display">
+<div class="leaflet html-widget html-fill-item" id="htmlwidget-ba9ccb3604a453bd85c2" style="width:100%;height:464px;"></div>
+<script type="application/json" data-for="htmlwidget-ba9ccb3604a453bd85c2">{"x":{"options":{"minZoom":1,"maxZoom":24,"crs":{"crsClass":"L.CRS.EPSG3857","code":null,"proj4def":null,"projectedBounds":null,"options":{}},"preferCanvas":false,"bounceAtZoomLimits":false,"maxBounds":[[[-90,-370]],[[90,370]]]},"calls":[{"method":"addProviderTiles","args":["CartoDB.Positron","CartoDB.Positron","CartoDB.Positron",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["OpenStreetMap","OpenStreetMap","OpenStreetMap",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["CartoDB.DarkMatter","CartoDB.DarkMatter","CartoDB.DarkMatter",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["Esri.WorldImagery","Esri.WorldImagery","Esri.WorldImagery",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addProviderTiles","args":["OpenTopoMap","OpenTopoMap","OpenTopoMap",{"errorTileUrl":"","noWrap":false,"detectRetina":false,"pane":"tilePane","maxZoom":24}]},{"method":"addLayersControl","args":[["CartoDB.Positron","OpenStreetMap","CartoDB.DarkMatter","Esri.WorldImagery","OpenTopoMap"],[],{"collapsed":true,"autoZIndex":true,"position":"topleft"}]},{"method":"addScaleBar","args":[{"maxWidth":100,"metric":true,"imperial":true,"updateWhenIdle":true,"position":"bottomleft"}]},{"method":"addTiles","args":["https://earthengine.googleapis.com/v1/projects/ee-dominicroye/maps/2750eb7a58d39e1d61520bd49ee78ea0-aa1238c7aabe046c0c119913bf3e4fa1/tiles/{z}/{x}/{y}","GFS","GFS",{"minZoom":0,"maxZoom":24,"tileSize":256,"subdomains":"abc","errorTileUrl":"","tms":false,"noWrap":false,"zoomOffset":0,"zoomReverse":false,"opacity":1,"zIndex":1,"detectRetina":false}]},{"method":"addLayersControl","args":[["CartoDB.Positron","OpenStreetMap","CartoDB.DarkMatter","Esri.WorldImagery","OpenTopoMap"],"GFS",{"collapsed":true,"autoZIndex":true,"position":"topleft"}]},{"method":"hideGroup","args":[null]},{"method":"addLegend","args":[{"colors":["#053061 , #154D8A 5.55555555555556%, #3984BB 16.6666666666667%, #82BAD8 27.7777777777778%, #CAE1EE 38.8888888888889%, #F7F7F7 50%, #FDD5BF 61.1111111111111%, #EE9676 72.2222222222222%, #CA4C41 83.3333333333333%, #900C26 94.4444444444444%, #67001F "],"labels":["-40","-30","-20","-10","0","10","20","30","40"],"na_color":null,"na_label":"NA","opacity":1,"position":"bottomright","type":"numeric","title":"Maximum temperature","extra":{"p_1":0.05555555555555555,"p_n":0.9444444444444444},"layerId":null,"className":"info legend","group":null}]}],"setView":[[0,0],1,[]]},"evals":[],"jsHooks":{"render":[{"code":"function(el, x, data) {\n  return (\n      function(el, x, data) {\n      // get the leaflet map\n      var map = this; //HTMLWidgets.find('#' + el.id);\n      // we need a new div element because we have to handle\n      // the mouseover output separately\n      // debugger;\n      function addElement () {\n      // generate new div Element\n      var newDiv = $(document.createElement('div'));\n      // append at end of leaflet htmlwidget container\n      $(el).append(newDiv);\n      //provide ID and style\n      newDiv.addClass('lnlt');\n      newDiv.css({\n      'position': 'relative',\n      'bottomleft':  '0px',\n      'background-color': 'rgba(255, 255, 255, 0.7)',\n      'box-shadow': '0 0 2px #bbb',\n      'background-clip': 'padding-box',\n      'margin': '0',\n      'padding-left': '5px',\n      'color': '#333',\n      'font': '9px/1.5 \"Helvetica Neue\", Arial, Helvetica, sans-serif',\n      'z-index': '700',\n      });\n      return newDiv;\n      }\n\n\n      // check for already existing lnlt class to not duplicate\n      var lnlt = $(el).find('.lnlt');\n\n      if(!lnlt.length) {\n      lnlt = addElement();\n\n      // grab the special div we generated in the beginning\n      // and put the mousmove output there\n\n      map.on('mousemove', function (e) {\n      if (e.originalEvent.ctrlKey) {\n      if (document.querySelector('.lnlt') === null) lnlt = addElement();\n      lnlt.text(\n                           ' lon: ' + (e.latlng.lng).toFixed(5) +\n                           ' | lat: ' + (e.latlng.lat).toFixed(5) +\n                           ' | zoom: ' + map.getZoom() +\n                           ' | x: ' + L.CRS.EPSG3857.project(e.latlng).x.toFixed(0) +\n                           ' | y: ' + L.CRS.EPSG3857.project(e.latlng).y.toFixed(0) +\n                           ' | epsg: 3857 ' +\n                           ' | proj4: +proj=merc +a=6378137 +b=6378137 +lat_ts=0.0 +lon_0=0.0 +x_0=0.0 +y_0=0 +k=1.0 +units=m +nadgrids=@null +no_defs ');\n      } else {\n      if (document.querySelector('.lnlt') === null) lnlt = addElement();\n      lnlt.text(\n                      ' lon: ' + (e.latlng.lng).toFixed(5) +\n                      ' | lat: ' + (e.latlng.lat).toFixed(5) +\n                      ' | zoom: ' + map.getZoom() + ' ');\n      }\n      });\n\n      // remove the lnlt div when mouse leaves map\n      map.on('mouseout', function (e) {\n      var strip = document.querySelector('.lnlt');\n      if( strip !==null) strip.remove();\n      });\n\n      };\n\n      //$(el).keypress(67, function(e) {\n      map.on('preclick', function(e) {\n      if (e.originalEvent.ctrlKey) {\n      if (document.querySelector('.lnlt') === null) lnlt = addElement();\n      lnlt.text(\n                      ' lon: ' + (e.latlng.lng).toFixed(5) +\n                      ' | lat: ' + (e.latlng.lat).toFixed(5) +\n                      ' | zoom: ' + map.getZoom() + ' ');\n      var txt = document.querySelector('.lnlt').textContent;\n      console.log(txt);\n      //txt.innerText.focus();\n      //txt.select();\n      setClipboardText('\"' + txt + '\"');\n      }\n      });\n\n      }\n      ).call(this.getMap(), el, x, data);\n}","data":null},{"code":"function(el, x, data) {\n  return (function(el,x,data){\n           var map = this;\n\n           map.on('keypress', function(e) {\n               console.log(e.originalEvent.code);\n               var key = e.originalEvent.code;\n               if (key === 'KeyE') {\n                   var bb = this.getBounds();\n                   var txt = JSON.stringify(bb);\n                   console.log(txt);\n\n                   setClipboardText('\\'' + txt + '\\'');\n               }\n           })\n        }).call(this.getMap(), el, x, data);\n}","data":null}]}}</script>
+</div>
+</div>
+</section>
+<section id="export-multiple-images" class="level2">
+<h2 class="anchored" data-anchor-id="export-multiple-images">Export multiple images</h2>
+<p>The <code>{rgee}</code> package has a very useful function for exporting an <em>ImageCollection</em>: <code>ee_imagecollection_to_local()</code>. Before using it, we need to set a region, the one that is intended to be exported. In this case, we export the entire globe with a rectangle covering the whole Earth.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb15" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb15-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># earth extension</span></span>
+<span id="cb15-2">geom <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Geometry<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Polygon</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">coords =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">list</span>(</span>
+<span id="cb15-3">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>), </span>
+<span id="cb15-4">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>),</span>
+<span id="cb15-5">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>),</span>
+<span id="cb15-6">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>),</span>
+<span id="cb15-7">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">180</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">90</span>)</span>
+<span id="cb15-8">),</span>
+<span id="cb15-9"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">proj =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"EPSG:4326"</span>,</span>
+<span id="cb15-10"><span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">geodesic =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">FALSE</span>)</span>
+<span id="cb15-11"></span>
+<span id="cb15-12">geom <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># EarthEngine object of type geometry</span></span>
+<span id="cb15-13"></span>
+<span id="cb15-14"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># temporary download folder</span></span>
+<span id="cb15-15"></span>
+<span id="cb15-16">data_export <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> daily<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Filter<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">date</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>()), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rdate_to_eedate</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span>))))</span>
+<span id="cb15-17"></span>
+<span id="cb15-18"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Obtener la lista de imágenes</span></span>
+<span id="cb15-19">image_list <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> data_export<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">toList</span>(data_export<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">size</span>())</span>
+<span id="cb15-20"></span>
+<span id="cb15-21"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Función para exportar cada imagen</span></span>
+<span id="cb15-22">export_image <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">function</span>(image, index) {</span>
+<span id="cb15-23">  image <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">Image</span>(image_list<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">get</span>(index))</span>
+<span id="cb15-24">  task <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> ee<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>batch<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>Export<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>image<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">toDrive</span>(</span>
+<span id="cb15-25">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">image =</span> image<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">clip</span>(geom),</span>
+<span id="cb15-26">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">description =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">paste0</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Image_"</span>, index),</span>
+<span id="cb15-27">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">scale =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">20000</span>,</span>
+<span id="cb15-28">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">region =</span> geom,</span>
+<span id="cb15-29">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">folder =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tomorrow"</span>, <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># create folder on your drive before submitting</span></span>
+<span id="cb15-30">    <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">maxPixels =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1e13</span></span>
+<span id="cb15-31">  )</span>
+<span id="cb15-32">  task<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">start</span>()</span>
+<span id="cb15-33">}</span>
+<span id="cb15-34"></span>
+<span id="cb15-35"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># Iterar sobre la lista de imágenes y exportarlas</span></span>
+<span id="cb15-36"><span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">for</span> (i <span class="cf" style="color: #003B4F;
+background-color: null;
+font-weight: bold;
+font-style: inherit;">in</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span>(data_export<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">size</span>()<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">getInfo</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)) {</span>
+<span id="cb15-37">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">export_image</span>(image_list, i)</span>
+<span id="cb15-38">}</span>
+<span id="cb15-39"></span>
+<span id="cb15-40"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ee_monitoring</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">eeTaskList =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb16" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb16-1">gee_files <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">drive_ls</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">path =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tomorrow"</span>) </span></code></pre></div>
+</div>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb17" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb17-1"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">walk</span>(gee_files<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">$</span>id, drive_download, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">overwrite =</span> T)</span></code></pre></div>
+</div>
+</section>
+</section>
+<section id="part-ii.-orthographic-map" class="level1">
+<h1>Part II. Orthographic map</h1>
+<section id="data" class="level2">
+<h2 class="anchored" data-anchor-id="data">Data</h2>
+<p>Of course, the first step is to import the data with the help of <code>rast()</code>. We also define the name of each layer according to its temporal dimension correctly.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb18" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># paths to downloaded data</span></span>
+<span id="cb18-2">forecast_world <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">dir_ls</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">regexp =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"tif"</span>)</span>
+<span id="cb18-3"></span>
+<span id="cb18-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># guarantee the file order </span></span>
+<span id="cb18-5">file_ord <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_extract</span>(forecast_world, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"_[0-9]{1,2}"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">parse_number</span>()</span>
+<span id="cb18-6"></span>
+<span id="cb18-7">forecast_rast <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">rast</span>(forecast_world[<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">order</span>(file_ord)]) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># import</span></span>
+<span id="cb18-8">forecast_rast</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class       : SpatRaster 
+dimensions  : 1002, 2004, 3  (nrow, ncol, nlyr)
+resolution  : 0.1796631, 0.1796631  (x, y)
+extent      : -180.0224, 180.0224, -90.01119, 90.01119  (xmin, xmax, ymin, ymax)
+coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+sources     : Image_0.tif  
+              Image_1.tif  
+              Image_2.tif  
+names       : temperatur~ove_ground, temperatur~ove_ground, temperatur~ove_ground </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb20" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb20-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># define the temporal dimension as the name of each layer</span></span>
+<span id="cb20-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">names</span>(forecast_rast) <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>(), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>)</span>
+<span id="cb20-3"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">time</span>(forecast_rast) <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">seq</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>(), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>), <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"day"</span>)</span>
+<span id="cb20-4">forecast_rast</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>class       : SpatRaster 
+dimensions  : 1002, 2004, 3  (nrow, ncol, nlyr)
+resolution  : 0.1796631, 0.1796631  (x, y)
+extent      : -180.0224, 180.0224, -90.01119, 90.01119  (xmin, xmax, ymin, ymax)
+coord. ref. : lon/lat WGS 84 (EPSG:4326) 
+sources     : Image_0.tif  
+              Image_1.tif  
+              Image_2.tif  
+names       : 2025-04-25, 2025-04-26, 2025-04-27 
+time (days) : 2025-04-25 to 2025-04-27 (2 steps) </code></pre>
+</div>
+<div class="sourceCode cell-code" id="cb22" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb22-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># plot</span></span>
+<span id="cb22-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(forecast_rast)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Now we can define the orthographic projection indicating with +lat_0 and +lon_0 the center of the projection. We then reproject and convert the raster to a <em>data.frame</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb23" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb23-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># projection definition</span></span>
+<span id="cb23-2">ortho_crs <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'+proj=ortho +lat_0=51 +lon_0=0.5 +x_0=0 +y_0=0 +R=6371000 +units=m +no_defs +type=crs'</span></span>
+<span id="cb23-3"></span>
+<span id="cb23-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># reproject the raster</span></span>
+<span id="cb23-5">ras_ortho <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">project</span>(forecast_rast, ortho_crs)</span>
+<span id="cb23-6"></span>
+<span id="cb23-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># convert the raster to a data.frame of xyz</span></span>
+<span id="cb23-8">forecast_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>(ras_ortho, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">xy =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span>)</span>
+<span id="cb23-9"></span>
+<span id="cb23-10"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># transform to a long format</span></span>
+<span id="cb23-11">forecast_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">pivot_longer</span>(forecast_df, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">3</span><span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">:</span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">length</span>(forecast_df), <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">names_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"date"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">values_to =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"ta"</span>)</span></code></pre></div>
+</div>
+</section>
+<section id="administrative-boundaries-and-graticules" class="level2">
+<h2 class="anchored" data-anchor-id="administrative-boundaries-and-graticules">Administrative boundaries and graticules</h2>
+<p>We import the administrative boundaries with <code>gisco_get_countries()</code> which we need prepare for the orthographic projection. In the same way we create the graticule using <code>st_graticule()</code>. In order to preserve the geometry, it will be necessary to cut to only the visible part. The ocean is created starting from a point at 0.0 with the radius of the earth. Using the <code>st_intersection()</code> function we reduce to the visible part and reproject the boundaries.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb24" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb24-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># obtain the administrative limits</span></span>
+<span id="cb24-2">world_poly <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">gisco_get_countries</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">year =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"2016"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">epsg =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"4326"</span>, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">resolution =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"10"</span>) </span>
+<span id="cb24-3"></span>
+<span id="cb24-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># get the global graticule</span></span>
+<span id="cb24-5">grid <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_graticule</span>()</span>
+<span id="cb24-6"></span>
+<span id="cb24-7"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># define what would be ocean</span></span>
+<span id="cb24-8">ocean <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_point</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">x =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>,<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb24-9">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_buffer</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">dist =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">6371000</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># earth radius</span></span>
+<span id="cb24-10">              <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_sfc</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">crs =</span> ortho_crs)</span>
+<span id="cb24-11"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(ocean)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-17-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb25" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># select only visible from the boundaries and reproject</span></span>
+<span id="cb25-2">world <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> world_poly <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb25-3">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_intersection</span>(<span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_transform</span>(ocean, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4326</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb25-4">            <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_transform</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">crs =</span> ortho_crs) <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># </span></span>
+<span id="cb25-5"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(world)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-17-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-17-2.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>For the graticules we must repeat the same selection, although we previously limit the grid of lines to the ocean. The ocean boundary is used to create the globe’s shadow, but to use it in <code>geom_glowpath()</code> you need to convert it to a <em>data.frame</em>.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb26" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb26-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># eliminate the lines that pass over the continents</span></span>
+<span id="cb26-2">grid_crp <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_difference</span>(grid, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_union</span>(world_poly))</span>
+<span id="cb26-3"></span>
+<span id="cb26-4"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># select the visible part</span></span>
+<span id="cb26-5">grid_crp <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_intersection</span>(grid_crp, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_transform</span>(ocean, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4326</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb26-6">                  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_transform</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">crs =</span> ortho_crs)</span>
+<span id="cb26-7"></span>
+<span id="cb26-8"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">plot</span>(grid_crp)</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-18-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-18-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb27" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb27-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># convert the boundary of the globe into a data.frame</span></span>
+<span id="cb27-2">ocean_df <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_cast</span>(ocean, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"LINESTRING"</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">st_coordinates</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">as.data.frame</span>()</span></code></pre></div>
+</div>
+</section>
+<section id="map-construction" class="level2">
+<h2 class="anchored" data-anchor-id="map-construction">Map construction</h2>
+<section id="select-tomorrow" class="level3">
+<h3 class="anchored" data-anchor-id="select-tomorrow">Select tomorrow</h3>
+<p>First we select the day of tomorrow, in my case when I write this post it is February 22, 2023. In addition, we limit the temperature range to -45ºC and +45ºC.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb28" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb28-1">forecast_tomorrow <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">filter</span>(forecast_df, date <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">==</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">today</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">days</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">|&gt;</span></span>
+<span id="cb28-2">                        <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">mutate</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">ta_limit =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">case_when</span>(ta <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&gt;</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>,</span>
+<span id="cb28-3">                                              ta <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">&lt;</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>,</span>
+<span id="cb28-4">                                               <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">TRUE</span> <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">~</span> ta))</span></code></pre></div>
+</div>
+</section>
+<section id="the-shadow-of-the-globe" class="level3">
+<h3 class="anchored" data-anchor-id="the-shadow-of-the-globe">The shadow of the globe</h3>
+<p>We create the shadow effect using the <code>geom_glowpath()</code> function from the <code>{ggshadow}</code> package. Aiming for a more smooth transition I duplicate this layer with different transparency and shadow settings.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb29" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb29-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># build a simple shadow</span></span>
+<span id="cb29-2"><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> </span>
+<span id="cb29-3">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_glowpath</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> ocean_df, </span>
+<span id="cb29-4">                <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(X, Y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"L1"</span>),</span>
+<span id="cb29-5">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowcolor=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'grey90'</span>,</span>
+<span id="cb29-6">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span id="cb29-7">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">01</span>,</span>
+<span id="cb29-8">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowalpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>,</span>
+<span id="cb29-9">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowsize =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.5</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb29-10">    <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_glowpath</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> ocean_df, </span>
+<span id="cb29-11">                <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(X, Y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"L1"</span>),</span>
+<span id="cb29-12">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowcolor=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'grey90'</span>,</span>
+<span id="cb29-13">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span id="cb29-14">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">01</span>,</span>
+<span id="cb29-15">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowalpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>,</span>
+<span id="cb29-16">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowsize =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb29-17">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_sf</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb29-18">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>()</span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-20-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-20-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+<div class="sourceCode cell-code" id="cb30" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb30-1"><span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># combining several layers of shadow</span></span>
+<span id="cb30-2">g <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">ggplot</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb30-3">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_glowpath</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> ocean_df, </span>
+<span id="cb30-4">                <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(X, Y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"L1"</span>),</span>
+<span id="cb30-5">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowcolor=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'grey90'</span>,</span>
+<span id="cb30-6">                     <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span id="cb30-7">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">01</span>,</span>
+<span id="cb30-8">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowalpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.05</span>,</span>
+<span id="cb30-9">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowsize =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1.8</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb30-10">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_glowpath</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> ocean_df, </span>
+<span id="cb30-11">                <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(X, Y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"L1"</span>),</span>
+<span id="cb30-12">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowcolor=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'grey90'</span>,</span>
+<span id="cb30-13">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span id="cb30-14">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">01</span>,</span>
+<span id="cb30-15">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowalpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.02</span>,</span>
+<span id="cb30-16">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowsize =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb30-17">   <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_glowpath</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> ocean_df, </span>
+<span id="cb30-18">                <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(X, Y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">group =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"L1"</span>),</span>
+<span id="cb30-19">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowcolor=</span><span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'grey90'</span>,</span>
+<span id="cb30-20">                       <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>,</span>
+<span id="cb30-21">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">alpha =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">01</span>,</span>
+<span id="cb30-22">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowalpha=</span><span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.01</span>,</span>
+<span id="cb30-23">                <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">shadowsize =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>) </span></code></pre></div>
+</div>
+</section>
+<section id="adding-other-layers" class="level3">
+<h3 class="anchored" data-anchor-id="adding-other-layers">Adding other layers</h3>
+<p>In the next step we add the temperature layer and both vector layers.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb31" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb31-1">g2 <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> g <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_raster</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> forecast_tomorrow, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y, <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> ta_limit)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb31-2">          <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> grid_crp, </span>
+<span id="cb31-3">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, </span>
+<span id="cb31-4">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb31-5">          <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> world, </span>
+<span id="cb31-6">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="cn" style="color: #8f5902;
+background-color: null;
+font-style: inherit;">NA</span>,</span>
+<span id="cb31-7">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">colour =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"grey10"</span>,</span>
+<span id="cb31-8">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">linewidth =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span>) </span></code></pre></div>
+</div>
+<p>What we need to add are the last definitions of the color, the legend and the general style of the map.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb32" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb32-1">g2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_distiller</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">palette =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>, </span>
+<span id="cb32-2">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>),</span>
+<span id="cb32-3">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb32-4">     <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_colourbar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">barwidth =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, </span>
+<span id="cb32-5">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">barheight =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, </span>
+<span id="cb32-6">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"top"</span>,</span>
+<span id="cb32-7">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title.hjust =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb32-8">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_sf</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb32-9">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_wrap</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Maximum temperature at 2 meters for February 14"</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">35</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb32-10">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb32-11">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>,</span>
+<span id="cb32-12">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>),</span>
+<span id="cb32-13">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.margin =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">margin</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)) </span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-22-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-22-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>If we wanted to add labels for the points with the lowest and highest temperatures, we would need to filter the extremes from our table.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb33" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb33-1">labeling <span class="ot" style="color: #003B4F;
+background-color: null;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">slice</span>(forecast_tomorrow, <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">which.min</span>(ta), <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">which.max</span>(ta))</span>
+<span id="cb33-2">labeling</span></code></pre></div>
+<div class="cell-output cell-output-stdout">
+<pre><code># A tibble: 2 × 5
+         x         y date          ta ta_limit
+     &lt;dbl&gt;     &lt;dbl&gt; &lt;chr&gt;      &lt;dbl&gt;    &lt;dbl&gt;
+1 -562096.  3385416. 2025-04-26 -21.0    -21.0
+2  -56276. -3615778. 2025-04-26  45.7     45  </code></pre>
+</div>
+</div>
+<p>The <code>geom_mark_circle()</code> function allows you to include a circle label at any position. We create the label using <code>str_glue()</code> where the variable will be replaced by each temperature of both extremes, at the same time we can define the format of the number with <code>number()</code> from the <code>{scales}</code> package.</p>
+<div class="cell">
+<div class="sourceCode cell-code" id="cb35" style="background: #f1f3f5;"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb35-1">g2 <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span>  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">geom_mark_circle</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">data =</span> labeling, </span>
+<span id="cb35-2">                       <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">aes</span>(x, y, </span>
+<span id="cb35-3">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">description =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_glue</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">'{scales::number(ta, accuracy = .1, decimal.mark = ".", style_positive = "plus", suffix = "ºC")}'</span>)</span>
+<span id="cb35-4">                          ), </span>
+<span id="cb35-5">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">expand =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unit</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mm"</span>), </span>
+<span id="cb35-6">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label.buffer =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">unit</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">4</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mm"</span>),</span>
+<span id="cb35-7">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label.margin =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">margin</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">1</span>, <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"mm"</span>),</span>
+<span id="cb35-8">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">con.size =</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0.3</span>,</span>
+<span id="cb35-9">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label.fontsize =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">8</span>,</span>
+<span id="cb35-10">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label.fontface =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bold"</span>,</span>
+<span id="cb35-11">                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">con.type =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"straight"</span>,</span>
+<span id="cb35-12">                  <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">label.fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">alpha</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"white"</span>, .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb35-13">     <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">scale_fill_distiller</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">palette =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"RdBu"</span>, </span>
+<span id="cb35-14">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">limits =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>),</span>
+<span id="cb35-15">                          <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">breaks =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">c</span>(<span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>, <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">-</span><span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">0</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">25</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">45</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb35-16">     <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guides</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">guide_colourbar</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">barwidth =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">15</span>, </span>
+<span id="cb35-17">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">barheight =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>, </span>
+<span id="cb35-18">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"top"</span>,</span>
+<span id="cb35-19">                                   <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">title.hjust =</span> .<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">5</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb35-20">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">coord_sf</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">crs =</span> ortho_crs) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb35-21">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">labs</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">fill =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">str_wrap</span>(<span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"Maximum temperature at 2 meters for February 14"</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">35</span>)) <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb35-22">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme_void</span>() <span class="sc" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">+</span></span>
+<span id="cb35-23">  <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">theme</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.position =</span> <span class="st" style="color: #20794D;
+background-color: null;
+font-style: inherit;">"bottom"</span>,</span>
+<span id="cb35-24">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">legend.title =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">element_text</span>(<span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">size =</span> <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">7</span>),</span>
+<span id="cb35-25">        <span class="at" style="color: #657422;
+background-color: null;
+font-style: inherit;">plot.margin =</span> <span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;">margin</span>(<span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>, <span class="dv" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">10</span>)) </span></code></pre></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/unnamed-chunk-24-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="https://dominicroye.github.io/blog/gfs-forecast-globe/index_files/figure-html/unnamed-chunk-24-1.png" class="img-fluid figure-img" width="2100"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p><a href="https://www.buymeacoffee.com/drxeo" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a></p>
+
+
+</section>
+</section>
+</section>
+
+<a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2025" class="csl-entry quarto-appendix-citeas">
+Royé, Dominic. 2025. <span>“Tomorrow’s Weather.”</span> April 1, 2025.
+<a href="https://dominicroye.github.io/blog/gfs-forecast-globe/">https://dominicroye.github.io/blog/gfs-forecast-globe/</a>.
+</div></div></section></div> ]]></description>
+  <category>gis</category>
+  <category>R</category>
+  <category>R:advanced</category>
+  <category>visualization</category>
+  <guid>https://dominicroye.github.io/blog/gfs-forecast-globe/</guid>
+  <pubDate>Mon, 31 Mar 2025 22:00:00 GMT</pubDate>
+  <media:content url="https://dominicroye.github.io/blog/gfs-forecast-globe/featured.png" medium="image" type="image/png" height="144" width="144"/>
+</item>
 <item>
   <title>Always normalize you data</title>
   <dc:creator>Dominic Royé</dc:creator>
@@ -18032,7 +20133,7 @@ font-style: inherit;">"Montserrat"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span></span>
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op" style="color: #5E5E5E;
@@ -21806,7 +23907,7 @@ font-style: inherit;">"Montserrat"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span></span>
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span></span>
 <span>    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op" style="color: #5E5E5E;
@@ -31463,837 +33564,6 @@ R.”</span> January 8, 2019. <a href="https://dominicroye.github.io/blog/calcul
   <guid>https://dominicroye.github.io/blog/calculating-the-distance-to-the-sea-in-r/</guid>
   <pubDate>Mon, 07 Jan 2019 23:00:00 GMT</pubDate>
   <media:content url="https://dominicroye.github.io/blog/calculating-the-distance-to-the-sea-in-r/featured.png" medium="image" type="image/png" height="60" width="144"/>
-</item>
-<item>
-  <title>How to create ‘Warming Stripes’ in R</title>
-  <dc:creator>Dominic Royé</dc:creator>
-  <link>https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/</link>
-  <description><![CDATA[ <!-- source: https://github.com/gadenbuie/garrickadenbuie-com/blob/main/_partials/title-block-link-buttons/title-block.html --><!-- 
-<header id="title-block-header" class="quarto-title-block default">
-<div class="quarto-title"> 
---><!-- <header id="title-block-header" class="quarto-title-block default page-columns"> --><!-- <div class="quarto-title page-columns page-full featured-image p-4" style="background-image: url(featured.png), url(featured.jpg), url(../featured.jpg);"> --><style type="text/css">
-
-#toc-title {
-  
-  display:none;
-
-}
-
-#quarto-toc-toggle {
-  
-    display:none;
-    
-}
-  
-</style>
-<p>This year, the so-called <em>warming stripes</em>, which were created by the scientist <a href="https://twitter.com/ed_hawkins?lang=es">Ed Hawkins</a> of the University of Reading, became very famous all over the world. These graphs represent and communicate climate change in a very illustrative and effective way.</p>
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure"><p><a href="GLOBE---1850-2023-MO.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1" title="https://showyourstripes.info/"><img src="https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/GLOBE---1850-2023-MO.png" class="img-fluid figure-img" alt="https://showyourstripes.info/"></a></p>
-<figcaption>https://showyourstripes.info/</figcaption></figure>
-</div>
-<p>In this post I will show how you can create these strips in R with the <em>ggplot2</em> library. Although I must say that there are many ways in R that can lead us to the same result or to a similar one, even within <em>ggplot2</em>.</p>
-<section id="data" class="level2"><h2 class="anchored" data-anchor-id="data">Data</h2>
-<p>In this case we will use the annual temperatures of Lisbon <a href="https://data.giss.nasa.gov/gistemp/stdata/">GISS Surface Temperature Analysis</a>, homogenized time series, comprising the period from 1880 to 2018. Monthly temperatures or other time series could also be used. The file can be downloaded <a href="assets/www/temp_lisboa.csv">here</a>. First, we should, as long as we have not done it, install the collection of <em>tidyverse</em> packages that also include <em>ggplot2</em>. Then, we import the data of Lisbon in csv format.</p>
-<div class="cell">
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># install the lubridate and tidyverse libraries</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">if</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">!</span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">require</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;"><a href="https://tidyverse.tidyverse.org">"tidyverse"</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/utils/install.packages.html">install.packages</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"tidyverse"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># packages</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;"><a href="https://tidyverse.tidyverse.org">tidyverse</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">RColorBrewer</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># import the annual temperatures</span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"temp_lisboa.csv"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/utils/str.html">str</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>spc_tbl_ [139 × 18] (S3: spec_tbl_df/tbl_df/tbl/data.frame)
- $ YEAR  : num [1:139] 1880 1881 1882 1883 1884 ...
- $ JAN   : num [1:139] 9.17 11.37 10.07 10.86 11.16 ...
- $ FEB   : num [1:139] 12 11.8 11.9 11.5 10.6 ...
- $ MAR   : num [1:139] 13.6 14.1 13.5 10.5 12.4 ...
- $ APR   : num [1:139] 13.1 14.4 14 13.8 12.2 ...
- $ MAY   : num [1:139] 15.7 17.3 15.6 14.6 16.4 ...
- $ JUN   : num [1:139] 17 19.2 17.9 17.2 19.1 ...
- $ JUL   : num [1:139] 19.1 21.8 20.3 19.5 21.4 ...
- $ AUG   : num [1:139] 20.6 23.5 21 21.6 22.4 ...
- $ SEP   : num [1:139] 20.7 20 18 18.8 19.5 ...
- $ OCT   : num [1:139] 17.9 16.3 16.4 15.8 16.4 ...
- $ NOV   : num [1:139] 12.5 14.7 13.7 13.5 12.5 ...
- $ DEC   : num [1:139] 11.07 9.97 10.66 9.46 10.25 ...
- $ D-J-F : num [1:139] 10.7 11.4 10.6 11 10.4 ...
- $ M-A-M : num [1:139] 14.1 15.2 14.3 12.9 13.6 ...
- $ J-J-A : num [1:139] 18.9 21.5 19.7 19.4 20.9 ...
- $ S-O-N : num [1:139] 17 17 16 16 16.1 ...
- $ metANN: num [1:139] 15.2 16.3 15.2 14.8 15.3 ...
- - attr(*, "spec")=
-  .. cols(
-  ..   YEAR = col_double(),
-  ..   JAN = col_double(),
-  ..   FEB = col_double(),
-  ..   MAR = col_double(),
-  ..   APR = col_double(),
-  ..   MAY = col_double(),
-  ..   JUN = col_double(),
-  ..   JUL = col_double(),
-  ..   AUG = col_double(),
-  ..   SEP = col_double(),
-  ..   OCT = col_double(),
-  ..   NOV = col_double(),
-  ..   DEC = col_double(),
-  ..   `D-J-F` = col_double(),
-  ..   `M-A-M` = col_double(),
-  ..   `J-J-A` = col_double(),
-  ..   `S-O-N` = col_double(),
-  ..   metANN = col_double()
-  .. )
- - attr(*, "problems")=&lt;externalptr&gt; </code></pre>
-</div>
-</div>
-<p>We see in the columns that we have monthly and seasonal values, and the annual temperature value. But before proceeding to visualize the annual temperature, we must replace the missing values <em>999.9</em> with <code>NA</code>, using the <code><a href="https://rdrr.io/r/base/ifelse.html">ifelse( )</a></code> function that evaluates a condition and perform the given argument corresponding to true and false.</p>
-<div class="cell">
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># select only the annual temperature and year column</span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">YEAR</span>, ta <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">metANN</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># missing values 999.9</span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/summary.html">summary</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>      YEAR            ta        
- Min.   :1880   Min.   : 14.53  
- 1st Qu.:1914   1st Qu.: 15.65  
- Median :1949   Median : 16.11  
- Mean   :1949   Mean   : 37.38  
- 3rd Qu.:1984   3rd Qu.: 16.70  
- Max.   :2018   Max.   :999.90  </code></pre>
-</div>
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span>, ta <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ta</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">==</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">999.9</span>, <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">NA</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ta</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-<p>When we use the year as a variable, we do not usually convert it into a date object, however it is advisable. This allows us to use the date functions of the <em>lubridate</em> package and the support functions inside of <em>ggplot2</em>. The <code><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c( )</a></code> function of the library <em>stringr</em>, part of the collection of <em>tidyverse</em>, is similar to <code><a href="https://rdrr.io/r/base/paste.html">paste( )</a></code> of R Base that allows us to combine characters by specifying a separator (sep = “-”). The <code><a href="https://lubridate.tidyverse.org/reference/ymd.html">ymd( )</a></code> (year month day) function of the <em>lubridate</em> package converts a date character into a <em>Date</em> object. It is possible to combine several functions using the <em>pipe operator</em> <code>%&gt;%</code> or <code>|&gt;</code> that helps to chain without assigning the result to a new object. The first pipe in R was <code>%&gt;%</code> very extended especially within the <em>tidyverse</em> package collection. If you want to know more about its use, you can find <a href="https://www.datacamp.com/community/tutorials/pipe-r-tutorial">here</a> a tutorial or some details on differences between both <a href="https://www.tidyverse.org/blog/2023/04/base-vs-magrittr-pipe/">here</a>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span>, date <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://lubridate.tidyverse.org/reference/make_datetime.html">make_date</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">YEAR</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-</div>
-</section><section id="creating-the-strips" class="level2"><h2 class="anchored" data-anchor-id="creating-the-strips">Creating the strips</h2>
-<p>First, we create the style of the graph, specifying all the arguments of the theme we want to adjust. We start with the default style of <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal( )</a></code>. In addition, we assign the colors from <em>RColorBrewer</em> to an object <em>col_srip</em>. More information about the colors used <a href="http://colorbrewer2.org">here</a>.</p>
-<div class="cell">
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">theme_strip</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="kw" style="color: #003B4F;
-background-color: null;
-font-weight: bold;
-font-style: inherit;">function</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">{</span> </span>
-<span>  </span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_minimal</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>    axis.text.y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    axis.line.y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    axis.title <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    panel.grid.major <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    legend.title <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    axis.text.x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>vjust <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">3</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    panel.grid.minor <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_blank</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    plot.title <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>size <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">14</span>, face <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"bold"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    legend.key.width <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/grid/unit.html">unit</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">.5</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"lines"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">}</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">col_strip</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/RColorBrewer/man/ColorBrewer.html">brewer.pal</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">11</span>, <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"RdBu"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="co" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;"># all </span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">brewer.pal.info</span></span></code></pre></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>         maxcolors category colorblind
-BrBG            11      div       TRUE
-PiYG            11      div       TRUE
-PRGn            11      div       TRUE
-PuOr            11      div       TRUE
-RdBu            11      div       TRUE
-RdGy            11      div      FALSE
-RdYlBu          11      div       TRUE
-RdYlGn          11      div      FALSE
-Spectral        11      div      FALSE
-Accent           8     qual      FALSE
-Dark2            8     qual       TRUE
-Paired          12     qual       TRUE
-Pastel1          9     qual      FALSE
-Pastel2          8     qual      FALSE
-Set1             9     qual      FALSE
-Set2             8     qual       TRUE
-Set3            12     qual      FALSE
-Blues            9      seq       TRUE
-BuGn             9      seq       TRUE
-BuPu             9      seq       TRUE
-GnBu             9      seq       TRUE
-Greens           9      seq       TRUE
-Greys            9      seq       TRUE
-Oranges          9      seq       TRUE
-OrRd             9      seq       TRUE
-PuBu             9      seq       TRUE
-PuBuGn           9      seq       TRUE
-PuRd             9      seq       TRUE
-Purples          9      seq       TRUE
-RdPu             9      seq       TRUE
-Reds             9      seq       TRUE
-YlGn             9      seq       TRUE
-YlGnBu           9      seq       TRUE
-YlOrBr           9      seq       TRUE
-YlOrRd           9      seq       TRUE</code></pre>
-</div>
-</div>
-<p>For the final graphic we use the geometry <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile( )</a></code>. Since the data does not have a specific value for the Y axis, we need a <em>dummy</em> value, here I used 1. Also, I adjust the width of the color bar in the legend.</p>
-<div class="cell">
-<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">maxmin</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/range.html">range</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ta</span>, na.rm <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">md</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">$</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ta</span>, na.rm <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>  <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span>,</span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">date</span>, y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, fill <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ta</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/scale_date.html">scale_x_date</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>    date_breaks <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"6 years"</span>,</span>
-<span>    date_labels <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"%Y"</span>,</span>
-<span>    expand <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span>, <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>colors <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">col_strip</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>, values <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scales</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">maxmin</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">]</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">md</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">maxmin</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>                       na.value <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gray80"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>    title <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"LISBOA 1880-2018"</span>,</span>
-<span>    caption <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"Datos: GISS Surface Temperature Analysis"</span></span>
-<span>  <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>expand <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">theme_strip</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="3600"></a></p>
-</figure>
-</div>
-</div>
-</div>
-<p>In case we want to get only the strips, we can use <code><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void( )</a></code> and the argument <em>show.legend = FALSE</em> in <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile( )</a></code> to remove all style elements. We can also change the color for the <code>NA</code> values, including the argument <em>na.value = “gray70”</em> in the <code><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn( )</a></code> function.</p>
-<div class="cell">
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span></span>
-<span>  <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">temp_lisboa_yr</span>,</span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>x <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">date</span>, y <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span>, fill <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">ta</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span>
-<span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>show.legend <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/scale_gradient.html">scale_fill_gradientn</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>colors <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/rev.html">rev</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">col_strip</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>, values <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">scales</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://scales.r-lib.org/reference/rescale.html">rescale</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">maxmin</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">1</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">]</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">md</span>, <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">maxmin</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">[</span><span class="fl" style="color: #AD0000;
-background-color: null;
-font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>                       na.value <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"gray80"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/coord_cartesian.html">coord_cartesian</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>expand <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">FALSE</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/ggtheme.html">theme_void</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-6-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="3600"></a></p>
-</figure>
-</div>
-</div>
-</div>
-
-
-</section><a onclick="window.scrollTo(0, 0); return false;" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/">CC BY-NC-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2018" class="csl-entry quarto-appendix-citeas">
-Royé, Dominic. 2018. <span>“How to Create <span>‘Warming Stripes’</span>
-in R.”</span> December 5, 2018. <a href="https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/">https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/</a>.
-</div></div></section></div> ]]></description>
-  <category>datavis</category>
-  <category>R</category>
-  <category>R:elementary</category>
-  <category>warming stripes</category>
-  <category>global warming</category>
-  <category>visualization</category>
-  <guid>https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/</guid>
-  <pubDate>Tue, 04 Dec 2018 23:00:00 GMT</pubDate>
-  <media:content url="https://dominicroye.github.io/blog/how-to-create-warming-stripes-in-r/featured.png" medium="image" type="image/png" height="29" width="144"/>
 </item>
 </channel>
 </rss>
