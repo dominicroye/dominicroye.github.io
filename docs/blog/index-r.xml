@@ -10,8 +10,8 @@
 <atom:link href="https://dominicroye.github.io/blog/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>This is my blog where I practice sharing my curiosity about R, particularly, the world of cartography and data visualization. I take this opportunity to invite you to participate in the [#30DayChartChallenge](https://bsky.app/profile/30daychartchall.bsky.social).&lt;br&gt;&lt;br&gt;
 </description>
-<generator>quarto-1.8.25</generator>
-<lastBuildDate>Mon, 31 Mar 2025 22:00:00 GMT</lastBuildDate>
+<generator>quarto-1.9.12</generator>
+<lastBuildDate>Mon, 31 Mar 2025 23:00:00 GMT</lastBuildDate>
 <item>
   <title>Tomorrow’s weather</title>
   <dc:creator>Dominic Royé</dc:creator>
@@ -1998,7 +1998,7 @@ Royé, Dominic. 2025. <span>“Tomorrow’s Weather.”</span> April 1, 2025.
   <category>R:Advanced</category>
   <category>Visualization</category>
   <guid>https://dominicroye.github.io/blog/2023-02-20-tomorrows-weather/</guid>
-  <pubDate>Mon, 31 Mar 2025 22:00:00 GMT</pubDate>
+  <pubDate>Mon, 31 Mar 2025 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Always normalize your data</title>
@@ -3180,7 +3180,7 @@ Royé, Dominic. 2025. <span>“Always Normalize Your Data.”</span> January
   <category>Proportional symbol</category>
   <category>Normalize</category>
   <guid>https://dominicroye.github.io/blog/2025-01-07-always-normalize-your-data/</guid>
-  <pubDate>Sat, 04 Jan 2025 23:00:00 GMT</pubDate>
+  <pubDate>Sun, 05 Jan 2025 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Map of circles grouped in multiple locations</title>
@@ -5857,7 +5857,7 @@ Locations.”</span> April 20, 2024. <a href="https://dominicroye.github.io/blog
   <category>Proportional symbol</category>
   <category>Circles</category>
   <guid>https://dominicroye.github.io/blog/2024-04-20-map-circle-packing/</guid>
-  <pubDate>Fri, 19 Apr 2024 22:00:00 GMT</pubDate>
+  <pubDate>Fri, 19 Apr 2024 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Inserted maps with ggplot2</title>
@@ -7093,7 +7093,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-8-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="https://dominicroye.github.io/blog/2023-09-24-inserted-map/img/figure-html/unnamed-chunk-8-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="earth-globe-as-inset-map" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="earth-globe-as-inset-map">Earth globe as inset map</h2>
-<p>The only difficulty here is the orthogonal projection while preserving the visible geometry of the earth. The first step is the creation of the “ocean” using the radius of the earth from the point 0,0. Then we only have to cut out the visible part and reproject the boundaries. In the definition of the orthogonal projection it is possible to centre at different latitudes and longitudes by changing the <code>+lat_0</code> and <code>+lon_0</code> values. The <code>ms_innerlines()</code> functions of the <code>rmapshaper</code> package easily create the inner boundaries of polygons, which is recommended to avoid blurring small areas.</p>
+<p>The only difficulty here is the orthogonal projection while preserving the visible geometry of the earth. The first step is the creation of the “ocean” using the radius of the earth from the point 0,0. Then we only have to cut out the visible part and reproject the boundaries. In the definition of the orthogonal projection it is possible to centre at different latitudes and longitudes by changing the <code>+lat_0</code> and <code>+lon_0</code> values. The <code><a href="https://rdrr.io/pkg/rmapshaper/man/ms_innerlines.html">ms_innerlines()</a></code> functions of the <code>rmapshaper</code> package easily create the inner boundaries of polygons, which is recommended to avoid blurring small areas.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -7283,7 +7283,7 @@ font-style: inherit;">world_line</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">ms_innerlines</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_innerlines.html">ms_innerlines</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -7469,7 +7469,7 @@ Royé, Dominic. 2023. <span>“Inserted Maps with Ggplot2.”</span> October
   <category>R:Elementary</category>
   <category>Visualization</category>
   <guid>https://dominicroye.github.io/blog/2023-09-24-inserted-map/</guid>
-  <pubDate>Sat, 07 Oct 2023 22:00:00 GMT</pubDate>
+  <pubDate>Sat, 07 Oct 2023 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Hillshade effects</title>
@@ -8037,7 +8037,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 <p><a href="img/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://dominicroye.github.io/blog/2022-07-19-hillshade-effect/img/figure-html/unnamed-chunk-4-1.png" class="img-fluid"></a></p>
 </section><section id="digital-elevation-model-dem" class="level1"><h1>Digital Elevation Model (DEM)</h1>
-<p>The <code>get_elev_raster()</code> function allows us to download a DEM from any region of the world through different providers in raster format. By default, it uses <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. An essential argument is the latitude-dependent resolution, which can be specified as the zoom level (see function help). For example, we use level 10, which at a latitude of 45º would correspond to approximately 100 m.</p>
+<p>The <code><a href="https://rdrr.io/pkg/elevatr/man/get_elev_raster.html">get_elev_raster()</a></code> function allows us to download a DEM from any region of the world through different providers in raster format. By default, it uses <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. An essential argument is the latitude-dependent resolution, which can be specified as the zoom level (see function help). For example, we use level 10, which at a latitude of 45º would correspond to approximately 100 m.</p>
 <p>After obtaining the DEM from Switzerland, we must mask the country’s boundaries. The object’s class is <em>RasterLayer</em> from the <code>raster</code> package, however, the new standard is <code>terra</code> with the class <em>SpatRaster</em>. That’s why we convert it and then apply the mask. Finally, we reproject to the Swiss coordinate system obtained from the vector data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
@@ -8049,7 +8049,7 @@ font-style: inherit;">mdt</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">get_elev_raster</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/elevatr/man/get_elev_raster.html">get_elev_raster</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -8537,7 +8537,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="https://dominicroye.github.io/blog/2022-07-19-hillshade-effect/img/figure-html/unnamed-chunk-10-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="combine-the-relief-and-shadow-effect" class="level1"><h1>Combine the relief and shadow effect</h1>
-<p>The problem with adding both the relief with its hypsometric tints and the hillshade effect inside <code>ggplot2</code> is that we have two different fills or scales for each layer. The solution is to use the <code>ggnewscale</code> extension, which allows you to add multiple scales of the same argument. First, we add the hillshade with <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>, then we define the grey tones, and before adding the altitude, we include the <code>new_scale_fill()</code> function to mark a different fill. To achieve the effect, it is necessary to give a degree of transparency to the relief layer; in this case, it is 70%. The choice of direction is important, which is why we must always take into account the place and the apparent path of the sun (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
+<p>The problem with adding both the relief with its hypsometric tints and the hillshade effect inside <code>ggplot2</code> is that we have two different fills or scales for each layer. The solution is to use the <code>ggnewscale</code> extension, which allows you to add multiple scales of the same argument. First, we add the hillshade with <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>, then we define the grey tones, and before adding the altitude, we include the <code><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill()</a></code> function to mark a different fill. To achieve the effect, it is necessary to give a degree of transparency to the relief layer; in this case, it is 70%. The choice of direction is important, which is why we must always take into account the place and the apparent path of the sun (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -8622,7 +8622,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">new_scale_fill</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9059,7 +9059,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">new_scale_fill</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9314,7 +9314,7 @@ background-color: null;
 font-style: inherit;">)</span>,</span>
 <span>    <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">new_scale_fill</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9397,7 +9397,7 @@ font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">|&gt;</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">blend</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://mjskay.github.io/ggblend/reference/blend.html">blend</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -9551,15 +9551,15 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 <p><a href="img/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="https://dominicroye.github.io/blog/2022-07-19-hillshade-effect/img/figure-html/unnamed-chunk-14-1.png" class="img-fluid"></a></p>
 </section><section id="another-alternative-for-multidirectional-shadows" class="level1"><h1>Another alternative for multidirectional shadows</h1>
-<p>With less control over the directions, it would also be possible to apply the <code>wbt_multidirectional_hillshade()</code> function from the <code>whitebox</code> package. WhiteboxTool contains many tools as an advanced geospatial data analysis platform. The disadvantage is that we lose control over the directions and that it is also necessary to export the DEM to geotiff to obtain another raster with the shadows.</p>
-<p>We first install the library with the <code>install_whitebox()</code> function.</p>
+<p>With less control over the directions, it would also be possible to apply the <code><a href="https://whiteboxr.gishub.org/reference/wbt_multidirectional_hillshade.html">wbt_multidirectional_hillshade()</a></code> function from the <code>whitebox</code> package. WhiteboxTool contains many tools as an advanced geospatial data analysis platform. The disadvantage is that we lose control over the directions and that it is also necessary to export the DEM to geotiff to obtain another raster with the shadows.</p>
+<p>We first install the library with the <code><a href="https://whiteboxr.gishub.org/reference/install_whitebox.html">install_whitebox()</a></code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># instal whitebox</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">install_whitebox</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://whiteboxr.gishub.org/reference/install_whitebox.html">install_whitebox</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9590,7 +9590,7 @@ background-color: null;
 font-style: inherit;"># launch whitebox</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">wbt_init</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://whiteboxr.gishub.org/reference/wbt_init.html">wbt_init</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9601,7 +9601,7 @@ background-color: null;
 font-style: inherit;"># create the hillshade</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">wbt_multidirectional_hillshade</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://whiteboxr.gishub.org/reference/wbt_multidirectional_hillshade.html">wbt_multidirectional_hillshade</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>  <span class="st" style="color: #20794D;
@@ -9740,7 +9740,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">new_scale_fill</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -9913,7 +9913,7 @@ Royé, Dominic. 2022. <span>“Hillshade Effects.”</span> July 20, 2022. <a hr
   <category>DEM</category>
   <category>Elevation</category>
   <guid>https://dominicroye.github.io/blog/2022-07-19-hillshade-effect/</guid>
-  <pubDate>Tue, 19 Jul 2022 22:00:00 GMT</pubDate>
+  <pubDate>Tue, 19 Jul 2022 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Use of multidimensional spatial data</title>
@@ -12193,7 +12193,7 @@ Data.”</span> March 8, 2022. <a href="https://dominicroye.github.io/blog/2022-
   <category>Spain</category>
   <category>Raster</category>
   <guid>https://dominicroye.github.io/blog/2022-03-08-use-multidimensional-spatial-data/</guid>
-  <pubDate>Mon, 07 Mar 2022 23:00:00 GMT</pubDate>
+  <pubDate>Tue, 08 Mar 2022 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Visualize the day-night cycle on a world map</title>
@@ -12635,7 +12635,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/2021-12-20-night-day-world/img/figure-html/unnamed-chunk-4-1.png" class="img-fluid"></a></p>
-</div></div><p>In the next step, we obtain the polygons corresponding to the day and the night that separates the previously estimated line. To do this, we create a rectangle covering the entire planet and use the <code>st_split()</code> function from the <a href="https://r-spatial.github.io/lwgeom/">lwgeom</a> package that divides the rectangle.</p>
+</div></div><p>In the next step, we obtain the polygons corresponding to the day and the night that separates the previously estimated line. To do this, we create a rectangle covering the entire planet and use the <code><a href="https://r-spatial.github.io/lwgeom/reference/st_split.html">st_split()</a></code> function from the <a href="https://r-spatial.github.io/lwgeom/">lwgeom</a> package that divides the rectangle.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -12706,7 +12706,7 @@ font-style: inherit;">poly_nightday</span> <span class="op" style="color: #5E5E5
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">st_split</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-spatial.github.io/lwgeom/reference/st_split.html">st_split</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -13091,7 +13091,7 @@ font-style: inherit;">poly_nightday</span> <span class="op" style="color: #5E5E5
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">st_split</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-spatial.github.io/lwgeom/reference/st_split.html">st_split</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -14340,7 +14340,7 @@ font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
-<p>The creation of the final gif is done with <code>gifski()</code> passing it the names of the images in the order as they should appear in the animation.</p>
+<p>The creation of the final gif is done with <code><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html">gifski()</a></code> passing it the names of the images in the order as they should appear in the animation.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
@@ -14390,7 +14390,7 @@ font-style: inherit;">)</span></span>
 <span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">gifski</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html">gifski</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -14431,7 +14431,7 @@ Map.”</span> December 20, 2021. <a href="https://dominicroye.github.io/blog/20
   <category>Day-night</category>
   <category>Animation</category>
   <guid>https://dominicroye.github.io/blog/2021-12-20-night-day-world/</guid>
-  <pubDate>Sun, 19 Dec 2021 23:00:00 GMT</pubDate>
+  <pubDate>Mon, 20 Dec 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Climate circles</title>
@@ -15700,7 +15700,7 @@ Royé, Dominic. 2021. <span>“Climate Circles.”</span> September 4, 2021.
   <category>Polar</category>
   <category>Temperature</category>
   <guid>https://dominicroye.github.io/blog/2021-09-04-climate-circles/</guid>
-  <pubDate>Fri, 03 Sep 2021 22:00:00 GMT</pubDate>
+  <pubDate>Fri, 03 Sep 2021 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Firefly cartography</title>
@@ -16533,7 +16533,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="map-with-image-background" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="map-with-image-background">Map with image background</h2>
-<p>The <code>layer_spatial()</code> function of <code>ggspatial</code> allows us to add an RGB raster without major problems, however, it still does not support the <code>newSpatRaster</code> class. Therefore, we must convert it to the stack class with the <code><a href="https://rdrr.io/r/utils/stack.html">stack()</a></code> function. It is also possible to use instead of <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf()</a></code>, the <code>layer_spatial()</code> function for vector objects of class <code>sf</code> or <code>sp</code>.</p>
+<p>The <code><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial()</a></code> function of <code>ggspatial</code> allows us to add an RGB raster without major problems, however, it still does not support the <code>newSpatRaster</code> class. Therefore, we must convert it to the stack class with the <code><a href="https://rdrr.io/r/utils/stack.html">stack()</a></code> function. It is also possible to use instead of <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf()</a></code>, the <code><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial()</a></code> function for vector objects of class <code>sf</code> or <code>sp</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -16546,7 +16546,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">layer_spatial</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>data <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -16656,8 +16656,8 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://dominicroye.github.io/blog/2021-06-01-firefly-maps/img/figure-html/unnamed-chunk-9-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="map-with-background-and-earthquakes" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="map-with-background-and-earthquakes">Map with background and earthquakes</h2>
-<p>To create the glow effect on firefly maps, we use the <code>geom_glowpoint()</code> function from the <code>ggshadow</code> package. There is also the same function for lines. Since our data is of spatial class <code>sf</code> and the geometry <code>sf</code> is not directly supported, we must indicate as an argument <code>stats = "sf_coordinates"</code> and inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> indicate <code>geometry = geometry</code>. We will map the size of the points as a function of magnitude. In addition, we filter those earthquakes with a magnitude greater than 3.</p>
-<p>Inside the <code>geom_glowpoint()</code> function, 1) we define the desired color for the point and the glow effect, 2) the degree of transparency with <code>alpha</code> either for the point or for the glow. Finally, in the <code><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size()</a></code> function we set the range (minimum, maximum) of the size that the points will have.</p>
+<p>To create the glow effect on firefly maps, we use the <code><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint()</a></code> function from the <code>ggshadow</code> package. There is also the same function for lines. Since our data is of spatial class <code>sf</code> and the geometry <code>sf</code> is not directly supported, we must indicate as an argument <code>stats = "sf_coordinates"</code> and inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> indicate <code>geometry = geometry</code>. We will map the size of the points as a function of magnitude. In addition, we filter those earthquakes with a magnitude greater than 3.</p>
+<p>Inside the <code><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint()</a></code> function, 1) we define the desired color for the point and the glow effect, 2) the degree of transparency with <code>alpha</code> either for the point or for the glow. Finally, in the <code><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size()</a></code> function we set the range (minimum, maximum) of the size that the points will have.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -16670,7 +16670,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">layer_spatial</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>data <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -16733,7 +16733,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geom_glowpoint</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>    data <span class="op" style="color: #5E5E5E;
@@ -16908,7 +16908,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">layer_spatial</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>data <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -16971,7 +16971,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geom_glowpoint</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>    data <span class="op" style="color: #5E5E5E;
@@ -17064,7 +17064,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">new_scale</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -17075,7 +17075,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geom_glowpoint</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>    data <span class="op" style="color: #5E5E5E;
@@ -17288,7 +17288,7 @@ Royé, Dominic. 2021. <span>“Firefly Cartography.”</span> June 1, 2021.
   <category>Map</category>
   <category>Cartography</category>
   <guid>https://dominicroye.github.io/blog/2021-06-01-firefly-maps/</guid>
-  <pubDate>Mon, 31 May 2021 22:00:00 GMT</pubDate>
+  <pubDate>Mon, 31 May 2021 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Bivariate dasymetric map</title>
@@ -18769,7 +18769,7 @@ Royé, Dominic. 2021. <span>“Bivariate Dasymetric Map.”</span> March 1,
   <category>Income</category>
   <category>Urban</category>
   <guid>https://dominicroye.github.io/blog/2021-03-01-bivariate-dasymetric-map/</guid>
-  <pubDate>Sun, 28 Feb 2021 23:00:00 GMT</pubDate>
+  <pubDate>Mon, 01 Mar 2021 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>A heatmap as calendar</title>
@@ -19214,7 +19214,7 @@ font-style: inherit;">"Montserrat"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span></span>
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op" style="color: #5E5E5E;
@@ -19657,7 +19657,7 @@ Royé, Dominic. 2020. <span>“A Heatmap as Calendar.”</span> December 20,
   <category>Heatmap</category>
   <category>Climate</category>
   <guid>https://dominicroye.github.io/blog/2020-12-20-calendar-heatmap/</guid>
-  <pubDate>Sat, 19 Dec 2020 23:00:00 GMT</pubDate>
+  <pubDate>Sun, 20 Dec 2020 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Climate animation of maximum temperatures</title>
@@ -21635,7 +21635,7 @@ font-style: inherit;">}</span>)</span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">gifski</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html">gifski</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -21676,7 +21676,7 @@ Temperatures.”</span> October 11, 2020. <a href="https://dominicroye.github.io
   <category>Climate</category>
   <category>GIS</category>
   <guid>https://dominicroye.github.io/blog/2020-10-11-climate-animation-maximum-temperature/</guid>
-  <pubDate>Sat, 10 Oct 2020 22:00:00 GMT</pubDate>
+  <pubDate>Sat, 10 Oct 2020 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>River flow directions</title>
@@ -22047,7 +22047,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -22079,7 +22079,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -22114,7 +22114,7 @@ background-color: null;
 font-style: inherit;"># opposite angle of Barcelona -&gt; Madrid</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -22152,7 +22152,7 @@ background-color: null;
 font-style: inherit;"># opposite angle of Madrid -&gt; Barcelona</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">bearingRhumb</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://rdrr.io/pkg/geosphere/man/bearingRhumb.html">bearingRhumb</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
 background-color: null;
@@ -22716,7 +22716,7 @@ font-style: inherit;">"Montserrat"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme_get.html">%+replace%</a></span></span>
+font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/get_theme.html">%+replace%</a></span></span>
 <span>    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op" style="color: #5E5E5E;
@@ -23178,7 +23178,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">coord_curvedpolar</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://allancameron.github.io/geomtextpath/reference/coord_curvedpolar.html">coord_curvedpolar</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>direction <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -23253,7 +23253,7 @@ Royé, Dominic. 2020. <span>“River Flow Directions.”</span> July 24,
   <category>Directions</category>
   <category>Distribution</category>
   <guid>https://dominicroye.github.io/blog/2020-07-24-river-flow-directions/</guid>
-  <pubDate>Thu, 23 Jul 2020 22:00:00 GMT</pubDate>
+  <pubDate>Thu, 23 Jul 2020 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Visualize climate anomalies</title>
@@ -24633,7 +24633,7 @@ Royé, Dominic. 2020. <span>“Visualize Climate Anomalies.”</span> March
   <category>Anomaly</category>
   <category>Temperature</category>
   <guid>https://dominicroye.github.io/blog/2020-03-29-climate-anomalies/</guid>
-  <pubDate>Sat, 28 Mar 2020 23:00:00 GMT</pubDate>
+  <pubDate>Sun, 29 Mar 2020 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Geographic distance</title>
@@ -25695,7 +25695,7 @@ Royé, Dominic. 2020. <span>“Geographic Distance.”</span> January 19,
   <category>Distance</category>
   <category>Cities</category>
   <guid>https://dominicroye.github.io/blog/2020-01-19-geographic-distance/</guid>
-  <pubDate>Sat, 18 Jan 2020 23:00:00 GMT</pubDate>
+  <pubDate>Sun, 19 Jan 2020 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Visualize urban growth</title>
@@ -25938,7 +25938,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 <section id="access-the-data" class="level2"><h2 class="anchored" data-anchor-id="access-the-data">Access the data</h2>
-<p>To import the building data we use the <code>catr_atom_get_buildings()</code> function.</p>
+<p>To import the building data we use the <code><a href="https://ropenspain.github.io/CatastRo/reference/catr_atom_get_buildings.html">catr_atom_get_buildings()</a></code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
@@ -25946,7 +25946,7 @@ font-style: inherit;">buildings_val</span> <span class="op" style="color: #5E5E5
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">catr_atom_get_buildings</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropenspain.github.io/CatastRo/reference/catr_atom_get_buildings.html">catr_atom_get_buildings</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -26166,7 +26166,7 @@ font-style: inherit;">tmaptools</span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">geocode_OSM</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmaptools/reference/geocode_OSM.html">geocode_OSM</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -26369,7 +26369,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="map-of-valencia" class="level2"><h2 class="anchored" data-anchor-id="map-of-valencia">Map of Valencia</h2>
-<p>For the mapping, we will use the <code>tmap</code> package. It is an interesting alternative to <code>ggplot2</code>. It is a package of functions specialized in creating thematic maps. The philosophy of the package follows the same as in <code>ggplot2</code>, creating multiple layers with different functions, which always start with <code>tm_*</code>and combine with <code>+</code>. Building a map with tmap always starts with <code>tm_shape()</code>, where the data, we want to draw, is defined. Then we add the corresponding geometry to the data type (<code>tm_polygon()</code>, <code>tm_border()</code>, <code>tm_dots()</code> or even <code>tm_raster()</code>). The <code>tm_layout()</code> function help us to configure the map style.</p>
+<p>For the mapping, we will use the <code>tmap</code> package. It is an interesting alternative to <code>ggplot2</code>. It is a package of functions specialized in creating thematic maps. The philosophy of the package follows the same as in <code>ggplot2</code>, creating multiple layers with different functions, which always start with <code>tm_*</code>and combine with <code>+</code>. Building a map with tmap always starts with <code><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape()</a></code>, where the data, we want to draw, is defined. Then we add the corresponding geometry to the data type (<code>tm_polygon()</code>, <code>tm_border()</code>, <code><a href="https://r-tmap.github.io/tmap/reference/tm_symbols.html">tm_dots()</a></code> or even <code><a href="https://r-tmap.github.io/tmap/reference/tm_raster.html">tm_raster()</a></code>). The <code><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout()</a></code> function help us to configure the map style.</p>
 <p>When we need more colors than the maximum allowed by <code>RColorBrewer</code>, we can pass the colors to the <code><a href="https://rdrr.io/r/grDevices/colorRamp.html">colorRampPalette()</a></code> function. This function interpolates a set of given colors.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
@@ -26417,7 +26417,7 @@ background-color: null;
 font-style: inherit;"># create the final map</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tm_shape</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -26428,7 +26428,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tm_polygons</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -26468,7 +26468,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tm_layout</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmap/reference/tm_layout.html">tm_layout</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span></span>
 <span>    bg.color <span class="op" style="color: #5E5E5E;
@@ -27061,7 +27061,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <p><a href="img/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://dominicroye.github.io/blog/2019-11-01-visualize-urban-growth/img/figure-html/unnamed-chunk-9-1.png" class="img-fluid"></a></p>
 <p>To export the result of ggplot we can use the function <code>ggsave("name.png")</code>.</p>
 </section><section id="dynamic-map-with-leaflet" class="level2"><h2 class="anchored" data-anchor-id="dynamic-map-with-leaflet">Dynamic map with leaflet</h2>
-<p>A very interesting advantage is the <code>tmap_leaflet()</code> function of the <code>tmap</code> package to easily pass a map created in the same frame to <code>leaflet</code>.</p>
+<p>A very interesting advantage is the <code><a href="https://r-tmap.github.io/tmap/reference/tmap_leaflet.html">tmap_leaflet()</a></code> function of the <code>tmap</code> package to easily pass a map created in the same frame to <code>leaflet</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -27072,7 +27072,7 @@ font-style: inherit;">m</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tm_shape</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmap/reference/tm_shape.html">tm_shape</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -27083,7 +27083,7 @@ background-color: null;
 font-style: inherit;">+</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tm_polygons</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmap/reference/tm_polygons.html">tm_polygons</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="st" style="color: #20794D;
 background-color: null;
@@ -27126,7 +27126,7 @@ background-color: null;
 font-style: inherit;"># dynamic map</span></span>
 <span><span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;">tmap_leaflet</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://r-tmap.github.io/tmap/reference/tmap_leaflet.html">tmap_leaflet</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -27147,7 +27147,7 @@ Royé, Dominic. 2019. <span>“Visualize Urban Growth.”</span> November 1,
   <category>City</category>
   <category>Geography</category>
   <guid>https://dominicroye.github.io/blog/2019-11-01-visualize-urban-growth/</guid>
-  <pubDate>Thu, 31 Oct 2019 23:00:00 GMT</pubDate>
+  <pubDate>Fri, 01 Nov 2019 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Visualize monthly precipitation anomalies</title>
@@ -28839,7 +28839,7 @@ Anomalies.”</span> July 7, 2019. <a href="https://dominicroye.github.io/blog/2
   <category>Precipitation</category>
   <category>Boxplot</category>
   <guid>https://dominicroye.github.io/blog/2019-07-07-visualize-anomalies-monthly-precipitation/</guid>
-  <pubDate>Sat, 06 Jul 2019 22:00:00 GMT</pubDate>
+  <pubDate>Sat, 06 Jul 2019 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Tidy correlation tests in R</title>
@@ -29966,7 +29966,7 @@ Royé, Dominic. 2019. <span>“Tidy Correlation Tests in R.”</span> April
   <category>Correlation</category>
   <category>Tests</category>
   <guid>https://dominicroye.github.io/blog/2019-04-17-tidy-correlation-tests-in-r/</guid>
-  <pubDate>Tue, 16 Apr 2019 22:00:00 GMT</pubDate>
+  <pubDate>Tue, 16 Apr 2019 23:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Import Excel sheets with R</title>
@@ -30695,7 +30695,7 @@ Royé, Dominic. 2019. <span>“Import Excel Sheets with R.”</span> March
   <category>Excel</category>
   <category>Sheets</category>
   <guid>https://dominicroye.github.io/blog/2019-03-10-import-excel-sheets-with-r/</guid>
-  <pubDate>Sat, 09 Mar 2019 23:00:00 GMT</pubDate>
+  <pubDate>Sun, 10 Mar 2019 00:00:00 GMT</pubDate>
 </item>
 <item>
   <title>Calculating the distance to the sea in R</title>
@@ -31570,7 +31570,7 @@ R.”</span> January 8, 2019. <a href="https://dominicroye.github.io/blog/2019-0
   <category>Distance</category>
   <category>Raster</category>
   <guid>https://dominicroye.github.io/blog/2019-01-08-calculating-the-distance-to-the-sea-in-r/</guid>
-  <pubDate>Mon, 07 Jan 2019 23:00:00 GMT</pubDate>
+  <pubDate>Tue, 08 Jan 2019 00:00:00 GMT</pubDate>
 </item>
 </channel>
 </rss>

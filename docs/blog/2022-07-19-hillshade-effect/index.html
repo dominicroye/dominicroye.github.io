@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.9.12">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2022-07-20">
@@ -58,12 +58,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
 <link href="../../assets/img/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -71,10 +67,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-58e39b83f7df1deef4fc24aa9b353c18.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-fd2209f8f7f5c037cd60b1325f8cc3d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f45ebd1f1610584523734d0efaa31295.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-81759bfceaa241ed514e8c3c2c4ac429.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/academicons-1.9.4/all.css" rel="stylesheet">
@@ -82,18 +78,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -111,8 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="twitter:title" content="Hillshade effects">
 <meta name="twitter:description" content="Researcher in climate science at MBG-CSIC">
 <meta name="twitter:image" content="https://dominicroye.github.io/blog/2022-07-19-hillshade-effect/featured.png">
-<meta name="twitter:creator" content="@drxeo">
-<meta name="twitter:site" content="@drxeo">
+<meta name="twitter:creator" content="@drxeo.eu">
+<meta name="twitter:site" content="@drxeo.eu">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image-height" content="1500">
 <meta name="twitter:image-width" content="4500">
@@ -128,7 +112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">Dr Dominic Royé</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -312,11 +295,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><a href="img/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="img/figure-html/unnamed-chunk-4-1.png" class="img-fluid"></a></p>
 </section><section id="digital-elevation-model-dem" class="level1"><h1>Digital Elevation Model (DEM)</h1>
-<p>The <code>get_elev_raster()</code> function allows us to download a DEM from any region of the world through different providers in raster format. By default, it uses <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. An essential argument is the latitude-dependent resolution, which can be specified as the zoom level (see function help). For example, we use level 10, which at a latitude of 45º would correspond to approximately 100 m.</p>
+<p>The <code><a href="https://rdrr.io/pkg/elevatr/man/get_elev_raster.html">get_elev_raster()</a></code> function allows us to download a DEM from any region of the world through different providers in raster format. By default, it uses <a href="https://registry.opendata.aws/terrain-tiles/">AWS</a>. An essential argument is the latitude-dependent resolution, which can be specified as the zoom level (see function help). For example, we use level 10, which at a latitude of 45º would correspond to approximately 100 m.</p>
 <p>After obtaining the DEM from Switzerland, we must mask the country’s boundaries. The object’s class is <em>RasterLayer</em> from the <code>raster</code> package, however, the new standard is <code>terra</code> with the class <em>SpatRaster</em>. That’s why we convert it and then apply the mask. Finally, we reproject to the Swiss coordinate system obtained from the vector data.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># get the DEM with</span></span>
-<span><span class="va">mdt</span> <span class="op">&lt;-</span> <span class="fu">get_elev_raster</span><span class="op">(</span><span class="va">suiz</span>, z <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
+<span><span class="va">mdt</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/elevatr/man/get_elev_raster.html">get_elev_raster</a></span><span class="op">(</span><span class="va">suiz</span>, z <span class="op">=</span> <span class="fl">10</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">mdt</span> <span class="co"># old RasterLayer class</span></span>
 <span></span>
@@ -402,7 +385,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="img/figure-html/unnamed-chunk-10-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="combine-the-relief-and-shadow-effect" class="level1"><h1>Combine the relief and shadow effect</h1>
-<p>The problem with adding both the relief with its hypsometric tints and the hillshade effect inside <code>ggplot2</code> is that we have two different fills or scales for each layer. The solution is to use the <code>ggnewscale</code> extension, which allows you to add multiple scales of the same argument. First, we add the hillshade with <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>, then we define the grey tones, and before adding the altitude, we include the <code>new_scale_fill()</code> function to mark a different fill. To achieve the effect, it is necessary to give a degree of transparency to the relief layer; in this case, it is 70%. The choice of direction is important, which is why we must always take into account the place and the apparent path of the sun (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
+<p>The problem with adding both the relief with its hypsometric tints and the hillshade effect inside <code>ggplot2</code> is that we have two different fills or scales for each layer. The solution is to use the <code>ggnewscale</code> extension, which allows you to add multiple scales of the same argument. First, we add the hillshade with <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster()</a></code>, then we define the grey tones, and before adding the altitude, we include the <code><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill()</a></code> function to mark a different fill. To achieve the effect, it is necessary to give a degree of transparency to the relief layer; in this case, it is 70%. The choice of direction is important, which is why we must always take into account the place and the apparent path of the sun (<a href="https://www.sunearthtools.com/dp/tools/pos_sun.php?lang=es">sunearthtools</a>).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># convert the hillshade to xyz</span></span>
 <span><span class="va">hilldf_single</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/as.data.frame.html">as.data.frame</a></span><span class="op">(</span><span class="va">hill_single</span>, xy <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
@@ -415,7 +398,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Greys"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">new_scale_fill</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">mdtdf</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fill <span class="op">=</span> <span class="va">alt</span><span class="op">)</span>,</span>
@@ -483,7 +466,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Greys"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">new_scale_fill</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">mdtdf</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fill <span class="op">=</span> <span class="va">alt</span><span class="op">)</span>,</span>
@@ -522,7 +505,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>      show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>    <span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Greys"</span><span class="op">)</span>,</span>
-<span>    <span class="fu">new_scale_fill</span><span class="op">(</span><span class="op">)</span>,</span>
+<span>    <span class="fu"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op">(</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster</a></span><span class="op">(</span></span>
 <span>      data <span class="op">=</span> <span class="va">mdtdf</span>,</span>
 <span>      <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fill <span class="op">=</span> <span class="va">alt</span><span class="op">)</span>,</span>
@@ -533,7 +516,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>      <span class="fl">1500</span>, <span class="fl">2000</span>, <span class="fl">2500</span>,</span>
 <span>      <span class="fl">3000</span>, <span class="fl">3500</span>, <span class="fl">4000</span></span>
 <span>    <span class="op">)</span><span class="op">)</span></span>
-<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">blend</span><span class="op">(</span><span class="st">"multiply"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://mjskay.github.io/ggblend/reference/blend.html">blend</a></span><span class="op">(</span><span class="st">"multiply"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">suiz_lakes</span>,</span>
 <span>    fill <span class="op">=</span> <span class="st">"#c6dbef"</span>, colour <span class="op">=</span> <span class="cn">NA</span></span>
@@ -559,21 +542,21 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 <p><a href="img/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="img/figure-html/unnamed-chunk-14-1.png" class="img-fluid"></a></p>
 </section><section id="another-alternative-for-multidirectional-shadows" class="level1"><h1>Another alternative for multidirectional shadows</h1>
-<p>With less control over the directions, it would also be possible to apply the <code>wbt_multidirectional_hillshade()</code> function from the <code>whitebox</code> package. WhiteboxTool contains many tools as an advanced geospatial data analysis platform. The disadvantage is that we lose control over the directions and that it is also necessary to export the DEM to geotiff to obtain another raster with the shadows.</p>
-<p>We first install the library with the <code>install_whitebox()</code> function.</p>
+<p>With less control over the directions, it would also be possible to apply the <code><a href="https://whiteboxr.gishub.org/reference/wbt_multidirectional_hillshade.html">wbt_multidirectional_hillshade()</a></code> function from the <code>whitebox</code> package. WhiteboxTool contains many tools as an advanced geospatial data analysis platform. The disadvantage is that we lose control over the directions and that it is also necessary to export the DEM to geotiff to obtain another raster with the shadows.</p>
+<p>We first install the library with the <code><a href="https://whiteboxr.gishub.org/reference/install_whitebox.html">install_whitebox()</a></code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># instal whitebox</span></span>
-<span><span class="fu">install_whitebox</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu"><a href="https://whiteboxr.gishub.org/reference/install_whitebox.html">install_whitebox</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># export the DEM</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/writeRaster.html">writeRaster</a></span><span class="op">(</span><span class="va">mdt</span>, <span class="st">"mdt.tiff"</span>, overwrite <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># launch whitebox</span></span>
-<span><span class="fu">wbt_init</span><span class="op">(</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://whiteboxr.gishub.org/reference/wbt_init.html">wbt_init</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># create the hillshade</span></span>
-<span><span class="fu">wbt_multidirectional_hillshade</span><span class="op">(</span></span>
+<span><span class="fu"><a href="https://whiteboxr.gishub.org/reference/wbt_multidirectional_hillshade.html">wbt_multidirectional_hillshade</a></span><span class="op">(</span></span>
 <span>  <span class="st">"mdt.tiff"</span>,</span>
 <span>  <span class="st">"hillshade.tiff"</span></span>
 <span><span class="op">)</span></span>
@@ -596,7 +579,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_brewer.html">scale_fill_distiller</a></span><span class="op">(</span>palette <span class="op">=</span> <span class="st">"Greys"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">new_scale_fill</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale_fill</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_raster</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="va">mdtdf</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, fill <span class="op">=</span> <span class="va">alt</span><span class="op">)</span>,</span>
@@ -1031,7 +1014,7 @@ Royé, Dominic. 2022. <span>“Hillshade Effects.”</span> July 20, 2022. <a hr
 <p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
-<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a></p>
+<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
 </div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">

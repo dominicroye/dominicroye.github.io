@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.9.12">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2021-06-01">
@@ -58,12 +58,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
 <link href="../../assets/img/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -71,10 +67,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-58e39b83f7df1deef4fc24aa9b353c18.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-fd2209f8f7f5c037cd60b1325f8cc3d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f45ebd1f1610584523734d0efaa31295.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-81759bfceaa241ed514e8c3c2c4ac429.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/academicons-1.9.4/all.css" rel="stylesheet">
@@ -82,18 +78,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -111,8 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="twitter:title" content="Firefly cartography">
 <meta name="twitter:description" content="Researcher in climate science at MBG-CSIC">
 <meta name="twitter:image" content="https://dominicroye.github.io/blog/2021-06-01-firefly-maps/featured.png">
-<meta name="twitter:creator" content="@drxeo">
-<meta name="twitter:site" content="@drxeo">
+<meta name="twitter:creator" content="@drxeo.eu">
+<meta name="twitter:site" content="@drxeo.eu">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image-height" content="3300">
 <meta name="twitter:image-width" content="4500">
@@ -128,7 +112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">Dr Dominic Royé</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -383,10 +366,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span><span class="va">grid</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_graticule.html">st_graticule</a></span><span class="op">(</span><span class="va">earthquakes</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="map-with-image-background" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="map-with-image-background">Map with image background</h2>
-<p>The <code>layer_spatial()</code> function of <code>ggspatial</code> allows us to add an RGB raster without major problems, however, it still does not support the <code>newSpatRaster</code> class. Therefore, we must convert it to the stack class with the <code><a href="https://rdrr.io/r/utils/stack.html">stack()</a></code> function. It is also possible to use instead of <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf()</a></code>, the <code>layer_spatial()</code> function for vector objects of class <code>sf</code> or <code>sp</code>.</p>
+<p>The <code><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial()</a></code> function of <code>ggspatial</code> allows us to add an RGB raster without major problems, however, it still does not support the <code>newSpatRaster</code> class. Therefore, we must convert it to the stack class with the <code><a href="https://rdrr.io/r/utils/stack.html">stack()</a></code> function. It is also possible to use instead of <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf()</a></code>, the <code><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial()</a></code> function for vector objects of class <code>sf</code> or <code>sp</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">layer_spatial</span><span class="op">(</span>data <span class="op">=</span> <span class="va">bm_desat</span><span class="op">)</span> <span class="op">+</span> <span class="co"># blue marble background map</span></span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bm_desat</span><span class="op">)</span> <span class="op">+</span> <span class="co"># blue marble background map</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">limits</span>, fill <span class="op">=</span> <span class="cn">NA</span>, size <span class="op">=</span> <span class="fl">.3</span>, colour <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span> <span class="co"># country boundaries</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span></span>
 <span>    xlim <span class="op">=</span> <span class="va">bx</span><span class="op">[</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">3</span><span class="op">)</span><span class="op">]</span>,</span>
@@ -400,14 +383,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="img/figure-html/unnamed-chunk-9-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="map-with-background-and-earthquakes" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="map-with-background-and-earthquakes">Map with background and earthquakes</h2>
-<p>To create the glow effect on firefly maps, we use the <code>geom_glowpoint()</code> function from the <code>ggshadow</code> package. There is also the same function for lines. Since our data is of spatial class <code>sf</code> and the geometry <code>sf</code> is not directly supported, we must indicate as an argument <code>stats = "sf_coordinates"</code> and inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> indicate <code>geometry = geometry</code>. We will map the size of the points as a function of magnitude. In addition, we filter those earthquakes with a magnitude greater than 3.</p>
-<p>Inside the <code>geom_glowpoint()</code> function, 1) we define the desired color for the point and the glow effect, 2) the degree of transparency with <code>alpha</code> either for the point or for the glow. Finally, in the <code><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size()</a></code> function we set the range (minimum, maximum) of the size that the points will have.</p>
+<p>To create the glow effect on firefly maps, we use the <code><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint()</a></code> function from the <code>ggshadow</code> package. There is also the same function for lines. Since our data is of spatial class <code>sf</code> and the geometry <code>sf</code> is not directly supported, we must indicate as an argument <code>stats = "sf_coordinates"</code> and inside <code><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes()</a></code> indicate <code>geometry = geometry</code>. We will map the size of the points as a function of magnitude. In addition, we filter those earthquakes with a magnitude greater than 3.</p>
+<p>Inside the <code><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint()</a></code> function, 1) we define the desired color for the point and the glow effect, 2) the degree of transparency with <code>alpha</code> either for the point or for the glow. Finally, in the <code><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size()</a></code> function we set the range (minimum, maximum) of the size that the points will have.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">layer_spatial</span><span class="op">(</span>data <span class="op">=</span> <span class="va">bm_desat</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bm_desat</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">limits</span>, fill <span class="op">=</span> <span class="cn">NA</span>, size <span class="op">=</span> <span class="fl">.3</span>, colour <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grid</span>, colour <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">.1</span>, alpha <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_glowpoint</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">earthquakes</span>, <span class="va">mag</span> <span class="op">&gt;</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">geometry</span>, size <span class="op">=</span> <span class="va">mag</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">.8</span>,</span>
@@ -434,10 +417,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>By default, <code>ggplot2</code> does not allow to use multiple scales for the same characteristic (size, color, etc) of different layers. But the <code>ggnewscale</code> package gives us the ability to incorporate multiple scales of a feature from different layers. The only important thing to achieve this is the order in which each layer (geom) and scale is added. First we must add the geometry and then its corresponding scale. We indicate with <code>new_scale('size')</code> that the next layer and scale is a new one independent of the previous one. If we used <code>color</code> or <code>fill</code> it would be done with <code>new_scale_*()</code>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">layer_spatial</span><span class="op">(</span>data <span class="op">=</span> <span class="va">bm_desat</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://paleolimbot.github.io/ggspatial/reference/layer_spatial.html">layer_spatial</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">bm_desat</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">limits</span>, fill <span class="op">=</span> <span class="cn">NA</span>, size <span class="op">=</span> <span class="fl">.3</span>, colour <span class="op">=</span> <span class="st">"white"</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">grid</span>, colour <span class="op">=</span> <span class="st">"white"</span>, size <span class="op">=</span> <span class="fl">.1</span>, alpha <span class="op">=</span> <span class="fl">.5</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_glowpoint</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">earthquakes</span>, <span class="va">mag</span> <span class="op">&gt;</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">geometry</span>, size <span class="op">=</span> <span class="va">mag</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">.8</span>,</span>
@@ -448,8 +431,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    show.legend <span class="op">=</span> <span class="cn">FALSE</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/scale_size.html">scale_size</a></span><span class="op">(</span>range <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">1.5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">new_scale</span><span class="op">(</span><span class="st">"size"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu">geom_glowpoint</span><span class="op">(</span></span>
+<span>  <span class="fu"><a href="https://eliocamp.github.io/ggnewscale/reference/new_scale.html">new_scale</a></span><span class="op">(</span><span class="st">"size"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu"><a href="https://rdrr.io/pkg/ggshadow/man/geom_glowpoint.html">geom_glowpoint</a></span><span class="op">(</span></span>
 <span>    data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">earthquakes</span>, <span class="va">mag</span> <span class="op">&gt;</span> <span class="fl">3</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>geometry <span class="op">=</span> <span class="va">geometry</span>, size <span class="op">=</span> <span class="va">mag</span><span class="op">)</span>,</span>
 <span>    alpha <span class="op">=</span> <span class="fl">.6</span>,</span>
@@ -882,7 +865,7 @@ Royé, Dominic. 2021. <span>“Firefly Cartography.”</span> June 1, 2021.
 <p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
-<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a></p>
+<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
 </div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">

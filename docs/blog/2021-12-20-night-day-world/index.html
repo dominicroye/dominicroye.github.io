@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.8.25">
+<meta name="generator" content="quarto-1.9.12">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2021-12-20">
@@ -58,12 +58,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <script src="../../site_libs/quarto-nav/quarto-nav.js"></script>
 <script src="../../site_libs/quarto-nav/headroom.min.js"></script>
-<script src="../../site_libs/clipboard/clipboard.min.js"></script>
-<script src="../../site_libs/quarto-search/autocomplete.umd.js"></script>
-<script src="../../site_libs/quarto-search/fuse.min.js"></script>
-<script src="../../site_libs/quarto-search/quarto-search.js"></script>
-<meta name="quarto:offset" content="../../">
 <link href="../../assets/img/favicon.svg" rel="icon" type="image/svg+xml">
+<script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
 <script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
@@ -71,10 +67,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-58e39b83f7df1deef4fc24aa9b353c18.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-fd2209f8f7f5c037cd60b1325f8cc3d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-f45ebd1f1610584523734d0efaa31295.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-81759bfceaa241ed514e8c3c2c4ac429.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/academicons-1.9.4/all.css" rel="stylesheet">
@@ -82,18 +78,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
 <link href="../../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet"><script id="quarto-search-options" type="application/json">{
-  "location": "navbar",
-  "copy-button": false,
-  "collapse-after": 3,
-  "panel-placement": "end",
-  "type": "overlay",
-  "limit": 50,
-  "keyboard-shortcut": [
-    "f",
-    "/",
-    "s"
-  ],
-  "show-item-context": false,
   "language": {
     "search-no-results-text": "No results",
     "search-matching-documents-text": "matching documents",
@@ -111,8 +95,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <meta name="twitter:title" content="Visualize the day-night cycle on a world map">
 <meta name="twitter:description" content="Researcher in climate science at MBG-CSIC">
 <meta name="twitter:image" content="https://dominicroye.github.io/blog/2021-12-20-night-day-world/featured.png">
-<meta name="twitter:creator" content="@drxeo">
-<meta name="twitter:site" content="@drxeo">
+<meta name="twitter:creator" content="@drxeo.eu">
+<meta name="twitter:site" content="@drxeo.eu">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image-height" content="1278">
 <meta name="twitter:image-width" content="2519">
@@ -128,7 +112,6 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <span class="navbar-title">Dr Dominic Royé</span>
     </a>
   </div>
-            <div id="quarto-search" class="" title="Search"></div>
           <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarCollapse" aria-controls="navbarCollapse" role="menu" aria-expanded="false" aria-label="Toggle navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
   <span class="navbar-toggler-icon"></span>
 </button>
@@ -306,7 +289,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="img/figure-html/unnamed-chunk-4-1.png" class="img-fluid"></a></p>
-</div></div><p>In the next step, we obtain the polygons corresponding to the day and the night that separates the previously estimated line. To do this, we create a rectangle covering the entire planet and use the <code>st_split()</code> function from the <a href="https://r-spatial.github.io/lwgeom/">lwgeom</a> package that divides the rectangle.</p>
+</div></div><p>In the next step, we obtain the polygons corresponding to the day and the night that separates the previously estimated line. To do this, we create a rectangle covering the entire planet and use the <code><a href="https://r-spatial.github.io/lwgeom/reference/st_split.html">st_split()</a></code> function from the <a href="https://r-spatial.github.io/lwgeom/">lwgeom</a> package that divides the rectangle.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rectangle</span></span>
 <span><span class="va">wld_bbx</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_bbox.html">st_bbox</a></span><span class="op">(</span></span>
@@ -319,7 +302,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="op">)</span> </span>
 <span></span>
 <span><span class="co"># division with the day-night line</span></span>
-<span><span class="va">poly_nightday</span> <span class="op">&lt;-</span> <span class="fu">st_split</span><span class="op">(</span><span class="va">wld_bbx</span>, <span class="va">line_nightday</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">poly_nightday</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/lwgeom/reference/st_split.html">st_split</a></span><span class="op">(</span><span class="va">wld_bbx</span>, <span class="va">line_nightday</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_collection_extract.html">st_collection_extract</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"POLYGON"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html">st_sf</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -381,7 +364,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>    <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_as_sfc.html">st_as_sfc</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span>  <span class="co"># divide the polygon with the day-night line</span></span>
-<span>  <span class="va">poly_nightday</span> <span class="op">&lt;-</span> <span class="fu">st_split</span><span class="op">(</span><span class="va">wld_bbx</span>, <span class="va">night_line</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="va">poly_nightday</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/lwgeom/reference/st_split.html">st_split</a></span><span class="op">(</span><span class="va">wld_bbx</span>, <span class="va">night_line</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_collection_extract.html">st_collection_extract</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"POLYGON"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://r-spatial.github.io/sf/reference/sf.html">st_sf</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
@@ -532,11 +515,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span>  <span class="op">)</span></span>
 <span><span class="op">}</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The creation of the final gif is done with <code>gifski()</code> passing it the names of the images in the order as they should appear in the animation.</p>
+<p>The creation of the final gif is done with <code><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html">gifski()</a></code> passing it the names of the images in the order as they should appear in the animation.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">files</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_c.html">str_c</a></span><span class="op">(</span><span class="st">"wld_night_H"</span>, <span class="fu"><a href="https://stringr.tidyverse.org/reference/str_remove.html">str_remove_all</a></span><span class="op">(</span><span class="fu"><a href="https://hms.tidyverse.org/reference/hms.html">as_hms</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/seq.html">seq</a></span><span class="op">(</span><span class="fl">0</span>, <span class="fl">1410</span>, <span class="fl">30</span><span class="op">)</span> <span class="op">*</span> <span class="fl">60</span><span class="op">)</span>, <span class="st">":"</span><span class="op">)</span>, <span class="st">".png"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu">gifski</span><span class="op">(</span><span class="va">files</span>, <span class="st">"night_day.gif"</span>, width <span class="op">=</span> <span class="fl">807</span>, height <span class="op">=</span> <span class="fl">409</span>, loop <span class="op">=</span> <span class="cn">TRUE</span>, delay <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu"><a href="https://r-rust.r-universe.dev/gifski/reference/gifski.html">gifski</a></span><span class="op">(</span><span class="va">files</span>, <span class="st">"night_day.gif"</span>, width <span class="op">=</span> <span class="fl">807</span>, height <span class="op">=</span> <span class="fl">409</span>, loop <span class="op">=</span> <span class="cn">TRUE</span>, delay <span class="op">=</span> <span class="fl">0.1</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <p><a href="night_day.gif" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="night_day.gif" class="img-fluid"></a></p>
 
@@ -953,7 +936,7 @@ Map.”</span> December 20, 2021. <a href="https://dominicroye.github.io/blog/20
 <p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
-<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a></p>
+<p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
 </div>
     <div class="nav-footer-right">
       <ul class="footer-items list-unstyled">
