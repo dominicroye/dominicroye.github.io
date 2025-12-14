@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 <meta name="author" content="Dominic Royé">
-<meta name="dcterms.date" content="2025-04-01">
+<meta name="dcterms.date" content="2023-02-20">
 
 <title>Tomorrow’s weather – Dr Dominic Royé</title>
 <style>
@@ -198,7 +198,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <div>
     <div class="quarto-title-meta-heading">Published</div>
     <div class="quarto-title-meta-contents">
-      <p class="date">April 1, 2025</p>
+      <p class="date">February 20, 2023</p>
     </div>
   </div>
   
@@ -219,7 +219,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <figcaption><a href="#part-ii.-orthographic-map">Part II. Orthographic map</a></figcaption>
 </figure>
 </div>
-</div></div><p>A while back I saw Chris Campbell’s global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 we’ll see how we can access the GFS (Global Forecast System) data and visualize it with <code>{ggplot2}</code>, even though there are several ways, in this case we use the Google Earth Engine API via the <code>{rgee}</code> package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days.</p>
+</div></div><p>A while back I saw Chris Campbell’s global maps from the Financial Times like in this Tweet and I thought I needed to do it in R. In this first post of 2023 well see how we can access the GFS (Global Forecast System) data and visualize it with <code>{ggplot2}</code>, even though there are several ways, in this case we use the Google Earth Engine API via the <code>{rgee}</code> package for accessing the GFS data. We will select the most recent run and calculate the maximum temperature for the next few days.</p>
 <section id="packages" class="level1">
 <h1>Packages</h1>
 <table class="caption-top table">
@@ -431,10 +431,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-15"><a href="#cb11-15" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb11-16"><a href="#cb11-16" aria-hidden="true" tabindex="-1"></a>data_export <span class="ot">&lt;-</span> daily<span class="sc">$</span><span class="fu">filter</span>(ee<span class="sc">$</span>Filter<span class="sc">$</span><span class="fu">date</span>(<span class="fu">rdate_to_eedate</span>(<span class="fu">today</span>()), <span class="fu">rdate_to_eedate</span>(<span class="fu">today</span>()<span class="sc">+</span><span class="fu">days</span>(<span class="dv">3</span>))))</span>
 <span id="cb11-17"><a href="#cb11-17" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener la lista de imágenes</span></span>
+<span id="cb11-18"><a href="#cb11-18" aria-hidden="true" tabindex="-1"></a><span class="co"># Obtener la lista de imÃ¡genes</span></span>
 <span id="cb11-19"><a href="#cb11-19" aria-hidden="true" tabindex="-1"></a>image_list <span class="ot">&lt;-</span> data_export<span class="sc">$</span><span class="fu">toList</span>(data_export<span class="sc">$</span><span class="fu">size</span>())</span>
 <span id="cb11-20"><a href="#cb11-20" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># Función para exportar cada imagen</span></span>
+<span id="cb11-21"><a href="#cb11-21" aria-hidden="true" tabindex="-1"></a><span class="co"># FunciÃ³n para exportar cada imagen</span></span>
 <span id="cb11-22"><a href="#cb11-22" aria-hidden="true" tabindex="-1"></a>export_image <span class="ot">&lt;-</span> <span class="cf">function</span>(image, index) {</span>
 <span id="cb11-23"><a href="#cb11-23" aria-hidden="true" tabindex="-1"></a>  image <span class="ot">&lt;-</span> ee<span class="sc">$</span><span class="fu">Image</span>(image_list<span class="sc">$</span><span class="fu">get</span>(index))</span>
 <span id="cb11-24"><a href="#cb11-24" aria-hidden="true" tabindex="-1"></a>  task <span class="ot">&lt;-</span> ee<span class="sc">$</span>batch<span class="sc">$</span>Export<span class="sc">$</span>image<span class="sc">$</span><span class="fu">toDrive</span>(</span>
@@ -448,7 +448,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb11-32"><a href="#cb11-32" aria-hidden="true" tabindex="-1"></a>  task<span class="sc">$</span><span class="fu">start</span>()</span>
 <span id="cb11-33"><a href="#cb11-33" aria-hidden="true" tabindex="-1"></a>}</span>
 <span id="cb11-34"><a href="#cb11-34" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterar sobre la lista de imágenes y exportarlas</span></span>
+<span id="cb11-35"><a href="#cb11-35" aria-hidden="true" tabindex="-1"></a><span class="co"># Iterar sobre la lista de imÃ¡genes y exportarlas</span></span>
 <span id="cb11-36"><a href="#cb11-36" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> (i <span class="cf">in</span> <span class="dv">0</span><span class="sc">:</span>(data_export<span class="sc">$</span><span class="fu">size</span>()<span class="sc">$</span><span class="fu">getInfo</span>() <span class="sc">-</span> <span class="dv">1</span>)) {</span>
 <span id="cb11-37"><a href="#cb11-37" aria-hidden="true" tabindex="-1"></a>  <span class="fu">export_image</span>(image_list, i)</span>
 <span id="cb11-38"><a href="#cb11-38" aria-hidden="true" tabindex="-1"></a>}</span>
@@ -524,7 +524,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>            <span class="fu">st_transform</span>(<span class="at">crs =</span> ortho_crs) <span class="co"># </span></span>
 <span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a><span class="fu">plot</span>(world)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>For the graticules we must repeat the same selection, although we previously limit the grid of lines to the ocean. The ocean boundary is used to create the globe’s shadow, but to use it in geom_glowpath() you need to convert it to a <em>data.frame</em>.</p>
+<p>For the graticules we must repeat the same selection, although we previously limit the grid of lines to the ocean. The ocean boundary is used to create the globeâs shadow, but to use it in geom_glowpath() you need to convert it to a <em>data.frame</em>.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb18"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="co"># eliminate the lines that pass over the continents</span></span>
 <span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>grid_crp <span class="ot">&lt;-</span> <span class="fu">st_difference</span>(grid, <span class="fu">st_union</span>(world_poly))</span>
@@ -543,7 +543,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <h3 class="anchored" data-anchor-id="map-construction">Map construction</h3>
 <section id="select-tomorrow" class="level4">
 <h4 class="anchored" data-anchor-id="select-tomorrow">Select tomorrow</h4>
-<p>First we select the day of tomorrow, in my case when I write this post it is February 22, 2023. In addition, we limit the temperature range to -45ºC and +45ºC.</p>
+<p>First we select the day of tomorrow, in my case when I write this post it is February 22, 2023. In addition, we limit the temperature range to -45ÂºC and +45ÂºC.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb19"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>forecast_tomorrow <span class="ot">&lt;-</span> <span class="fu">filter</span>(forecast_df, date <span class="sc">==</span> <span class="fu">today</span>() <span class="sc">+</span> <span class="fu">days</span>(<span class="dv">1</span>)) <span class="sc">|&gt;</span></span>
 <span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>                        <span class="fu">mutate</span>(<span class="at">ta_limit =</span> <span class="fu">case_when</span>(ta <span class="sc">&gt;</span> <span class="dv">45</span> <span class="sc">~</span> <span class="dv">45</span>,</span>
@@ -638,7 +638,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb25"><pre class="sourceCode r code-with-copy"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>g2 <span class="sc">+</span>  <span class="fu">geom_mark_circle</span>(<span class="at">data =</span> labeling, </span>
 <span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>                       <span class="fu">aes</span>(x, y, </span>
-<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">description =</span> <span class="fu">str_glue</span>(<span class="st">'{scales::number(ta, accuracy = .1, decimal.mark = ".", style_positive = "plus", suffix = "ºC")}'</span>)</span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>                          <span class="at">description =</span> <span class="fu">str_glue</span>(<span class="st">'{scales::number(ta, accuracy = .1, decimal.mark = ".", style_positive = "plus", suffix = "ÂºC")}'</span>)</span>
 <span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>                          ), </span>
 <span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>                   <span class="at">expand =</span> <span class="fu">unit</span>(<span class="dv">1</span>, <span class="st">"mm"</span>), </span>
 <span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>                   <span class="at">label.buffer =</span> <span class="fu">unit</span>(<span class="dv">4</span>, <span class="st">"mm"</span>),</span>
@@ -668,9 +668,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </section>
 </section>
 
-<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2025" class="csl-entry quarto-appendix-citeas" role="listitem">
-Royé, Dominic. 2025. <span>“Tomorrow’s Weather.”</span> April 1, 2025.
-<a href="https://dominicroye.github.io/blog/2023-02-20-tomorrows-weather/">https://dominicroye.github.io/blog/2023-02-20-tomorrows-weather/</a>.
+<a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2023" class="csl-entry quarto-appendix-citeas" role="listitem">
+Royé, Dominic. 2023. <span>“Tomorrow’s Weather.”</span> February 20,
+2023. <a href="https://dominicroye.github.io/blog/2023-02-20-tomorrows-weather/">https://dominicroye.github.io/blog/2023-02-20-tomorrows-weather/</a>.
 </div></div></section></div></main> <!-- /main -->
 <div id="buymeacoffee" style="text-align: center; ">
     <a href="https://www.buymeacoffee.com/drxeo" target="_blank" data-original-href="https://www.buymeacoffee.com/drxeo"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
