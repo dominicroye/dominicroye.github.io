@@ -26,7 +26,7 @@
 <p>Why column charts are inappropriate for temperature? Well, column charts are used to show magnitude, with height being the visual variable used for encoding, and the zero-baseline is essential. They are typically used for ratio scale or absolute quantity data (e.g., population, sales, frequency counts). The height of the column is directly proportional to the value, allowing for easy, accurate comparison of ratios (e.g., one bar being twice as tall means the value is twice as large). Temperature scales like Celsius (<img src="https://latex.codecogs.com/png.latex?%5E%7B%5Ccirc%7DC">) and Fahrenheit (<img src="https://latex.codecogs.com/png.latex?%5E%7B%5Ccirc%7DF">) are interval scales. The zero point is arbitrary (it doesn’t mean “no temperature” or “absence of heat”), and although the <img src="https://latex.codecogs.com/png.latex?0%5E%7B%5Ccirc%7DC"> case is the freezing point, it is still inadequate. Furthermore, when using the zero-baseline for temperatures, the visual representation can be misleading, visually distorting the variability and difference between months and reducing it.</p>
 <p>Moreover, there is a visual inconsistency when columns are used to display the temperature for a specific year (such as 2025) while lines are simultaneously employed to represent the temperature of previous years (such as 2024) or the normal reference period. This mixing of chart types for the same kind of data (temperature over time) hinders direct comparison and can confuse the reader about which magnitude is being emphasized. Additionally, this increases cognitive load, as the reader must first identify the midpoint of the line and then mentally compare its position with the height of the column, adding an extra step and reducing the clarity of the message.</p>
 <p>So, what alternatives can we propose? Let’s not forget that <strong>our visualization is conditioned by its objective and also by the audience</strong>.</p>
-<p><a href="https://bsky.app/profile/miteco.gob.es/post/3m7kfsnduqk2d"><img src="https://dominicroye.github.io/blog/2025-12-14-broken-charts/bafkreibaxoi5dp6uxcin2ahn3nwnylpaluv6bxmwkronoc2dxhkybwppcq.jpg" class="img-fluid"></a></p>
+<p><a href="https://bsky.app/profile/miteco.gob.es/post/3m7kfsnduqk2d"><img src="https://dominicroye.github.io/blog/2025-12-14-broken-charts/aemet.jpg" class="img-fluid"></a></p>
 <section id="packages" class="level2"><h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <table class="caption-top table">
 <colgroup>
@@ -1849,7 +1849,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </div>
 <p>A line chart or a dumbbell chart are both very effective options for comparing observed mean temperature with the climatological normal because they are simple and easy to interpret. However, this simplicity comes at the cost of losing important context. These charts do not show intra-month variability, extremes, or uncertainty in the data. They are highly accessible even for non-technical audiences.</p>
-</section><section id="option-set-2" class="level2"><h2 class="anchored" data-anchor-id="option-set-2">Option Set 2</h2>
+</section><section id="option-set-2" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="option-set-2">Option Set 2</h2>
 <p>Instead of using absolut values, we can summarize monthly temperature for Spain in 2025 relative to the recent normal. Background bands mark severity thresholds at 0.5σ, 1σ, and 2σ (σ: standard deviation), computed from 1991–2020 anomalies, while bars show the actual anomaly for each month. Centering the scale at zero makes it straightforward to judge both the sign and the magnitude of departures from normal. In this case, however, using bars is appropriate because the anomalies are centered around a clear reference point at zero.</p>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
@@ -2398,7 +2398,23 @@ Tip
 <p>Monthly standard deviation (σ) varies greatly, so using month-specific thresholds would make the same anomaly appear “extreme” in winter but only “warm” in summer, which is confusing in a single annual chart. A single annual σ provides a consistent scale and makes comparisons across months clear.</p>
 </div>
 </div>
-<p>Another variant would be to select a single month — for instance, July — and show its entire historical time series instead of just the current year. This approach adds much more context because it allows the reader to compare the current value with previous years, identify long-term trends, and clearly see the effect of climate change over time. It shifts the focus from a snapshot comparison to a broader perspective, making anomalies more meaningful by placing them within a historical trajectory.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>3D effects in column charts distort perception by shifting comparisons from aligned position/length to noisier cues like area, volume, perspective foreshortening, and occlusion, making identical values look unequal. They add cognitive load and visual clutter (shading, skewed labels, depth) without adding information, harming accuracy, speed, and accessibility.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://www.instagram.com/p/DSSllhjiKr9/?img_index=2&amp;igsh=MWV1ZHlxaXdqYzVqeg%3D%3D"><img src="https://dominicroye.github.io/blog/2025-12-14-broken-charts/meteofrance.jpg" class="img-fluid"></a></p>
+</div></div><p>Another variant would be to select a single month — for instance, July — and show its entire historical time series instead of just the current year. This approach adds much more context because it allows the reader to compare the current value with previous years, identify long-term trends, and clearly see the effect of climate change over time. It shifts the focus from a snapshot comparison to a broader perspective, making anomalies more meaningful by placing them within a historical trajectory.</p>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -3088,7 +3104,23 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </div>
 </div>
-<p>When you need to compare two values side by side and keep a reference in view, another alternative would be a bullet chart. In this case, they give us a snapshot of how 2025 anomalies stack up against 2024.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Keep axis labels horizontal because they’re faster to scan, reduce cognitive load, and maintain a consistent baseline that improves legibility and accessibility compared with rotated or stacked labels. In time series charts, avoid labeling every data point since dense annotations create visual noise and obscure the signal; instead rely on clear axis ticks and date formatting, and add labels only at meaningful milestones—peaks, troughs, regime shifts, or events.</p>
+</div>
+</div>
+
+<div class="no-row-height column-margin column-container"><div class="">
+<p><a href="https://bsky.app/profile/miteco.gob.es/post/3ma45rrnqbc2r"><img src="https://dominicroye.github.io/blog/2025-12-14-broken-charts/MITECO_etiquetas.jpg" class="img-fluid"></a></p>
+</div></div><p>When you need to compare two values side by side and keep a reference in view, another alternative would be a bullet chart. In this case, they give us a snapshot of how 2025 anomalies stack up against 2024.</p>
 <div class="cell" data-warnings="false">
 <details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
