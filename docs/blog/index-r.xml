@@ -631,7 +631,7 @@ font-style: inherit;">)</span></span>
 <span></span>
 <span><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># add year-month column and</span></span>
+font-style: inherit;"># add year-month column and calculate average temperature by month-year</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">tmed_esp</span> <span class="op" style="color: #5E5E5E;
@@ -774,21 +774,6 @@ font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">tmed</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span>,</span>
-<span>    std <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">tmed</span>, na.rm <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
-background-color: null;
 font-style: inherit;">)</span></span>
 <span>  <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -861,7 +846,8 @@ font-style: inherit;">|&gt;</span></span>
 background-color: null;
 font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">(</span>tmed_norm <span class="op" style="color: #5E5E5E;
+font-style: inherit;">(</span></span>
+<span>    tmed_norm <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
 background-color: null;
@@ -871,21 +857,8 @@ font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">tmed</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span>, std <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">tmed</span>, na.rm <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
-background-color: null;
-font-style: inherit;">T</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">)</span></span>
+<span>    <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1072,28 +1045,26 @@ background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">+</span></span>
-<span>  <span class="fu" style="color: #4758AB;
+<span>  <span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span>colour <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="st" style="color: #20794D;
-background-color: null;
-font-style: inherit;">"grey85"</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">+</span></span>
+font-style: inherit;">#geom_line(colour = "grey85") +</span></span>
 <span>  <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">(</span>colour <span class="op" style="color: #5E5E5E;
+font-style: inherit;">(</span>fill <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"grey85"</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">"white"</span>, shape <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">21</span>, stroke <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">.3</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2398,13 +2369,13 @@ Tip
 <p>Monthly standard deviation (σ) varies greatly, so using month-specific thresholds would make the same anomaly appear “extreme” in winter but only “warm” in summer, which is confusing in a single annual chart. A single annual σ provides a consistent scale and makes comparisons across months clear.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -3104,13 +3075,13 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -4843,14 +4814,16 @@ background-color: null;
 font-style: inherit;"># global parameters</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">threshold</span>     <span class="op" style="color: #5E5E5E;
+font-style: inherit;">thres</span>     <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">2</span></span>
+font-style: inherit;">2</span> <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># how close should be labels?</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">current_year</span>  <span class="op" style="color: #5E5E5E;
+font-style: inherit;">current_yr</span>  <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fl" style="color: #AD0000;
 background-color: null;
@@ -4973,20 +4946,13 @@ font-style: inherit;"># current year</span></span>
 background-color: null;
 font-style: inherit;">obs_current</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">&lt;-</span> <span class="va" style="color: #111111;
-background-color: null;
-font-style: inherit;">tmed_esp</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">|&gt;</span></span>
-<span>  <span class="fu" style="color: #4758AB;
+font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">lubridate</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;">::</span><span class="fu" style="color: #4758AB;
+font-style: inherit;">tmed_esp</span>, <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -4998,7 +4964,7 @@ font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">==</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">current_year</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">current_yr</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span>
 <span></span>
@@ -5024,21 +4990,7 @@ font-style: inherit;">group</span>, <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">threshold</span>, <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">current_year</span> <span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">=</span> <span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">current_year</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -5067,7 +5019,9 @@ font-style: inherit;">}</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">|&gt;</span></span>
+font-style: inherit;">|&gt;</span>  <span class="co" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;"># </span></span>
 <span>    <span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op" style="color: #5E5E5E;
@@ -5325,7 +5279,9 @@ font-style: inherit;">tmed</span>, <span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">mo_lab</span>, <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">threshold</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">thres</span>, <span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">current_yr</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span>
 <span></span>
@@ -5374,7 +5330,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;"># colour palette </span></span>
+font-style: inherit;"># colour palette for bar code lines</span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">col_temp</span> <span class="op" style="color: #5E5E5E;
@@ -5649,19 +5605,9 @@ font-style: inherit;">yrmo</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">==</span> <span class="fu" style="color: #4758AB;
+font-style: inherit;">==</span> <span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="fu" style="color: #4758AB;
-background-color: null;
-font-style: inherit;"><a href="https://lubridate.tidyverse.org/reference/now.html">today</a></span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
-background-color: null;
-font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">current_yr</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span>,</span>
 <span>    <span class="fu" style="color: #4758AB;

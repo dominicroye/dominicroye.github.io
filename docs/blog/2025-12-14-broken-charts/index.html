@@ -333,7 +333,7 @@ window.Quarto = {
 <details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># load station data</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/load.html">load</a></span><span class="op">(</span><span class="st">"aemet_refstations.RData"</span><span class="op">)</span></span>
 <span></span>
-<span><span class="co"># add year-month column and</span></span>
+<span><span class="co"># add year-month column and calculate average temperature by month-year</span></span>
 <span><span class="va">tmed_esp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">data_daily</span>, yrmo <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/round_date.html">floor_date</a></span><span class="op">(</span><span class="va">date</span>, <span class="st">"month"</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html">select</a></span><span class="op">(</span><span class="va">yrmo</span>, <span class="va">tmed</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -344,14 +344,15 @@ window.Quarto = {
 <span><span class="va">norm_p1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">tmed_esp</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">1971</span><span class="op">:</span><span class="fl">2000</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>mo <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html">month</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
-<span>    tmed_norm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">tmed</span><span class="op">)</span>,</span>
-<span>    std <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">tmed</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span></span>
+<span>    tmed_norm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">tmed</span><span class="op">)</span></span>
 <span>  <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>period <span class="op">=</span> <span class="st">"1971-2000"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">norm_p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">tmed_esp</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op"><a href="https://rdrr.io/r/base/match.html">%in%</a></span> <span class="fl">1991</span><span class="op">:</span><span class="fl">2020</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span>mo <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/month.html">month</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>tmed_norm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">tmed</span><span class="op">)</span>, std <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span><span class="op">(</span><span class="va">tmed</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span></span>
+<span>    tmed_norm <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">tmed</span><span class="op">)</span></span>
+<span>    <span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>period <span class="op">=</span> <span class="st">"1991-2020"</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># main dataset with month label</span></span>
@@ -386,8 +387,8 @@ window.Quarto = {
 <span>    levels <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="st">"above normal"</span>, <span class="st">"below normal"</span><span class="op">)</span>,</span>
 <span>    show.legend <span class="op">=</span> <span class="cn">F</span>,</span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey85"</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>colour <span class="op">=</span> <span class="st">"grey85"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="co">#geom_line(colour = "grey85") +</span></span>
+<span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"white"</span>, shape <span class="op">=</span> <span class="fl">21</span>, stroke <span class="op">=</span> <span class="fl">.3</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_path.html">geom_line</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">tmed_norm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_point.html">geom_point</a></span><span class="op">(</span><span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span>y <span class="op">=</span> <span class="va">tmed_norm</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/annotate.html">annotate</a></span><span class="op">(</span><span class="st">"text"</span>, </span>
@@ -526,13 +527,13 @@ Tip
 <p>Monthly standard deviation (σ) varies greatly, so using month-specific thresholds would make the same anomaly appear “extreme” in winter but only “warm” in summer, which is confusing in a single annual chart. A single annual σ provides a consistent scale and makes comparisons across months clear.</p>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -598,13 +599,13 @@ Tip
 </div>
 </div>
 </div>
-<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout callout-style-default callout-important callout-titled">
 <div class="callout-header d-flex align-content-center">
 <div class="callout-icon-container">
 <i class="callout-icon"></i>
 </div>
 <div class="callout-title-container flex-fill">
-Tip
+Important
 </div>
 </div>
 <div class="callout-body-container callout-body">
@@ -809,8 +810,8 @@ Tip
 <p>A final alternative approach could be a barcode-style chart where each thin vertical bar represents a single year within the historical record for a given month. The bars are positioned along the horizontal axis according to their monthly mean temperature, creating a visual distribution of all observed values. To highlight key information, the most extreme years—both the warmest and the coldest—are labelled, while the current year is marked with a more prominent style, such as a thicker bar. Additionally, a point indicates the long-term climatological average, allowing viewers to quickly assess how individual years compare to the historical norm. By faceting the chart by month, this design provides a compact yet detailed view of variability, extremes, and the position of the current year within the broader climate context.</p>
 <div class="cell">
 <details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># global parameters</span></span>
-<span><span class="va">threshold</span>     <span class="op">&lt;-</span> <span class="fl">2</span></span>
-<span><span class="va">current_year</span>  <span class="op">&lt;-</span> <span class="fl">2025</span></span>
+<span><span class="va">thres</span>     <span class="op">&lt;-</span> <span class="fl">2</span> <span class="co"># how close should be labels?</span></span>
+<span><span class="va">current_yr</span>  <span class="op">&lt;-</span> <span class="fl">2025</span></span>
 <span></span>
 <span><span class="co"># labeled years</span></span>
 <span><span class="va">obs_lab</span> <span class="op">&lt;-</span> <span class="va">tmed_esp</span> <span class="op">|&gt;</span></span>
@@ -825,14 +826,13 @@ Tip
 <span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># current year</span></span>
-<span><span class="va">obs_current</span> <span class="op">&lt;-</span> <span class="va">tmed_esp</span> <span class="op">|&gt;</span></span>
-<span>  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="fu">lubridate</span><span class="fu">::</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op">==</span> <span class="va">current_year</span><span class="op">)</span></span>
+<span><span class="va">obs_current</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">tmed_esp</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op">==</span> <span class="va">current_yr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># filter function for clusters of very close values</span></span>
-<span><span class="va">filter_extreme_and_current</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">group</span>, <span class="va">threshold</span>, <span class="va">current_year</span> <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/Sys.time.html">Sys.Date</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span> <span class="op">{</span></span>
+<span><span class="va">filter_extreme_and_current</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">data</span>, <span class="va">x</span>, <span class="va">group</span>, <span class="va">threshold</span>, <span class="va">current_year</span><span class="op">)</span> <span class="op">{</span></span>
 <span></span>
 <span>    <span class="co">#1) Detect clusters of very close values.</span></span>
-<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span> <span class="va">group</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">data</span>, <span class="op">{</span><span class="op">{</span> <span class="va">group</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span>  <span class="co"># </span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/arrange.html">arrange</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span> <span class="va">x</span> <span class="op">}</span><span class="op">}</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>cluster <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/cumsum.html">cumsum</a></span><span class="op">(</span><span class="op">(</span><span class="op">{</span><span class="op">{</span> <span class="va">x</span> <span class="op">}</span><span class="op">}</span> <span class="op">-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/lead-lag.html">lag</a></span><span class="op">(</span><span class="op">{</span><span class="op">{</span> <span class="va">x</span> <span class="op">}</span><span class="op">}</span>, default <span class="op">=</span> <span class="op">-</span><span class="cn">Inf</span><span class="op">)</span><span class="op">)</span> <span class="op">&gt;</span> <span class="va">threshold</span><span class="op">)</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>    <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">ungroup</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span></span>
@@ -848,14 +848,14 @@ Tip
 <span><span class="op">}</span></span>
 <span></span>
 <span><span class="co"># filter out labels to close</span></span>
-<span><span class="va">obs_lab_sel</span> <span class="op">&lt;-</span> <span class="fu">filter_extreme_and_current</span><span class="op">(</span><span class="va">obs_lab</span>, <span class="va">tmed</span>, <span class="va">mo_lab</span>, <span class="va">threshold</span><span class="op">)</span></span>
+<span><span class="va">obs_lab_sel</span> <span class="op">&lt;-</span> <span class="fu">filter_extreme_and_current</span><span class="op">(</span><span class="va">obs_lab</span>, <span class="va">tmed</span>, <span class="va">mo_lab</span>, <span class="va">thres</span>, <span class="va">current_yr</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># mean temperature by month</span></span>
 <span><span class="va">med</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span><span class="op">(</span><span class="va">tmed_esp</span>, <span class="va">mo_lab</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarise</a></span><span class="op">(</span>normal <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span><span class="op">(</span><span class="va">tmed</span>, na.rm <span class="op">=</span> <span class="cn">T</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </details>
 </div>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># colour palette </span></span>
+<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># colour palette for bar code lines</span></span>
 <span><span class="va">col_temp</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span></span>
 <span>  <span class="st">"#cbebf6"</span>, <span class="st">"#a7bfd9"</span>, <span class="st">"#8c99bc"</span>, <span class="st">"#974ea8"</span>, <span class="st">"#830f74"</span>,</span>
 <span>  <span class="st">"#0b144f"</span>, <span class="st">"#0e2680"</span>, <span class="st">"#223b97"</span>, <span class="st">"#1c499a"</span>, <span class="st">"#2859a5"</span>,</span>
@@ -887,7 +887,7 @@ Tip
 <span>    vjust <span class="op">=</span> <span class="fl">.5</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://allancameron.github.io/geomtextpath/reference/geom_textabline.html">geom_textvline</a></span><span class="op">(</span></span>
-<span>    data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">obs_lab_sel</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op">==</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="fu"><a href="https://lubridate.tidyverse.org/reference/now.html">today</a></span><span class="op">(</span><span class="op">)</span><span class="op">)</span><span class="op">)</span>,</span>
+<span>    data <span class="op">=</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html">filter</a></span><span class="op">(</span><span class="va">obs_lab_sel</span>, <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span> <span class="op">==</span> <span class="va">current_yr</span><span class="op">)</span>,</span>
 <span>    <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/aes.html">aes</a></span><span class="op">(</span></span>
 <span>      xintercept <span class="op">=</span> <span class="va">tmed</span>, label <span class="op">=</span> <span class="fu"><a href="https://lubridate.tidyverse.org/reference/year.html">year</a></span><span class="op">(</span><span class="va">yrmo</span><span class="op">)</span>,</span>
 <span>      colour <span class="op">=</span> <span class="va">tmed</span></span>
