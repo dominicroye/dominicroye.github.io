@@ -10,7 +10,7 @@
 <atom:link href="https://dominicroye.github.io/blog/index-r.xml" rel="self" type="application/rss+xml"/>
 <description>This is my blog where I practice sharing my curiosity about R, particularly, the world of cartography and data visualization. I take this opportunity to invite you to participate in the [#30DayChartChallenge](https://bsky.app/profile/30daychartchall.bsky.social).&lt;br&gt;&lt;br&gt;
 </description>
-<generator>quarto-1.6.42</generator>
+<generator>quarto-1.9.12</generator>
 <lastBuildDate>Sat, 31 Jan 2026 23:00:00 GMT</lastBuildDate>
 <item>
   <title>Mapping building use with a hexagonal grid</title>
@@ -28,7 +28,7 @@
 </blockquote>
 <section id="packages" class="level2"><h2 class="anchored" data-anchor-id="packages">Packages</h2>
 <div class="cell">
-<div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb1" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">pkgs</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -217,13 +217,13 @@ font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;"><a href="https://r-spatial.github.io/classInt/">classInt</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="data-preparation" class="level2"><h2 class="anchored" data-anchor-id="data-preparation">Data preparation</h2>
 <section id="study-area" class="level3"><h3 class="anchored" data-anchor-id="study-area">Study area</h3>
 <p>We obtain autonomous community boundaries, project to EPSG:25830, and exclude the Canary Islands for the main map.</p>
 <div class="cell">
-<div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">prov</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -263,12 +263,12 @@ font-style: inherit;">!=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"Canarias"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="input-rasters-and-reclassification" class="level3"><h3 class="anchored" data-anchor-id="input-rasters-and-reclassification">Input rasters and reclassification</h3>
 <p>We read the building use rasters from 2020, treat zeros as missing, and aggregate layers to build the <code>comercial</code> category (commerce + services + offices). The data come from our 2023 paper; see <a href="https://essd.copernicus.org/articles/15/4713/2023/essd-15-4713-2023.html">10.5194/essd-2023-53</a> for details. Download data <a href="../../assets/www/HISDAC_USE_2020.rar">here</a>, and for Canary Island <a href="../../assets/www/HISDAC_USE_2020_CAN.rar">here</a>.</p>
 <div class="cell">
-<div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># import raster layers  with regexp if all years are downloaded</span></span>
 <span><span class="va" style="color: #111111;
@@ -414,7 +414,7 @@ font-style: inherit;">)</span></span>
 <span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">landuse</span> </span></code></pre></div>
+font-style: inherit;">landuse</span> </span></code></pre></div></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>class       : SpatRaster 
 size        : 9998, 11927, 3  (nrow, ncol, nlyr)
@@ -431,7 +431,7 @@ max values  :          58,         44,        64 </code></pre>
 </section></section><section id="hexagonal-grid" class="level2"><h2 class="anchored" data-anchor-id="hexagonal-grid">Hexagonal grid</h2>
 <p>We create a 20 km hex grid that covers the study area and add an id. To build the spatial units used for aggregation, we rely on <code><a href="https://r-spatial.github.io/sf/reference/st_make_grid.html">st_make_grid()</a></code>, a very flexible function from the <code>sf</code> package that allows us to generate regular grids directly from any input geometry. By default, the function creates square cells, but by setting <code>square = FALSE</code> we instead request hexagonal polygons, which are often preferred in spatial aggregation because they reduce directional bias and provide a more uniform neighborhood structure. The argument <code>cellsize = units::set_units(20, km)</code> specifies the diameter (edge‑to‑edge distance) of each hexagon, ensuring all cells have comparable area across the entire extent. We then assign each hexagon a unique identifier, which is later used to join aggregated raster values back to the grid.</p>
 <div class="cell">
-<div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">grid</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -490,12 +490,12 @@ font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="extract-raster-values-by-hexagon" class="level2"><h2 class="anchored" data-anchor-id="extract-raster-values-by-hexagon">Extract raster values by hexagon</h2>
 <p>We extract raster values for each hexagon and compute category totals.</p>
 <div class="cell">
-<div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">extr_pixels</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -590,12 +590,12 @@ font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
 font-style: inherit;">"drop"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="compute-withinhexagon-proportions" class="level2"><h2 class="anchored" data-anchor-id="compute-withinhexagon-proportions">Compute within‑hexagon proportions</h2>
 <p>In this step we rejoin the extracted raster data to the grid. To make the map speak about composition rather than sheer magnitude, we convert absolute counts to relative shares.</p>
 <div class="cell">
-<div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">grid</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -689,11 +689,11 @@ font-style: inherit;"><a href="https://dplyr.tidyverse.org/reference/group_by.ht
 background-color: null;
 font-style: inherit;">(</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 <p>We define discrete classes for proportional symbol sizes.</p>
 <div class="cell">
-<div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">cl</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -715,12 +715,12 @@ font-style: inherit;">80</span>, <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">100</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="administrative-context" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="administrative-context">Administrative context</h2>
 <p>We get internal borders from the grid by assigning each hexagon to the community with the largest overlap.</p>
 <div class="cell page-columns page-full">
-<div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># regional boundaries</span></span>
 <span><span class="va" style="color: #111111;
@@ -934,7 +934,7 @@ font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">grid_lim</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
@@ -945,7 +945,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </section><section id="background-hexes-and-locator" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="background-hexes-and-locator">Background hexes and locator</h2>
 <p>We create background hexes to indicate the full coverage and a small segment to locate the Canary Islands.</p>
 <div class="cell page-columns page-full">
-<div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">grid_aux</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -986,14 +986,14 @@ font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">grid_aux</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://dominicroye.github.io/blog/hex-map-buuse/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div></div><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+</div></div><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">missing_hex</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1121,7 +1121,7 @@ font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">miss</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
 <figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://dominicroye.github.io/blog/hex-map-buuse/index_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></a></p>
@@ -1130,7 +1130,7 @@ font-style: inherit;">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="cell">
-<div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># canary separation line for the inset map</span></span>
 <span><span class="va" style="color: #111111;
@@ -1201,14 +1201,14 @@ font-style: inherit;">(</span><span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">25830</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="constructing-the-map" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="constructing-the-map">Constructing the map</h2>
 <section id="additive-legend" class="level3 page-columns page-full"><h3 class="anchored" data-anchor-id="additive-legend">Additive legend</h3>
 <p>We draw three overlapping circles as a reminder of the color mapping for each use. To build the additive legend, we use <code><a href="https://ggforce.data-imaginist.com/reference/geom_circle.html">geom_circle()</a></code> from <code>ggforce</code>, which lets us draw perfect circles by specifying a center (x0, y0) and a radius (r). This makes it easy to place three uniformly sized circles representing the three land‑use categories. Since the circles intentionally overlap, we apply <code>blend("multiply")</code> from the ´ggblend´ package, a blending mode that darkens the intersecting areas. This visually mimics how the mixed-use symbols behave on the main map: the more overlap, the stronger the combined color—reinforcing the idea of composition rather than isolated categories.</p>
 <p>Since <code><a href="https://mjskay.github.io/ggblend/reference/blend.html">blend()</a></code> operates on the previous graphical layer, and here we need to blend multiple layers together, all the <code><a href="https://ggforce.data-imaginist.com/reference/geom_circle.html">geom_circle()</a></code> calls must be wrapped inside a list. Passing this list through the pipe to <code>blend("multiply")</code> instructs to treat the group of layers as a single blended unit, ensuring that the overlapping colours combine correctly in the legend—just as they do in the main map.</p>
 <div class="cell page-columns page-full">
-<div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># color and labels</span></span>
 <span><span class="va" style="color: #111111;
@@ -1873,7 +1873,7 @@ font-style: inherit;">)</span></span>
 <span></span>
 <span><span class="va" style="color: #111111;
 background-color: null;
-font-style: inherit;">legend_plot</span></span></code></pre></div>
+font-style: inherit;">legend_plot</span></span></code></pre></div></div>
 
 <div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
@@ -1884,7 +1884,7 @@ font-style: inherit;">legend_plot</span></span></code></pre></div>
 </section><section id="main-map" class="level3"><h3 class="anchored" data-anchor-id="main-map">Main map</h3>
 <p>We plot three proportional‑symbol layers (one per use) at the centroids of each hexagon and blend them using multiplication in the same way as for the legend. To ensure that the proportional symbols remain visually coherent within the map, the size of the circles must be constrained so that even the largest symbol does not exceed the width of a hexagon. Since the symbols are plotted at the centroid of each cell, oversized circles would spill over into neighbouring hexagons, creating visual clutter and making category comparisons harder to read.</p>
 <div class="cell">
-<div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">g</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2428,12 +2428,12 @@ font-style: inherit;">300</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="canary-islands-inset" class="level3"><h3 class="anchored" data-anchor-id="canary-islands-inset">Canary Islands inset</h3>
 <p>We process the Canary Islands separately (in REGCAN95 projection) and keep sizes and colours consistent.</p>
 <div class="cell">
-<div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">landuse_can</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -3317,12 +3317,12 @@ font-style: inherit;">11</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 </section><section id="compose-and-export" class="level3"><h3 class="anchored" data-anchor-id="compose-and-export">Compose and export</h3>
 <p>We insert the additive legend and the Canary Islands inset and export the final figure.</p>
 <div class="cell">
-<div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb16" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">gfinal</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -3405,7 +3405,7 @@ font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
 font-style: inherit;">300</span><span class="op" style="color: #5E5E5E;
 background-color: null;
-font-style: inherit;">)</span></span></code></pre></div>
+font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
 <p><a href="featured.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="https://dominicroye.github.io/blog/hex-map-buuse/featured.png" class="img-fluid"></a></p>
 </section></section><section id="what-this-map-communicates" class="level2"><h2 class="anchored" data-anchor-id="what-this-map-communicates">What this map communicates</h2>
@@ -13587,7 +13587,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/inserted-map/img/figure-html/unnamed-chunk-3-1.png" class="img-fluid"></a></p>
-</div></div><p><code>mapSpain</code> also includes a function to get the separator box (<code><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_can_box.html">esp_get_can_box()</a></code>) in order to indicate the false location. With the <code><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries()</a></code> function we get the global country boundaries to add as geographical context, although we clipped it to the extent of the Iberian Peninsula. It may be surprising to see a curved cutout using the WGS84 projection, but this is because spherical geometry is used by default in all <code>sf</code> operations (<code><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2()</a></code>).</p>
+</div></div><p><code>mapSpain</code> also includes a function to get the separator box (<code><a href="https://ropenspain.github.io/mapSpain/reference/esp_get_can_box.html">esp_get_can_box()</a></code>) in order to indicate the false location. With the <code><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries()</a></code> function we get the global country boundaries to add as geographical context, although we clipped it to the extent of the Iberian Peninsula. It may be surprising to see a curved cutout using the WGS84 projection, but this is because spherical geometry is used by default in all <code>sf</code> operations (<code><a href="https://r-spatial.github.io/sf/reference/s2.html">sf_use_s2()</a></code>).</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb3" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -13613,7 +13613,7 @@ font-style: inherit;">entorno</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>resolution <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -14477,7 +14477,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="img/figure-html/unnamed-chunk-8-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="https://dominicroye.github.io/blog/inserted-map/img/figure-html/unnamed-chunk-8-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="earth-globe-as-inset-map" class="level2 page-columns page-full"><h2 class="anchored" data-anchor-id="earth-globe-as-inset-map">Earth globe as inset map</h2>
-<p>The only difficulty here is the orthogonal projection while preserving the visible geometry of the earth. The first step is the creation of the “ocean” using the radius of the earth from the point 0,0. Then we only have to cut out the visible part and reproject the boundaries. In the definition of the orthogonal projection it is possible to centre at different latitudes and longitudes by changing the <code>+lat_0</code> and <code>+lon_0</code> values. The <code><a href="https://rdrr.io/pkg/rmapshaper/man/ms_innerlines.html">ms_innerlines()</a></code> functions of the <code>rmapshaper</code> package easily create the inner boundaries of polygons, which is recommended to avoid blurring small areas.</p>
+<p>The only difficulty here is the orthogonal projection while preserving the visible geometry of the earth. The first step is the creation of the “ocean” using the radius of the earth from the point 0,0. Then we only have to cut out the visible part and reproject the boundaries. In the definition of the orthogonal projection it is possible to centre at different latitudes and longitudes by changing the <code>+lat_0</code> and <code>+lon_0</code> values. The <code><a href="http://andyteucher.ca/rmapshaper/reference/ms_innerlines.html">ms_innerlines()</a></code> functions of the <code>rmapshaper</code> package easily create the inner boundaries of polygons, which is recommended to avoid blurring small areas.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -14488,7 +14488,7 @@ font-style: inherit;">wld</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>resolution <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -14667,7 +14667,7 @@ font-style: inherit;">world_line</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://rdrr.io/pkg/rmapshaper/man/ms_innerlines.html">ms_innerlines</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="http://andyteucher.ca/rmapshaper/reference/ms_innerlines.html">ms_innerlines</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span><span class="va" style="color: #111111;
 background-color: null;
@@ -17265,7 +17265,7 @@ font-style: inherit;">suiz</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>country <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -22895,7 +22895,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 <p><a href="img/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="https://dominicroye.github.io/blog/night-day-world/img/figure-html/unnamed-chunk-10-1.png" class="img-fluid"></a></p>
 </div></div></section><section id="animation-of-the-day-night-cycle" class="level1"><h1>Animation of the day-night cycle</h1>
 <section id="preparation-1" class="level2"><h2 class="anchored" data-anchor-id="preparation-1">Preparation</h2>
-<p>To create a 24-hour animation showing the movement of the night on the Earth, we must do a few previous steps. First we get the world boundaries with the <code><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries()</a></code> function and reproject them to the new Winkel II projection. Then we convert the raster data into a <code>data.frame</code> indicating to keep missing values. We can see that each layer of the raster (of each 30-minute interval) is a column in the <code>data.frame</code>. We rename the columns and convert the table into a long format using the <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> function. What we do is to merge all the columns of the layers into a single one. As the last step, we exclude the missing values with the <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> function.</p>
+<p>To create a 24-hour animation showing the movement of the night on the Earth, we must do a few previous steps. First we get the world boundaries with the <code><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries()</a></code> function and reproject them to the new Winkel II projection. Then we convert the raster data into a <code>data.frame</code> indicating to keep missing values. We can see that each layer of the raster (of each 30-minute interval) is a column in the <code>data.frame</code>. We rename the columns and convert the table into a long format using the <code><a href="https://tidyr.tidyverse.org/reference/pivot_longer.html">pivot_longer()</a></code> function. What we do is to merge all the columns of the layers into a single one. As the last step, we exclude the missing values with the <code><a href="https://dplyr.tidyverse.org/reference/filter.html">filter()</a></code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -22906,7 +22906,7 @@ font-style: inherit;">wld</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>resolution <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -25518,7 +25518,7 @@ font-style: inherit;">limits</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>resolution <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -30139,7 +30139,7 @@ font-style: inherit;">]</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 </div>
-<p>Second, we import the administrative boundaries with the <code><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries()</a></code> function from the <code>giscoR</code> package, limiting the extension to the region of the Iberian Peninsula, southern France and northern Africa.</p>
+<p>Second, we import the administrative boundaries with the <code><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries()</a></code> function from the <code>giscoR</code> package, limiting the extension to the region of the Iberian Peninsula, southern France and northern Africa.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -30150,7 +30150,7 @@ font-style: inherit;">map</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>resolution <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -34823,7 +34823,7 @@ font-style: inherit;">world</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">&lt;-</span> <span class="fu" style="color: #4758AB;
 background-color: null;
-font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
+font-style: inherit;"><a href="https://ropengov.github.io/giscoR/reference/gisco_get_countries.html">gisco_get_countries</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">(</span>resolution <span class="op" style="color: #5E5E5E;
 background-color: null;
