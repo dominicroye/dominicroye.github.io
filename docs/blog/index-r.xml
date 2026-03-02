@@ -260,7 +260,7 @@ Note
 <p>You can download the used datasets <a href="../../assets/www/data_gam.zip">here</a>.</p>
 </div>
 </div>
-<div class="cell page-columns page-full" data-fig-margin="true">
+<div class="cell page-columns page-full">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Canary Islands geometry </span></span>
@@ -346,7 +346,9 @@ font-style: inherit;"># rate 0 to 1 = (0-100%)</span></span></code></pre></div><
 <figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div></div><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+</div></div></div>
+<div class="cell page-columns page-full">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># rasterize and assign island label at 1 km</span></span>
 <span><span class="va" style="color: #111111;
@@ -383,12 +385,14 @@ background-color: null;
 font-style: inherit;">isla_rast_1km</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
-<div class="cell-output-display">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div>
+</div></div></div>
+<div class="cell page-columns page-full">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Coarse sunhours for Jan 2026 (~5 km): </span></span>
@@ -441,12 +445,14 @@ background-color: null;
 font-style: inherit;">sol_4km</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
-<div class="cell-output-display">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div>
+</div></div></div>
+<div class="cell page-columns page-full">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># resample cloudiness at 4 km</span></span>
@@ -571,8 +577,24 @@ background-color: null;
 font-style: inherit;">"bilinear"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span>
-<span></span>
-<span><span class="va" style="color: #111111;
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">elev_1km</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div></div></div>
+<div class="cell page-columns page-full">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">asp_1km</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -591,7 +613,24 @@ background-color: null;
 font-style: inherit;">"radians"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> </span>
-<span><span class="va" style="color: #111111;
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">asp_1km</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-6-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div></div></div>
+<div class="cell page-columns page-full">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">sl_1km</span>  <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -606,8 +645,22 @@ background-color: null;
 font-style: inherit;">"slope"</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span> </span>
-<span></span>
-<span><span class="va" style="color: #111111;
+<span><span class="fu" style="color: #4758AB;
+background-color: null;
+font-style: inherit;"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">(</span><span class="va" style="color: #111111;
+background-color: null;
+font-style: inherit;">sl_1km</span><span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">)</span></span></code></pre></div></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div></div><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">asp_4km</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -663,7 +716,7 @@ Tip
 </section><section id="build-modelling-tables" class="level2"><h2 class="anchored" data-anchor-id="build-modelling-tables">Build modelling tables</h2>
 <p>We assemble a training table at 4km (response + predictors) and a prediction table at 1km (predictors only). For convenience we mask to the islands polygon.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># Training stack (4 km)</span></span>
 <span><span class="va" style="color: #111111;
@@ -951,7 +1004,7 @@ $ cos_asp &lt;dbl&gt; -0.23136724, -0.53307206, 0.13553549, -0.90087250, 0.32320
 </ol>
 <p>A critical decision in spatial GAMs is setting the basis dimension (<img src="https://latex.codecogs.com/png.latex?k">), which determines the maximum possible complexity of the smooth terms. For our island-specific model, we set <img src="https://latex.codecogs.com/png.latex?k%20=%2012"> for each <img src="https://latex.codecogs.com/png.latex?s(x,%20y)"> term. In islands with dramatic orography like Tenerife or Gran Canaria, a low <img src="https://latex.codecogs.com/png.latex?k"> (e.g., <img src="https://latex.codecogs.com/png.latex?k=5">) would “oversmooth” the results. One of the strengths of the mgcv framework is that <img src="https://latex.codecogs.com/png.latex?k"> only sets the upper limit of complexity. The model uses penalized likelihood (REML) to dampen the smooth if it doesn’t find enough signal. We see this clearly in Lanzarote, where despite having <img src="https://latex.codecogs.com/png.latex?k=12"> available, the model only used 2.00 DF, identifying the island’s sunshine pattern as a simple linear plane.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># basic model</span></span>
 <span><span class="va" style="color: #111111;
@@ -1023,7 +1076,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 R-sq.(adj) =  0.843   Deviance explained = 85.3%
 -REML = 1744.6  Scale est. = 106.51    n = 448</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># basic model with </span></span>
 <span><span class="va" style="color: #111111;
@@ -1134,7 +1187,7 @@ R-sq.(adj) =  0.904   Deviance explained = 91.6%
 </ul>
 <p>Despite the high deviance explained (over 91% in the best spatial case), clear residual structure remains. The k-index and diagnostic checks signal that while <img src="https://latex.codecogs.com/png.latex?x"> and <img src="https://latex.codecogs.com/png.latex?y"> capture the “where,” they don’t capture the “why”. The model is still missing the fundamental physical drivers: the Sea of Clouds (interaction between clouds and elevation) and the terrain geometry (slope and aspect). These baselines confirm that while the 5km Meteosat signal has a strong spatial component, we need additional physical predictors to recover the finer-scale variability that coordinates alone cannot explain.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># some diagnostic plots and stats</span></span>
 <span><span class="fu" style="color: #4758AB;
@@ -1147,52 +1200,26 @@ font-style: inherit;">gam_base2</span>, shade <span class="op" style="color: #5E
 background-color: null;
 font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">TRUE</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">TRUE</span>, pages <span class="op" style="color: #5E5E5E;
+background-color: null;
+font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
+background-color: null;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-7.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-7.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1203,7 +1230,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-5-8.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1235,7 +1262,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section><section id="adding-the-first-physical-driver-cloudiness" class="level3"><h3 class="anchored" data-anchor-id="adding-the-first-physical-driver-cloudiness">2. Adding the first physical driver: cloudiness</h3>
 <p>Next we incorporate MODIS cloudiness, our likely strongest predictor for solar radiation from a physical point of view. This reveals how much fine‑scale variability can be explained by cloud patterns alone.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">gam_cloud</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1349,7 +1376,7 @@ R-sq.(adj) =  0.932   Deviance explained = 94.2%
 <p>The high F-statistic (28.59) and the extremely small p-value (&lt; 2e-16) confirm that cloudiness remains a dominant explanatory variable. Deviance explained remains high at 94.2%, while the residual variance (scale est.) is situated at 47.11. MODIS cloudiness carries information at 1km that Meteosat cannot resolve. Keep in mind that even when averaged to the 5km grid, cloudiness still helps distinguish areas that receive more or less solar radiation. However, because cloudiness alone does not yet encode elevation, slope, or exposure effects, the spatial smooths (<img src="https://latex.codecogs.com/png.latex?s(x,y):isl">) still have to do a lot of work — ranging from an edf of 3.4 in Lanzarote to 7.3 in Tenerife — to capture the remaining orographic signals.</p>
 <p>The diagnostic plots show the estimated smooth effect of cloudiness. The response decreases monotonically; the edf of 2.83 suggests a slight non-linear “bend” in the relationship at this resolution, making the model more robust than the previous linear assumption. The rug at the bottom indicates that the data cover the cloudiness range thoroughly, so the effect is well-supported across all atmospheric conditions. This non-linear baseline provides the perfect foundation before we introduce the interaction with elevation, which we expect will finally reveal the complex “Sea of Clouds” effect.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1359,7 +1386,7 @@ font-style: inherit;">gam_cloud</span>, pages <span class="op" style="color: #5E
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">1</span>, shade <span class="op" style="color: #5E5E5E;
+font-style: inherit;">2</span>, shade <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
@@ -1368,11 +1395,17 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1383,7 +1416,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-7-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1400,7 +1433,7 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-s(cloud)                 9.00  2.83    1.05    0.81    
+s(cloud)                 9.00  2.83    1.05     0.8    
 s(x,y):islEl Hierro     11.00  4.08    0.82  &lt;2e-16 ***
 s(x,y):islFuerteventura 11.00  4.31    0.82  &lt;2e-16 ***
 s(x,y):islGran Canaria  11.00  6.28    0.82  &lt;2e-16 ***
@@ -1431,7 +1464,7 @@ This model includes:</p>
 </ul>
 <p>The term <code><a href="https://rdrr.io/pkg/mgcv/man/te.html">te()</a></code> allows the effect of cloudiness on solar radiation to change depending on elevation.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">gam_fit</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1576,7 +1609,7 @@ R-sq.(adj) =  0.937   Deviance explained = 94.8%
 <li><p>Spatial Smooths: The island-specific spatial smooths s(x,y):isl remain highly significant, but their complexity has shifted. For La Palma, the edf has dropped to 2.0, indicating that the new topography terms now explain the variance that was previously handled by the spatial coordinates alone. Conversely, Tenerife still requires a high edf (7.32), reflecting the extreme orographic complexity that continues to challenge the model’s resolution.</p></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1586,74 +1619,26 @@ font-style: inherit;">gam_fit</span>, shade <span class="op" style="color: #5E5E
 background-color: null;
 font-style: inherit;">=</span> <span class="cn" style="color: #8f5902;
 background-color: null;
-font-style: inherit;">TRUE</span>, scale <span class="op" style="color: #5E5E5E;
+font-style: inherit;">TRUE</span>, pages <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="fl" style="color: #AD0000;
 background-color: null;
-font-style: inherit;">0</span><span class="op" style="color: #5E5E5E;
+font-style: inherit;">2</span><span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-14-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-5.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-6.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-7.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-7.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-8.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-9.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-9.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-10.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
 background-color: null;
 font-style: inherit;"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1664,7 +1649,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-11.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-9-11.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-14-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1681,16 +1666,16 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-te(cloud,elev)          24.00  7.87    1.07   0.885    
+te(cloud,elev)          24.00  7.87    1.07   0.955    
 s(sl)                    9.00  2.57    1.08   0.905    
-s(cos_asp,sin_asp)      29.00  2.00    0.99   0.425    
+s(cos_asp,sin_asp)      29.00  2.00    0.99   0.395    
 s(x,y):islEl Hierro     11.00  3.54    0.87  &lt;2e-16 ***
-s(x,y):islFuerteventura 11.00  4.39    0.87   0.010 ** 
-s(x,y):islGran Canaria  11.00  5.89    0.87   0.005 ** 
+s(x,y):islFuerteventura 11.00  4.39    0.87   0.005 ** 
+s(x,y):islGran Canaria  11.00  5.89    0.87  &lt;2e-16 ***
 s(x,y):islLa Gomera     11.00  3.97    0.87  &lt;2e-16 ***
 s(x,y):islLa Palma      11.00  2.00    0.87  &lt;2e-16 ***
 s(x,y):islLanzarote     11.00  3.43    0.87   0.010 ** 
-s(x,y):islTenerife      11.00  7.32    0.87   0.010 ** 
+s(x,y):islTenerife      11.00  7.32    0.87  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -1704,7 +1689,7 @@ Even after accounting for physics-like drivers, radiation shows residual pattern
 </section></section><section id="predict-to-1km" class="level2"><h2 class="anchored" data-anchor-id="predict-to-1km">Predict to 1km</h2>
 <p>We generate 1km predictions and rebuild a raster.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">pred_1km</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -1815,7 +1800,7 @@ background-color: null;
 font-style: inherit;">)</span></span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-26"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -1823,7 +1808,7 @@ font-style: inherit;">)</span></span></code></pre></div></div>
 </section><section id="optional-simple-cross-validation-cv" class="level2"><h2 class="anchored" data-anchor-id="optional-simple-cross-validation-cv">(Optional) Simple cross-validation (CV)</h2>
 <p>I opted for stratified cross-validation instead of a spatial approach because the natural fragmentation of the archipelago already acts as a geographic barrier, reducing spatial autocorrelation between islands. This method ensures that even islands with a limited number of grid points are always represented in the training set, preventing model failure in low-density areas while still rigorously testing its ability to generalize to unsampled locations.</p>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
+<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;"># 1. Preparation</span></span>
 <span><span class="va" style="color: #111111;
@@ -2413,7 +2398,7 @@ font-style: inherit;">MAE</span></span></code></pre></div></div>
 </ul></section><section id="map-the-result" class="level2"><h2 class="anchored" data-anchor-id="map-the-result">Map the result</h2>
 <p>Last but not least, the final map.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va" style="color: #111111;
 background-color: null;
 font-style: inherit;">g1</span> <span class="op" style="color: #5E5E5E;
 background-color: null;
@@ -2850,7 +2835,7 @@ background-color: null;
 font-style: inherit;">g2</span> </span></code></pre></div></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-17-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>

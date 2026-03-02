@@ -307,7 +307,7 @@ Note
 <p>You can download the used datasets <a href="../../assets/www/data_gam.zip">here</a>.</p>
 </div>
 </div>
-<div class="cell page-columns page-full" data-fig-margin="true">
+<div class="cell page-columns page-full">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb2"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Canary Islands geometry </span></span>
 <span><span class="va">can</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="st">"islas_20170101_generalizada.json"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
@@ -331,25 +331,31 @@ Geodetic CRS:  WGS 84</code></pre>
 <figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/unnamed-chunk-2-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div></div><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rasterize and assign island label at 1 km</span></span>
+</div></div></div>
+<div class="cell page-columns page-full">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># rasterize and assign island label at 1 km</span></span>
 <span><span class="va">isla_rast_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">can</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">modis_1km</span><span class="op">)</span>, field <span class="op">=</span> <span class="st">"etiqueta"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">isla_rast_1km</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/unnamed-chunk-2-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-3-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/unnamed-chunk-3-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div>
+</div></div></div>
+<div class="cell page-columns page-full">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Coarse sunhours for Jan 2026 (~5 km): </span></span>
 <span><span class="va">sol_4km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="st">"SDUms202601010000004UD10001I1UD.nc"</span>, subds <span class="op">=</span> <span class="st">"SDU"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html">project</a></span><span class="op">(</span><span class="st">"EPSG:4083"</span><span class="op">)</span></span>
 <span><span class="va">sol_4km</span> <span class="op">&lt;-</span> <span class="va">sol_4km</span><span class="op">/</span><span class="fl">10</span> <span class="co"># terra si using a factor from the nc file when we project</span></span>
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">sol_4km</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-2-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="index_files/figure-html/unnamed-chunk-2-3.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-4-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-4"><img src="index_files/figure-html/unnamed-chunk-4-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
-</div>
+</div></div></div>
+<div class="cell page-columns page-full">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># resample cloudiness at 4 km</span></span>
 <span><span class="va">modis_4km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">modis_1km</span>, <span class="va">sol_4km</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
 <span><span class="va">isla_rast_4km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rasterize.html">rasterize</a></span><span class="op">(</span><span class="va">can</span>, <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">sol_4km</span><span class="op">)</span>, field <span class="op">=</span> <span class="st">"etiqueta"</span><span class="op">)</span></span>
@@ -358,11 +364,34 @@ Geodetic CRS:  WGS 84</code></pre>
 <span><span class="va">elev</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/elevatr/man/get_elev_raster.html">get_elev_raster</a></span><span class="op">(</span><span class="va">modis_4km</span>, z <span class="op">=</span> <span class="fl">7</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/project.html">project</a></span><span class="op">(</span><span class="st">"EPSG:4083"</span><span class="op">)</span></span>
 <span><span class="va">elev_4km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">elev</span>, <span class="va">sol_4km</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
 <span><span class="va">elev_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">elev</span>, <span class="va">modis_1km</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
-<span></span>
-<span><span class="va">asp_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev_1km</span>, <span class="st">"aspect"</span>, unit <span class="op">=</span> <span class="st">"radians"</span><span class="op">)</span> </span>
-<span><span class="va">sl_1km</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev_1km</span>, <span class="st">"slope"</span><span class="op">)</span> </span>
-<span></span>
-<span><span class="va">asp_4km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">asp_1km</span>, <span class="va">sol_4km</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">elev_1km</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div></div></div>
+<div class="cell page-columns page-full">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">asp_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev_1km</span>, <span class="st">"aspect"</span>, unit <span class="op">=</span> <span class="st">"radians"</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">asp_1km</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-6-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="index_files/figure-html/unnamed-chunk-6-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div></div></div>
+<div class="cell page-columns page-full">
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">sl_1km</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/terrain.html">terrain</a></span><span class="op">(</span><span class="va">elev_1km</span>, <span class="st">"slope"</span><span class="op">)</span> </span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">sl_1km</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+
+<div class="no-row-height column-margin column-container"><div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div></div><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">asp_4km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">asp_1km</span>, <span class="va">sol_4km</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span>
 <span><span class="va">sl_4km</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/resample.html">resample</a></span><span class="op">(</span><span class="va">sl_1km</span>, <span class="va">sol_4km</span>, method <span class="op">=</span> <span class="st">"bilinear"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="callout callout-style-default callout-tip callout-titled">
@@ -382,7 +411,7 @@ Tip
 </section><section id="build-modelling-tables" class="level2"><h2 class="anchored" data-anchor-id="build-modelling-tables">Build modelling tables</h2>
 <p>We assemble a training table at 4km (response + predictors) and a prediction table at 1km (predictors only). For convenience we mask to the islands polygon.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Training stack (4 km)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># Training stack (4 km)</span></span>
 <span><span class="va">lay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="va">sol_4km</span>, <span class="va">modis_4km</span>, <span class="va">elev_4km</span>, <span class="va">sl_4km</span>, <span class="va">asp_4km</span>, <span class="va">isla_rast_4km</span><span class="op">)</span></span>
 <span><span class="va">lay</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/mask.html">mask</a></span><span class="op">(</span><span class="va">lay</span>, <span class="va">can</span><span class="op">)</span></span>
 <span></span>
@@ -426,7 +455,7 @@ $ cos_asp &lt;dbl&gt; -0.23136724, -0.53307206, 0.13553549, -0.90087250, 0.32320
 </ol>
 <p>A critical decision in spatial GAMs is setting the basis dimension (<span class="math inline">\(k\)</span>), which determines the maximum possible complexity of the smooth terms. For our island-specific model, we set <span class="math inline">\(k = 12\)</span> for each <span class="math inline">\(s(x, y)\)</span> term. In islands with dramatic orography like Tenerife or Gran Canaria, a low <span class="math inline">\(k\)</span> (e.g., <span class="math inline">\(k=5\)</span>) would “oversmooth” the results. One of the strengths of the mgcv framework is that <span class="math inline">\(k\)</span> only sets the upper limit of complexity. The model uses penalized likelihood (REML) to dampen the smooth if it doesn’t find enough signal. We see this clearly in Lanzarote, where despite having <span class="math inline">\(k=12\)</span> available, the model only used 2.00 DF, identifying the island’s sunshine pattern as a simple linear plane.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># basic model</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># basic model</span></span>
 <span><span class="va">gam_base1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span></span>
 <span>  <span class="va">sunhr</span> <span class="op">~</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span><span class="op">)</span>, </span>
 <span>  data   <span class="op">=</span> <span class="va">df</span>,</span>
@@ -456,7 +485,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
 R-sq.(adj) =  0.843   Deviance explained = 85.3%
 -REML = 1744.6  Scale est. = 106.51    n = 448</code></pre>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># basic model with </span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># basic model with </span></span>
 <span><span class="va">gam_base2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span></span>
 <span>  <span class="va">sunhr</span> <span class="op">~</span> <span class="va">isl</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="va">isl</span> , k <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>, </span>
 <span>  data   <span class="op">=</span> <span class="va">df</span>,</span>
@@ -509,54 +538,24 @@ R-sq.(adj) =  0.904   Deviance explained = 91.6%
 </ul>
 <p>Despite the high deviance explained (over 91% in the best spatial case), clear residual structure remains. The k-index and diagnostic checks signal that while <span class="math inline">\(x\)</span> and <span class="math inline">\(y\)</span> capture the “where,” they don’t capture the “why”. The model is still missing the fundamental physical drivers: the Sea of Clouds (interaction between clouds and elevation) and the terrain geometry (slope and aspect). These baselines confirm that while the 5km Meteosat signal has a strong spatial component, we need additional physical predictors to recover the finer-scale variability that coordinates alone cannot explain.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb14"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># some diagnostic plots and stats</span></span>
-<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">gam_base2</span>, shade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># some diagnostic plots and stats</span></span>
+<span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">gam_base2</span>, shade <span class="op">=</span> <span class="cn">TRUE</span>, pages <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-5"><img src="index_files/figure-html/unnamed-chunk-5-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-6"><img src="index_files/figure-html/unnamed-chunk-5-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="index_files/figure-html/unnamed-chunk-10-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb18"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op">(</span><span class="va">gam_base2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-7"><img src="index_files/figure-html/unnamed-chunk-5-3.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-8"><img src="index_files/figure-html/unnamed-chunk-5-4.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-9"><img src="index_files/figure-html/unnamed-chunk-5-5.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="index_files/figure-html/unnamed-chunk-5-6.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-7.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="index_files/figure-html/unnamed-chunk-5-7.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb15"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op">(</span><span class="va">gam_base2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-5-8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="index_files/figure-html/unnamed-chunk-5-8.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-10"><img src="index_files/figure-html/unnamed-chunk-10-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -588,7 +587,7 @@ Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </section><section id="adding-the-first-physical-driver-cloudiness" class="level3"><h3 class="anchored" data-anchor-id="adding-the-first-physical-driver-cloudiness">2. Adding the first physical driver: cloudiness</h3>
 <p>Next we incorporate MODIS cloudiness, our likely strongest predictor for solar radiation from a physical point of view. This reveals how much fine‑scale variability can be explained by cloud patterns alone.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb17"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gam_cloud</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gam_cloud</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span></span>
 <span>  <span class="va">sunhr</span> <span class="op">~</span> <span class="va">isl</span> <span class="op">-</span> <span class="fl">1</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">cloud</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="va">isl</span> , k <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  data   <span class="op">=</span> <span class="va">df</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"REML"</span></span>
@@ -636,17 +635,23 @@ R-sq.(adj) =  0.932   Deviance explained = 94.2%
 <p>The high F-statistic (28.59) and the extremely small p-value (&lt; 2e-16) confirm that cloudiness remains a dominant explanatory variable. Deviance explained remains high at 94.2%, while the residual variance (scale est.) is situated at 47.11. MODIS cloudiness carries information at 1km that Meteosat cannot resolve. Keep in mind that even when averaged to the 5km grid, cloudiness still helps distinguish areas that receive more or less solar radiation. However, because cloudiness alone does not yet encode elevation, slope, or exposure effects, the spatial smooths (<span class="math inline">\(s(x,y):isl\)</span>) still have to do a lot of work — ranging from an edf of 3.4 in Lanzarote to 7.3 in Tenerife — to capture the remaining orographic signals.</p>
 <p>The diagnostic plots show the estimated smooth effect of cloudiness. The response decreases monotonically; the edf of 2.83 suggests a slight non-linear “bend” in the relationship at this resolution, making the model more robust than the previous linear assumption. The rug at the bottom indicates that the data cover the cloudiness range thoroughly, so the effect is well-supported across all atmospheric conditions. This non-linear baseline provides the perfect foundation before we introduce the interaction with elevation, which we expect will finally reveal the complex “Sea of Clouds” effect.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb19"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">gam_cloud</span>, pages <span class="op">=</span> <span class="fl">1</span>, shade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">gam_cloud</span>, pages <span class="op">=</span> <span class="fl">2</span>, shade <span class="op">=</span> <span class="cn">TRUE</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-7-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="index_files/figure-html/unnamed-chunk-7-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-11"><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb20"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op">(</span><span class="va">gam_cloud</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-7-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="index_files/figure-html/unnamed-chunk-7-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-12"><img src="index_files/figure-html/unnamed-chunk-12-2.png" class="img-fluid figure-img" width="672"></a></p>
+</figure>
+</div>
+</div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb23"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op">(</span><span class="va">gam_cloud</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output-display">
+<div>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-13"><img src="index_files/figure-html/unnamed-chunk-12-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -663,7 +668,7 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-s(cloud)                 9.00  2.83    1.05    0.81    
+s(cloud)                 9.00  2.83    1.05     0.8    
 s(x,y):islEl Hierro     11.00  4.08    0.82  &lt;2e-16 ***
 s(x,y):islFuerteventura 11.00  4.31    0.82  &lt;2e-16 ***
 s(x,y):islGran Canaria  11.00  6.28    0.82  &lt;2e-16 ***
@@ -694,7 +699,7 @@ This model includes:</p>
 </ul>
 <p>The term <code><a href="https://rdrr.io/pkg/mgcv/man/te.html">te()</a></code> allows the effect of cloudiness on solar radiation to change depending on elevation.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb22"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gam_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">gam_fit</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.html">gam</a></span><span class="op">(</span></span>
 <span>  <span class="va">sunhr</span> <span class="op">~</span> <span class="va">isl</span> <span class="op">-</span> <span class="fl">1</span>  <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/te.html">te</a></span><span class="op">(</span><span class="va">cloud</span>, <span class="va">elev</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">sl</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">cos_asp</span>, <span class="va">sin_asp</span><span class="op">)</span> <span class="op">+</span> <span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/s.html">s</a></span><span class="op">(</span><span class="va">x</span>, <span class="va">y</span>, by <span class="op">=</span> <span class="va">isl</span> , k <span class="op">=</span> <span class="fl">12</span><span class="op">)</span>,</span>
 <span>  data   <span class="op">=</span> <span class="va">df</span>,</span>
 <span>  method <span class="op">=</span> <span class="st">"REML"</span></span>
@@ -749,71 +754,23 @@ R-sq.(adj) =  0.937   Deviance explained = 94.8%
 <li><p>Spatial Smooths: The island-specific spatial smooths s(x,y):isl remain highly significant, but their complexity has shifted. For La Palma, the edf has dropped to 2.0, indicating that the new topography terms now explain the variance that was previously handled by the spatial coordinates alone. Conversely, Tenerife still requires a high edf (7.32), reflecting the extreme orographic complexity that continues to challenge the model’s resolution.</p></li>
 </ul>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb24"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">gam_fit</span>, shade <span class="op">=</span> <span class="cn">TRUE</span>, scale <span class="op">=</span> <span class="fl">0</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">gam_fit</span>, shade <span class="op">=</span> <span class="cn">TRUE</span>, pages <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="index_files/figure-html/unnamed-chunk-9-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-14-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-14"><img src="index_files/figure-html/unnamed-chunk-14-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="index_files/figure-html/unnamed-chunk-9-2.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-14-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-15"><img src="index_files/figure-html/unnamed-chunk-14-2.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op">(</span><span class="va">gam_fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="index_files/figure-html/unnamed-chunk-9-3.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="index_files/figure-html/unnamed-chunk-9-4.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-5.png" class="lightbox" data-gallery="quarto-lightbox-gallery-19"><img src="index_files/figure-html/unnamed-chunk-9-5.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-6.png" class="lightbox" data-gallery="quarto-lightbox-gallery-20"><img src="index_files/figure-html/unnamed-chunk-9-6.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-7.png" class="lightbox" data-gallery="quarto-lightbox-gallery-21"><img src="index_files/figure-html/unnamed-chunk-9-7.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-8.png" class="lightbox" data-gallery="quarto-lightbox-gallery-22"><img src="index_files/figure-html/unnamed-chunk-9-8.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-9.png" class="lightbox" data-gallery="quarto-lightbox-gallery-23"><img src="index_files/figure-html/unnamed-chunk-9-9.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-10.png" class="lightbox" data-gallery="quarto-lightbox-gallery-24"><img src="index_files/figure-html/unnamed-chunk-9-10.png" class="img-fluid figure-img" width="672"></a></p>
-</figure>
-</div>
-</div>
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb25"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/pkg/mgcv/man/gam.check.html">gam.check</a></span><span class="op">(</span><span class="va">gam_fit</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output-display">
-<div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-9-11.png" class="lightbox" data-gallery="quarto-lightbox-gallery-25"><img src="index_files/figure-html/unnamed-chunk-9-11.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-14-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-16"><img src="index_files/figure-html/unnamed-chunk-14-3.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -830,16 +787,16 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-te(cloud,elev)          24.00  7.87    1.07   0.885    
+te(cloud,elev)          24.00  7.87    1.07   0.955    
 s(sl)                    9.00  2.57    1.08   0.905    
-s(cos_asp,sin_asp)      29.00  2.00    0.99   0.425    
+s(cos_asp,sin_asp)      29.00  2.00    0.99   0.395    
 s(x,y):islEl Hierro     11.00  3.54    0.87  &lt;2e-16 ***
-s(x,y):islFuerteventura 11.00  4.39    0.87   0.010 ** 
-s(x,y):islGran Canaria  11.00  5.89    0.87   0.005 ** 
+s(x,y):islFuerteventura 11.00  4.39    0.87   0.005 ** 
+s(x,y):islGran Canaria  11.00  5.89    0.87  &lt;2e-16 ***
 s(x,y):islLa Gomera     11.00  3.97    0.87  &lt;2e-16 ***
 s(x,y):islLa Palma      11.00  2.00    0.87  &lt;2e-16 ***
 s(x,y):islLanzarote     11.00  3.43    0.87   0.010 ** 
-s(x,y):islTenerife      11.00  7.32    0.87   0.010 ** 
+s(x,y):islTenerife      11.00  7.32    0.87  &lt;2e-16 ***
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
@@ -853,7 +810,7 @@ Even after accounting for physics-like drivers, radiation shows residual pattern
 </section></section><section id="predict-to-1km" class="level2"><h2 class="anchored" data-anchor-id="predict-to-1km">Predict to 1km</h2>
 <p>We generate 1km predictions and rebuild a raster.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pred_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">df_pred</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb30"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">pred_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/predict.html">predict</a></span><span class="op">(</span><span class="va">gam_fit</span>, newdata <span class="op">=</span> <span class="va">df_pred</span>, type <span class="op">=</span> <span class="st">"response"</span><span class="op">)</span></span>
 <span><span class="va">df_pred</span>  <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">df_pred</span>, pred <span class="op">=</span> <span class="va">pred_1km</span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">sol_1km</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/rast.html">rast</a></span><span class="op">(</span><span class="va">df_pred</span><span class="op">[</span>, <span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">2</span>, <span class="fl">10</span><span class="op">)</span><span class="op">]</span>, type <span class="op">=</span> <span class="st">"xyz"</span>, crs <span class="op">=</span> <span class="fu"><a href="https://rspatial.github.io/terra/reference/crs.html">crs</a></span><span class="op">(</span><span class="va">modis_1km</span><span class="op">)</span><span class="op">)</span></span>
@@ -862,7 +819,7 @@ Even after accounting for physics-like drivers, radiation shows residual pattern
 <span><span class="fu"><a href="https://rspatial.github.io/terra/reference/plot.html">plot</a></span><span class="op">(</span><span class="va">sol_1km</span>, main <span class="op">=</span> <span class="st">"Downscaled solar radiation (GAM, 1 km)"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-10-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-26"><img src="index_files/figure-html/unnamed-chunk-10-1.png" class="img-fluid figure-img" width="672"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-15-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-17"><img src="index_files/figure-html/unnamed-chunk-15-1.png" class="img-fluid figure-img" width="672"></a></p>
 </figure>
 </div>
 </div>
@@ -870,7 +827,7 @@ Even after accounting for physics-like drivers, radiation shows residual pattern
 </section><section id="optional-simple-cross-validation-cv" class="level2"><h2 class="anchored" data-anchor-id="optional-simple-cross-validation-cv">(Optional) Simple cross-validation (CV)</h2>
 <p>I opted for stratified cross-validation instead of a spatial approach because the natural fragmentation of the archipelago already acts as a geographic barrier, reducing spatial autocorrelation between islands. This method ensures that even islands with a limited number of grid points are always represented in the training set, preventing model failure in low-density areas while still rigorously testing its ability to generalize to unsampled locations.</p>
 <div class="cell">
-<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb28"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 1. Preparation</span></span>
+<details class="code-fold"><summary>Code</summary><div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb31"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># 1. Preparation</span></span>
 <span><span class="va">folds</span> <span class="op">&lt;-</span> <span class="fl">5</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/base/Random.html">set.seed</a></span><span class="op">(</span><span class="fl">123</span><span class="op">)</span></span>
 <span></span>
@@ -927,7 +884,7 @@ Even after accounting for physics-like drivers, radiation shows residual pattern
 </ul></section><section id="map-the-result" class="level2"><h2 class="anchored" data-anchor-id="map-the-result">Map the result</h2>
 <p>Last but not least, the final map.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb29"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb32"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">g1</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="co"># 'geom_spatraster' is used for memory-efficient rendering of large rasters</span></span>
 <span>  <span class="fu"><a href="https://dieghernan.github.io/tidyterra/reference/geom_spatraster.html">geom_spatraster</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">sol_1km</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf</a></span><span class="op">(</span>data <span class="op">=</span> <span class="va">can</span>, fill <span class="op">=</span> <span class="cn">NA</span>, color <span class="op">=</span> <span class="st">"grey20"</span>, linewidth <span class="op">=</span> <span class="fl">0.3</span><span class="op">)</span> <span class="op">+</span></span>
@@ -970,7 +927,7 @@ Even after accounting for physics-like drivers, radiation shows residual pattern
 <span><span class="va">g1</span> <span class="op">/</span> <span class="va">g2</span> </span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output-display">
 <div>
-<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-12-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-27"><img src="index_files/figure-html/unnamed-chunk-12-1.png" class="img-fluid figure-img" width="960"></a></p>
+<figure class="figure"><p><a href="index_files/figure-html/unnamed-chunk-17-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-18"><img src="index_files/figure-html/unnamed-chunk-17-1.png" class="img-fluid figure-img" width="960"></a></p>
 </figure>
 </div>
 </div>
