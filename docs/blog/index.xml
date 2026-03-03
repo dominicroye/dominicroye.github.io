@@ -996,6 +996,74 @@ $ cos_asp &lt;dbl&gt; -0.23136724, -0.53307206, 0.13553549, -0.90087250, 0.32320
 </div>
 </section><section id="model-gam-for-spatial-downscaling" class="level2"><h2 class="anchored" data-anchor-id="model-gam-for-spatial-downscaling">Model: GAM for spatial downscaling</h2>
 <p>In this section we progressively build the downscaling model, starting from a very simple baseline and incrementally adding predictors. This step‑by‑step approach helps illustrate how each component contributes to recovering the spatial variability that the native 5km Meteosat resolution cannot resolve over the highly complex orography of the Canary Islands.</p>
+<p>To be brief about GAMs. The <code><a href="https://rdrr.io/pkg/mgcv/man/s.html">s()</a></code> function is the “smoother” in a GAM. It tells the model to find a flexible curve that actually follows the pattern of your data. It uses a penalty system to automatically find the perfect balance between following the data and staying smooth. It decides the shape for you. The <code>bs</code> argument defines the type of curve used to build that shape. Knots are the specific anchor points along the data where the spline is allowed to bend and change its shape. They act like joints or hinges connecting the different polynomial pieces that make up the curve.</p>
+<table class="caption-top table">
+<colgroup>
+<col style="width: 33%">
+<col style="width: 33%">
+<col style="width: 33%">
+</colgroup>
+<thead><tr class="header">
+<th style="text-align: left;">Argument</th>
+<th style="text-align: left;">Basis Type</th>
+<th style="text-align: left;">Key Feature</th>
+</tr></thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: left;"><strong>tp</strong></td>
+<td style="text-align: left;">Thin Plate</td>
+<td style="text-align: left;">Default. Optimal smoothing; no manual knots</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>cr</strong></td>
+<td style="text-align: left;">Cubic Natural</td>
+<td style="text-align: left;">Linear at edges</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>cc</strong></td>
+<td style="text-align: left;">Cyclic Connected</td>
+<td style="text-align: left;">End point matches start point</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>bs</strong></td>
+<td style="text-align: left;">B-spline Modular</td>
+<td style="text-align: left;">Uses standard B-spline bases</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>ps</strong></td>
+<td style="text-align: left;">P-spline Penalized</td>
+<td style="text-align: left;">Discrete penalty on wiggliness</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>so</strong></td>
+<td style="text-align: left;">Soap Film Bounded</td>
+<td style="text-align: left;">Does not “leak” over boundaries</td>
+</tr>
+<tr class="odd">
+<td style="text-align: left;"><strong>sos</strong></td>
+<td style="text-align: left;">Sphere Global</td>
+<td style="text-align: left;">Continuous across the globe</td>
+</tr>
+<tr class="even">
+<td style="text-align: left;"><strong>gp</strong></td>
+<td style="text-align: left;">Gaussian Process</td>
+<td style="text-align: left;">Spatial. Based on point-to-point correlation</td>
+</tr>
+</tbody>
+</table>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <code>mgcv</code> package has the <code><a href="https://rdrr.io/pkg/mgcv/man/bam.html">bam()</a></code> function for large datasets with the posibility of multiple CPU cores use (100k+ rows).</p>
+</div>
+</div>
 <section id="baseline-model-only-spatial-coordinates" class="level3"><h3 class="anchored" data-anchor-id="baseline-model-only-spatial-coordinates">1. Baseline model: only spatial coordinates</h3>
 <p>We begin with the simplest possible GAM: a bivariate smooth over the coordinates. This model captures only broad spatial gradients and serves as a lower bound for performance. Think of these as our “foundation” before adding complex physical variables like cloud cover or elevation.</p>
 <ol type="1">
@@ -1433,7 +1501,7 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-s(cloud)                 9.00  2.83    1.05    0.78    
+s(cloud)                 9.00  2.83    1.05    0.79    
 s(x,y):islEl Hierro     11.00  4.08    0.82  &lt;2e-16 ***
 s(x,y):islFuerteventura 11.00  4.31    0.82  &lt;2e-16 ***
 s(x,y):islGran Canaria  11.00  6.28    0.82  &lt;2e-16 ***
@@ -1667,14 +1735,14 @@ indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
 te(cloud,elev)          24.00  7.87    1.07   0.930    
-s(sl)                    9.00  2.57    1.08   0.905    
-s(cos_asp,sin_asp)      29.00  2.00    0.99   0.390    
-s(x,y):islEl Hierro     11.00  3.54    0.87   0.005 ** 
-s(x,y):islFuerteventura 11.00  4.39    0.87   0.005 ** 
-s(x,y):islGran Canaria  11.00  5.89    0.87  &lt;2e-16 ***
-s(x,y):islLa Gomera     11.00  3.97    0.87  &lt;2e-16 ***
-s(x,y):islLa Palma      11.00  2.00    0.87   0.015 *  
-s(x,y):islLanzarote     11.00  3.43    0.87   0.005 ** 
+s(sl)                    9.00  2.57    1.08   0.915    
+s(cos_asp,sin_asp)      29.00  2.00    0.99   0.400    
+s(x,y):islEl Hierro     11.00  3.54    0.87  &lt;2e-16 ***
+s(x,y):islFuerteventura 11.00  4.39    0.87  &lt;2e-16 ***
+s(x,y):islGran Canaria  11.00  5.89    0.87   0.010 ** 
+s(x,y):islLa Gomera     11.00  3.97    0.87   0.005 ** 
+s(x,y):islLa Palma      11.00  2.00    0.87  &lt;2e-16 ***
+s(x,y):islLanzarote     11.00  3.43    0.87  &lt;2e-16 ***
 s(x,y):islTenerife      11.00  7.32    0.87   0.005 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
