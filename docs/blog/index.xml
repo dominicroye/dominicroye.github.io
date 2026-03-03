@@ -22,8 +22,8 @@
 --><!-- <header id="title-block-header" class="quarto-title-block default page-columns"> --><!-- <div class="quarto-title page-columns page-full featured-image p-4" style="background-image: url(featured.png), url(featured.jpg), url(../featured.jpg);"> -->
 <div class="no-row-height column-margin column-container"><div class="">
 <p><a href="featured.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="https://dominicroye.github.io/blog/canary-gam-downscaling/featured.png" class="img-fluid"></a></p>
-</div></div><p>I’ve been meaning to write a post on how we can push interpolation and downscaling— beyond the usual tools like linear regression or kriging when dealing with climate data. This post illustrates a statistical downscaling workflow for monthly radiation over the Canary Islands using a Generalized Additive Model (GAM). We start from a coarse ~4km signal, learn its relationship with topography and MODIS cloudiness, and then predict to a finer 1km grid. The approach is intentionally lightweight: a single-month example (January) and a compact set of predictors.</p>
-<p>The Canary Islands offer a particularly compelling test case for downscaling because of their extremely complex orography and sharp local climate gradients. With steep volcanic relief rising from sea level to over 3,000m in very short horizontal distances, conditions can change dramatically within a few kilometres. However, the native Meteosat resolution of around 4km smooths out much of this spatial variability, blending together zones that in reality experience very different levels of cloudiness and thus solar radiation.</p>
+</div></div><p>I’ve been meaning to write a post on how we can push interpolation and downscaling— beyond the usual tools like linear regression or kriging when dealing with climate data. This post illustrates a statistical downscaling workflow for monthly radiation over the Canary Islands using a Generalized Additive Model (GAM). We start from a coarse ~5km signal, learn its relationship with topography and MODIS cloudiness, and then predict to a finer 1km grid. The approach is intentionally lightweight: a single-month example (January) and a compact set of predictors.</p>
+<p>The Canary Islands offer a particularly compelling test case for downscaling because of their extremely complex orography and sharp local climate gradients. With steep volcanic relief rising from sea level to over 3,000m in very short horizontal distances, conditions can change dramatically within a few kilometres. However, the native Meteosat resolution of around 5km smooths out much of this spatial variability, blending together zones that in reality experience very different levels of cloudiness and thus solar radiation.</p>
 <blockquote class="blockquote">
 <p><strong>Tip</strong><br>
 GAMs are flexible enough to capture <strong>non-linear</strong> effects and <strong>interactions</strong> (e.g., cloudiness × elevation) while remaining interpretable thanks to smooth terms.</p>
@@ -709,12 +709,12 @@ Tip
 </div>
 </div>
 <div class="callout-body-container callout-body">
-<p>Computing slope or aspect directly at 4km loses important terrain information because the coarse resolution smooths out real topographic variability. By deriving these metrics at 1km first, you preserve the finer‑scale gradients before aggregating them.</p>
-<p>For a discrete variable like the islands, rasterizing directly at 4km is appropriate because the categories should not be smoothed or interpolated. Resampling a discrete class would mix labels, so rasterization at the target resolution preserves the original categorical boundaries.</p>
+<p>Computing slope or aspect directly at 5km loses important terrain information because the coarse resolution smooths out real topographic variability. By deriving these metrics at 1km first, you preserve the finer‑scale gradients before aggregating them.</p>
+<p>For a discrete variable like the islands, rasterizing directly at 5km is appropriate because the categories should not be smoothed or interpolated. Resampling a discrete class would mix labels, so rasterization at the target resolution preserves the original categorical boundaries.</p>
 </div>
 </div>
 </section><section id="build-modelling-tables" class="level2"><h2 class="anchored" data-anchor-id="build-modelling-tables">Build modelling tables</h2>
-<p>We assemble a training table at 4km (response + predictors) and a prediction table at 1km (predictors only). For convenience we mask to the islands polygon.</p>
+<p>We assemble a training table at 5km (response + predictors) and a prediction table at 1km (predictors only). For convenience we mask to the islands polygon.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co" style="color: #5E5E5E;
 background-color: null;
@@ -995,7 +995,7 @@ $ cos_asp &lt;dbl&gt; -0.23136724, -0.53307206, 0.13553549, -0.90087250, 0.32320
 </div>
 </div>
 </section><section id="model-gam-for-spatial-downscaling" class="level2"><h2 class="anchored" data-anchor-id="model-gam-for-spatial-downscaling">Model: GAM for spatial downscaling</h2>
-<p>In this section we progressively build the downscaling model, starting from a very simple baseline and incrementally adding predictors. This step‑by‑step approach helps illustrate how each component contributes to recovering the spatial variability that the native 4km Meteosat resolution cannot resolve over the highly complex orography of the Canary Islands.</p>
+<p>In this section we progressively build the downscaling model, starting from a very simple baseline and incrementally adding predictors. This step‑by‑step approach helps illustrate how each component contributes to recovering the spatial variability that the native 5km Meteosat resolution cannot resolve over the highly complex orography of the Canary Islands.</p>
 <section id="baseline-model-only-spatial-coordinates" class="level3"><h3 class="anchored" data-anchor-id="baseline-model-only-spatial-coordinates">1. Baseline model: only spatial coordinates</h3>
 <p>We begin with the simplest possible GAM: a bivariate smooth over the coordinates. This model captures only broad spatial gradients and serves as a lower bound for performance. Think of these as our “foundation” before adding complex physical variables like cloud cover or elevation.</p>
 <ol type="1">
@@ -1433,7 +1433,7 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-s(cloud)                 9.00  2.83    1.05    0.81    
+s(cloud)                 9.00  2.83    1.05    0.78    
 s(x,y):islEl Hierro     11.00  4.08    0.82  &lt;2e-16 ***
 s(x,y):islFuerteventura 11.00  4.31    0.82  &lt;2e-16 ***
 s(x,y):islGran Canaria  11.00  6.28    0.82  &lt;2e-16 ***
@@ -1604,9 +1604,9 @@ R-sq.(adj) =  0.937   Deviance explained = 94.8%
 <p>The output shows a substantial improvement over the intermediate models, confirming that the combination of cloud–topography interactions and fine-scale terrain variables is essential for explaining solar-radiation variability in the Canary Islands. The model now reaches a Deviance Explained of 94.8%, with a reduced scale estimate of 43.44.</p>
 <ul>
 <li><p>ISL: The island factor (isl - 1) absorbs structural differences between islands not captured by the smooth terms. Several islands show statistically significant departures; for instance, Tenerife and Gran Canaria show positive, significant adjustments (<img src="https://latex.codecogs.com/png.latex?p%20%3C%200.05">), setting unique baselines that reflect their specific atmospheric and geographic contexts.</p></li>
-<li><p>CLOUD × ELEV: The tensor-product te(cloud, elev) is highly significant (<img src="https://latex.codecogs.com/png.latex?p%20%3C%202e-16">) and has an edf of 7.87. This demonstrates that the joint effect of cloudiness and elevation is genuinely non-linear and more complex than previously estimated. It effectively captures the “Sea of Clouds” phenomenon, where high-altitude peaks “pierce” the inversion layer—a central feature of the Canarian climate where solar radiation remains high at altitude despite heavy cloud cover in the mid-layers.</p></li>
+<li><p>CLOUD × ELEV: The tensor-product te(cloud, elev) is highly significant (<img src="https://latex.codecogs.com/png.latex?p%20%3C%202e-16">) and has an edf of 7.8. This demonstrates that the joint effect of cloudiness and elevation is genuinely non-linear and more complex than previously estimated. It effectively captures the “Sea of Clouds” phenomenon, where high-altitude peaks “pierce” the inversion layer—a central feature of the Canarian climate where solar radiation remains high at altitude despite heavy cloud cover in the mid-layers.</p></li>
 <li><p>SL and ASP: The terrain variables provide the final layer of local refinement. The aspect s(cos_asp, sin_asp) is statistically significant (edf = 2.0, <img src="https://latex.codecogs.com/png.latex?p%20=%200.0189">), capturing the cyclic effect of orientation-driven exposure, such as the contrast between north-facing and south-facing slopes. While the slope s(sl) shows an edf of 2.57, its current significance (<img src="https://latex.codecogs.com/png.latex?p%20=%200.1895">) suggests that at this 5km scale, orientation (aspect) is a more dominant driver of radiation variability than the gradient itself. However, the slope slightly improves the model fit, although not in a statistically significant way (p ≈ 0.10). The ANOVA test indicates that it still contributes something to the model, and since we have built a causal (i.e.&nbsp;physically motivated) model, it makes sense to retain it.</p></li>
-<li><p>Spatial Smooths: The island-specific spatial smooths s(x,y):isl remain highly significant, but their complexity has shifted. For La Palma, the edf has dropped to 2.0, indicating that the new topography terms now explain the variance that was previously handled by the spatial coordinates alone. Conversely, Tenerife still requires a high edf (7.32), reflecting the extreme orographic complexity that continues to challenge the model’s resolution.</p></li>
+<li><p>Spatial Smooths: The island-specific spatial smooths s(x,y):isl remain highly significant, but their complexity has shifted. For La Palma, the edf has dropped to 2.0, indicating that the new topography terms now explain the variance that was previously handled by the spatial coordinates alone. Conversely, Tenerife still requires a high edf (7.8), reflecting the extreme orographic complexity that continues to challenge the model’s resolution.</p></li>
 </ul>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb27" style="background: #f1f3f5;"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="fu" style="color: #4758AB;
@@ -1666,22 +1666,22 @@ Basis dimension (k) checking results. Low p-value (k-index&lt;1) may
 indicate that k is too low, especially if edf is close to k'.
 
                            k'   edf k-index p-value    
-te(cloud,elev)          24.00  7.87    1.07   0.935    
-s(sl)                    9.00  2.57    1.08   0.910    
-s(cos_asp,sin_asp)      29.00  2.00    0.99   0.395    
+te(cloud,elev)          24.00  7.87    1.07   0.930    
+s(sl)                    9.00  2.57    1.08   0.905    
+s(cos_asp,sin_asp)      29.00  2.00    0.99   0.390    
 s(x,y):islEl Hierro     11.00  3.54    0.87   0.005 ** 
-s(x,y):islFuerteventura 11.00  4.39    0.87  &lt;2e-16 ***
-s(x,y):islGran Canaria  11.00  5.89    0.87   0.010 ** 
-s(x,y):islLa Gomera     11.00  3.97    0.87   0.010 ** 
-s(x,y):islLa Palma      11.00  2.00    0.87  &lt;2e-16 ***
-s(x,y):islLanzarote     11.00  3.43    0.87  &lt;2e-16 ***
-s(x,y):islTenerife      11.00  7.32    0.87  &lt;2e-16 ***
+s(x,y):islFuerteventura 11.00  4.39    0.87   0.005 ** 
+s(x,y):islGran Canaria  11.00  5.89    0.87  &lt;2e-16 ***
+s(x,y):islLa Gomera     11.00  3.97    0.87  &lt;2e-16 ***
+s(x,y):islLa Palma      11.00  2.00    0.87   0.015 *  
+s(x,y):islLanzarote     11.00  3.43    0.87   0.005 ** 
+s(x,y):islTenerife      11.00  7.32    0.87   0.005 ** 
 ---
 Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1</code></pre>
 </div>
 </div>
 <p>The spatial surfaces remains highly significant, but it now performs a different role. With an Adjusted R-squared of 0.959 and a Deviance explained of 96.6%, the physical predictors have successfully explained the main share of the spatial structure. The remaining spatial smooths now capture only the residual, unmodelled variation unique to each island’s geography.</p>
-<p>The sharp reduction in the scale estimate—dropping from 115.5 in the baseline to a mere 30.38 in this final version—highlights how much unexplained variability is removed by accounting for the interaction between clouds and terrain.</p>
+<p>The sharp reduction in the scale estimate—dropping from 106.5 in the baseline to a mere 43.4 in this final version—highlights how much unexplained variability is removed by accounting for the interaction between clouds and terrain.</p>
 <blockquote class="blockquote">
 <p><strong>Why include <code>s(x, y)</code>?</strong><br>
 Even after accounting for physics-like drivers, radiation shows residual patterns (exposure, mesoscale circulation, coastal gradients). A spatial smooth helps absorb that leftover structure and improves the sharpness of the 1km prediction.</p>
@@ -2504,7 +2504,7 @@ font-style: inherit;">"1km Prediction integrating cloud-topography interactions"
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
 background-color: null;
-font-style: inherit;">"GAM Model Refined (Meteosat 4km + MODIS Cloud Data)"</span>,</span>
+font-style: inherit;">"GAM Model Refined (Meteosat 5km + MODIS Cloud Data)"</span>,</span>
 <span>    fill <span class="op" style="color: #5E5E5E;
 background-color: null;
 font-style: inherit;">=</span> <span class="st" style="color: #20794D;
