@@ -2,12 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.12">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2019-01-08">
 <title>Calculating the distance to the sea in R – Dr Dominic Royé</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,15 +65,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-fd2209f8f7f5c037cd60b1325f8cc3d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-cad3c076bfcc671fc53733afef69da86.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-29096cc9eda4322cbeb1bfaab3028d7e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-1e752fc7846aa4ee8c3894c543f57a37.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/academicons-1.9.4/all.css" rel="stylesheet">
@@ -385,7 +387,7 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 
 </section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2019" class="csl-entry quarto-appendix-citeas" role="listitem">
 Royé, Dominic. 2019. <span>“Calculating the Distance to the Sea in
-R.”</span> January 8, 2019. <a href="https://dominicroye.github.io/blog/calculating-the-distance-to-the-sea-in-r/">https://dominicroye.github.io/blog/calculating-the-distance-to-the-sea-in-r/</a>.
+R.”</span> January 8. <a href="https://dominicroye.github.io/blog/calculating-the-distance-to-the-sea-in-r/">https://dominicroye.github.io/blog/calculating-the-distance-to-the-sea-in-r/</a>.
 </div></div></section></div></main><!-- /main --><div id="buymeacoffee" style="text-align: center; ">
     <a href="https://www.buymeacoffee.com/drxeo" target="_blank" data-original-href="https://www.buymeacoffee.com/drxeo"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 </div>
@@ -792,7 +794,7 @@ R.”</span> January 8, 2019. <a href="https://dominicroye.github.io/blog/calcul
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
-<p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+<p>© 2018-<span id="footer-year">2026</span> Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
 <p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
@@ -807,7 +809,20 @@ R.”</span> January 8, 2019. <a href="https://dominicroye.github.io/blog/calcul
 </ul>
 </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+</footer><script>
+// Mantiene actualizado el ano del footer sin necesidad de re-renderizar el sitio.
+(function () {
+  function setYear() {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setYear);
+  } else {
+    setYear();
+  }
+})();
+</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

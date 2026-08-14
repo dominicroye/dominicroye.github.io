@@ -2,12 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.12">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2020-07-24">
 <title>River flow directions – Dr Dominic Royé</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,15 +65,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-fd2209f8f7f5c037cd60b1325f8cc3d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-cad3c076bfcc671fc53733afef69da86.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-29096cc9eda4322cbeb1bfaab3028d7e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-1e752fc7846aa4ee8c3894c543f57a37.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/academicons-1.9.4/all.css" rel="stylesheet">
@@ -326,29 +328,29 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 </div>
 </section><section id="extract-the-angles" class="level2"><h2 class="anchored" data-anchor-id="extract-the-angles">Extract the angles</h2>
 <p>In the next step we have to extract the vertice angles. Unfortunately, as far as I know, it is not possible to extract the attributes with some function from the <code>sf</code> package. Although the function <code><a href="https://r-spatial.github.io/sf/reference/st_coordinates.html">st_coordinates()</a></code> returns the coordinates, it does not include other attributes. Therefore, we must use another way, and that is the open software Quantum GIS in which we can find a tool to extract all the vertice attributes. We could import the vector data into QGIS Desktop and export the vertices from there, but it is also possible to access the QGIS tools from R directly.</p>
-<p>For this, we need to have QGIS installed. The <code>qgisprocess</code> package allows us to use very easily all the tools of the software in R. First we use the <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_configure.html">qgis_configure()</a></code> function to define all the necessary QGIS paths.</p>
+<p>For this, we need to have QGIS installed. The <code>qgisprocess</code> package allows us to use very easily all the tools of the software in R. First we use the <code>qgis_configure()</code> function to define all the necessary QGIS paths.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># paths to QGIS</span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_configure.html">qgis_configure</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu">qgis_configure</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>The <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_algorithms()</a></code> function helps us to search for different QGIS tools. In addition the <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help()</a></code> function specifies the way of usage with all the required parameters.</p>
+<p>The <code>qgis_algorithms()</code> function helps us to search for different QGIS tools. In addition the <code>qgis_show_help()</code> function specifies the way of usage with all the required parameters.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># search tools</span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_algorithms.html">qgis_algorithms</a></span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu">qgis_algorithms</span><span class="op">(</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># usage of tool</span></span>
-<span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_show_help.html">qgis_show_help</a></span><span class="op">(</span><span class="st">"native:extractvertices"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="fu">qgis_show_help</span><span class="op">(</span><span class="st">"native:extractvertices"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
-<p>In our case the tool to extract the vertices is simple and only has one input and one output. The function <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm()</a></code> executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class <code>sf</code> (or <code>sp</code>) and <code>raster</code> that we have imported or created in R. As output we create a geojson, it could also be of another vector format, and we save it in a temporary folder. To obtain the QGIS output we need to use <code><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_extract_output.html">qgis_extract_output()</a></code> function.</p>
+<p>In our case the tool to extract the vertices is simple and only has one input and one output. The function <code>qgis_run_algorithm()</code> executes a QGIS tool indicating the algorithm and its arguments. The advantage of using the algorithm directly from R is that we can pass objects of class <code>sf</code> (or <code>sp</code>) and <code>raster</code> that we have imported or created in R. As output we create a geojson, it could also be of another vector format, and we save it in a temporary folder. To obtain the QGIS output we need to use <code>qgis_extract_output()</code> function.</p>
 <div class="cell">
-<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">river_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_run_algorithm.html">qgis_run_algorithm</a></span><span class="op">(</span></span>
+<div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">river_vertices</span> <span class="op">&lt;-</span> <span class="fu">qgis_run_algorithm</span><span class="op">(</span></span>
 <span>  alg <span class="op">=</span> <span class="st">"native:extractvertices"</span>,</span>
 <span>  INPUT <span class="op">=</span> <span class="va">river_line</span>,</span>
 <span>  OUTPUT <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/file.path.html">file.path</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/tempfile.html">tempdir</a></span><span class="op">(</span><span class="op">)</span>, <span class="st">"rivers_world_vertices.geojson"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span>
 <span></span>
-<span><span class="va">river_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu"><a href="https://r-spatial.github.io/qgisprocess/reference/qgis_extract_output.html">qgis_extract_output</a></span><span class="op">(</span><span class="va">river_vertices</span>, <span class="st">"OUTPUT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span><span class="va">river_vertices</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://r-spatial.github.io/sf/reference/st_read.html">st_read</a></span><span class="op">(</span><span class="fu">qgis_extract_output</span><span class="op">(</span><span class="va">river_vertices</span>, <span class="st">"OUTPUT"</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="selection" class="level2"><h2 class="anchored" data-anchor-id="selection">Selection</h2>
 <p>Before continuing with the distribution estimation of the angles, we filter some rivers of interest. The functions of the <code>tidyverse</code> collection are compatible with the <code>sf</code> package.</p>
@@ -368,11 +370,11 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 </div>
 </section></section><section id="estimate-the-distribution" class="level1"><h1>Estimate the distribution</h1>
 <p>To visualize the distribution we can use either a histogram or a density graph. But in the case of estimating the probability density function, we find a mathematical problem when applying it to circular data. For circular data we should not use the <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code> standard function of R since in our data a direction of 360º is the same at 0º, which would cause errors in this range of values. It is a general problem for different statistical metrics. More statistical details are explained in the <code>circular</code> package. This package allows you to define the characteristics of circular data (unit, data type, rotation, etc.) as an object class in R.</p>
-<p>So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code> function, in which the smoothing bandwidth <code>bw</code> is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, <code><a href="https://rdrr.io/pkg/circular/man/bw.circular.html">bw.nrd.circular()</a></code> that could be used here.</p>
+<p>So what we do is to build a function that estimates the density and returns a table with the angles (x) and the density estimates (y). Since rivers have different lengths, and we want to see differences regardless of that, we normalize the estimates using the maximum value. Unlike the <code><a href="https://rdrr.io/r/stats/density.html">density()</a></code> function, in which the smoothing bandwidth <code>bw</code> is optimized, here it is required to indicate it manually. It is similar to defining the bar width in a histogram. There is an optimization function for the bandwidth, <code>bw.nrd.circular()</code> that could be used here.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">dens_circ</span> <span class="op">&lt;-</span> <span class="kw">function</span><span class="op">(</span><span class="va">x</span><span class="op">)</span> <span class="op">{</span></span>
 <span>  </span>
-<span>  <span class="va">dens</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/pkg/circular/man/density.circular.html">density.circular</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/pkg/circular/man/circular.html">circular</a></span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">angle</span>, units <span class="op">=</span> <span class="st">"degrees"</span><span class="op">)</span>,</span>
+<span>  <span class="va">dens</span> <span class="op">&lt;-</span> <span class="fu">density.circular</span><span class="op">(</span><span class="fu">circular</span><span class="op">(</span><span class="va">x</span><span class="op">$</span><span class="va">angle</span>, units <span class="op">=</span> <span class="st">"degrees"</span><span class="op">)</span>,</span>
 <span>    bw <span class="op">=</span> <span class="fl">70</span>, kernel <span class="op">=</span> <span class="st">"vonmises"</span>,</span>
 <span>    control.circular <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html">list</a></span><span class="op">(</span>units <span class="op">=</span> <span class="st">"degrees"</span><span class="op">)</span></span>
 <span>  <span class="op">)</span></span>
@@ -484,8 +486,7 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 
 
 </section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2020" class="csl-entry quarto-appendix-citeas" role="listitem">
-Royé, Dominic. 2020. <span>“River Flow Directions.”</span> July 24,
-2020. <a href="https://dominicroye.github.io/blog/river-flow-directions/">https://dominicroye.github.io/blog/river-flow-directions/</a>.
+Royé, Dominic. 2020. <span>“River Flow Directions.”</span> July 24. <a href="https://dominicroye.github.io/blog/river-flow-directions/">https://dominicroye.github.io/blog/river-flow-directions/</a>.
 </div></div></section></div></main><!-- /main --><div id="buymeacoffee" style="text-align: center; ">
     <a href="https://www.buymeacoffee.com/drxeo" target="_blank" data-original-href="https://www.buymeacoffee.com/drxeo"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 </div>
@@ -892,7 +893,7 @@ Royé, Dominic. 2020. <span>“River Flow Directions.”</span> July 24,
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
-<p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+<p>© 2018-<span id="footer-year">2026</span> Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
 <p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
@@ -907,7 +908,20 @@ Royé, Dominic. 2020. <span>“River Flow Directions.”</span> July 24,
 </ul>
 </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+</footer><script>
+// Mantiene actualizado el ano del footer sin necesidad de re-renderizar el sitio.
+(function () {
+  function setYear() {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setYear);
+  } else {
+    setYear();
+  }
+})();
+</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

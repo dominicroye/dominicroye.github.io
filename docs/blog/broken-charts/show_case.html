@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.37">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <title>Visualizing monthly temperature – Dr Dominic Royé</title>
@@ -68,7 +68,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-e1d7782fe8219706d67ed97fdfc0d89c.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-cad3c076bfcc671fc53733afef69da86.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../../site_libs/bootstrap/bootstrap-1e752fc7846aa4ee8c3894c543f57a37.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
@@ -912,7 +912,7 @@ Royé, Dominic. n.d. <span>“Visualizing Monthly Temperature.”</span> <a href
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
-<p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+<p>© 2018-<span id="footer-year">2026</span> Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
 <p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
@@ -927,7 +927,20 @@ Royé, Dominic. n.d. <span>“Visualizing Monthly Temperature.”</span> <a href
 </ul>
 </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+</footer><script>
+// Mantiene actualizado el ano del footer sin necesidad de re-renderizar el sitio.
+(function () {
+  function setYear() {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setYear);
+  } else {
+    setYear();
+  }
+})();
+</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {

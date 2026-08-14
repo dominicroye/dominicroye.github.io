@@ -701,7 +701,7 @@ Welcome to BIOCLIM! We are glad you stopped by.
 <footer class="footer">
   <div class="nav-footer">
     <div class="nav-footer-left">
-<p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+<p>© 2018-<span id="footer-year">2026</span> Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
 <p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
@@ -717,6 +717,20 @@ Welcome to BIOCLIM! We are glad you stopped by.
     </div>
   </div>
 </footer>
+<script>
+// Mantiene actualizado el ano del footer sin necesidad de re-renderizar el sitio.
+(function () {
+  function setYear() {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setYear);
+  } else {
+    setYear();
+  }
+})();
+</script>
 <script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;

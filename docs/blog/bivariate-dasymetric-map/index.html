@@ -2,12 +2,15 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta charset="utf-8">
-<meta name="generator" content="quarto-1.9.12">
+<meta name="generator" content="quarto-1.9.38">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 <meta name="author" content="Dominic Royé">
 <meta name="dcterms.date" content="2021-03-01">
 <title>Bivariate dasymetric map – Dr Dominic Royé</title>
 <style>
+/* Default styles provided by pandoc.
+** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+*/
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
 div.columns{display: flex; gap: min(4vw, 1.5em);}
@@ -62,15 +65,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../../site_libs/clipboard/clipboard.min.js"></script>
 <script src="../../site_libs/quarto-html/quarto.js" type="module"></script>
 <script src="../../site_libs/quarto-html/tabsets/tabsets.js" type="module"></script>
-<script src="../../site_libs/quarto-html/axe/axe-check.js" type="module"></script>
 <script src="../../site_libs/quarto-html/popper.min.js"></script>
 <script src="../../site_libs/quarto-html/tippy.umd.min.js"></script>
 <script src="../../site_libs/quarto-html/anchor.min.js"></script>
 <link href="../../site_libs/quarto-html/tippy.css" rel="stylesheet">
-<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-fd2209f8f7f5c037cd60b1325f8cc3d3.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<link href="../../site_libs/quarto-html/quarto-syntax-highlighting-cad3c076bfcc671fc53733afef69da86.css" rel="stylesheet" id="quarto-text-highlighting-styles">
 <script src="../../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
-<link href="../../site_libs/bootstrap/bootstrap-29096cc9eda4322cbeb1bfaab3028d7e.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<link href="../../site_libs/bootstrap/bootstrap-1e752fc7846aa4ee8c3894c543f57a37.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/all.min.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/fontawesome6-6.7.2/latex-fontsize.css" rel="stylesheet">
 <link href="../../site_libs/quarto-contrib/academicons-1.9.4/all.css" rel="stylesheet">
@@ -380,10 +382,10 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 <span><span class="va">mad</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span><span class="va">mad</span>, <span class="fu"><a href="https://dplyr.tidyverse.org/reference/across.html">across</a></span><span class="op">(</span><span class="fu"><a href="https://rdrr.io/r/base/c.html">c</a></span><span class="op">(</span><span class="fl">23</span><span class="op">:</span><span class="fl">27</span>, <span class="fl">30</span><span class="op">:</span><span class="fl">31</span><span class="op">)</span>, <span class="va">as.numeric</span><span class="op">)</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="bivariate-variable" class="level2"><h2 class="anchored" data-anchor-id="bivariate-variable">Bivariate variable</h2>
-<p>To create a bivariate map we must construct a single variable that combines different classes of two variables. Usually we make three classes of each variable which leads to nine combinations; in our case, the average income and the Gini index. The <code>biscale</code> package includes helper functions to carry out this process. With the <code><a href="https://chris-prener.github.io/biscale/reference/bi_class.html">bi_class()</a></code> function we create the classification variable using quantiles as algorithm. Since in both variables we find missing values, we correct those combinations between both variables where an <code>NA</code> appears.</p>
+<p>To create a bivariate map we must construct a single variable that combines different classes of two variables. Usually we make three classes of each variable which leads to nine combinations; in our case, the average income and the Gini index. The <code>biscale</code> package includes helper functions to carry out this process. With the <code>bi_class()</code> function we create the classification variable using quantiles as algorithm. Since in both variables we find missing values, we correct those combinations between both variables where an <code>NA</code> appears.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># create bivariate classification</span></span>
-<span><span class="va">mapbivar</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://chris-prener.github.io/biscale/reference/bi_class.html">bi_class</a></span><span class="op">(</span><span class="va">mad</span>, <span class="va">GINI_2017</span>, <span class="va">RNMP_2017</span>, style <span class="op">=</span> <span class="st">"quantile"</span>, dim <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
+<span><span class="va">mapbivar</span> <span class="op">&lt;-</span> <span class="fu">bi_class</span><span class="op">(</span><span class="va">mad</span>, <span class="va">GINI_2017</span>, <span class="va">RNMP_2017</span>, style <span class="op">=</span> <span class="st">"quantile"</span>, dim <span class="op">=</span> <span class="fl">3</span><span class="op">)</span> <span class="op">|&gt;</span></span>
 <span>              <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span><span class="op">(</span>bi_class <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/ifelse.html">ifelse</a></span><span class="op">(</span><span class="fu"><a href="https://stringr.tidyverse.org/reference/str_detect.html">str_detect</a></span><span class="op">(</span><span class="va">bi_class</span>, <span class="st">"NA"</span><span class="op">)</span>, <span class="cn">NA</span>, <span class="va">bi_class</span><span class="op">)</span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># results</span></span>
@@ -396,10 +398,10 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 </div>
 </section></section><section id="map-building" class="level1"><h1>Map building</h1>
 <section id="legend-and-font" class="level2"><h2 class="anchored" data-anchor-id="legend-and-font">Legend and font</h2>
-<p>Before constructing both maps we must create the legend using the <code><a href="https://chris-prener.github.io/biscale/reference/bi_legend.html">bi_legend()</a></code> function. In the function we define the titles for each variable, the number of dimensions and the color scale. Finally, we add the Montserrat font for the final titles in the graphic.</p>
+<p>Before constructing both maps we must create the legend using the <code>bi_legend()</code> function. In the function we define the titles for each variable, the number of dimensions and the color scale. Finally, we add the Montserrat font for the final titles in the graphic.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="co"># bivariate legend</span></span>
-<span><span class="va">legend2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://chris-prener.github.io/biscale/reference/bi_legend.html">bi_legend</a></span><span class="op">(</span></span>
+<span><span class="va">legend2</span> <span class="op">&lt;-</span> <span class="fu">bi_legend</span><span class="op">(</span></span>
 <span>  pal <span class="op">=</span> <span class="st">"DkViolet"</span>,</span>
 <span>  dim <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>  xlab <span class="op">=</span> <span class="st">"Higher inequality"</span>,</span>
@@ -408,7 +410,7 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 <span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
 </section><section id="dasymetric-map" class="level2"><h2 class="anchored" data-anchor-id="dasymetric-map">Dasymetric map</h2>
-<p>We build this map using <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile()</a></code> for the pixels and <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf()</a></code> for the municipal boundaries. In addition, it will be the map on the right where we also place the legend. To add the legend we use the <code><a href="https://ggplot2.tidyverse.org/reference/annotation_custom.html">annotation_custom()</a></code> function indicating the position in the geographical coordinates of the map. The biscale package also helps us with the color definition via the <code><a href="https://chris-prener.github.io/biscale/reference/bi_scale_fill.html">bi_scale_fill()</a></code> function.</p>
+<p>We build this map using <code><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile()</a></code> for the pixels and <code><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">geom_sf()</a></code> for the municipal boundaries. In addition, it will be the map on the right where we also place the legend. To add the legend we use the <code><a href="https://ggplot2.tidyverse.org/reference/annotation_custom.html">annotation_custom()</a></code> function indicating the position in the geographical coordinates of the map. The biscale package also helps us with the color definition via the <code>bi_scale_fill()</code> function.</p>
 <div class="cell">
 <div class="code-copy-outer-scaffold"><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r code-with-copy"><code class="sourceCode R"><span><span class="va">p2</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggplot.html">ggplot</a></span><span class="op">(</span><span class="va">mapdasi</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/geom_tile.html">geom_tile</a></span><span class="op">(</span></span>
@@ -427,13 +429,13 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 <span>    xmin <span class="op">=</span> <span class="op">-</span><span class="fl">3.25</span>, xmax <span class="op">=</span> <span class="op">-</span><span class="fl">2.65</span>,</span>
 <span>    ymin <span class="op">=</span> <span class="fl">40.55</span>, ymax <span class="op">=</span> <span class="fl">40.95</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://chris-prener.github.io/biscale/reference/bi_scale_fill.html">bi_scale_fill</a></span><span class="op">(</span></span>
+<span>  <span class="fu">bi_scale_fill</span><span class="op">(</span></span>
 <span>    pal <span class="op">=</span> <span class="st">"DkViolet"</span>,</span>
 <span>    dim <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>    na.value <span class="op">=</span> <span class="st">"grey90"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"dasymetric"</span>, x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://chris-prener.github.io/biscale/reference/bi_theme.html">bi_theme</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">bi_theme</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"Montserrat"</span>, size <span class="op">=</span> <span class="fl">30</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span>,</span>
 <span>        plot.margin <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">margin</a></span><span class="op">(</span><span class="fl">5</span>, <span class="fl">50</span>, <span class="fl">5</span>, <span class="fl">5</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fl">4326</span>, clip <span class="op">=</span> <span class="st">"off"</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
@@ -453,13 +455,13 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 <span>    fill <span class="op">=</span> <span class="cn">NA</span>,</span>
 <span>    size <span class="op">=</span> <span class="fl">0.2</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://chris-prener.github.io/biscale/reference/bi_scale_fill.html">bi_scale_fill</a></span><span class="op">(</span></span>
+<span>  <span class="fu">bi_scale_fill</span><span class="op">(</span></span>
 <span>    pal <span class="op">=</span> <span class="st">"DkViolet"</span>,</span>
 <span>    dim <span class="op">=</span> <span class="fl">3</span>,</span>
 <span>    na.value <span class="op">=</span> <span class="st">"grey90"</span></span>
 <span>  <span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/labs.html">labs</a></span><span class="op">(</span>title <span class="op">=</span> <span class="st">"choropleth"</span>, x <span class="op">=</span> <span class="cn">NULL</span>, y <span class="op">=</span> <span class="cn">NULL</span><span class="op">)</span> <span class="op">+</span></span>
-<span>  <span class="fu"><a href="https://chris-prener.github.io/biscale/reference/bi_theme.html">bi_theme</a></span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">bi_theme</span><span class="op">(</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/theme.html">theme</a></span><span class="op">(</span>plot.title <span class="op">=</span> <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/element.html">element_text</a></span><span class="op">(</span>family <span class="op">=</span> <span class="st">"Montserrat"</span>, size <span class="op">=</span> <span class="fl">30</span>, face <span class="op">=</span> <span class="st">"bold"</span><span class="op">)</span><span class="op">)</span> <span class="op">+</span></span>
 <span>  <span class="fu"><a href="https://ggplot2.tidyverse.org/reference/ggsf.html">coord_sf</a></span><span class="op">(</span>crs <span class="op">=</span> <span class="fl">4326</span><span class="op">)</span></span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 </div>
@@ -476,8 +478,8 @@ gtag('config', 'G-NK2N7F46NB', { 'anonymize_ip': true});
 
 
 </section></section><a onclick="window.scrollTo(0, 0); return false;" role="button" id="quarto-back-to-top"><i class="bi bi-arrow-up"></i> Back to top</a><div id="quarto-appendix" class="default"><section class="quarto-appendix-contents" id="quarto-reuse"><h2 class="anchored quarto-appendix-heading">Reuse</h2><div class="quarto-appendix-contents"><div><a rel="license" href="https://creativecommons.org/licenses/by-sa/4.0/">CC BY-SA 4.0</a></div></div></section><section class="quarto-appendix-contents" id="quarto-citation"><h2 class="anchored quarto-appendix-heading">Citation</h2><div><div class="quarto-appendix-secondary-label">For attribution, please cite this work as:</div><div id="ref-royé2021" class="csl-entry quarto-appendix-citeas" role="listitem">
-Royé, Dominic. 2021. <span>“Bivariate Dasymetric Map.”</span> March 1,
-2021. <a href="https://dominicroye.github.io/blog/bivariate-dasymetric-map/">https://dominicroye.github.io/blog/bivariate-dasymetric-map/</a>.
+Royé, Dominic. 2021. <span>“Bivariate Dasymetric Map.”</span> March 1.
+<a href="https://dominicroye.github.io/blog/bivariate-dasymetric-map/">https://dominicroye.github.io/blog/bivariate-dasymetric-map/</a>.
 </div></div></section></div></main><!-- /main --><div id="buymeacoffee" style="text-align: center; ">
     <a href="https://www.buymeacoffee.com/drxeo" target="_blank" data-original-href="https://www.buymeacoffee.com/drxeo"><img src="https://cdn.buymeacoffee.com/buttons/default-orange.png" alt="Buy Me A Coffee" height="41" width="174"></a>
 </div>
@@ -884,7 +886,7 @@ Royé, Dominic. 2021. <span>“Bivariate Dasymetric Map.”</span> March 1,
 </div> <!-- /content -->
 <footer class="footer"><div class="nav-footer">
     <div class="nav-footer-left">
-<p>© 2018-2025 Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
+<p>© 2018-<span id="footer-year">2026</span> Dominic Royé ∙ Made with <a href="https://quarto.org">Quarto</a></p>
 </div>   
     <div class="nav-footer-center">
 <p><a class="link-dark me-1" href="https://bsky.app/profile/drxeo.eu" title="Bluesky" target="_blank" rel="noopener"> <i class="fa-brands fa-bluesky" aria-label="bluesky"></i></a> <a class="link-dark me-1" href="https://www.linkedin.com/in/dominicroye/" title="LinkedIn" target="_blank" rel="noopener"> <i class="fa-brands fa-linkedin" aria-label="linkedin"></i></a> <a class="link-dark me-1" href="https://github.com/dominicroye/" title="github" target="_blank" rel="noopener"> <i class="fa-brands fa-github" aria-label="github"></i></a> <a class="link-dark me-1" href="https://orcid.org/0000-0002-5516-6396" title="orcid" target="_blank" rel="noopener"> <i class="ai  ai-orcid" aria-label="orcid"></i></a> <a class="link-dark me-1" href="https://scholar.google.es/citations?user=EoYa8jUAAAAJ&amp;hl=es" title="Google Scholar" target="_blank" rel="noopener"> <i class="ai  ai-google-scholar" aria-label="google-scholar"></i></a> <a class="link-dark me-1" href="https://www.researchgate.net/profile/Dominic-Roye?ev=hdr_xprf" title="github" target="_blank" rel="noopener"><i class="fa-brands fa-researchgate" aria-label="researchgate"></i></a></p>
@@ -899,7 +901,20 @@ Royé, Dominic. 2021. <span>“Bivariate Dasymetric Map.”</span> March 1,
 </ul>
 </div>
   </div>
-</footer><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+</footer><script>
+// Mantiene actualizado el ano del footer sin necesidad de re-renderizar el sitio.
+(function () {
+  function setYear() {
+    var el = document.getElementById('footer-year');
+    if (el) el.textContent = new Date().getFullYear();
+  }
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', setYear);
+  } else {
+    setYear();
+  }
+})();
+</script><script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
 (function() {
   let previousOnload = window.onload;
   window.onload = () => {
