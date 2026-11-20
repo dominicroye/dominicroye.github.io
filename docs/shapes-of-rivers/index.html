@@ -637,6 +637,7 @@ function frame(ts) {
   for (let i = 0; i < N; i++) { const d = visT[i] - vis[i]; if (Math.abs(d) > 0.004) { vis[i] += d * f; busy = true; } else vis[i] = visT[i]; }
   if (zoomT && performance.now() - zoomT < 150) busy = true;      // lighter frames while zooming or panning; full detail 150 ms after the last change
   step = busy ? 4 : 1; draw();
+  if (!busy && !ptr.size) updateHover();               // after zoom, pan or a transition the pointer may now be over a river
   if (busy) { last = ts; kick(); } else last = 0;
 }
 
@@ -654,7 +655,25 @@ function nearest(mx, my, maxd) {
   }
   return best;
 }
-let pend = null;
+let pend = null, ptrPos = null;
+let hoverTimer = 0, hoverCand = -2;
+const HOVER_IN = 140, HOVER_OUT = 260;                // ms the pointer must rest on a river to highlight it, and how long a highlight sticks after leaving it
+function showHover() {
+  if (hover < 0 || !ptrPos) { tip.style.display = "none"; cv.style.cursor = "default"; return; }
+  const h = hover, [mx, my] = ptrPos;
+  tip.innerHTML = `<strong>${name[h] || t("unnamed")}</strong><span>${fmt(km[h])} ${t("km")} · ${TXT[lang].cont[cont[h]]} · ${t("sinu")} ${sn[h].toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br><span>${t("cl")}</span>`;
+  tip.style.display = "block";
+  const tw = tip.offsetWidth; tip.style.left = Math.min(cw - tw - 8, mx + 14) + "px"; tip.style.top = Math.max(6, my - 14) + "px";
+  cv.style.cursor = "pointer";
+}
+function updateHover() {                              // only against a full-detail frame: the lighter frames leave some vertices stale
+  if (!ptrPos || step !== 1 || anim) return;
+  const c = nearest(ptrPos[0], ptrPos[1], 9);
+  if (c === hover) { clearTimeout(hoverTimer); hoverCand = -2; showHover(); return; }          // still on the highlighted river (or still on empty space)
+  if (c === hoverCand) return;                         // already waiting to switch to this one
+  clearTimeout(hoverTimer); hoverCand = c;
+  hoverTimer = setTimeout(() => { hoverCand = -2; hover = c; showHover(); kick(); }, c >= 0 ? HOVER_IN : HOVER_OUT);
+}
 const ptr = new Map(); let travel = 0;
 cv.addEventListener("pointerdown", e => {
   if (!zoomOn()) return;
@@ -678,25 +697,15 @@ cv.addEventListener("pointermove", e => {
       travel += 99;
     } else if (Z.k > 1) {
       const dx = e.movementX || 0, dy = e.movementY || 0;
-      travel += Math.abs(dx) + Math.abs(dy); Z.ox += dx; Z.oy += dy; clampZ(); hover = -1; tip.style.display = "none"; kick();
+      travel += Math.abs(dx) + Math.abs(dy); Z.ox += dx; Z.oy += dy; clampZ(); clearTimeout(hoverTimer); hoverCand = -2; hover = -1; tip.style.display = "none"; kick();
     }
     return;
   }
   if (e.pointerType !== "mouse") return;
-  const r = cv.getBoundingClientRect(); pend = [e.clientX - r.left, e.clientY - r.top];
-  requestAnimationFrame(() => {
-    if (!pend) return; const [mx, my] = pend; pend = null;
-    const h = nearest(mx, my, 7);
-    if (h !== hover) { hover = h; kick(); }
-    if (h >= 0) {
-      tip.innerHTML = `<strong>${name[h] || t("unnamed")}</strong><span>${fmt(km[h])} ${t("km")} · ${TXT[lang].cont[cont[h]]} · ${t("sinu")} ${sn[h].toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br><span>${t("cl")}</span>`;
-      tip.style.display = "block";
-      const tw = tip.offsetWidth; tip.style.left = Math.min(cw - tw - 8, mx + 14) + "px"; tip.style.top = Math.max(6, my - 14) + "px";
-    } else tip.style.display = "none";
-    cv.style.cursor = h >= 0 ? "pointer" : "default";
-  });
+  const r = cv.getBoundingClientRect(); ptrPos = [e.clientX - r.left, e.clientY - r.top];
+  if (!pend) pend = requestAnimationFrame(() => { pend = null; updateHover(); });
 });
-cv.addEventListener("pointerleave", () => { hover = -1; tip.style.display = "none"; kick(); });
+cv.addEventListener("pointerleave", () => { ptrPos = null; clearTimeout(hoverTimer); hoverCand = -2; hover = -1; tip.style.display = "none"; kick(); });
 const $ = id => document.getElementById(id);
 cv.addEventListener("click", e => {
   if (travel > 4) { travel = 0; return; }
