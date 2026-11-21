@@ -55,6 +55,8 @@ a.info { display:inline-flex; align-items:center; text-decoration:none; }
 .pop a { color:var(--accent); text-underline-offset:3px; }
 .lang button { border:0; background:none; color:var(--muted); padding:4px 7px; border-radius:6px; font-weight:700; letter-spacing:.06em; }
 .lang button[aria-pressed="true"] { color:var(--ink); background:rgba(143,176,214,.16); }
+.foc { position:absolute; width:22px; height:22px; padding:0; border-radius:50%; border:1px solid rgba(143,176,214,.5); background:rgba(11,27,51,.7); color:#EAF4FF; font:700 15px/1 Lato,sans-serif; cursor:pointer; display:grid; place-items:center; z-index:3; }
+.foc:hover { background:rgba(255,255,255,.18); }
 .stage { position:relative; height:min(82vh,880px); min-height:480px; overflow:hidden; }
 canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:pan-y; }
 .tip { position:absolute; pointer-events:none; background:#0F2544; border:1px solid var(--line); border-radius:8px; padding:6px 10px; font-size:13px; white-space:nowrap; display:none; z-index:3; }
@@ -321,7 +323,7 @@ const bySin = [...Array(N).keys()].filter(i => name[i] && km[i] >= 500 && sn[i] 
 function highlighted() {
   const out = [], seen = new Set(), pool = opts.hiBy === "sin" ? bySin : favIdx.concat(byLen);
   if (opts.layout === "cont") {                         // by continent: the first n of each continent's own ranking
-    for (let c = 0; c < 6; c++) { let n = 0; for (const i of pool) { if (n >= opts.nCont) break; if (cont[i] === c && visT[i] > 0 && !seen.has(i)) { seen.add(i); out.push(i); n++; } } }
+    for (let c = 0; c < 6; c++) { let n = 0; for (const i of pool) { if (n >= (focOn() ? (c === opts.focus ? Math.max(opts.nCont, 5) : 0) : opts.nCont)) break; if (cont[i] === c && visT[i] > 0 && !seen.has(i)) { seen.add(i); out.push(i); n++; } } }
     return out;
   }
   for (const i of pool) { if (out.length >= opts.nAll) break; if (visT[i] > 0 && !seen.has(i)) { seen.add(i); out.push(i); } }
@@ -336,7 +338,7 @@ const TXT = {
     v_all: "Together", v_cont: "By continent", minlen: "Length", reset: "Reset to defaults", dl: "Download the poster (PDF)", find: "Find a river…", outlines: "Continent outlines",
     famous: "Highlight rivers", showunn: "Show unnamed rivers", nhi: "Highlighted rivers", nhi_c: "Highlighted per continent", opacity: "Opacity", width: "Line width", minsin: "Sinuosity", zoomlbl: "Zoom (scroll and drag)", h_len: "Longest", h_sin: "Most sinuous", sinu: "sinuosity",
     i_data: "Rivers: GSriver (Liu et al., Figshare, CC BY 4.0), a global river network that fuses HydroRIVERS, OpenStreetMap and GRIT, so every river is a connected course from source to mouth following the main stem. 4,152 courses: all rivers of 400 km or more, plus shorter ones with a large drainage area (10,000 km² or more) and the five largest rivers of each country. Names come from OpenStreetMap, matched to English names with Natural Earth for the main rivers; a few are renamed by hand (e.g. Missouri–Mississippi, Darling–Murray). Where several rivers form one main stem, the chain is shown under its best-known name. Continents come from Natural Earth country boundaries, with Russia split at 60° E. Lengths come from the full-resolution lines; each river is resampled to 200 points for display.", i_how: "Each river is drawn from its source (or mouth) with its real bearing kept (Radial) or rotated so that the mouth points north (Drop). With equal length every river is scaled to the same length; with fixed ends every river is scaled by the straight distance from source to mouth, so all of them start and end at the same two points and only the shape of the course between them is left; with real length distances are in km and the rings mark 500 and 1,000 km and then every 1,000 km (finer when no river reaches 1,000 km), only where some river reaches that far. Sinuosity is the length of the course divided by the straight distance from source to mouth (1 = straight); it is unreliable where a line is fragmentary or the river doubles back (values above 5 are left out of the \"most sinuous\" ranking).", h_data: "Data", h_how: "How it is built", h_author: "Author", foot1: "Data: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
-    cont: ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"],
+    cont: ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"], f_in: "Focus on", f_out: "Show all continents",
     sub: n => `${n.toLocaleString("en")} rivers`, shown: (a, b) => `${a.toLocaleString("en")} of ${b.toLocaleString("en")} rivers shown`,
     unnamed: "Unnamed river", km: "km", cl: "Click to pin", pinned: "Remove", rivers: "rivers" },
   es: { title: "La forma de los ríos", by: "por", g_shape: "Forma", g_view: "Vista", g_filter: "Filtro", g_style: "Aspecto",
@@ -344,7 +346,7 @@ const TXT = {
     v_all: "Juntos", v_cont: "Por continente", minlen: "Longitud", reset: "Restablecer valores", dl: "Descargar el póster (PDF)", find: "Buscar un río…", outlines: "Contornos de continentes",
     famous: "Destacar ríos", showunn: "Mostrar ríos sin nombre", nhi: "Ríos destacados", nhi_c: "Destacados por continente", opacity: "Opacidad", width: "Grosor", minsin: "Sinuosidad", zoomlbl: "Zoom (rueda y arrastrar)", h_len: "Más largos", h_sin: "Más sinuosos", sinu: "sinuosidad",
     i_data: "Ríos: GSriver (Liu et al., Figshare, CC BY 4.0), una red fluvial global que fusiona HydroRIVERS, OpenStreetMap y GRIT, de modo que cada río es un cauce continuo desde el nacimiento hasta la desembocadura siguiendo el eje principal. 4.152 cauces: todos los de 400 km o más, más otros más cortos con una cuenca grande (10.000 km² o más) y los cinco mayores de cada país. Los nombres vienen de OpenStreetMap, emparejados con los nombres en inglés de Natural Earth para los ríos principales; unos pocos se renombran a mano (p. ej. Missouri–Mississippi, Darling–Murray). Cuando varios ríos forman un mismo eje principal, la cadena se muestra con su nombre más conocido. Los continentes salen de las fronteras de países de Natural Earth, con Rusia partida en 60° E. Las longitudes salen de las líneas a resolución completa; cada río se remuestrea a 200 puntos para dibujarlo.", i_how: "Cada río se dibuja desde su nacimiento (o desembocadura) con su rumbo real (Radial) o girado para que la desembocadura mire al norte (Gota). Con longitud igual todos se escalan a la misma longitud; con extremos fijos cada río se escala por la distancia en línea recta entre nacimiento y desembocadura, de modo que todos empiezan y acaban en los mismos dos puntos y solo queda la forma del recorrido entre ambos; con longitud real las distancias son en km y los círculos marcan 500 y 1.000 km y después cada 1.000 km (más finos si ningún río llega a 1.000 km), solo donde algún río llega tan lejos. La sinuosidad es la longitud del cauce dividida por la distancia en línea recta entre nacimiento y desembocadura (1 = recto); no es fiable si la línea está fragmentada o el río da la vuelta (los valores por encima de 5 se excluyen del ranking de «más sinuosos»).", h_data: "Datos", h_how: "Cómo está hecho", h_author: "Autor", foot1: "Datos: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
-    cont: ["África", "Asia", "Europa", "Norteamérica", "Sudamérica", "Oceanía"],
+    cont: ["África", "Asia", "Europa", "Norteamérica", "Sudamérica", "Oceanía"], f_in: "Ampliar", f_out: "Mostrar todos los continentes",
     sub: n => `${n.toLocaleString("es")} ríos`, shown: (a, b) => `${a.toLocaleString("es")} de ${b.toLocaleString("es")} ríos visibles`,
     unnamed: "Río sin nombre", km: "km", cl: "Clic para fijar", pinned: "Quitar", rivers: "ríos" }
 };
@@ -352,7 +354,7 @@ let lang = "en";                                      // English by default; the
 const t = k => TXT[lang][k];
 
 /* ---------- state ---------- */
-const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
+const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
   minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false, conts: new Set([0, 1, 2, 3, 4, 5]), pinned: new Set() };
 const derive = () => ({ align: opts.shape !== "map", rotate: opts.shape === "drop", scale: opts.shape !== "map" && opts.length !== "real", fix: opts.shape !== "map" && opts.length === "fixed" });
 let hover = -1;
@@ -360,6 +362,22 @@ const Z = { k: 1, ox: 0, oy: 0 };                       // optional screen-space
 const zoomOn = () => opts.zoom && opts.layout === "all";
 const P = { A: 1, R: 1, S: 1, M: 0, L: 0, F: 0 };        // animated mix of the four transforms
 const tgtOf = () => { const d = derive(); return { A: d.align ? 1 : 0, R: d.rotate ? 1 : 0, S: d.scale ? 1 : 0, M: opts.anchor === "mouth" ? 1 : 0, L: opts.layout === "cont" ? 1 : 0, F: d.fix ? 1 : 0 }; };
+const focOn = () => opts.layout === "cont" && opts.focus >= 0;
+const GEO = new Float64Array(36);                       // per continent panel: x, y, w, h, heading height, gap (animated)
+function geoTarget() {                                  // grid of six panels, or one big panel with the other five as a thin row on top
+  const { cellW, cellH } = grid(), o = new Float64Array(36), foc = focOn() ? opts.focus : -1, sh = Math.min(ch * 0.22, 128), tw = cw / 5;
+  let slot = 0;
+  for (let c = 0; c < 6; c++) {
+    const g = foc < 0 ? [(c % cols) * cellW, Math.floor(c / cols) * cellH, cellW, cellH, 30, GAP] : c === foc ? [0, sh, cw, ch - sh, 30, GAP] : [slot++ * tw, 0, tw, sh, 20, 10];
+    o.set(g, c * 6);
+  }
+  return o;
+}
+const geo = c => ({ x: GEO[c * 6], y: GEO[c * 6 + 1], w: GEO[c * 6 + 2], h: GEO[c * 6 + 3], lab: GEO[c * 6 + 4], gap: GEO[c * 6 + 5] });
+const kOf = c => {
+  const g = geo(c), w = Math.max(0, Math.min(1, (g.w / cw - 0.34) / 0.66)), mx = Math.exp(lerp(Math.log(V.mhx), Math.log(V.ex[c]), w)), my = Math.exp(lerp(Math.log(V.mhy), Math.log(V.ey[c]), w));   // the focused panel (wide) is framed on its own continent
+  return Math.min((g.w - g.gap) * 0.46 / mx, (g.h - 2 * g.lab - g.gap / 2) * 0.46 / my);
+};
 const vis = new Float32Array(N).fill(1), visT = new Float32Array(N).fill(1);
 
 const cv = document.getElementById("cv"), ctx = cv.getContext("2d"), stage = document.getElementById("stage"), tip = document.getElementById("tip");
@@ -414,8 +432,7 @@ function computeView(Q) {                              // frames the rivers that
   }
   let U0 = INF, U1 = -INF, V0 = INF, V1 = -INF;
   const b = mkBox(X0, X1, Y0, Y1);
-  const V = { c0x: b.cx, c0y: b.cy, k0: Math.min(cw * 0.46 / b.hx, (ch - 36) * 0.46 / b.hy), cen: [], kp: 1 };
-  const { cellW, cellH } = grid();
+  const V = { c0x: b.cx, c0y: b.cy, k0: Math.min(cw * 0.46 / b.hx, (ch - 36) * 0.46 / b.hy), cen: [], mhx: 1, mhy: 1 };
   let mhx = 1, mhy = 1;
   for (let c = 0; c < 6; c++) {
     if (c0[c] >= INF) { V.cen.push([0, 0]); continue; }                       // continent with no visible river: it does not take part in the framing
@@ -425,22 +442,26 @@ function computeView(Q) {                              // frames the rivers that
   if (Q.A > 0.5 && U0 < INF) {            // aligned: one shared frame, so every panel has its origin at the same spot
     const u = mkBox(U0, U1, V0, V1); V.cen = V.cen.map(() => [u.cx, u.cy]); mhx = u.hx; mhy = u.hy;
   }
-  V.kp = Math.min((cellW - GAP) * 0.46 / mhx, (cellH - 60 - GAP / 2) * 0.46 / mhy);
+  V.mhx = mhx; V.mhy = mhy; V.ex = []; V.ey = [];      // ex, ey: the extent of each continent on its own, used to fill the panel when it is the focused one
+  for (let c = 0; c < 6; c++) {
+    if (c0[c] >= INF) { V.ex.push(1); V.ey.push(1); continue; }
+    V.ex.push(Math.max(1, V.cen[c][0] - c0[c], c1[c] - V.cen[c][0])); V.ey.push(Math.max(1, V.cen[c][1] - d0[c], d1[c] - V.cen[c][1]));
+  }
   return V;
 }
 const GAP = 36;                                       // breathing room between facets, in px
 const lerp = (a, b, e) => a + (b - a) * e;
 function lerpView(a, b, e) {
   return { c0x: lerp(a.c0x, b.c0x, e), c0y: lerp(a.c0y, b.c0y, e), k0: Math.exp(lerp(Math.log(a.k0), Math.log(b.k0), e)),
-    kp: Math.exp(lerp(Math.log(a.kp), Math.log(b.kp), e)), cen: a.cen.map((c, i) => [lerp(c[0], b.cen[i][0], e), lerp(c[1], b.cen[i][1], e)]) };
+    mhx: Math.exp(lerp(Math.log(a.mhx), Math.log(b.mhx), e)), mhy: Math.exp(lerp(Math.log(a.mhy), Math.log(b.mhy), e)), ex: a.ex.map((v, i) => lerp(v, b.ex[i], e)), ey: a.ey.map((v, i) => lerp(v, b.ey[i], e)), cen: a.cen.map((c, i) => [lerp(c[0], b.cen[i][0], e), lerp(c[1], b.cen[i][1], e)]) };
 }
 let V = null, anim = null;
 const reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
 function retarget(animate = true) {
-  resetZ();
-  const toP = tgtOf(), toV = computeView(toP);
-  if (!animate || reduce || !V) { Object.assign(P, toP); V = toV; anim = null; kick(); return; }
-  anim = { t0: performance.now(), dur: 1100, fromP: { ...P }, toP, fromV: V, toV };
+  resetZ(); if (opts.layout !== "cont") opts.focus = -1;
+  const toP = tgtOf(), toV = computeView(toP), toGeo = geoTarget();
+  if (!animate || reduce || !V) { Object.assign(P, toP); V = toV; GEO.set(toGeo); anim = null; kick(); return; }
+  anim = { t0: performance.now(), dur: 1100, fromP: { ...P }, toP, fromV: V, toV, fromGeo: Float64Array.from(GEO), toGeo };
   kick();
 }
 let fitTimer = 0;
@@ -448,7 +469,7 @@ function refit() {                                    // after a filter change, 
   if (!V) return; const to = anim ? anim.toP : tgtOf(), toV = computeView(to);
   if (anim) { anim.toV = toV; kick(); return; }
   if (reduce) { V = toV; kick(); return; }
-  anim = { t0: performance.now(), dur: 700, fromP: { ...P }, toP: to, fromV: V, toV }; kick();
+  anim = { t0: performance.now(), dur: 700, fromP: { ...P }, toP: to, fromV: V, toV, fromGeo: Float64Array.from(GEO), toGeo: geoTarget() }; kick();
 }
 const ease = u => u < .5 ? 4 * u * u * u : 1 - Math.pow(-2 * u + 2, 3) / 2;
 
@@ -457,6 +478,7 @@ const alphaOf = r => Math.min(1, 2.8 * (0.07 + 0.25 * r) * opts.op * (1 + 1.8 * 
 const widthOf = r => (0.35 + 1.5 * Math.pow(r, 0.8)) * opts.lw * (1 + 0.8 * (1 - P.A)) * Math.pow(Z.k, 0.25);
 const hex = h => [1, 3, 5].map(k => parseInt(h.slice(k, k + 2), 16));
 const mix = (c, L) => { const a = hex(MONO), b = hex(c); return `rgb(${a.map((v, k) => Math.round(v + (b[k] - v) * L)).join(",")})`; };
+const CODE = ["AF", "AS", "EU", "NA", "SA", "OC"];
 const colorOf = i => mix(COL[cont[i]], P.L);
 const fmt = n => n.toLocaleString(lang);
 
@@ -474,18 +496,18 @@ const rx0 = new Float32Array(N), rx1 = new Float32Array(N), ry0 = new Float32Arr
 let zoomT = 0;                                         // time of the last zoom/pan change: while it is recent we draw a lighter frame, then the full one
 function project() {
   fillWorld(P, wx, wy, step, true);
-  const { cellW, cellH } = grid(), L = P.L, A1 = 1 - P.A;
+  const L = P.L, A1 = 1 - P.A, PX = [], PY = [], KP = [];
+  for (let c = 0; c < 6; c++) { const g = geo(c); PX.push(g.x + g.w / 2); PY.push(g.y + g.h / 2 + 4); KP.push(kOf(c)); }
   for (let i = 0; i < N; i++) {
     if (vis[i] < 0.02) continue;
-    const c = cont[i], col = c % cols, row = Math.floor(c / cols);
-    const pcx = (col + .5) * cellW, pcy = row * cellH + 34 + (cellH - 60) / 2;
+    const c = cont[i], pcx = PX[c], pcy = PY[c], kp = KP[c];
     const ccx = ctrC[c][0] * A1 + V.cen[c][0], ccy = ctrC[c][1] * A1 + V.cen[c][1];
     let m0 = 1e9, m1 = -1e9, n0 = 1e9, n1 = -1e9;
     for (let k = 0; k < NP; k = (k + step >= NP && k < NP - 1) ? NP - 1 : k + step) {
       const j = i * NP + k, X = wx[j], Y = wy[j];
       const ax = (X - V.c0x) * V.k0 + cw / 2, ay = ch / 2 - (Y - V.c0y) * V.k0;
       if (L < 0.001) { const u = ax * Z.k + Z.ox, v = ay * Z.k + Z.oy; sx[j] = u; sy[j] = v; if (u < m0) m0 = u; if (u > m1) m1 = u; if (v < n0) n0 = v; if (v > n1) n1 = v; continue; }
-      const bx = pcx + (X - ccx) * V.kp, by = pcy - (Y - ccy) * V.kp;
+      const bx = pcx + (X - ccx) * kp, by = pcy - (Y - ccy) * kp;
       sx[j] = lerp(ax, bx, L); sy[j] = lerp(ay, by, L);
       if (sx[j] < m0) m0 = sx[j]; if (sx[j] > m1) m1 = sx[j]; if (sy[j] < n0) n0 = sy[j]; if (sy[j] > n1) n1 = sy[j];
     }
@@ -600,15 +622,14 @@ function drawLabels(list) {
 }
 function drawOutlines() {
   const a = (1 - P.A) * (opts.outlines ? 1 : 0); if (a < 0.01) return;
-  const { cellW, cellH } = grid(), A1 = 1 - P.A, L = P.L;
+  const A1 = 1 - P.A, L = P.L;
   ctx.save(); ctx.lineWidth = 0.9; ctx.lineJoin = "round";
   for (let c = 0; c < 6; c++) {
-    const col = c % cols, row = Math.floor(c / cols);
-    const pcx = (col + .5) * cellW, pcy = row * cellH + 34 + (cellH - 60) / 2;
+    const g = geo(c), kp = kOf(c), pcx = g.x + g.w / 2, pcy = g.y + g.h / 2 + 4;
     const ccx = ctrC[c][0] * A1 + V.cen[c][0], ccy = ctrC[c][1] * A1 + V.cen[c][1];
     ctx.save();
     if (L > 0.001) { // clip grows from the whole canvas down to this panel's cell
-      const x0 = lerp(0, col * cellW + GAP / 2, L), y0 = lerp(0, row * cellH + 30, L), x1 = lerp(cw, (col + 1) * cellW - GAP / 2, L), y1 = lerp(ch, (row + 1) * cellH - GAP / 4, L);
+      const x0 = lerp(0, g.x + g.gap / 2, L), y0 = lerp(0, g.y + g.lab, L), x1 = lerp(cw, g.x + g.w - g.gap / 2, L), y1 = lerp(ch, g.y + g.h - g.gap / 4, L);
       ctx.beginPath(); ctx.rect(x0, y0, x1 - x0, y1 - y0); ctx.clip();
     }
     for (const ring of OUT[c]) {
@@ -616,7 +637,7 @@ function drawOutlines() {
       for (let k = 0; k < ring.length; k += 2) {
         const X = ring[k], Y = ring[k + 1];
         const ax = (X - V.c0x) * V.k0 + cw / 2, ay = ch / 2 - (Y - V.c0y) * V.k0;
-        const bx = pcx + (X - ccx) * V.kp, by = pcy - (Y - ccy) * V.kp;
+        const bx = pcx + (X - ccx) * kp, by = pcy - (Y - ccy) * kp;
         const x = lerp(ax, bx, L) * Z.k + Z.ox, y = lerp(ay, by, L) * Z.k + Z.oy;
         k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
       }
@@ -626,19 +647,37 @@ function drawOutlines() {
   }
   ctx.restore();
 }
+const ICON = {                                          // four arrows: outwards to expand a panel, inwards to collapse it
+  out: '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2v4M2 2l4.5 4.5M10 2h4v4M14 2l-4.5 4.5M2 10v4h4M2 14l4.5-4.5M14 10v4h-4M14 14l-4.5-4.5"/></svg>',
+  in: '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4V2M6 6L2 2M10 2v4h4M10 6l4-4M2 10h4v4M6 10l-4 4M14 10h-4v4M10 10l4 4"/></svg>' };
+const focBtns = [];
+for (let c = 0; c < 6; c++) {
+  const b = document.createElement("button"); b.type = "button"; b.className = "foc"; b.style.visibility = "hidden";
+  b.addEventListener("click", () => { opts.focus = opts.focus === c ? -1 : c; retarget(); });
+  stage.appendChild(b); focBtns.push(b);
+}
+let focLang = "";
+function placeFocusButtons() {
+  const on = P.L > 0.02;
+  focBtns.forEach((b, c) => {
+    b.style.visibility = on ? "visible" : "hidden"; if (!on) return;
+    const g = geo(c), me = focOn() && opts.focus === c;
+    b.style.left = (g.x + g.w - 28) + "px"; b.style.top = (g.y + 3) + "px"; b.style.opacity = P.L; b.style.pointerEvents = P.L > 0.9 ? "auto" : "none";
+    const st = me ? "in" : "out"; if (b.dataset.st !== st) { b.dataset.st = st; b.innerHTML = ICON[st]; }
+    const lab = me ? TXT[lang].f_out : TXT[lang].f_in + " " + TXT[lang].cont[c]; if (b.title !== lab) { b.title = lab; b.setAttribute("aria-label", lab); }
+  });
+}
 function draw() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.globalAlpha = 1; ctx.fillStyle = BG; ctx.fillRect(0, 0, cw, ch);
   project(); drawOutlines();
-  const { cellW, cellH } = grid();
   // distance rings: only when everything shares an anchor and lengths are real
   const ringA = P.A * (1 - P.S);
   if (ringA > 0.01) {
     if (P.L < 0.999) ringsAt(((0 - V.c0x) * V.k0 + cw / 2) * Z.k + Z.ox, (ch / 2 + V.c0y * V.k0) * Z.k + Z.oy, V.k0 * Z.k, ringA * (1 - P.L), null, true, reachOf(-1));
     if (P.L > 0.001) for (let c = 0; c < 6; c++) {
-      const col = c % cols, row = Math.floor(c / cols);
-      const pcx = (col + .5) * cellW, pcy = row * cellH + 34 + (cellH - 60) / 2;
-      ringsAt(pcx - V.cen[c][0] * V.kp, pcy + V.cen[c][1] * V.kp, V.kp, ringA * P.L, [col * cellW + GAP / 2, row * cellH + 30, cellW - GAP, cellH - 30 - GAP / 2], true, reachOf(c));
+      const g = geo(c), kp = kOf(c), pcx = g.x + g.w / 2, pcy = g.y + g.h / 2 + 4;
+      ringsAt(pcx - V.cen[c][0] * kp, pcy + V.cen[c][1] * kp, kp, ringA * P.L, [g.x + g.gap / 2, g.y + g.lab, g.w - g.gap, g.h - g.lab - g.gap / 2], true, reachOf(c));
     }
   }
   // all rivers, shortest first so the long ones sit on top
@@ -662,10 +701,12 @@ function draw() {
       ctx.stroke();
     }
   }
+  const thin = step > 1 && anim;                        // while a transition runs, draw every other river a little stronger: half the strokes, same look
   for (const i of order) {
     if (step > 1 && km[i] < 400 && vis[i] >= 0.98) continue;
     if (vis[i] < 0.02 || offscreen(i)) continue;
-    ctx.globalAlpha = alphaOf(rel[i]) * vis[i]; ctx.lineWidth = widthOf(rel[i]); ctx.strokeStyle = colorOf(i);
+    if (thin && (i & 1) && rel[i] < 0.9) continue;
+    ctx.globalAlpha = Math.min(1, alphaOf(rel[i]) * vis[i] * (thin && rel[i] < 0.9 ? 1.6 : 1)); ctx.lineWidth = widthOf(rel[i]); ctx.strokeStyle = colorOf(i);
     path(i); ctx.stroke();
   }
   // highlighted rivers
@@ -685,19 +726,22 @@ function draw() {
   if (P.L > 0.01) {
     ctx.textBaseline = "alphabetic";
     for (let c = 0; c < 6; c++) {
-      const col = c % cols, row = Math.floor(c / cols);
-      let n = 0; for (let i = 0; i < N; i++) if (cont[i] === c && visT[i] > 0) n++;
-      ctx.globalAlpha = P.L; ctx.fillStyle = COL[c]; ctx.font = "900 15px Lato, sans-serif";
-      ctx.fillText(TXT[lang].cont[c].toUpperCase(), col * cellW + 14, row * cellH + 22);
-      ctx.fillStyle = INK; ctx.globalAlpha = P.L * 0.75; ctx.font = "400 12px Lato, sans-serif";
-      ctx.fillText(`${fmt(n)} ${t("rivers")}`, col * cellW + 14 + ctx.measureText(TXT[lang].cont[c].toUpperCase()).width * 1.35 + 8, row * cellH + 22);
+      const g = geo(c); let n = 0; for (let i = 0; i < N; i++) if (cont[i] === c && visT[i] > 0) n++;
+      const fs = 11 + (g.lab - 20) * 0.4, full = TXT[lang].cont[c].toUpperCase();
+      ctx.globalAlpha = P.L; ctx.fillStyle = COL[c]; ctx.font = `900 ${fs}px Lato, sans-serif`;
+      const label = ctx.measureText(full).width > g.w - 46 ? CODE[c] : full, ty = g.y + g.lab - 8;
+      ctx.fillText(label, g.x + 14, ty);
+      const room = g.w - 14 - ctx.measureText(label).width * 1.35 - 8 - 34;
+      ctx.fillStyle = INK; ctx.globalAlpha = P.L * 0.75 * Math.max(0, Math.min(1, (room - 40) / 30)) * Math.max(0, Math.min(1, (g.lab - 20) / 8)); ctx.font = "400 12px Lato, sans-serif";
+      if (ctx.globalAlpha > 0.01) ctx.fillText(`${fmt(n)} ${t("rivers")}`, g.x + 14 + ctx.measureText(label).width * 1.35 + 8, ty);
     }
   }
+  placeFocusButtons();
   ctx.globalAlpha = 1;
 }
 
 /* ---------- loop ---------- */
-let raf = 0, last = 0;
+let raf = 0, last = 0, lastStep = 1;
 function kick() { if (!raf) raf = requestAnimationFrame(frame); }
 function frame(ts) {
   raf = 0; const dt = last ? Math.min(60, ts - last) : 16; last = ts;
@@ -706,13 +750,16 @@ function frame(ts) {
     const u = Math.min(1, (ts - anim.t0) / anim.dur), e = ease(u);
     for (const k of ["A", "R", "S", "M", "L", "F"]) P[k] = lerp(anim.fromP[k], anim.toP[k], e);
     V = lerpView(anim.fromV, anim.toV, e);
-    if (u >= 1) { Object.assign(P, anim.toP); V = anim.toV; anim = null; } else busy = true;
+    for (let k = 0; k < 36; k++) GEO[k] = lerp(anim.fromGeo[k], anim.toGeo[k], e);
+    if (u >= 1) { Object.assign(P, anim.toP); V = anim.toV; GEO.set(anim.toGeo); anim = null; } else busy = true;
   }
   const f = reduce ? 1 : 1 - Math.exp(-dt / 90);
   for (let i = 0; i < N; i++) { const d = visT[i] - vis[i]; if (Math.abs(d) > 0.004) { vis[i] += d * f; busy = true; } else vis[i] = visT[i]; }
   if (zoomT && performance.now() - zoomT < 150) busy = true;      // lighter frames while zooming or panning; full detail 150 ms after the last change
-  step = busy ? 4 : 1; draw();
-  if (!busy && !ptr.size) updateHover();               // after zoom, pan or a transition the pointer may now be over a river
+  step = busy ? (anim ? 7 : 4) : 1;                   // a running transition is drawn coarser still
+  if (busy) lastStep = step; else if (lastStep > 1) { step = 2; lastStep = 1; setTimeout(kick, 90); }   // on settling: a half-detail frame at once, the full-detail one right after (no freeze)
+  draw();
+  if (!busy && step === 1 && !ptr.size) updateHover();               // after zoom, pan or a transition the pointer may now be over a river
   if (busy) { last = ts; kick(); } else last = 0;
 }
 
@@ -866,7 +913,7 @@ dual("minkm", "maxkm", () => { opts.minKm = kmOf(+$("minkm").value); opts.maxKm 
 $("minkm").value = posOf(opts.minKm); $("maxkm").value = 1000;
 fetch("shapes-of-rivers-poster.pdf", { method: "HEAD" }).then(r => { if (r.ok) $("dl").hidden = false; }).catch(() => {});   // show the download button only when the PDF is served next to this page
 $("reset").addEventListener("click", () => {
-  Object.assign(opts, { shape: "drop", length: "equal", anchor: "source", layout: "all", outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
+  Object.assign(opts, { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
     minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false });
   opts.conts = new Set([0, 1, 2, 3, 4, 5]); opts.pinned = new Set();
   $("minkm").value = posOf(520); $("maxkm").value = 1000; $("minsin").value = 1; $("maxsin").value = 5;
@@ -914,7 +961,7 @@ for (const g of ALIAS_GROUPS) for (const x of g) if (!normIdx.has(norm(x))) { co
 function resize() {
   const r = stage.getBoundingClientRect(); cw = Math.max(300, r.width); ch = Math.max(300, r.height); dpr = Math.min(2, window.devicePixelRatio || 1);
   cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
-  V = computeView(tgtOf()); anim = null; Object.assign(P, tgtOf()); clampZ(); kick();
+  V = computeView(tgtOf()); anim = null; Object.assign(P, tgtOf()); GEO.set(geoTarget()); clampZ(); kick();
 { const combos = [[0, 0, 0, 0]]; for (const R of [0, 1]) for (const S of [0, 1]) for (const M of [0, 1]) combos.push([1, R, S, M]);   // warm the view cache while idle so the first shape change is instant
   for (const R of [0, 1]) for (const M of [0, 1]) combos.push([1, R, 1, M, 1]);
   combos.forEach((c, n) => setTimeout(() => { if (!anim) bounds({ A: c[0], R: c[1], S: c[2], M: c[3], F: c[4] || 0 }); }, 600 + n * 250)); }
