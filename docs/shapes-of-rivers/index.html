@@ -173,6 +173,7 @@ footer { grid-column:1/-1; color:var(--muted); font-size:12px; display:flex; fle
 <div class="seg small" id="length">
   <button type="button" data-v="real" data-i="l_real">Real length</button>
   <button type="button" data-v="equal" data-i="l_equal">Equal length</button>
+  <button type="button" data-v="fixed" data-i="l_fixed">Fixed ends</button>
 </div>
 <div class="seg small" id="anchor">
   <button type="button" data-v="source" data-i="a_src">From source</button>
@@ -281,10 +282,11 @@ const pts = new Float32Array(T * 2), eep = new Float32Array(T * 2);      // pts:
 const name = D.rivers.map(r => r.n), km = D.rivers.map(r => r.k), cont = D.rivers.map(r => r.c);
 const sn = D.rivers.map(r => r.s);
 const gx = D.rivers.map(r => r.g[0]), gy = D.rivers.map(r => r.g[1]), feat = D.rivers.map(r => r.f);
-const endx = new Float32Array(N), endy = new Float32Array(N), theta = new Float32Array(N);
+const endx = new Float32Array(N), endy = new Float32Array(N), theta = new Float32Array(N), dst = new Float32Array(N);   // dst: straight source–mouth distance (km)
 for (let i = 0; i < N; i++) {
   endx[i] = pts[(i * NP + NP - 1) * 2]; endy[i] = pts[(i * NP + NP - 1) * 2 + 1];
   theta[i] = (endx[i] === 0 && endy[i] === 0) ? 0 : Math.PI / 2 - Math.atan2(endy[i], endx[i]);
+  dst[i] = Math.max(Math.hypot(endx[i], endy[i]), km[i] / 4);   // floor so that a fragmentary, extremely looping line cannot blow the "fixed ends" scale up
 }
 const OUT = JSON.parse(document.getElementById("o").textContent);
 const kmMin = Math.min(...km), kmMax = Math.max(...km);
@@ -319,18 +321,18 @@ function highlighted() {
 /* ---------- text (EN / ES) ---------- */
 const TXT = {
   en: { title: "The shapes of rivers", by: "by", g_shape: "Shape", g_view: "View", g_filter: "Filter", g_style: "Display",
-    s_map: "Map", s_radial: "Radial", s_drop: "Drop", l_real: "Real length", l_equal: "Equal length", a_src: "From source", a_mouth: "From mouth",
+    s_map: "Map", s_radial: "Radial", s_drop: "Drop", l_real: "Real length", l_equal: "Equal length", l_fixed: "Fixed ends", a_src: "From source", a_mouth: "From mouth",
     v_all: "Together", v_cont: "By continent", minlen: "Length", reset: "Reset to defaults", dl: "Download the poster (PDF)", find: "Find a river…", outlines: "Continent outlines",
     famous: "Highlight rivers", showunn: "Show unnamed rivers", nhi: "Highlighted rivers", nhi_c: "Highlighted per continent", opacity: "Opacity", width: "Line width", minsin: "Sinuosity", zoomlbl: "Zoom (scroll and drag)", h_len: "Longest", h_sin: "Most sinuous", sinu: "sinuosity",
-    i_data: "Rivers: GSriver (Liu et al., Figshare, CC BY 4.0), a global river network that fuses HydroRIVERS, OpenStreetMap and GRIT, so every river is a connected course from source to mouth following the main stem. 4,152 courses: all rivers of 400 km or more, plus shorter ones with a large drainage area (10,000 km² or more) and the five largest rivers of each country. Names come from OpenStreetMap, matched to English names with Natural Earth for the main rivers; a few are renamed by hand (e.g. Missouri–Mississippi, Darling–Murray). Where several rivers form one main stem, the chain is shown under its best-known name. Continents come from Natural Earth country boundaries, with Russia split at 60° E. Lengths come from the full-resolution lines; each river is resampled to 200 points for display.", i_how: "Each river is drawn from its source (or mouth) with its real bearing kept (Radial) or rotated so that the mouth points north (Drop). With equal length every river is scaled to the same length; with real length distances are in km and the rings mark 500 and 1,000 km and then every 1,000 km (finer when no river reaches 1,000 km), only where some river reaches that far. Sinuosity is the length of the course divided by the straight distance from source to mouth (1 = straight); it is unreliable where a line is fragmentary or the river doubles back (values above 5 are left out of the \"most sinuous\" ranking).", h_data: "Data", h_how: "How it is built", h_author: "Author", foot1: "Data: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
+    i_data: "Rivers: GSriver (Liu et al., Figshare, CC BY 4.0), a global river network that fuses HydroRIVERS, OpenStreetMap and GRIT, so every river is a connected course from source to mouth following the main stem. 4,152 courses: all rivers of 400 km or more, plus shorter ones with a large drainage area (10,000 km² or more) and the five largest rivers of each country. Names come from OpenStreetMap, matched to English names with Natural Earth for the main rivers; a few are renamed by hand (e.g. Missouri–Mississippi, Darling–Murray). Where several rivers form one main stem, the chain is shown under its best-known name. Continents come from Natural Earth country boundaries, with Russia split at 60° E. Lengths come from the full-resolution lines; each river is resampled to 200 points for display.", i_how: "Each river is drawn from its source (or mouth) with its real bearing kept (Radial) or rotated so that the mouth points north (Drop). With equal length every river is scaled to the same length; with fixed ends every river is scaled by the straight distance from source to mouth, so all of them start and end at the same two points and only the shape of the course between them is left; with real length distances are in km and the rings mark 500 and 1,000 km and then every 1,000 km (finer when no river reaches 1,000 km), only where some river reaches that far. Sinuosity is the length of the course divided by the straight distance from source to mouth (1 = straight); it is unreliable where a line is fragmentary or the river doubles back (values above 5 are left out of the \"most sinuous\" ranking).", h_data: "Data", h_how: "How it is built", h_author: "Author", foot1: "Data: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"],
     sub: n => `${n.toLocaleString("en")} rivers`, shown: (a, b) => `${a.toLocaleString("en")} of ${b.toLocaleString("en")} rivers shown`,
     unnamed: "Unnamed river", km: "km", cl: "Click to pin", pinned: "Remove", rivers: "rivers" },
   es: { title: "La forma de los ríos", by: "por", g_shape: "Forma", g_view: "Vista", g_filter: "Filtro", g_style: "Aspecto",
-    s_map: "Mapa", s_radial: "Radial", s_drop: "Gota", l_real: "Longitud real", l_equal: "Longitud igual", a_src: "Desde el nacimiento", a_mouth: "Desde la desembocadura",
+    s_map: "Mapa", s_radial: "Radial", s_drop: "Gota", l_real: "Longitud real", l_equal: "Longitud igual", l_fixed: "Extremos fijos", a_src: "Desde el nacimiento", a_mouth: "Desde la desembocadura",
     v_all: "Juntos", v_cont: "Por continente", minlen: "Longitud", reset: "Restablecer valores", dl: "Descargar el póster (PDF)", find: "Buscar un río…", outlines: "Contornos de continentes",
     famous: "Destacar ríos", showunn: "Mostrar ríos sin nombre", nhi: "Ríos destacados", nhi_c: "Destacados por continente", opacity: "Opacidad", width: "Grosor", minsin: "Sinuosidad", zoomlbl: "Zoom (rueda y arrastrar)", h_len: "Más largos", h_sin: "Más sinuosos", sinu: "sinuosidad",
-    i_data: "Ríos: GSriver (Liu et al., Figshare, CC BY 4.0), una red fluvial global que fusiona HydroRIVERS, OpenStreetMap y GRIT, de modo que cada río es un cauce continuo desde el nacimiento hasta la desembocadura siguiendo el eje principal. 4.152 cauces: todos los de 400 km o más, más otros más cortos con una cuenca grande (10.000 km² o más) y los cinco mayores de cada país. Los nombres vienen de OpenStreetMap, emparejados con los nombres en inglés de Natural Earth para los ríos principales; unos pocos se renombran a mano (p. ej. Missouri–Mississippi, Darling–Murray). Cuando varios ríos forman un mismo eje principal, la cadena se muestra con su nombre más conocido. Los continentes salen de las fronteras de países de Natural Earth, con Rusia partida en 60° E. Las longitudes salen de las líneas a resolución completa; cada río se remuestrea a 200 puntos para dibujarlo.", i_how: "Cada río se dibuja desde su nacimiento (o desembocadura) con su rumbo real (Radial) o girado para que la desembocadura mire al norte (Gota). Con longitud igual todos se escalan a la misma longitud; con longitud real las distancias son en km y los círculos marcan 500 y 1.000 km y después cada 1.000 km (más finos si ningún río llega a 1.000 km), solo donde algún río llega tan lejos. La sinuosidad es la longitud del cauce dividida por la distancia en línea recta entre nacimiento y desembocadura (1 = recto); no es fiable si la línea está fragmentada o el río da la vuelta (los valores por encima de 5 se excluyen del ranking de «más sinuosos»).", h_data: "Datos", h_how: "Cómo está hecho", h_author: "Autor", foot1: "Datos: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
+    i_data: "Ríos: GSriver (Liu et al., Figshare, CC BY 4.0), una red fluvial global que fusiona HydroRIVERS, OpenStreetMap y GRIT, de modo que cada río es un cauce continuo desde el nacimiento hasta la desembocadura siguiendo el eje principal. 4.152 cauces: todos los de 400 km o más, más otros más cortos con una cuenca grande (10.000 km² o más) y los cinco mayores de cada país. Los nombres vienen de OpenStreetMap, emparejados con los nombres en inglés de Natural Earth para los ríos principales; unos pocos se renombran a mano (p. ej. Missouri–Mississippi, Darling–Murray). Cuando varios ríos forman un mismo eje principal, la cadena se muestra con su nombre más conocido. Los continentes salen de las fronteras de países de Natural Earth, con Rusia partida en 60° E. Las longitudes salen de las líneas a resolución completa; cada río se remuestrea a 200 puntos para dibujarlo.", i_how: "Cada río se dibuja desde su nacimiento (o desembocadura) con su rumbo real (Radial) o girado para que la desembocadura mire al norte (Gota). Con longitud igual todos se escalan a la misma longitud; con extremos fijos cada río se escala por la distancia en línea recta entre nacimiento y desembocadura, de modo que todos empiezan y acaban en los mismos dos puntos y solo queda la forma del recorrido entre ambos; con longitud real las distancias son en km y los círculos marcan 500 y 1.000 km y después cada 1.000 km (más finos si ningún río llega a 1.000 km), solo donde algún río llega tan lejos. La sinuosidad es la longitud del cauce dividida por la distancia en línea recta entre nacimiento y desembocadura (1 = recto); no es fiable si la línea está fragmentada o el río da la vuelta (los valores por encima de 5 se excluyen del ranking de «más sinuosos»).", h_data: "Datos", h_how: "Cómo está hecho", h_author: "Autor", foot1: "Datos: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["África", "Asia", "Europa", "Norteamérica", "Sudamérica", "Oceanía"],
     sub: n => `${n.toLocaleString("es")} ríos`, shown: (a, b) => `${a.toLocaleString("es")} de ${b.toLocaleString("es")} ríos visibles`,
     unnamed: "Río sin nombre", km: "km", cl: "Clic para fijar", pinned: "Quitar", rivers: "ríos" }
@@ -341,12 +343,12 @@ const t = k => TXT[lang][k];
 /* ---------- state ---------- */
 const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
   minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false, conts: new Set([0, 1, 2, 3, 4, 5]), pinned: new Set() };
-const derive = () => ({ align: opts.shape !== "map", rotate: opts.shape === "drop", scale: opts.shape !== "map" && opts.length === "equal" });
+const derive = () => ({ align: opts.shape !== "map", rotate: opts.shape === "drop", scale: opts.shape !== "map" && opts.length !== "real", fix: opts.shape !== "map" && opts.length === "fixed" });
 let hover = -1;
 const Z = { k: 1, ox: 0, oy: 0 };                       // optional screen-space zoom (off by default): s' = s*k + o
 const zoomOn = () => opts.zoom && opts.layout === "all";
-const P = { A: 1, R: 1, S: 1, M: 0, L: 0 };        // animated mix of the four transforms
-const tgtOf = () => { const d = derive(); return { A: d.align ? 1 : 0, R: d.rotate ? 1 : 0, S: d.scale ? 1 : 0, M: opts.anchor === "mouth" ? 1 : 0, L: opts.layout === "cont" ? 1 : 0 }; };
+const P = { A: 1, R: 1, S: 1, M: 0, L: 0, F: 0 };        // animated mix of the four transforms
+const tgtOf = () => { const d = derive(); return { A: d.align ? 1 : 0, R: d.rotate ? 1 : 0, S: d.scale ? 1 : 0, M: opts.anchor === "mouth" ? 1 : 0, L: opts.layout === "cont" ? 1 : 0, F: d.fix ? 1 : 0 }; };
 const vis = new Float32Array(N).fill(1), visT = new Float32Array(N).fill(1);
 
 const cv = document.getElementById("cv"), ctx = cv.getContext("2d"), stage = document.getElementById("stage"), tip = document.getElementById("tip");
@@ -356,10 +358,10 @@ const tx = new Float32Array(N * NP), ty = new Float32Array(N * NP);
 
 /* ---------- geometry ---------- */
 function fillWorld(Q, X, Y, stride = 1, skipHidden = false) {
-  const { A, R, S, M } = Q;
+  const { A, R, S, M } = Q, F = Q.F || 0;
   for (let i = 0; i < N; i++) {
     if (skipHidden && vis[i] < 0.02) continue;                // filtered-out rivers are neither computed nor drawn
-    const sc = Math.exp(S * Math.log(NORM / km[i])), phi = R * theta[i];
+    const sc = Math.exp(S * ((1 - F) * Math.log(NORM / km[i]) + F * Math.log(NORM / dst[i]))), phi = R * theta[i];
     const c = Math.cos(phi) * sc, s = Math.sin(phi) * sc;
     const Ex = c * endx[i] - s * endy[i], Ey = s * endx[i] + c * endy[i];
     const ox = -A * M * Ex, oy = -A * M * Ey, b = i * NP;
@@ -378,7 +380,7 @@ function grid() {
 }
 const boundsCache = new Map();                        // per shape: the bounding box of every river (independent of filters and window), computed once
 function bounds(Q) {
-  const key = Q.A + "|" + Q.R + "|" + Q.S + "|" + Q.M; if (boundsCache.has(key)) return boundsCache.get(key);
+  const key = Q.A + "|" + Q.R + "|" + Q.S + "|" + Q.M + "|" + (Q.F || 0); if (boundsCache.has(key)) return boundsCache.get(key);
   fillWorld(Q, tx, ty, 2);
   const bx0 = new Float32Array(N), bx1 = new Float32Array(N), by0 = new Float32Array(N), by1 = new Float32Array(N);
   for (let i = 0; i < N; i++) {
@@ -691,7 +693,7 @@ function frame(ts) {
   let busy = false;
   if (anim) {
     const u = Math.min(1, (ts - anim.t0) / anim.dur), e = ease(u);
-    for (const k of ["A", "R", "S", "M", "L"]) P[k] = lerp(anim.fromP[k], anim.toP[k], e);
+    for (const k of ["A", "R", "S", "M", "L", "F"]) P[k] = lerp(anim.fromP[k], anim.toP[k], e);
     V = lerpView(anim.fromV, anim.toV, e);
     if (u >= 1) { Object.assign(P, anim.toP); V = anim.toV; anim = null; } else busy = true;
   }
@@ -903,7 +905,8 @@ function resize() {
   cv.width = Math.round(cw * dpr); cv.height = Math.round(ch * dpr);
   V = computeView(tgtOf()); anim = null; Object.assign(P, tgtOf()); clampZ(); kick();
 { const combos = [[0, 0, 0, 0]]; for (const R of [0, 1]) for (const S of [0, 1]) for (const M of [0, 1]) combos.push([1, R, S, M]);   // warm the view cache while idle so the first shape change is instant
-  combos.forEach((c, n) => setTimeout(() => { if (!anim) bounds({ A: c[0], R: c[1], S: c[2], M: c[3] }); }, 600 + n * 250)); }
+  for (const R of [0, 1]) for (const M of [0, 1]) combos.push([1, R, 1, M, 1]);
+  combos.forEach((c, n) => setTimeout(() => { if (!anim) bounds({ A: c[0], R: c[1], S: c[2], M: c[3], F: c[4] || 0 }); }, 600 + n * 250)); }
 }
 new ResizeObserver(resize).observe(stage);
 applyLang(); resize();
