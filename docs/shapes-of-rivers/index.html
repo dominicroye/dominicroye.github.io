@@ -124,6 +124,17 @@ footer { grid-column:1/-1; color:var(--muted); font-size:12px; display:flex; fle
 @media (max-width:900px){ .app{grid-template-columns:1fr; padding:14px;} .stage{height:68vh;} aside{gap:18px;} }
 @media (prefers-reduced-motion:reduce){ *{transition:none!important;} }
 </style>
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-NK2N7F46NB"></script>
+<script>
+window.dataLayer = window.dataLayer || []; function gtag(){ dataLayer.push(arguments); }
+gtag("js", new Date()); gtag("config", "G-NK2N7F46NB");
+// light usage events: which controls people use (no personal data)
+document.addEventListener("click", e => {
+  const b = e.target.closest(".seg button, #dl, #reset");
+  if (!b) return;
+  gtag("event", b.id === "dl" ? "download_poster" : b.id === "reset" ? "reset_view" : "select_option", b.closest(".seg") ? { group: b.closest(".seg").id, value: b.dataset.v } : {});
+});
+</script>
 </head>
 <body>
 <div class="app">
