@@ -90,7 +90,7 @@ input[type=range]::-moz-range-thumb { width:9px; height:9px; border-radius:50%; 
 input[type=range]:hover::-webkit-slider-thumb, input[type=range]:active::-webkit-slider-thumb { background:var(--accent); transform:scale(1.25); }
 input[type=range]:hover::-moz-range-thumb, input[type=range]:active::-moz-range-thumb { background:var(--accent); transform:scale(1.25); }
 input[type=range]:focus-visible { outline:0; }
-.dual { position:relative; height:16px; }
+.dual { position:relative; height:16px; cursor:pointer; touch-action:none; }
 .dual::before { content:""; position:absolute; left:0; right:0; top:50%; height:1px; background:linear-gradient(to right,rgba(143,176,214,.45) var(--a,0%),#8CC8FF var(--a,0%),#8CC8FF var(--b,100%),rgba(143,176,214,.45) var(--b,100%)); }
 .dual input[type=range] { position:absolute; left:0; top:0; pointer-events:none; }
 .dual input[type=range]::-webkit-slider-runnable-track { background:transparent; }
@@ -873,8 +873,29 @@ function dual(loId, hiId, onChange) {                   // two thumbs that canno
   const lo = $(loId), hi = $(hiId);
   lo.addEventListener("input", () => { if (+lo.value > +hi.value) lo.value = hi.value; onChange(); });
   hi.addEventListener("input", () => { if (+hi.value < +lo.value) hi.value = lo.value; onChange(); });
+  const d = lo.closest(".dual");                         // a click (or press and drag) anywhere on the line moves the nearest thumb there
+  const valAt = x => { const r = d.getBoundingClientRect(), th = 9, f = Math.max(0, Math.min(1, (x - r.left - th / 2) / (r.width - th))), mn = +lo.min, mx = +lo.max, st = +lo.step || 1; return Math.max(mn, Math.min(mx, mn + Math.round(f * (mx - mn) / st) * st)); };
+  const put = (el, v) => { el.value = v; el.dispatchEvent(new Event("input", { bubbles: true })); };
+  d.addEventListener("pointerdown", e => {
+    if (e.target !== d) return;                          // the thumbs handle themselves
+    const v = valAt(e.clientX), el = v <= +lo.value ? lo : v >= +hi.value ? hi : (v - +lo.value <= +hi.value - v ? lo : hi);
+    put(el, v); e.preventDefault();
+    const mv = ev => put(el, el === lo ? Math.min(valAt(ev.clientX), +hi.value) : Math.max(valAt(ev.clientX), +lo.value)), up = () => { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); };
+    document.addEventListener("pointermove", mv); document.addEventListener("pointerup", up);
+  });
 }
 document.addEventListener("input", e => { if (e.target.type === "range") paintRange(e.target); });
+document.querySelectorAll("input[type=range]").forEach(el => {   // single sliders: press anywhere on the line to jump there, and keep dragging
+  if (el.closest(".dual")) return;
+  el.style.touchAction = "none";
+  el.addEventListener("pointerdown", e => {
+    const at = x => { const r = el.getBoundingClientRect(), f = Math.max(0, Math.min(1, (x - r.left - 4.5) / (r.width - 9))), mn = +el.min, mx = +el.max, st = +el.step || 1; return Math.max(mn, Math.min(mx, mn + Math.round(f * (mx - mn) / st) * st)); };
+    const put = v => { if (+el.value !== v) { el.value = v; el.dispatchEvent(new Event("input", { bubbles: true })); } };
+    put(at(e.clientX)); e.preventDefault(); el.focus({ preventScroll: true });
+    const mv = ev => put(at(ev.clientX)), up = () => { document.removeEventListener("pointermove", mv); document.removeEventListener("pointerup", up); };
+    document.addEventListener("pointermove", mv); document.addEventListener("pointerup", up);
+  });
+});
 function sync() {
   const map = opts.shape === "map";
   const mark = (id, v) => document.querySelectorAll(`#${id} button`).forEach(b => b.setAttribute("aria-pressed", b.dataset.v === v));
