@@ -223,6 +223,7 @@ document.addEventListener("click", e => {
 </div>
 <div class="chips" id="contchips"></div>
 <label class="sw"><span data-i="showunn">Show unnamed rivers</span><input type="checkbox" id="o-unn"></label>
+<label class="sw"><span data-i="fixscale">Fixed scale</span><input type="checkbox" id="o-fix"></label>
 <p class="hint" id="count"></p>
 <input type="text" id="find" list="names" placeholder="Find a river…" autocomplete="off" aria-label="Find a river by name">
 <datalist id="names"></datalist>
@@ -337,7 +338,7 @@ const TXT = {
   en: { title: "The shapes of rivers", by: "by", g_shape: "Shape", g_view: "View", g_filter: "Filter", g_style: "Display",
     s_map: "Map", s_radial: "Radial", s_drop: "Drop", l_real: "Real length", l_equal: "Equal length", l_fixed: "Fixed ends", a_src: "From source", a_mouth: "From mouth",
     v_all: "Together", v_cont: "By continent", minlen: "Length", reset: "Reset to defaults", dl: "Download the poster (PDF)", find: "Find a river…", outlines: "Continent outlines",
-    famous: "Highlight rivers", showunn: "Show unnamed rivers", nhi: "Highlighted rivers", nhi_c: "Highlighted per continent", nhi_f: "Highlighted in this continent", opacity: "Opacity", width: "Line width", minsin: "Sinuosity", zoomlbl: "Zoom (scroll and drag)", h_len: "Longest", h_sin: "Most sinuous", sinu: "sinuosity",
+    famous: "Highlight rivers", showunn: "Show unnamed rivers", fixscale: "Fixed scale", nhi: "Highlighted rivers", nhi_c: "Highlighted per continent", nhi_f: "Highlighted in this continent", opacity: "Opacity", width: "Line width", minsin: "Sinuosity", zoomlbl: "Zoom (scroll and drag)", h_len: "Longest", h_sin: "Most sinuous", sinu: "sinuosity",
     i_data: "Rivers: GSriver (Liu et al., Figshare, CC BY 4.0), a global river network that fuses HydroRIVERS, OpenStreetMap and GRIT, so every river is a connected course from source to mouth following the main stem. 4,152 courses: all rivers of 400 km or more, plus shorter ones with a large drainage area (10,000 km² or more) and the five largest rivers of each country. Names come from OpenStreetMap, matched to English names with Natural Earth for the main rivers; a few are renamed by hand (e.g. Missouri–Mississippi, Darling–Murray). Where several rivers form one main stem, the chain is shown under its best-known name. Continents come from Natural Earth country boundaries, with Russia split at 60° E. Lengths come from the full-resolution lines; each river is resampled to 200 points for display.", i_how: "Each river is drawn from its source (or mouth) with its real bearing kept (Radial) or rotated so that the mouth points north (Drop). With equal length every river is scaled to the same length; with fixed ends every river is scaled by the straight distance from source to mouth, so all of them start and end at the same two points and only the shape of the course between them is left; with real length distances are in km and the rings mark 500 and 1,000 km and then every 1,000 km (finer when no river reaches 1,000 km), only where some river reaches that far. Sinuosity is the length of the course divided by the straight distance from source to mouth (1 = straight); it is unreliable where a line is fragmentary or the river doubles back (values above 5 are left out of the \"most sinuous\" ranking).", h_data: "Data", h_how: "How it is built", h_author: "Author", foot1: "Data: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"], f_in: "Focus on", f_out: "Show all continents",
     sub: n => `${n.toLocaleString("en")} rivers`, shown: (a, b) => `${a.toLocaleString("en")} of ${b.toLocaleString("en")} rivers shown`,
@@ -345,7 +346,7 @@ const TXT = {
   es: { title: "La forma de los ríos", by: "por", g_shape: "Forma", g_view: "Vista", g_filter: "Filtro", g_style: "Aspecto",
     s_map: "Mapa", s_radial: "Radial", s_drop: "Gota", l_real: "Longitud real", l_equal: "Longitud igual", l_fixed: "Extremos fijos", a_src: "Desde el nacimiento", a_mouth: "Desde la desembocadura",
     v_all: "Juntos", v_cont: "Por continente", minlen: "Longitud", reset: "Restablecer valores", dl: "Descargar el póster (PDF)", find: "Buscar un río…", outlines: "Contornos de continentes",
-    famous: "Destacar ríos", showunn: "Mostrar ríos sin nombre", nhi: "Ríos destacados", nhi_c: "Destacados por continente", nhi_f: "Destacados en este continente", opacity: "Opacidad", width: "Grosor", minsin: "Sinuosidad", zoomlbl: "Zoom (rueda y arrastrar)", h_len: "Más largos", h_sin: "Más sinuosos", sinu: "sinuosidad",
+    famous: "Destacar ríos", showunn: "Mostrar ríos sin nombre", fixscale: "Escala fija", nhi: "Ríos destacados", nhi_c: "Destacados por continente", nhi_f: "Destacados en este continente", opacity: "Opacidad", width: "Grosor", minsin: "Sinuosidad", zoomlbl: "Zoom (rueda y arrastrar)", h_len: "Más largos", h_sin: "Más sinuosos", sinu: "sinuosidad",
     i_data: "Ríos: GSriver (Liu et al., Figshare, CC BY 4.0), una red fluvial global que fusiona HydroRIVERS, OpenStreetMap y GRIT, de modo que cada río es un cauce continuo desde el nacimiento hasta la desembocadura siguiendo el eje principal. 4.152 cauces: todos los de 400 km o más, más otros más cortos con una cuenca grande (10.000 km² o más) y los cinco mayores de cada país. Los nombres vienen de OpenStreetMap, emparejados con los nombres en inglés de Natural Earth para los ríos principales; unos pocos se renombran a mano (p. ej. Missouri–Mississippi, Darling–Murray). Cuando varios ríos forman un mismo eje principal, la cadena se muestra con su nombre más conocido. Los continentes salen de las fronteras de países de Natural Earth, con Rusia partida en 60° E. Las longitudes salen de las líneas a resolución completa; cada río se remuestrea a 200 puntos para dibujarlo.", i_how: "Cada río se dibuja desde su nacimiento (o desembocadura) con su rumbo real (Radial) o girado para que la desembocadura mire al norte (Gota). Con longitud igual todos se escalan a la misma longitud; con extremos fijos cada río se escala por la distancia en línea recta entre nacimiento y desembocadura, de modo que todos empiezan y acaban en los mismos dos puntos y solo queda la forma del recorrido entre ambos; con longitud real las distancias son en km y los círculos marcan 500 y 1.000 km y después cada 1.000 km (más finos si ningún río llega a 1.000 km), solo donde algún río llega tan lejos. La sinuosidad es la longitud del cauce dividida por la distancia en línea recta entre nacimiento y desembocadura (1 = recto); no es fiable si la línea está fragmentada o el río da la vuelta (los valores por encima de 5 se excluyen del ranking de «más sinuosos»).", h_data: "Datos", h_how: "Cómo está hecho", h_author: "Autor", foot1: "Datos: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["África", "Asia", "Europa", "Norteamérica", "Sudamérica", "Oceanía"], f_in: "Ampliar", f_out: "Mostrar todos los continentes",
     sub: n => `${n.toLocaleString("es")} ríos`, shown: (a, b) => `${a.toLocaleString("es")} de ${b.toLocaleString("es")} ríos visibles`,
@@ -356,7 +357,7 @@ const t = k => TXT[lang][k];
 
 /* ---------- state ---------- */
 const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, nFoc: 5, op: 0.6, lw: 1,
-  minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false, conts: new Set([0, 1, 2, 3, 4, 5]), pinned: new Set() };
+  minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, fixScale: false, hiBy: "len", zoom: false, conts: new Set([0, 1, 2, 3, 4, 5]), pinned: new Set() };
 const derive = () => ({ align: opts.shape !== "map", rotate: opts.shape === "drop", scale: opts.shape !== "map" && opts.length !== "real", fix: opts.shape !== "map" && opts.length === "fixed" });
 let hover = -1;
 const Z = { k: 1, ox: 0, oy: 0 };                       // optional screen-space zoom (off by default): s' = s*k + o
@@ -422,11 +423,12 @@ function bounds(Q) {
 }
 function computeView(Q) {                              // frames the rivers that are (going to be) visible, so a narrow filter fills the stage
   const { bx0, bx1, by0, by1 } = bounds(Q), INF = 1e30, f = 1 - Q.A;
-  let any = false; for (let i = 0; i < N; i++) if (visT[i] > 0) { any = true; break; }
+  const inView = opts.fixScale ? (i => km[i] >= 520 && name[i]) : (i => visT[i] > 0);       // fixed scale: framed on the default set, whatever the filters show
+  let any = false; for (let i = 0; i < N; i++) if (inView(i)) { any = true; break; }
   let X0 = INF, X1 = -INF, Y0 = INF, Y1 = -INF;
   const c0 = new Float64Array(6).fill(INF), c1 = new Float64Array(6).fill(-INF), d0 = new Float64Array(6).fill(INF), d1 = new Float64Array(6).fill(-INF);
   for (let i = 0; i < N; i++) {
-    if (any && visT[i] <= 0) continue;
+    if (any && !inView(i)) continue;
     const c = cont[i], ox = ctrC[c][0] * f, oy = ctrC[c][1] * f;
     if (bx0[i] < X0) X0 = bx0[i]; if (bx1[i] > X1) X1 = bx1[i]; if (by0[i] < Y0) Y0 = by0[i]; if (by1[i] > Y1) Y1 = by1[i];
     if (bx0[i] - ox < c0[c]) c0[c] = bx0[i] - ox; if (bx1[i] - ox > c1[c]) c1[c] = bx1[i] - ox; if (by0[i] - oy < d0[c]) d0[c] = by0[i] - oy; if (by1[i] - oy > d1[c]) d1[c] = by1[i] - oy;
@@ -968,16 +970,17 @@ $("z-in").addEventListener("click", () => zoomAt(cw / 2, ch / 2, 1.6));
 $("z-out").addEventListener("click", () => zoomAt(cw / 2, ch / 2, 1 / 1.6));
 $("z-reset").addEventListener("click", resetZ);
 $("o-unn").addEventListener("change", e => { opts.unnamed = e.target.checked; applyFilter(); sync(); });
+$("o-fix").addEventListener("change", e => { opts.fixScale = e.target.checked; refit(); });
 $("o-out").addEventListener("change", e => { opts.outlines = e.target.checked; kick(); });
 dual("minkm", "maxkm", () => { opts.minKm = kmOf(+$("minkm").value); opts.maxKm = kmOf(+$("maxkm").value); applyFilter(); sync(); });
 $("minkm").value = posOf(opts.minKm); $("maxkm").value = 1000;
 fetch("shapes-of-rivers-poster.pdf", { method: "HEAD" }).then(r => { if (r.ok) $("dl").hidden = false; }).catch(() => {});   // show the download button only when the PDF is served next to this page
 $("reset").addEventListener("click", () => {
   Object.assign(opts, { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, nFoc: 5, op: 0.6, lw: 1,
-    minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false });
+    minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, fixScale: false, hiBy: "len", zoom: false });
   opts.conts = new Set([0, 1, 2, 3, 4, 5]); opts.pinned = new Set();
   $("minkm").value = posOf(520); $("maxkm").value = 1000; $("minsin").value = 1; $("maxsin").value = 5;
-  $("o-out").checked = true; $("o-unn").checked = false; $("o-zoom").checked = false; $("o-famous").checked = true; $("o-op").value = 0.6; $("o-lw").value = 1; $("find").value = "";
+  $("o-out").checked = true; $("o-unn").checked = false; $("o-fix").checked = false; $("o-zoom").checked = false; $("o-famous").checked = true; $("o-op").value = 0.6; $("o-lw").value = 1; $("find").value = "";
   renderPins(); applyFilter(); sync(); retarget();
 });
 $("o-n").addEventListener("input", e => { opts[focOn() ? "nFoc" : opts.layout === "cont" ? "nCont" : "nAll"] = +e.target.value; $("nhi-val").textContent = e.target.value; kick(); });
