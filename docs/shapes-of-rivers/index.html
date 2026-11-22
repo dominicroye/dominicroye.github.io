@@ -341,7 +341,7 @@ const TXT = {
     i_data: "Rivers: GSriver (Liu et al., Figshare, CC BY 4.0), a global river network that fuses HydroRIVERS, OpenStreetMap and GRIT, so every river is a connected course from source to mouth following the main stem. 4,152 courses: all rivers of 400 km or more, plus shorter ones with a large drainage area (10,000 km² or more) and the five largest rivers of each country. Names come from OpenStreetMap, matched to English names with Natural Earth for the main rivers; a few are renamed by hand (e.g. Missouri–Mississippi, Darling–Murray). Where several rivers form one main stem, the chain is shown under its best-known name. Continents come from Natural Earth country boundaries, with Russia split at 60° E. Lengths come from the full-resolution lines; each river is resampled to 200 points for display.", i_how: "Each river is drawn from its source (or mouth) with its real bearing kept (Radial) or rotated so that the mouth points north (Drop). With equal length every river is scaled to the same length; with fixed ends every river is scaled by the straight distance from source to mouth, so all of them start and end at the same two points and only the shape of the course between them is left; with real length distances are in km and the rings mark 500 and 1,000 km and then every 1,000 km (finer when no river reaches 1,000 km), only where some river reaches that far. Sinuosity is the length of the course divided by the straight distance from source to mouth (1 = straight); it is unreliable where a line is fragmentary or the river doubles back (values above 5 are left out of the \"most sinuous\" ranking).", h_data: "Data", h_how: "How it is built", h_author: "Author", foot1: "Data: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"], f_in: "Focus on", f_out: "Show all continents",
     sub: n => `${n.toLocaleString("en")} rivers`, shown: (a, b) => `${a.toLocaleString("en")} of ${b.toLocaleString("en")} rivers shown`,
-    unnamed: "Unnamed river", km: "km", cl: "Click to pin", pinned: "Remove", rivers: "rivers" },
+    unnamed: "Unnamed river", km: "km", cl: "Click to pin", cl_t: "Tap again to pin", pinned: "Remove", rivers: "rivers" },
   es: { title: "La forma de los ríos", by: "por", g_shape: "Forma", g_view: "Vista", g_filter: "Filtro", g_style: "Aspecto",
     s_map: "Mapa", s_radial: "Radial", s_drop: "Gota", l_real: "Longitud real", l_equal: "Longitud igual", l_fixed: "Extremos fijos", a_src: "Desde el nacimiento", a_mouth: "Desde la desembocadura",
     v_all: "Juntos", v_cont: "Por continente", minlen: "Longitud", reset: "Restablecer valores", dl: "Descargar el póster (PDF)", find: "Buscar un río…", outlines: "Contornos de continentes",
@@ -349,7 +349,7 @@ const TXT = {
     i_data: "Ríos: GSriver (Liu et al., Figshare, CC BY 4.0), una red fluvial global que fusiona HydroRIVERS, OpenStreetMap y GRIT, de modo que cada río es un cauce continuo desde el nacimiento hasta la desembocadura siguiendo el eje principal. 4.152 cauces: todos los de 400 km o más, más otros más cortos con una cuenca grande (10.000 km² o más) y los cinco mayores de cada país. Los nombres vienen de OpenStreetMap, emparejados con los nombres en inglés de Natural Earth para los ríos principales; unos pocos se renombran a mano (p. ej. Missouri–Mississippi, Darling–Murray). Cuando varios ríos forman un mismo eje principal, la cadena se muestra con su nombre más conocido. Los continentes salen de las fronteras de países de Natural Earth, con Rusia partida en 60° E. Las longitudes salen de las líneas a resolución completa; cada río se remuestrea a 200 puntos para dibujarlo.", i_how: "Cada río se dibuja desde su nacimiento (o desembocadura) con su rumbo real (Radial) o girado para que la desembocadura mire al norte (Gota). Con longitud igual todos se escalan a la misma longitud; con extremos fijos cada río se escala por la distancia en línea recta entre nacimiento y desembocadura, de modo que todos empiezan y acaban en los mismos dos puntos y solo queda la forma del recorrido entre ambos; con longitud real las distancias son en km y los círculos marcan 500 y 1.000 km y después cada 1.000 km (más finos si ningún río llega a 1.000 km), solo donde algún río llega tan lejos. La sinuosidad es la longitud del cauce dividida por la distancia en línea recta entre nacimiento y desembocadura (1 = recto); no es fiable si la línea está fragmentada o el río da la vuelta (los valores por encima de 5 se excluyen del ranking de «más sinuosos»).", h_data: "Datos", h_how: "Cómo está hecho", h_author: "Autor", foot1: "Datos: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["África", "Asia", "Europa", "Norteamérica", "Sudamérica", "Oceanía"], f_in: "Ampliar", f_out: "Mostrar todos los continentes",
     sub: n => `${n.toLocaleString("es")} ríos`, shown: (a, b) => `${a.toLocaleString("es")} de ${b.toLocaleString("es")} ríos visibles`,
-    unnamed: "Río sin nombre", km: "km", cl: "Clic para fijar", pinned: "Quitar", rivers: "ríos" }
+    unnamed: "Río sin nombre", km: "km", cl: "Clic para fijar", cl_t: "Toca otra vez para fijar", pinned: "Quitar", rivers: "ríos" }
 };
 let lang = "en";                                      // English by default; the EN/ES switch changes it
 const t = k => TXT[lang][k];
@@ -573,53 +573,80 @@ function paintLabel(text, x, y, alpha, lead) {
   ctx.lineWidth = 3.5; ctx.strokeStyle = BG; ctx.lineJoin = "round"; ctx.strokeText(text, x, y);
   ctx.fillStyle = INK; ctx.fillText(text, x, y);
 }
+/* Floating labels: every label looks for its own spot around the loose end of its river (a ring of directions and distances), away from
+   other labels, from the dense bundle of lines and from the edges; the spot is stored as an offset from the anchor and eased, so labels drift
+   into place and follow their river while the view changes. */
+const LBL = new Map(), WCACHE = new Map(); let lblSig = "", lblT = 0, lblCalc = 0, labelsMoving = false, dens = null;
+const L_KS = [0, 28, 56, 84, 112, 140, 168, NP - 1];   // vertices a label may hang on: all along the course (multiples of 28 are valid in every coarse frame)
+const L_ANG = Array.from({ length: 16 }, (_, k) => k * Math.PI / 8), L_RAD = [12, 28, 50, 78];
+function densityGrid() {                                // how many line vertices fall in each 10 px cell: where text would be hard to read
+  const cs = 10, gw = Math.ceil(cw / cs) + 1, gh = Math.ceil(ch / cs) + 1, g = new Uint8Array(gw * gh), kk = step > 1 ? step : 3;
+  for (let i = 0; i < N; i++) {
+    if (vis[i] < 0.5 || offscreen(i)) continue; const b = i * NP;
+    for (let k = 0; k < NP; k += kk) { const x = sx[b + k], y = sy[b + k]; if (x >= 0 && y >= 0 && x < cw && y < ch) { const j = ((y / cs) | 0) * gw + ((x / cs) | 0); if (g[j] < 250) g[j]++; } }
+  }
+  return { g, gw, gh, cs };
+}
+const densAt = (r) => {                                 // mean line density under a rectangle [x, y, w, h]
+  const { g, gw, gh, cs } = dens, x0 = Math.max(0, (r[0] / cs) | 0), x1 = Math.min(gw - 1, ((r[0] + r[2]) / cs) | 0), y0 = Math.max(0, (r[1] / cs) | 0), y1 = Math.min(gh - 1, ((r[1] + r[3]) / cs) | 0);
+  let sum = 0, n = 0; for (let y = y0; y <= y1; y++) for (let x = x0; x <= x1; x++) { sum += g[y * gw + x]; n++; } return n ? sum / n : 0;
+};
 function drawLabels(list) {
-  const items = list.filter(i => vis[i] >= 0.02);
-  if (!items.length) return;
+  const items = list.filter(i => vis[i] >= 0.02 && !(P.L > 0.5 && opts.layout === "cont" && focOn() && cont[i] !== opts.focus));
+  labelsMoving = false;
+  if (!items.length) { LBL.clear(); return; }
   ctx.font = "700 12.5px Lato, sans-serif"; ctx.textBaseline = "middle";
   const free = P.M > 0.5 ? 0 : NP - 1;                 // label the loose end: mouth when anchored at the source, source when anchored at the mouth
   const strong = i => i === hover || opts.pinned.has(i);
-  if (P.A > 0.5 && P.R > 0.5) {                        // drop: stack labels in the margin on both sides of the trunk, with leader lines
-    const groups = new Map();
-    items.forEach(i => { const g = P.L > 0.5 ? cont[i] : -1; (groups.get(g) || groups.set(g, []).get(g)).push(i); });
-    for (const [g, arr] of groups) {
-      arr.sort((p, q) => sy[p * NP + free] - sy[q * NP + free]);
-      const sides = [[], []];
-      arr.forEach((i, n) => sides[n % 2].push(i));
-      sides.forEach((col, side) => {
-        const pl = col.map(i => {
-          const ex = sx[i * NP + free], ey = sy[i * NP + free], near = [];
-          for (let j = 0; j < N; j++) {
-            if (vis[j] < 0.5 || (g >= 0 && cont[j] !== g)) continue; const b = j * NP;
-            for (let k = 0; k < NP; k += 4) if (Math.abs(sy[b + k] - ey) < 7) near.push(Math.abs(sx[b + k] - ex));
-          }
-          near.sort((p, q) => p - q);
-          const ext = near.length ? near[Math.floor(near.length * 0.9)] : 0;
-          return { i, ex, ey, y: ey, off: Math.max(26, ext + 18) };
-        });
-        pl.sort((p, q) => p.y - q.y);
-        for (let n = 1; n < pl.length; n++) pl[n].y = Math.max(pl[n].y, pl[n - 1].y + 16);
-        pl.forEach(p => {
-          const text = name[p.i] || t("unnamed"), w = ctx.measureText(text).width, dir = side ? -1 : 1;
-          const lx = p.ex + dir * p.off, tx = Math.max(4, Math.min(cw - 4 - w, dir > 0 ? lx + 4 : lx - 4 - w));
-          paintLabel(text, tx, p.y, Math.min(1, vis[p.i] * 1.2), [p.ex, p.ey, lx, p.y]);
-        });
-      });
+  const anchor = i => [sx[i * NP + free], sy[i * NP + free]], textOf = i => name[i] || t("unnamed");
+  const wOf = text => { let w = WCACHE.get(text); if (w === undefined) { w = ctx.measureText(text).width; WCACHE.set(text, w); } return w; };
+  const now = performance.now(), ldt = Math.min(60, now - (lblT || now - 16)); lblT = now;
+  const sig = [cw, ch, lang, items.join(), hover, opts.pinned.size, Z.k.toFixed(3), Z.ox | 0, Z.oy | 0, P.A.toFixed(2), P.R.toFixed(2), P.S.toFixed(2), P.M.toFixed(2), P.L.toFixed(2), P.F.toFixed(2), V.mhx.toFixed(0)].join("|");
+  const moving = anim || (zoomT && now - zoomT < 200);
+  if ((sig !== lblSig && (!moving || now - lblCalc > 110)) || (moving && now - lblCalc > 110) ) {
+    lblSig = sig; lblCalc = now; dens = densityGrid();
+    const order = items.slice().sort((p, q) => (strong(q) - strong(p)) || km[q] - km[p]), placed = [], pts = [];
+    for (const i of order) {
+      const [ex, ey] = anchor(i), text = textOf(i), w = wOf(text), prev = LBL.get(i);
+      let bx0 = 4, by0 = 4, bx1 = cw - 4, by1 = ch - 4;
+      if (P.L > 0.5) { const g = geo(cont[i]); bx0 = g.x + 4; by0 = g.y + g.lab; bx1 = g.x + g.w - 4; by1 = g.y + g.h - 4; }       // stay inside the continent's own panel
+      let best = null, bc = 1e9;
+      for (const kv of L_KS) for (const r of L_RAD) for (const a of L_ANG) {
+        const ax = sx[i * NP + kv], ay = sy[i * NP + kv];
+        if (ax < bx0 || ax > bx1 || ay < by0 || ay > by1) continue;
+        const dx = Math.cos(a) * r, dy = Math.sin(a) * r, side = Math.cos(a) > 0.35 ? 1 : Math.cos(a) < -0.35 ? -1 : 0;
+        const x = side > 0 ? ax + dx + 3 : side < 0 ? ax + dx - 3 - w : ax + dx - w / 2, y = ay + dy, rect = [x - 2, y - 8, w + 4, 16];
+        if (rect[0] < bx0 || rect[1] < by0 || rect[0] + rect[2] > bx1 || rect[1] + rect[3] > by1) continue;
+        if (placed.some(q => hit(rect, q))) continue;
+        let cost = r * 0.5 + densAt(rect) * 1.6;
+        if (pts.some(q => q[0] > rect[0] - 3 && q[0] < rect[0] + rect[2] + 3 && q[1] > rect[1] - 3 && q[1] < rect[1] + rect[3] + 3)) cost += 40;   // never sit on another label's anchor
+        if (ex > rect[0] - 3 && ex < rect[0] + rect[2] + 3 && ey > rect[1] - 3 && ey < rect[1] + rect[3] + 3) cost += 12;                        // nor on the river's own end
+        if (prev) cost += prev.k === kv ? -5 : 5;                                                                                              // stickiness: do not hop to another spot for nothing
+        if (cost < bc) { bc = cost; best = { x, y, rect, r, k: kv, ax, ay }; }
+      }
+      if (!best) {                                       // no free spot: only the labels the user asked for are forced in
+        if (!strong(i)) { LBL.delete(i); continue; }
+        const x = Math.max(bx0, Math.min(bx1 - w, ex + 6)), y = Math.max(by0 + 8, Math.min(by1 - 8, ey));
+        best = { x, y, rect: [x - 2, y - 8, w + 4, 16], r: 12, k: NP - 1, ax: ex, ay: ey };
+      }
+      placed.push(best.rect); pts.push([best.ax, best.ay]);
+      if (prev && prev.k === best.k) { prev.tox = best.x - best.ax; prev.toy = best.y - best.ay; prev.r = best.r; }
+      else if (prev) { const [ox, oy] = [prev.ax + prev.ox, prev.ay + prev.oy]; Object.assign(prev, { k: best.k, tox: best.x - best.ax, toy: best.y - best.ay, r: best.r, ox: ox - best.ax, oy: oy - best.ay }); }   // changing hook: keep the text where it is on screen and let it drift
+      else LBL.set(i, { k: best.k, ox: best.x - best.ax, oy: best.y - best.ay, tox: best.x - best.ax, toy: best.y - best.ay, r: best.r, ax: best.ax, ay: best.ay });
     }
-    return;
+    for (const i of [...LBL.keys()]) if (!items.includes(i) || !placed.length) LBL.delete(i);
   }
-  const placed = [];                                   // map / radial: first free spot around the loose end, outward first
-  items.forEach(i => {
-    const b = i * NP, ex = sx[b + free], ey = sy[b + free], text = name[i] || t("unnamed"), w = ctx.measureText(text).width;
-    const out = P.A > 0.5 ? Math.sign(ex - sx[b + (NP - 1 - free)]) || 1 : 1;
-    const R = [ex + 8, ey - 6], Lf = [ex - 8 - w, ey - 6], U = [ex - w / 2, ey - 16], Dn = [ex - w / 2, ey + 14];
-    const cands = out >= 0 ? [R, Lf, U, Dn] : [Lf, R, U, Dn];
-    const inside = c => c[0] - 2 >= 4 && c[0] + w + 2 <= cw - 4 && c[1] - 8 >= 4 && c[1] + 8 <= ch - 4;      // never let a label run off the screen
-    let pick = cands.find(c => inside(c) && !placed.some(r => hit([c[0] - 2, c[1] - 8, w + 4, 16], r)));
-    if (!pick) { if (!strong(i)) return; pick = cands.find(inside) || cands[0]; pick = [Math.max(4, Math.min(cw - 4 - w, pick[0])), Math.max(12, Math.min(ch - 12, pick[1]))]; }
-    placed.push([pick[0] - 2, pick[1] - 8, w + 4, 16]);
-    paintLabel(text, pick[0], pick[1], Math.min(1, vis[i] * 1.2), null);
-  });
+  const f = reduce ? 1 : 1 - Math.exp(-ldt / 120);
+  for (const i of items) {
+    const st = LBL.get(i); if (!st) continue;
+    st.ox += (st.tox - st.ox) * f; st.oy += (st.toy - st.oy) * f;
+    if (Math.abs(st.tox - st.ox) > 0.3 || Math.abs(st.toy - st.oy) > 0.3) labelsMoving = true; else { st.ox = st.tox; st.oy = st.toy; }
+    const ax = sx[i * NP + st.k], ay = sy[i * NP + st.k]; st.ax = ax; st.ay = ay; const text = textOf(i), w = wOf(text);
+    const x = Math.max(4, Math.min(cw - 4 - w, ax + st.ox)), y = Math.max(12, Math.min(ch - 12, ay + st.oy));
+    const lead = st.r >= 28 ? [ax, ay, Math.max(x - 2, Math.min(x + w + 2, ax)), Math.max(y - 8, Math.min(y + 8, ay))] : null;
+    paintLabel(text, x, y, Math.min(1, vis[i] * 1.2), lead);
+    if (st.k !== NP - 1 && st.k !== 0) { ctx.globalAlpha = Math.min(1, vis[i] * 1.2); ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(ax, ay, 2.4, 0, 6.283); ctx.fill(); }     // a dot where the label hangs on the line
+  }
 }
 function drawOutlines() {
   const a = (1 - P.A) * (opts.outlines ? 1 : 0); if (a < 0.01) return;
@@ -762,7 +789,7 @@ function frame(ts) {
   if (busy) lastStep = step; else if (lastStep > 1) { step = 2; lastStep = 1; setTimeout(kick, 90); }   // on settling: a half-detail frame at once, the full-detail one right after (no freeze)
   draw();
   if (!busy && step === 1 && !ptr.size) updateHover();               // after zoom, pan or a transition the pointer may now be over a river
-  if (busy) { last = ts; kick(); } else last = 0;
+  if (busy || labelsMoving) { last = ts; kick(); } else last = 0;
 }
 
 /* ---------- interaction ---------- */
@@ -779,19 +806,22 @@ function nearest(mx, my, maxd) {
   }
   return best;
 }
-let pend = null, ptrPos = null;
+let pend = null, ptrPos = null, lastType = "mouse";
+cv.addEventListener("pointerdown", e => { lastType = e.pointerType || "mouse"; }, true);
 let hoverTimer = 0, hoverCand = -2;
 const HOVER_IN = 140, HOVER_OUT = 260;                // ms the pointer must rest on a river to highlight it, and how long a highlight sticks after leaving it
 function showHover() {
   if (hover < 0 || !ptrPos) { tip.style.display = "none"; cv.style.cursor = "default"; return; }
   const h = hover, [mx, my] = ptrPos;
-  tip.innerHTML = `<strong>${name[h] || t("unnamed")}</strong><span>${fmt(km[h])} ${t("km")} · ${TXT[lang].cont[cont[h]]} · ${t("sinu")} ${sn[h].toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br><span>${t("cl")}</span>`;
+  tip.innerHTML = `<strong>${name[h] || t("unnamed")}</strong><span>${fmt(km[h])} ${t("km")} · ${TXT[lang].cont[cont[h]]} · ${t("sinu")} ${sn[h].toLocaleString(lang, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span><br><span>${t(lastType !== "mouse" ? "cl_t" : "cl")}</span>`;
   tip.style.display = "block";
-  const tw = tip.offsetWidth; tip.style.left = Math.min(cw - tw - 8, mx + 14) + "px"; tip.style.top = Math.max(6, my - 14) + "px";
+  const tw = tip.offsetWidth, th = tip.offsetHeight;
+  if (lastType !== "mouse") { tip.style.left = Math.max(8, Math.min(cw - tw - 8, mx - tw / 2)) + "px"; tip.style.top = (my - th - 26 < 6 ? my + 26 : my - th - 26) + "px"; }     // touch: above the fingertip, never under it
+  else { tip.style.left = Math.min(cw - tw - 8, mx + 14) + "px"; tip.style.top = Math.max(6, my - 14) + "px"; }
   cv.style.cursor = "pointer";
 }
 function updateHover() {                              // only against a full-detail frame: the lighter frames leave some vertices stale
-  if (!ptrPos || step !== 1 || anim) return;
+  if (!ptrPos || step !== 1 || anim || lastType !== "mouse") return;
   const c = nearest(ptrPos[0], ptrPos[1], 9);
   if (c === hover) { clearTimeout(hoverTimer); hoverCand = -2; showHover(); return; }          // still on the highlighted river (or still on empty space)
   if (c === hoverCand) return;                         // already waiting to switch to this one
@@ -829,11 +859,18 @@ cv.addEventListener("pointermove", e => {
   const r = cv.getBoundingClientRect(); ptrPos = [e.clientX - r.left, e.clientY - r.top];
   if (!pend) pend = requestAnimationFrame(() => { pend = null; updateHover(); });
 });
-cv.addEventListener("pointerleave", () => { ptrPos = null; clearTimeout(hoverTimer); hoverCand = -2; hover = -1; tip.style.display = "none"; kick(); });
+cv.addEventListener("pointerleave", e => {
+  if (e.pointerType !== "mouse") return;                           // a finger leaves the canvas as it lifts: the tooltip must stay
+  ptrPos = null; clearTimeout(hoverTimer); hoverCand = -2; hover = -1; tip.style.display = "none"; kick(); });
 const $ = id => document.getElementById(id);
 cv.addEventListener("click", e => {
   if (travel > 4) { travel = 0; return; }
-  const r = cv.getBoundingClientRect(), h = nearest(e.clientX - r.left, e.clientY - r.top, e.pointerType === "mouse" ? 8 : 16);
+  const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, touch = lastType !== "mouse", h = nearest(x, y, touch ? 18 : 8);
+  if (touch) {                                                     // touch has no hover: a tap shows the tooltip, a second tap on the same river pins it
+    clearTimeout(hoverTimer); hoverCand = -2;
+    if (h < 0) { hover = -1; ptrPos = null; showHover(); kick(); return; }
+    if (h !== hover) { hover = h; ptrPos = [x, y]; showHover(); kick(); return; }
+  }
   if (h < 0) return;
   opts.pinned.has(h) ? opts.pinned.delete(h) : opts.pinned.add(h); renderPins(); kick();
 });
