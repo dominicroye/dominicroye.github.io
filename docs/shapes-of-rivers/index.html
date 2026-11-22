@@ -56,6 +56,7 @@ a.info { display:inline-flex; align-items:center; text-decoration:none; }
 .lang button { border:0; background:none; color:var(--muted); padding:4px 7px; border-radius:6px; font-weight:700; letter-spacing:.06em; }
 .lang button[aria-pressed="true"] { color:var(--ink); background:rgba(143,176,214,.16); }
 .foc { position:absolute; width:22px; height:22px; padding:0; border-radius:50%; border:1px solid rgba(143,176,214,.5); background:rgba(11,27,51,.7); color:#EAF4FF; font:700 15px/1 Lato,sans-serif; cursor:pointer; display:grid; place-items:center; z-index:3; }
+.foc svg { width:60%; height:60%; }
 .foc:hover { background:rgba(255,255,255,.18); }
 .stage { position:relative; height:min(82vh,880px); min-height:480px; overflow:hidden; }
 canvas { position:absolute; inset:0; width:100%; height:100%; display:block; touch-action:pan-y; }
@@ -323,7 +324,7 @@ const bySin = [...Array(N).keys()].filter(i => name[i] && km[i] >= 500 && sn[i] 
 function highlighted() {
   const out = [], seen = new Set(), pool = opts.hiBy === "sin" ? bySin : favIdx.concat(byLen);
   if (opts.layout === "cont") {                         // by continent: the first n of each continent's own ranking
-    for (let c = 0; c < 6; c++) { let n = 0; for (const i of pool) { if (n >= (focOn() ? (c === opts.focus ? Math.max(opts.nCont, 5) : 0) : opts.nCont)) break; if (cont[i] === c && visT[i] > 0 && !seen.has(i)) { seen.add(i); out.push(i); n++; } } }
+    for (let c = 0; c < 6; c++) { let n = 0; for (const i of pool) { if (n >= (focOn() ? (c === opts.focus ? opts.nFoc : 0) : opts.nCont)) break; if (cont[i] === c && visT[i] > 0 && !seen.has(i)) { seen.add(i); out.push(i); n++; } } }
     return out;
   }
   for (const i of pool) { if (out.length >= opts.nAll) break; if (visT[i] > 0 && !seen.has(i)) { seen.add(i); out.push(i); } }
@@ -336,7 +337,7 @@ const TXT = {
   en: { title: "The shapes of rivers", by: "by", g_shape: "Shape", g_view: "View", g_filter: "Filter", g_style: "Display",
     s_map: "Map", s_radial: "Radial", s_drop: "Drop", l_real: "Real length", l_equal: "Equal length", l_fixed: "Fixed ends", a_src: "From source", a_mouth: "From mouth",
     v_all: "Together", v_cont: "By continent", minlen: "Length", reset: "Reset to defaults", dl: "Download the poster (PDF)", find: "Find a river…", outlines: "Continent outlines",
-    famous: "Highlight rivers", showunn: "Show unnamed rivers", nhi: "Highlighted rivers", nhi_c: "Highlighted per continent", opacity: "Opacity", width: "Line width", minsin: "Sinuosity", zoomlbl: "Zoom (scroll and drag)", h_len: "Longest", h_sin: "Most sinuous", sinu: "sinuosity",
+    famous: "Highlight rivers", showunn: "Show unnamed rivers", nhi: "Highlighted rivers", nhi_c: "Highlighted per continent", nhi_f: "Highlighted in this continent", opacity: "Opacity", width: "Line width", minsin: "Sinuosity", zoomlbl: "Zoom (scroll and drag)", h_len: "Longest", h_sin: "Most sinuous", sinu: "sinuosity",
     i_data: "Rivers: GSriver (Liu et al., Figshare, CC BY 4.0), a global river network that fuses HydroRIVERS, OpenStreetMap and GRIT, so every river is a connected course from source to mouth following the main stem. 4,152 courses: all rivers of 400 km or more, plus shorter ones with a large drainage area (10,000 km² or more) and the five largest rivers of each country. Names come from OpenStreetMap, matched to English names with Natural Earth for the main rivers; a few are renamed by hand (e.g. Missouri–Mississippi, Darling–Murray). Where several rivers form one main stem, the chain is shown under its best-known name. Continents come from Natural Earth country boundaries, with Russia split at 60° E. Lengths come from the full-resolution lines; each river is resampled to 200 points for display.", i_how: "Each river is drawn from its source (or mouth) with its real bearing kept (Radial) or rotated so that the mouth points north (Drop). With equal length every river is scaled to the same length; with fixed ends every river is scaled by the straight distance from source to mouth, so all of them start and end at the same two points and only the shape of the course between them is left; with real length distances are in km and the rings mark 500 and 1,000 km and then every 1,000 km (finer when no river reaches 1,000 km), only where some river reaches that far. Sinuosity is the length of the course divided by the straight distance from source to mouth (1 = straight); it is unreliable where a line is fragmentary or the river doubles back (values above 5 are left out of the \"most sinuous\" ranking).", h_data: "Data", h_how: "How it is built", h_author: "Author", foot1: "Data: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["Africa", "Asia", "Europe", "North America", "South America", "Oceania"], f_in: "Focus on", f_out: "Show all continents",
     sub: n => `${n.toLocaleString("en")} rivers`, shown: (a, b) => `${a.toLocaleString("en")} of ${b.toLocaleString("en")} rivers shown`,
@@ -344,7 +345,7 @@ const TXT = {
   es: { title: "La forma de los ríos", by: "por", g_shape: "Forma", g_view: "Vista", g_filter: "Filtro", g_style: "Aspecto",
     s_map: "Mapa", s_radial: "Radial", s_drop: "Gota", l_real: "Longitud real", l_equal: "Longitud igual", l_fixed: "Extremos fijos", a_src: "Desde el nacimiento", a_mouth: "Desde la desembocadura",
     v_all: "Juntos", v_cont: "Por continente", minlen: "Longitud", reset: "Restablecer valores", dl: "Descargar el póster (PDF)", find: "Buscar un río…", outlines: "Contornos de continentes",
-    famous: "Destacar ríos", showunn: "Mostrar ríos sin nombre", nhi: "Ríos destacados", nhi_c: "Destacados por continente", opacity: "Opacidad", width: "Grosor", minsin: "Sinuosidad", zoomlbl: "Zoom (rueda y arrastrar)", h_len: "Más largos", h_sin: "Más sinuosos", sinu: "sinuosidad",
+    famous: "Destacar ríos", showunn: "Mostrar ríos sin nombre", nhi: "Ríos destacados", nhi_c: "Destacados por continente", nhi_f: "Destacados en este continente", opacity: "Opacidad", width: "Grosor", minsin: "Sinuosidad", zoomlbl: "Zoom (rueda y arrastrar)", h_len: "Más largos", h_sin: "Más sinuosos", sinu: "sinuosidad",
     i_data: "Ríos: GSriver (Liu et al., Figshare, CC BY 4.0), una red fluvial global que fusiona HydroRIVERS, OpenStreetMap y GRIT, de modo que cada río es un cauce continuo desde el nacimiento hasta la desembocadura siguiendo el eje principal. 4.152 cauces: todos los de 400 km o más, más otros más cortos con una cuenca grande (10.000 km² o más) y los cinco mayores de cada país. Los nombres vienen de OpenStreetMap, emparejados con los nombres en inglés de Natural Earth para los ríos principales; unos pocos se renombran a mano (p. ej. Missouri–Mississippi, Darling–Murray). Cuando varios ríos forman un mismo eje principal, la cadena se muestra con su nombre más conocido. Los continentes salen de las fronteras de países de Natural Earth, con Rusia partida en 60° E. Las longitudes salen de las líneas a resolución completa; cada río se remuestrea a 200 puntos para dibujarlo.", i_how: "Cada río se dibuja desde su nacimiento (o desembocadura) con su rumbo real (Radial) o girado para que la desembocadura mire al norte (Gota). Con longitud igual todos se escalan a la misma longitud; con extremos fijos cada río se escala por la distancia en línea recta entre nacimiento y desembocadura, de modo que todos empiezan y acaban en los mismos dos puntos y solo queda la forma del recorrido entre ambos; con longitud real las distancias son en km y los círculos marcan 500 y 1.000 km y después cada 1.000 km (más finos si ningún río llega a 1.000 km), solo donde algún río llega tan lejos. La sinuosidad es la longitud del cauce dividida por la distancia en línea recta entre nacimiento y desembocadura (1 = recto); no es fiable si la línea está fragmentada o el río da la vuelta (los valores por encima de 5 se excluyen del ranking de «más sinuosos»).", h_data: "Datos", h_how: "Cómo está hecho", h_author: "Autor", foot1: "Datos: GSriver (HydroRIVERS + OpenStreetMap + GRIT).",
     cont: ["África", "Asia", "Europa", "Norteamérica", "Sudamérica", "Oceanía"], f_in: "Ampliar", f_out: "Mostrar todos los continentes",
     sub: n => `${n.toLocaleString("es")} ríos`, shown: (a, b) => `${a.toLocaleString("es")} de ${b.toLocaleString("es")} ríos visibles`,
@@ -354,7 +355,7 @@ let lang = "en";                                      // English by default; the
 const t = k => TXT[lang][k];
 
 /* ---------- state ---------- */
-const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
+const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, nFoc: 5, op: 0.6, lw: 1,
   minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false, conts: new Set([0, 1, 2, 3, 4, 5]), pinned: new Set() };
 const derive = () => ({ align: opts.shape !== "map", rotate: opts.shape === "drop", scale: opts.shape !== "map" && opts.length !== "real", fix: opts.shape !== "map" && opts.length === "fixed" });
 let hover = -1;
@@ -650,10 +651,10 @@ function drawOutlines() {
 const ICON = {                                          // four arrows: outwards to expand a panel, inwards to collapse it
   out: '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2H2v4M2 2l4.5 4.5M10 2h4v4M14 2l-4.5 4.5M2 10v4h4M2 14l4.5-4.5M14 10v4h-4M14 14l-4.5-4.5"/></svg>',
   in: '<svg viewBox="0 0 16 16" width="13" height="13" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6h4V2M6 6L2 2M10 2v4h4M10 6l4-4M2 10h4v4M6 10l-4 4M14 10h-4v4M10 10l4 4"/></svg>' };
-const focBtns = [];
+const focBtns = [], FOCPOS = [];
 for (let c = 0; c < 6; c++) {
   const b = document.createElement("button"); b.type = "button"; b.className = "foc"; b.style.visibility = "hidden";
-  b.addEventListener("click", () => { opts.focus = opts.focus === c ? -1 : c; retarget(); });
+  b.addEventListener("click", () => { opts.focus = opts.focus === c ? -1 : c; retarget(); sync(); });
   stage.appendChild(b); focBtns.push(b);
 }
 let focLang = "";
@@ -662,7 +663,7 @@ function placeFocusButtons() {
   focBtns.forEach((b, c) => {
     b.style.visibility = on ? "visible" : "hidden"; if (!on) return;
     const g = geo(c), me = focOn() && opts.focus === c;
-    b.style.left = (g.x + g.w - 28) + "px"; b.style.top = (g.y + 3) + "px"; b.style.opacity = P.L; b.style.pointerEvents = P.L > 0.9 ? "auto" : "none";
+    const fp = FOCPOS[c] || [g.x + g.w - 28, g.y + 3, 22]; b.style.left = fp[0] + "px"; b.style.top = fp[1] + "px"; b.style.width = b.style.height = fp[2] + "px"; b.style.opacity = P.L; b.style.pointerEvents = P.L > 0.9 ? "auto" : "none";
     const st = me ? "in" : "out"; if (b.dataset.st !== st) { b.dataset.st = st; b.innerHTML = ICON[st]; }
     const lab = me ? TXT[lang].f_out : TXT[lang].f_in + " " + TXT[lang].cont[c]; if (b.title !== lab) { b.title = lab; b.setAttribute("aria-label", lab); }
   });
@@ -729,11 +730,12 @@ function draw() {
       const g = geo(c); let n = 0; for (let i = 0; i < N; i++) if (cont[i] === c && visT[i] > 0) n++;
       const fs = 11 + (g.lab - 20) * 0.4, full = TXT[lang].cont[c].toUpperCase();
       ctx.globalAlpha = P.L; ctx.fillStyle = COL[c]; ctx.font = `900 ${fs}px Lato, sans-serif`;
-      const label = ctx.measureText(full).width > g.w - 46 ? CODE[c] : full, ty = g.y + g.lab - 8;
+      const label = ctx.measureText(full).width > g.w - 46 ? CODE[c] : full, ty = g.y + g.lab - 8, lw = ctx.measureText(label).width, bs = 16 + (g.lab - 20) * 0.6;
       ctx.fillText(label, g.x + 14, ty);
-      const room = g.w - 14 - ctx.measureText(label).width * 1.35 - 8 - 34;
+      FOCPOS[c] = [g.x + 14 + lw + 7, ty - bs * 0.78, bs];            // the expand button sits right after the name
+      const cx = g.x + 14 + lw + 7 + bs + 8, room = g.x + g.w - cx - 6;
       ctx.fillStyle = INK; ctx.globalAlpha = P.L * 0.75 * Math.max(0, Math.min(1, (room - 40) / 30)) * Math.max(0, Math.min(1, (g.lab - 20) / 8)); ctx.font = "400 12px Lato, sans-serif";
-      if (ctx.globalAlpha > 0.01) ctx.fillText(`${fmt(n)} ${t("rivers")}`, g.x + 14 + ctx.measureText(label).width * 1.35 + 8, ty);
+      if (ctx.globalAlpha > 0.01) ctx.fillText(`${fmt(n)} ${t("rivers")}`, cx, ty);
     }
   }
   placeFocusButtons();
@@ -885,10 +887,10 @@ function sync() {
   mark("hiby", opts.hiBy);
   $("zoomctl").hidden = !zoomOn(); cv.style.touchAction = zoomOn() ? "none" : "pan-y";
   $("o-zoom").disabled = opts.layout === "cont";
-  const pc = opts.layout === "cont", sl = $("o-n");
-  sl.max = pc ? 5 : 20; sl.value = pc ? opts.nCont : opts.nAll; $("nhi-val").textContent = sl.value;
+  const pc = opts.layout === "cont", pf = focOn(), sl = $("o-n");      // the slider acts on whichever set of highlights is on screen: all rivers, per continent, or the focused continent
+  sl.max = pf ? 20 : pc ? 5 : 20; sl.value = pf ? opts.nFoc : pc ? opts.nCont : opts.nAll; $("nhi-val").textContent = sl.value;
   document.querySelectorAll("input[type=range]").forEach(paintRange);
-  $("nhi-lbl").textContent = t(pc ? "nhi_c" : "nhi"); $("nhi-lbl").dataset.i = pc ? "nhi_c" : "nhi";
+  const nk = pf ? "nhi_f" : pc ? "nhi_c" : "nhi"; $("nhi-lbl").textContent = t(nk); $("nhi-lbl").dataset.i = nk;
 }
 function applyLang() {
   document.documentElement.lang = lang;
@@ -913,14 +915,14 @@ dual("minkm", "maxkm", () => { opts.minKm = kmOf(+$("minkm").value); opts.maxKm 
 $("minkm").value = posOf(opts.minKm); $("maxkm").value = 1000;
 fetch("shapes-of-rivers-poster.pdf", { method: "HEAD" }).then(r => { if (r.ok) $("dl").hidden = false; }).catch(() => {});   // show the download button only when the PDF is served next to this page
 $("reset").addEventListener("click", () => {
-  Object.assign(opts, { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, op: 0.6, lw: 1,
+  Object.assign(opts, { shape: "drop", length: "equal", anchor: "source", layout: "all", focus: -1, outlines: true, famous: true, nAll: 4, nCont: 1, nFoc: 5, op: 0.6, lw: 1,
     minKm: 520, maxKm: 7000, minS: 1, maxS: 5, unnamed: false, hiBy: "len", zoom: false });
   opts.conts = new Set([0, 1, 2, 3, 4, 5]); opts.pinned = new Set();
   $("minkm").value = posOf(520); $("maxkm").value = 1000; $("minsin").value = 1; $("maxsin").value = 5;
   $("o-out").checked = true; $("o-unn").checked = false; $("o-zoom").checked = false; $("o-famous").checked = true; $("o-op").value = 0.6; $("o-lw").value = 1; $("find").value = "";
   renderPins(); applyFilter(); sync(); retarget();
 });
-$("o-n").addEventListener("input", e => { opts[opts.layout === "cont" ? "nCont" : "nAll"] = +e.target.value; $("nhi-val").textContent = e.target.value; kick(); });
+$("o-n").addEventListener("input", e => { opts[focOn() ? "nFoc" : opts.layout === "cont" ? "nCont" : "nAll"] = +e.target.value; $("nhi-val").textContent = e.target.value; kick(); });
 $("o-famous").addEventListener("change", e => { opts.famous = e.target.checked; kick(); });
 $("o-op").addEventListener("input", e => { opts.op = +e.target.value; kick(); });
 $("o-lw").addEventListener("input", e => { opts.lw = +e.target.value; kick(); });
