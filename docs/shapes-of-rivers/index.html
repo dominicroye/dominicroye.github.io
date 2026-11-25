@@ -361,7 +361,7 @@ const opts = { shape: "drop", length: "equal", anchor: "source", layout: "all", 
 const derive = () => ({ align: opts.shape !== "map", rotate: opts.shape === "drop", scale: opts.shape !== "map" && opts.length !== "real", fix: opts.shape !== "map" && opts.length === "fixed" });
 let hover = -1;
 const Z = { k: 1, ox: 0, oy: 0 };                       // optional screen-space zoom (off by default): s' = s*k + o
-const zoomOn = () => opts.zoom && opts.layout === "all";
+const zoomOn = () => opts.zoom && (opts.layout === "all" || focOn());
 const P = { A: 1, R: 1, S: 1, M: 0, L: 0, F: 0 };        // animated mix of the four transforms
 const tgtOf = () => { const d = derive(); return { A: d.align ? 1 : 0, R: d.rotate ? 1 : 0, S: d.scale ? 1 : 0, M: opts.anchor === "mouth" ? 1 : 0, L: opts.layout === "cont" ? 1 : 0, F: d.fix ? 1 : 0 }; };
 const focOn = () => opts.layout === "cont" && opts.focus >= 0;
@@ -485,21 +485,25 @@ const CODE = ["AF", "AS", "EU", "NA", "SA", "OC"];
 const colorOf = i => mix(COL[cont[i]], P.L);
 const fmt = n => n.toLocaleString(lang);
 
+function zrect() {                                    // the area the zoom acts on: the whole canvas, or only the focused continent's panel
+  if (focOn() && P.L > 0.5) { const g = geo(opts.focus); return { x: g.x + g.gap / 2, y: g.y + g.lab, w: g.w - g.gap, h: g.h - g.lab - g.gap / 2, c: opts.focus }; }
+  return { x: 0, y: 0, w: cw, h: ch, c: -1 };
+}
 function clampZ() {
   zoomT = performance.now();
   if (Z.k <= 1) { Z.k = 1; Z.ox = 0; Z.oy = 0; return; }
-  Z.ox = Math.min(0, Math.max(cw - cw * Z.k, Z.ox)); Z.oy = Math.min(0, Math.max(ch - ch * Z.k, Z.oy));
+  const R = zrect(); Z.ox = Math.min(0, Math.max(R.w - R.w * Z.k, Z.ox)); Z.oy = Math.min(0, Math.max(R.h - R.h * Z.k, Z.oy));
 }
 function resetZ() { Z.k = 1; Z.ox = 0; Z.oy = 0; kick(); }
 function zoomAt(mx, my, f) {
   const k2 = Math.min(14, Math.max(1, Z.k * f)); if (k2 === Z.k) return;
-  const r = k2 / Z.k; Z.ox = mx - (mx - Z.ox) * r; Z.oy = my - (my - Z.oy) * r; Z.k = k2; clampZ(); kick();
+  const R = zrect(), px = mx - R.x, py = my - R.y, r = k2 / Z.k; Z.ox = px - (px - Z.ox) * r; Z.oy = py - (py - Z.oy) * r; Z.k = k2; clampZ(); kick();
 }
 const rx0 = new Float32Array(N), rx1 = new Float32Array(N), ry0 = new Float32Array(N), ry1 = new Float32Array(N);   // on-screen bounding box of each river (used to skip rivers outside the zoomed view)
 let zoomT = 0;                                         // time of the last zoom/pan change: while it is recent we draw a lighter frame, then the full one
 function project() {
   fillWorld(P, wx, wy, step, true);
-  const L = P.L, A1 = 1 - P.A, PX = [], PY = [], KP = [];
+  const L = P.L, A1 = 1 - P.A, PX = [], PY = [], KP = [], zr = zrect(), zf = Z.k > 1 && zr.c >= 0;
   for (let c = 0; c < 6; c++) { const g = geo(c); PX.push(g.x + g.w / 2); PY.push(g.y + g.h / 2 + 4); KP.push(kOf(c)); }
   for (let i = 0; i < N; i++) {
     if (vis[i] < 0.02) continue;
@@ -512,6 +516,7 @@ function project() {
       if (L < 0.001) { const u = ax * Z.k + Z.ox, v = ay * Z.k + Z.oy; sx[j] = u; sy[j] = v; if (u < m0) m0 = u; if (u > m1) m1 = u; if (v < n0) n0 = v; if (v > n1) n1 = v; continue; }
       const bx = pcx + (X - ccx) * kp, by = pcy - (Y - ccy) * kp;
       sx[j] = lerp(ax, bx, L); sy[j] = lerp(ay, by, L);
+      if (zf && c === zr.c) { sx[j] = zr.x + (sx[j] - zr.x) * Z.k + Z.ox; sy[j] = zr.y + (sy[j] - zr.y) * Z.k + Z.oy; }
       if (sx[j] < m0) m0 = sx[j]; if (sx[j] > m1) m1 = sx[j]; if (sy[j] < n0) n0 = sy[j]; if (sy[j] > n1) n1 = sy[j];
     }
     rx0[i] = m0; rx1[i] = m1; ry0[i] = n0; ry1[i] = n1;
@@ -667,7 +672,7 @@ function drawLabels(list) {
 }
 function drawOutlines() {
   const a = (1 - P.A) * (opts.outlines ? 1 : 0); if (a < 0.01) return;
-  const A1 = 1 - P.A, L = P.L;
+  const A1 = 1 - P.A, L = P.L, zr = zrect(), zf = Z.k > 1 && zr.c >= 0;
   ctx.save(); ctx.lineWidth = 0.9; ctx.lineJoin = "round";
   for (let c = 0; c < 6; c++) {
     const g = geo(c), kp = kOf(c), pcx = g.x + g.w / 2, pcy = g.y + g.h / 2 + 4;
@@ -683,7 +688,8 @@ function drawOutlines() {
         const X = ring[k], Y = ring[k + 1];
         const ax = (X - V.c0x) * V.k0 + cw / 2, ay = ch / 2 - (Y - V.c0y) * V.k0;
         const bx = pcx + (X - ccx) * kp, by = pcy - (Y - ccy) * kp;
-        const x = lerp(ax, bx, L) * Z.k + Z.ox, y = lerp(ay, by, L) * Z.k + Z.oy;
+        let x = lerp(ax, bx, L), y = lerp(ay, by, L);
+        if (zr.c < 0) { x = x * Z.k + Z.ox; y = y * Z.k + Z.oy; } else if (zf && c === zr.c) { x = zr.x + (x - zr.x) * Z.k + Z.ox; y = zr.y + (y - zr.y) * Z.k + Z.oy; }
         k ? ctx.lineTo(x, y) : ctx.moveTo(x, y);
       }
       ctx.globalAlpha = a * 0.55; ctx.strokeStyle = "#FFFFFF"; ctx.stroke();
@@ -715,23 +721,26 @@ function placeFocusButtons() {
 function draw() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
   ctx.globalAlpha = 1; ctx.fillStyle = BG; ctx.fillRect(0, 0, cw, ch);
-  project(); drawOutlines();
+  project(); drawOutlines(); const zr = zrect(), zf = Z.k > 1 && zr.c >= 0;
   // distance rings: only when everything shares an anchor and lengths are real
   const ringA = P.A * (1 - P.S);
   if (ringA > 0.01) {
     if (P.L < 0.999) ringsAt(((0 - V.c0x) * V.k0 + cw / 2) * Z.k + Z.ox, (ch / 2 + V.c0y * V.k0) * Z.k + Z.oy, V.k0 * Z.k, ringA * (1 - P.L), null, true, reachOf(-1));
     if (P.L > 0.001) for (let c = 0; c < 6; c++) {
       const g = geo(c), kp = kOf(c), pcx = g.x + g.w / 2, pcy = g.y + g.h / 2 + 4;
-      ringsAt(pcx - V.cen[c][0] * kp, pcy + V.cen[c][1] * kp, kp, ringA * P.L, [g.x + g.gap / 2, g.y + g.lab, g.w - g.gap, g.h - g.lab - g.gap / 2], true, reachOf(c));
+      let ox0 = pcx - V.cen[c][0] * kp, oy0 = pcy + V.cen[c][1] * kp, kk = kp;
+      if (zf && c === zr.c) { ox0 = zr.x + (ox0 - zr.x) * Z.k + Z.ox; oy0 = zr.y + (oy0 - zr.y) * Z.k + Z.oy; kk = kp * Z.k; }
+      ringsAt(ox0, oy0, kk, ringA * P.L, [g.x + g.gap / 2, g.y + g.lab, g.w - g.gap, g.h - g.lab - g.gap / 2], true, reachOf(c));
     }
   }
   // all rivers, shortest first so the long ones sit on top
   ctx.lineCap = "round"; ctx.lineJoin = "round";
+  const drawAll = pred => {
   if (step > 1) {                       // while moving, the many short rivers are stroked in a few batches (same look, far fewer draw calls)
     const B = new Map();
     for (const i of order) {
       if (km[i] >= 400) break;
-      if (vis[i] < 0.98 || offscreen(i)) continue;
+      if (vis[i] < 0.98 || offscreen(i) || (pred && !pred(i))) continue;
       const key = Math.min(5, Math.floor(rel[i] * 40)) * 8 + (P.L > 0.001 ? cont[i] : 7);
       let b = B.get(key); if (!b) B.set(key, b = []); b.push(i);
     }
@@ -749,11 +758,13 @@ function draw() {
   const thin = step > 1 && anim;                        // while a transition runs, draw every other river a little stronger: half the strokes, same look
   for (const i of order) {
     if (step > 1 && km[i] < 400 && vis[i] >= 0.98) continue;
-    if (vis[i] < 0.02 || offscreen(i)) continue;
+    if (vis[i] < 0.02 || offscreen(i) || (pred && !pred(i))) continue;
     if (thin && (i & 1) && rel[i] < 0.9) continue;
     ctx.globalAlpha = Math.min(1, alphaOf(rel[i]) * vis[i] * (thin && rel[i] < 0.9 ? 1.6 : 1)); ctx.lineWidth = widthOf(rel[i]); ctx.strokeStyle = colorOf(i);
     path(i); ctx.stroke();
   }
+  };
+  if (zf) { drawAll(i => cont[i] !== zr.c); ctx.save(); ctx.beginPath(); ctx.rect(zr.x, zr.y, zr.w, zr.h); ctx.clip(); drawAll(i => cont[i] === zr.c); ctx.restore(); } else drawAll(null);
   // highlighted rivers
   const hl = new Set(opts.pinned);
   if (opts.famous) for (const i of highlighted()) hl.add(i);
@@ -762,9 +773,11 @@ function draw() {
   ctx.textBaseline = "middle";
   for (const i of [...list].reverse()) {
     if (vis[i] < 0.02) continue;
+    const clipIt = zf && cont[i] === zr.c; if (clipIt) { ctx.save(); ctx.beginPath(); ctx.rect(zr.x, zr.y, zr.w, zr.h); ctx.clip(); }
     const hc = hlColor(i); ctx.globalAlpha = vis[i]; ctx.strokeStyle = hc; ctx.lineWidth = i === hover ? 2.6 : 1.7; path(i); ctx.stroke();
     const b = i * NP; ctx.fillStyle = hc; ctx.strokeStyle = "#000"; ctx.lineWidth = 0.8;
     ctx.beginPath(); ctx.arc(sx[b + NP - 1], sy[b + NP - 1], 3, 0, 6.2832); ctx.fill(); ctx.stroke();
+    if (clipIt) ctx.restore();
   }
   drawLabels(list);
   // continent panel headings
@@ -811,8 +824,9 @@ function frame(ts) {
 
 /* ---------- interaction ---------- */
 function nearest(mx, my, maxd) {
-  let best = -1, bd = maxd * maxd;
+  let best = -1, bd = maxd * maxd; const zr = zrect(), zf = Z.k > 1 && zr.c >= 0;
   for (let i = 0; i < N; i++) {
+    if (zf && cont[i] === zr.c && (mx < zr.x || mx > zr.x + zr.w || my < zr.y || my > zr.y + zr.h)) continue;     // the part of the zoomed continent outside its panel is clipped away
     if (vis[i] < 0.5 || mx < rx0[i] - maxd || mx > rx1[i] + maxd || my < ry0[i] - maxd || my > ry1[i] + maxd) continue; const b = i * NP;   // bounding-box test first: most rivers are far from the pointer
     for (let k = 0; k < NP - 1; k++) {
       const x0 = sx[b + k], y0 = sy[b + k], dx = sx[b + k + 1] - x0, dy = sy[b + k + 1] - y0, l2 = dx * dx + dy * dy;
@@ -846,15 +860,16 @@ function updateHover() {                              // only against a full-det
   hoverTimer = setTimeout(() => { hoverCand = -2; hover = c; showHover(); kick(); }, c >= 0 ? HOVER_IN : HOVER_OUT);
 }
 const ptr = new Map(); let travel = 0;
+function inZoom(e) { const R = zrect(); if (R.c < 0) return true; const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top; return x >= R.x && x <= R.x + R.w && y >= R.y && y <= R.y + R.h; }
 cv.addEventListener("pointerdown", e => {
-  if (!zoomOn()) return;
+  if (!zoomOn() || !inZoom(e)) return;
   ptr.set(e.pointerId, [e.clientX, e.clientY]); travel = 0;
   try { cv.setPointerCapture(e.pointerId); } catch (_) {}
 });
 const endPtr = e => { ptr.delete(e.pointerId); };
 cv.addEventListener("pointerup", endPtr); cv.addEventListener("pointercancel", endPtr);
 cv.addEventListener("wheel", e => {
-  if (!zoomOn()) return; e.preventDefault();
+  if (!zoomOn() || !inZoom(e)) return; e.preventDefault();
   const r = cv.getBoundingClientRect(); zoomAt(e.clientX - r.left, e.clientY - r.top, Math.exp(-e.deltaY * 0.0015));
 }, { passive: false });
 cv.addEventListener("dblclick", () => { if (zoomOn()) resetZ(); });
@@ -961,7 +976,7 @@ function sync() {
   $("minsin-val").textContent = opts.minS <= 1 && snTop ? "–" : snTop ? "≥ " + opts.minS.toFixed(2) : opts.minS.toFixed(2) + " – " + opts.maxS.toFixed(2);
   mark("hiby", opts.hiBy);
   $("zoomctl").hidden = !zoomOn(); cv.style.touchAction = zoomOn() ? "none" : "pan-y";
-  $("o-zoom").disabled = opts.layout === "cont";
+  $("o-zoom").disabled = opts.layout === "cont" && !focOn();
   const pc = opts.layout === "cont", pf = focOn(), sl = $("o-n");      // the slider acts on whichever set of highlights is on screen: all rivers, per continent, or the focused continent
   sl.max = pf ? 20 : pc ? 5 : 20; sl.value = pf ? opts.nFoc : pc ? opts.nCont : opts.nAll; $("nhi-val").textContent = sl.value;
   document.querySelectorAll("input[type=range]").forEach(paintRange);
@@ -981,8 +996,8 @@ function applyLang() {
 dual("minsin", "maxsin", () => { opts.minS = +$("minsin").value; opts.maxS = +$("maxsin").value; applyFilter(); sync(); });
 document.querySelectorAll("#hiby button").forEach(b => b.addEventListener("click", () => { opts.hiBy = b.dataset.v; sync(); kick(); }));
 $("o-zoom").addEventListener("change", e => { opts.zoom = e.target.checked; if (!opts.zoom) resetZ(); sync(); });
-$("z-in").addEventListener("click", () => zoomAt(cw / 2, ch / 2, 1.6));
-$("z-out").addEventListener("click", () => zoomAt(cw / 2, ch / 2, 1 / 1.6));
+$("z-in").addEventListener("click", () => { const R = zrect(); zoomAt(R.x + R.w / 2, R.y + R.h / 2, 1.6); });
+$("z-out").addEventListener("click", () => { const R = zrect(); zoomAt(R.x + R.w / 2, R.y + R.h / 2, 1 / 1.6); });
 $("z-reset").addEventListener("click", resetZ);
 $("o-unn").addEventListener("change", e => { opts.unnamed = e.target.checked; applyFilter(); sync(); });
 $("o-fix").addEventListener("change", e => { opts.fixScale = e.target.checked; refit(); });
