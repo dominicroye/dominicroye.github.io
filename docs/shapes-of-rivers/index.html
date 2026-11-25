@@ -108,7 +108,7 @@ input[type=text]:focus { border-bottom-color:var(--accent); outline:0; }
 .chip[aria-pressed="false"] { opacity:.55; }
 .pins { display:flex; flex-wrap:wrap; gap:6px; }
 .pin { display:inline-flex; align-items:center; gap:2px; padding:2px 2px 2px 10px; border:1px solid var(--ink); border-radius:99px; font-size:12.5px; }
-.pin button { border:0; background:none; color:var(--ink); padding:0 6px; font-size:15px; cursor:pointer; }
+.pin button { border:0; background:none; color:inherit; padding:0 6px; font-size:15px; cursor:pointer; }
 .hint { margin:0; color:var(--muted); font-size:12.5px; }
 .sw { display:flex; align-items:center; justify-content:space-between; color:var(--ink); cursor:pointer; }
 .sw input { appearance:none; width:32px; height:18px; border-radius:99px; background:rgba(143,176,214,.28); position:relative; margin:0; cursor:pointer; transition:background .2s; }
@@ -569,11 +569,26 @@ function ringsAt(cx, cy, k, a, clip, label, reach) {
   ctx.restore();
 }
 const hit = (p, q) => p[0] < q[0] + q[2] && p[0] + p[2] > q[0] && p[1] < q[1] + q[3] && p[1] + p[3] > q[1];
-function paintLabel(text, x, y, alpha, lead) {
+const PINC = ["#FFE81F", "#B8FF2E", "#FF9CF0"], HOVC = "#FF2E9A", pinCol = new Map(); let LRECT = [];
+function hlColor(i) {
+  if (i === hover) { if (opts.pinned.has(i) && !pinCol.get(i)) hlColor0(i); return HOVC; }   // under the pointer (line or name): magenta, pinned or not
+  return hlColor0(i);
+}
+function hlColor0(i) {                                  // pinned rivers each keep their own colour; the one under the pointer is blue; the rest of the highlights stay white
+  if (opts.pinned.has(i)) {
+    let c = pinCol.get(i);
+    if (!c) { const used = new Set([...opts.pinned].map(j => pinCol.get(j))); c = PINC.find(x => !used.has(x)) || PINC[opts.pinned.size % PINC.length]; pinCol.set(i, c); }
+    return c;
+  }
+  pinCol.delete(i); return INK;
+}
+function labelAt(x, y) { for (let k = LRECT.length - 1; k >= 0; k--) { const r = LRECT[k]; if (x >= r.x0 - 3 && x <= r.x1 + 3 && y >= r.y0 - 3 && y <= r.y1 + 3) return r.i; } return -1; }
+function paintLabel(text, x, y, alpha, lead, col) {
+  col = col || INK;
   ctx.globalAlpha = alpha;
-  if (lead) { ctx.strokeStyle = INK; ctx.globalAlpha = alpha * 0.55; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(lead[0], lead[1]); ctx.lineTo(lead[2], lead[3]); ctx.stroke(); ctx.globalAlpha = alpha; }
+  if (lead) { ctx.strokeStyle = col; ctx.globalAlpha = alpha * 0.55; ctx.lineWidth = 0.8; ctx.beginPath(); ctx.moveTo(lead[0], lead[1]); ctx.lineTo(lead[2], lead[3]); ctx.stroke(); ctx.globalAlpha = alpha; }
   ctx.lineWidth = 3.5; ctx.strokeStyle = BG; ctx.lineJoin = "round"; ctx.strokeText(text, x, y);
-  ctx.fillStyle = INK; ctx.fillText(text, x, y);
+  ctx.fillStyle = col; ctx.fillText(text, x, y);
 }
 /* Floating labels: every label looks for its own spot around the loose end of its river (a ring of directions and distances), away from
    other labels, from the dense bundle of lines and from the edges; the spot is stored as an offset from the anchor and eased, so labels drift
@@ -595,7 +610,7 @@ const densAt = (r) => {                                 // mean line density und
 };
 function drawLabels(list) {
   const items = list.filter(i => vis[i] >= 0.02 && !(P.L > 0.5 && opts.layout === "cont" && focOn() && cont[i] !== opts.focus));
-  labelsMoving = false;
+  labelsMoving = false; LRECT = [];
   if (!items.length) { LBL.clear(); return; }
   ctx.font = "700 12.5px Lato, sans-serif"; ctx.textBaseline = "middle";
   const free = P.M > 0.5 ? 0 : NP - 1;                 // label the loose end: mouth when anchored at the source, source when anchored at the mouth
@@ -603,7 +618,7 @@ function drawLabels(list) {
   const anchor = i => [sx[i * NP + free], sy[i * NP + free]], textOf = i => name[i] || t("unnamed");
   const wOf = text => { let w = WCACHE.get(text); if (w === undefined) { w = ctx.measureText(text).width; WCACHE.set(text, w); } return w; };
   const now = performance.now(), ldt = Math.min(60, now - (lblT || now - 16)); lblT = now;
-  const sig = [cw, ch, lang, items.join(), hover, opts.pinned.size, Z.k.toFixed(3), Z.ox | 0, Z.oy | 0, P.A.toFixed(2), P.R.toFixed(2), P.S.toFixed(2), P.M.toFixed(2), P.L.toFixed(2), P.F.toFixed(2), V.mhx.toFixed(0)].join("|");
+  const sig = [cw, ch, lang, items.join(), hover, [...opts.pinned].join(), Z.k.toFixed(3), Z.ox | 0, Z.oy | 0, P.A.toFixed(2), P.R.toFixed(2), P.S.toFixed(2), P.M.toFixed(2), P.L.toFixed(2), P.F.toFixed(2), V.mhx.toFixed(0)].join("|");
   const moving = anim || (zoomT && now - zoomT < 200);
   if ((sig !== lblSig && (!moving || now - lblCalc > 110)) || (moving && now - lblCalc > 110) ) {
     lblSig = sig; lblCalc = now; dens = densityGrid();
@@ -646,8 +661,8 @@ function drawLabels(list) {
     const ax = sx[i * NP + st.k], ay = sy[i * NP + st.k]; st.ax = ax; st.ay = ay; const text = textOf(i), w = wOf(text);
     const x = Math.max(4, Math.min(cw - 4 - w, ax + st.ox)), y = Math.max(12, Math.min(ch - 12, ay + st.oy));
     const lead = st.r >= 28 ? [ax, ay, Math.max(x - 2, Math.min(x + w + 2, ax)), Math.max(y - 8, Math.min(y + 8, ay))] : null;
-    paintLabel(text, x, y, Math.min(1, vis[i] * 1.2), lead);
-    if (st.k !== NP - 1 && st.k !== 0) { ctx.globalAlpha = Math.min(1, vis[i] * 1.2); ctx.fillStyle = INK; ctx.beginPath(); ctx.arc(ax, ay, 2.4, 0, 6.283); ctx.fill(); }     // a dot where the label hangs on the line
+    const col = hlColor(i); paintLabel(text, x, y, Math.min(1, vis[i] * 1.2), lead, col); LRECT.push({ i, x0: x - 2, y0: y - 8, x1: x + w + 2, y1: y + 8 });
+    if (st.k !== NP - 1 && st.k !== 0) { ctx.globalAlpha = Math.min(1, vis[i] * 1.2); ctx.fillStyle = col; ctx.beginPath(); ctx.arc(ax, ay, 2.4, 0, 6.283); ctx.fill(); }     // a dot where the label hangs on the line
   }
 }
 function drawOutlines() {
@@ -747,8 +762,8 @@ function draw() {
   ctx.textBaseline = "middle";
   for (const i of [...list].reverse()) {
     if (vis[i] < 0.02) continue;
-    ctx.globalAlpha = vis[i]; ctx.strokeStyle = INK; ctx.lineWidth = i === hover ? 2.6 : 1.7; path(i); ctx.stroke();
-    const b = i * NP; ctx.fillStyle = INK; ctx.strokeStyle = "#000"; ctx.lineWidth = 0.8;
+    const hc = hlColor(i); ctx.globalAlpha = vis[i]; ctx.strokeStyle = hc; ctx.lineWidth = i === hover ? 2.6 : 1.7; path(i); ctx.stroke();
+    const b = i * NP; ctx.fillStyle = hc; ctx.strokeStyle = "#000"; ctx.lineWidth = 0.8;
     ctx.beginPath(); ctx.arc(sx[b + NP - 1], sy[b + NP - 1], 3, 0, 6.2832); ctx.fill(); ctx.stroke();
   }
   drawLabels(list);
@@ -824,7 +839,7 @@ function showHover() {
 }
 function updateHover() {                              // only against a full-detail frame: the lighter frames leave some vertices stale
   if (!ptrPos || step !== 1 || anim || lastType !== "mouse") return;
-  const c = nearest(ptrPos[0], ptrPos[1], 9);
+  const lb = labelAt(ptrPos[0], ptrPos[1]), c = lb >= 0 ? lb : nearest(ptrPos[0], ptrPos[1], 9);
   if (c === hover) { clearTimeout(hoverTimer); hoverCand = -2; showHover(); return; }          // still on the highlighted river (or still on empty space)
   if (c === hoverCand) return;                         // already waiting to switch to this one
   clearTimeout(hoverTimer); hoverCand = c;
@@ -867,8 +882,8 @@ cv.addEventListener("pointerleave", e => {
 const $ = id => document.getElementById(id);
 cv.addEventListener("click", e => {
   if (travel > 4) { travel = 0; return; }
-  const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, touch = lastType !== "mouse", h = nearest(x, y, touch ? 18 : 8);
-  if (touch) {                                                     // touch has no hover: a tap shows the tooltip, a second tap on the same river pins it
+  const r = cv.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top, touch = lastType !== "mouse", lb = labelAt(x, y), h = lb >= 0 ? lb : nearest(x, y, touch ? 18 : 8);
+  if (touch && lb < 0) {                                           // touch has no hover: a tap shows the tooltip, a second tap on the same river pins it
     clearTimeout(hoverTimer); hoverCand = -2;
     if (h < 0) { hover = -1; ptrPos = null; showHover(); kick(); return; }
     if (h !== hover) { hover = h; ptrPos = [x, y]; showHover(); kick(); return; }
@@ -890,7 +905,7 @@ function buildChips() {
 function renderPins() {
   const box = $("pins"); box.innerHTML = "";
   [...opts.pinned].forEach(i => {
-    const s = document.createElement("span"); s.className = "pin"; s.append(name[i] || t("unnamed"));
+    const s = document.createElement("span"); s.className = "pin"; s.append(name[i] || t("unnamed")); const pc = hlColor(i); s.style.borderColor = pc; s.style.color = pc;
     const x = document.createElement("button"); x.type = "button"; x.textContent = "×"; x.setAttribute("aria-label", t("pinned") + " " + (name[i] || ""));
     x.addEventListener("click", () => { opts.pinned.delete(i); renderPins(); kick(); }); s.appendChild(x); box.appendChild(s);
   });
@@ -1031,7 +1046,7 @@ function resize() {
 }
 new ResizeObserver(resize).observe(stage);
 applyLang(); resize();
-window.__rivers = { Z, opts, retarget, sync, applyFilter, P: () => ({ ...P }) };   // handle for automated checks
+window.__rivers = { Z, opts, retarget, sync, applyFilter, P: () => ({ ...P }), dbg: () => ({ N, vis, name, km, sx, sy, NP, LRECT, hlColor }) };   // handle for automated checks
 })();
 </script>
 </body>
