@@ -718,10 +718,23 @@ function placeFocusButtons() {
     const lab = me ? TXT[lang].f_out : TXT[lang].f_in + " " + TXT[lang].cont[c]; if (b.title !== lab) { b.title = lab; b.setAttribute("aria-label", lab); }
   });
 }
+/* Cache of the static layer (background, outlines, rings and the whole bundle of rivers): while nothing but the pointer moves (hover, pins, labels settling)
+   the bundle is not redrawn, only the highlights, labels and headings on top of the stored picture. */
+const cacheCv = document.createElement("canvas"), cacheCtx = cacheCv.getContext("2d"); let cacheSig = "", cacheV = null;
+function bundleSig() {
+  let h = 0; for (let i = 0; i < N; i++) h += vis[i] * ((i % 11) + 1);
+  return [cw, ch, dpr, lang, h.toFixed(3), P.A.toFixed(4), P.R.toFixed(4), P.S.toFixed(4), P.M.toFixed(4), P.L.toFixed(4), P.F.toFixed(4), Z.k.toFixed(4), Z.ox.toFixed(1), Z.oy.toFixed(1),
+    opts.op, opts.lw, opts.outlines, opts.focus, Array.from(GEO, x => x.toFixed(1)).join()].join("|");
+}
 function draw() {
   ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+  const zr = zrect(), zf = Z.k > 1 && zr.c >= 0;
+  const stable = step === 1 && !anim, sig = stable ? bundleSig() : "", hit = stable && sig === cacheSig && V === cacheV && cacheCv.width === cv.width && cacheCv.height === cv.height;
+  if (hit) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.globalAlpha = 1; ctx.drawImage(cacheCv, 0, 0); ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.lineCap = "round"; ctx.lineJoin = "round";
+  } else {
   ctx.globalAlpha = 1; ctx.fillStyle = BG; ctx.fillRect(0, 0, cw, ch);
-  project(); drawOutlines(); const zr = zrect(), zf = Z.k > 1 && zr.c >= 0;
+  project(); drawOutlines();
   // distance rings: only when everything shares an anchor and lengths are real
   const ringA = P.A * (1 - P.S);
   if (ringA > 0.01) {
@@ -765,6 +778,11 @@ function draw() {
   }
   };
   if (zf) { drawAll(i => cont[i] !== zr.c); ctx.save(); ctx.beginPath(); ctx.rect(zr.x, zr.y, zr.w, zr.h); ctx.clip(); drawAll(i => cont[i] === zr.c); ctx.restore(); } else drawAll(null);
+  if (stable) {                                         // keep this picture for the frames that only change the highlights
+    if (cacheCv.width !== cv.width || cacheCv.height !== cv.height) { cacheCv.width = cv.width; cacheCv.height = cv.height; }
+    cacheCtx.setTransform(1, 0, 0, 1, 0, 0); cacheCtx.globalAlpha = 1; cacheCtx.drawImage(cv, 0, 0); cacheSig = sig; cacheV = V;
+  }
+  }
   // highlighted rivers
   const hl = new Set(opts.pinned);
   if (opts.famous) for (const i of highlighted()) hl.add(i);
@@ -1061,7 +1079,7 @@ function resize() {
 }
 new ResizeObserver(resize).observe(stage);
 applyLang(); resize();
-window.__rivers = { Z, opts, retarget, sync, applyFilter, P: () => ({ ...P }), dbg: () => ({ N, vis, name, km, sx, sy, NP, LRECT, hlColor }) };   // handle for automated checks
+window.__rivers = { Z, opts, retarget, sync, applyFilter, P: () => ({ ...P }), dbg: () => ({ N, vis, name, km, sx, sy, NP, LRECT, hlColor, draw, nearest, project, cw, ch }) };   // handle for automated checks
 })();
 </script>
 </body>
